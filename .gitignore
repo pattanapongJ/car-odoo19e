@@ -1,0 +1,6 @@
+*.pyc
+/__pycache__/*.pyc
+launch.json
+.vscode/
+.DS_Store
+.env
