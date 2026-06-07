@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="story_index_page" name="Stories">
+        <t t-call="website.layout">
+            <t t-set="title">Stories</t>
+            <t t-set="bs_hero_overlay" t-value="True"/>
+            <div id="wrap" class="bs_story_shell">
+                <section class="bs_story_index_hero">
+                    <div class="container">
+                        <span class="bs_story_eyebrow">Hongqi Thailand</span>
+                        <h1>Latest Stories</h1>
+                    </div>
+                </section>
+                <section class="bs_story_index_body">
+                    <div class="container">
+                        <div class="bs_story_index_grid">
+                            <a t-foreach="stories" t-as="story"
+                               t-att-href="story._get_website_url()"
+                               class="bs_story_index_card">
+                                <div class="bs_story_index_media">
+                                    <img t-if="story.image"
+                                         t-att-src="'/web/image/bs.car.story/%s/image/1200x800' % story.id"
+                                         t-att-alt="story.name" loading="lazy"/>
+                                    <div t-else="" class="bs_story_index_fallback"/>
+                                </div>
+                                <div class="bs_story_index_copy">
+                                    <span t-if="story.subtitle" class="bs_story_eyebrow" t-esc="story.subtitle"/>
+                                    <h2 t-esc="story.name"/>
+                                    <p t-if="story.excerpt" t-esc="story.excerpt"/>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <template id="story_detail_page" name="Story Detail">
+        <t t-call="website.layout">
+            <t t-set="title" t-value="story.name"/>
+            <t t-set="bs_hero_overlay" t-value="True"/>
+            <div id="wrap" class="bs_story_shell">
+                <section class="bs_story_detail_hero">
+                    <img t-if="story.image"
+                         t-att-src="'/web/image/bs.car.story/%s/image/1920x1080' % story.id"
+                         t-att-alt="story.name" loading="eager"/>
+                    <div t-else="" class="bs_story_detail_fallback"/>
+                    <div class="bs_story_detail_scrim"/>
+                    <div class="bs_story_scroll_hint">Scroll</div>
+                </section>
+
+                <section class="bs_story_article">
+                    <div class="container">
+                        <div class="bs_story_article_nav">
+                            <a href="/stories"><i class="fa fa-arrow-left"/> Back to Stories</a>
+                            <a t-if="next_story" t-att-href="next_story._get_website_url()">
+                                <t t-esc="next_story.name"/> <i class="fa fa-arrow-right"/>
+                            </a>
+                            <a t-elif="prev_story" t-att-href="prev_story._get_website_url()">
+                                <t t-esc="prev_story.name"/> <i class="fa fa-arrow-right"/>
+                            </a>
+                        </div>
+                        <header class="bs_story_head">
+                            <span class="bs_story_eyebrow">Latest Story</span>
+                            <div class="bs_story_meta">
+                                <span t-if="story.location" t-esc="story.location"/>
+                                <span t-if="story.location and story.publish_date" class="bs_story_meta_sep">·</span>
+                                <span t-if="story.publish_date" t-esc="story.publish_date" t-options="{'widget': 'date'}"/>
+                            </div>
+                            <h1 t-esc="story.name"/>
+                            <p t-if="story.subtitle" class="bs_story_lead" t-esc="story.subtitle"/>
+                        </header>
+                        <article class="bs_story_article_body">
+                            <div t-if="story.body" t-out="story.body"/>
+                            <p t-elif="story.excerpt" t-esc="story.excerpt"/>
+                        </article>
+                        <div class="bs_story_article_cta">
+                            <t t-set="cta" t-value="story._resolve_cta_url()"/>
+                            <a t-if="cta" t-att-href="cta" class="btn btn-primary car_cta_btn">
+                                <t t-esc="story.cta_label or 'Explore'"/>
+                                <i class="fa fa-arrow-right"/>
+                            </a>
+                        </div>
+                        <div class="bs_story_article_nav bs_story_article_nav_bottom">
+                            <a t-if="prev_story" t-att-href="prev_story._get_website_url()">
+                                <i class="fa fa-arrow-left"/> <t t-esc="prev_story.name"/>
+                            </a>
+                            <a href="/stories">All Stories</a>
+                            <a t-if="next_story" t-att-href="next_story._get_website_url()">
+                                <t t-esc="next_story.name"/> <i class="fa fa-arrow-right"/>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>

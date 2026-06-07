@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+<odoo>
+    <data noupdate="1">
+        <template id="redirect_form">
+            <form t-att-action="tx_url" method="post">
+                <input type="hidden" name="version" t-att-value="version" />
+                <input type="hidden" name="merchant_id" t-att-value="merchant_id" />
+                <input type="hidden" name="order_id" t-att-value="order_id" />
+                <input type="hidden" name="amount" t-att-value="amount" />
+                <input type="hidden" name="currency" t-att-value="currency" />
+                <input type="hidden" name="payment_description" t-att-value="payment_description" />
+                <input type="hidden" name="invoice_no" t-att-value="invoice_no" />
+                <input type="hidden" name="result_url_1" t-att-value="result_url_1" />
+                <input type="hidden" name="result_url_2" t-att-value="result_url_2" />
+                <input type="hidden" name="user_defined_1" t-att-value="user_defined_1" />
+                <input type="hidden" name="user_defined_2" t-att-value="user_defined_2" />
+                <input type="hidden" name="user_defined_3" t-att-value="user_defined_3" />
+                <input type="hidden" name="user_defined_4" t-att-value="user_defined_4" />
+                <input type="hidden" name="user_defined_5" t-att-value="user_defined_5" />
+                <input type="hidden" name="hash_value" t-att-value="hash_value" />
+            </form>
+        </template>
+
+    </data>
+</odoo>

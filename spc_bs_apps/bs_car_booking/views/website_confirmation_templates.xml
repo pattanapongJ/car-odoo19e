@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================
+         OTP VERIFICATION PAGE  (Step 2)
+         ================================================================ -->
+    <template id="otp_verification_page" name="OTP Verification">
+        <t t-call="website.layout">
+            <t t-set="title">Verify Your Phone</t>
+            <section class="otp_section">
+                <div class="container">
+                    <div class="otp_card"
+                         t-att-data-booking-id="booking.id"
+                         t-att-data-access-token="access_token">
+                        <t t-call="bs_car_booking.booking_progress">
+                            <t t-set="active_step" t-value="2"/>
+                        </t>
+                        <div class="otp_icon"><i class="fa fa-mobile-phone fa-3x"/></div>
+                        <h2 class="otp_title">Verify Your Phone Number</h2>
+                        <p class="otp_description">
+                            We've sent a 6-digit verification code to
+                            <strong t-esc="booking.customer_phone"/>
+                        </p>
+                        <div class="otp_form">
+                            <div class="otp_input_group">
+                                <t t-foreach="range(6)" t-as="i">
+                                    <input type="text" class="otp_digit" maxlength="1"
+                                           t-att-data-index="i" inputmode="numeric" pattern="[0-9]"/>
+                                </t>
+                            </div>
+                            <div class="otp_timer"><span id="otp_countdown">05:00</span></div>
+                            <div class="otp_error d-none"><div class="alert alert-danger" id="otp_error_msg"/></div>
+                            <div class="otp_success d-none"><div class="alert alert-success" id="otp_success_msg"/></div>
+                            <div class="otp_actions">
+                                <button id="otp_verify_btn" class="btn btn-primary btn-lg otp_verify_btn">
+                                    <i class="fa fa-check"/> Verify
+                                </button>
+                                <button id="otp_resend_btn" class="btn btn-link otp_resend_btn" disabled="disabled">
+                                    Resend Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </t>
+    </template>
+
+    <!-- ================================================================
+         CUSTOMER INFO PAGE  (Step 3)
+         ================================================================ -->
+    <template id="booking_info_page" name="Customer Information">
+        <t t-call="website.layout">
+            <t t-set="title">Your Details</t>
+            <section class="info_section">
+                <div class="container">
+                    <div class="info_card">
+                        <t t-call="bs_car_booking.booking_progress">
+                            <t t-set="active_step" t-value="3"/>
+                        </t>
+                        <h2 class="info_title">Your Details</h2>
+                        <p class="text-muted">Almost there — tell us who the booking is for.</p>
+                        <div t-if="account_partner and account_partner.name" class="info_account_prefill mb-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="info_use_my_details"
+                                    t-att-data-name="account_partner.name or ''"
+                                    t-att-data-email="account_partner.email or ''"
+                                    t-att-data-street="account_partner.street or ''">
+                                <i class="fa fa-user"/> Use my account details
+                                (<t t-esc="account_partner.name"/>)
+                            </button>
+                        </div>
+                        <form id="bs_info_form" class="info_form"
+                              t-att-data-booking-id="booking.id"
+                              t-att-data-access-token="access_token">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Full Name *</label>
+                                    <input type="text" name="customer_name" class="form-control form-control-lg"
+                                           t-att-value="booking.customer_name or ''"
+                                           placeholder="Your full name" required="required"/>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="customer_email" class="form-control form-control-lg"
+                                           t-att-value="booking.customer_email or ''" placeholder="you@email.com"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">NRC / ID Number</label>
+                                    <input type="text" name="customer_nrc" class="form-control form-control-lg"
+                                           t-att-value="booking.customer_nrc or ''" placeholder="(optional)"/>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Phone</label>
+                                    <input type="tel" class="form-control form-control-lg"
+                                           t-att-value="booking.customer_phone or ''" disabled="disabled"/>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <textarea name="customer_address" class="form-control" rows="2"
+                                          placeholder="(optional)"><t t-esc="booking.customer_address or ''"/></textarea>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg info_submit_btn">
+                                    Continue to Deposit <i class="fa fa-arrow-right"/>
+                                </button>
+                                <div class="alert alert-danger mt-3 d-none" id="info_error"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </t>
+    </template>
+
+    <!-- ================================================================
+         DEPOSIT PAYMENT PAGE  (Step 4) — native payment.form
+         ================================================================ -->
+    <template id="deposit_payment_page" name="Deposit Payment">
+        <t t-call="website.layout">
+            <t t-set="title">Pay Deposit</t>
+            <section class="payment_section">
+                <div class="container">
+                    <div class="payment_card">
+                        <t t-call="bs_car_booking.booking_progress">
+                            <t t-set="active_step" t-value="4"/>
+                        </t>
+                        <div class="payment_header text-center">
+                            <i class="fa fa-lock fa-2x text-success"/>
+                            <h2>Secure Deposit · 2C2P</h2>
+                            <p>
+                                Booking <strong t-esc="booking.name"/> —
+                                <t t-esc="booking.model_id.name"/>
+                            </p>
+                        </div>
+                        <div class="payment_amount">
+                            <span class="payment_label">Deposit to reserve</span>
+                            <span class="payment_value" t-esc="deposit_amount"
+                                  t-options="{'widget': 'monetary', 'display_currency': booking.currency_id}"/>
+                            <div class="text-muted mt-1">
+                                Order total:
+                                <span t-esc="booking.amount_total"
+                                      t-options="{'widget': 'monetary', 'display_currency': booking.currency_id}"/>
+                            </div>
+                        </div>
+                        <div class="payment_form_wrap">
+                            <t t-call="payment.form"/>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </t>
+    </template>
+
+    <!-- ================================================================
+         CONFIRMATION PAGE  (Step 5)
+         ================================================================ -->
+    <template id="booking_confirmation_page" name="Booking Confirmation">
+        <t t-call="website.layout">
+            <t t-set="title">Booking Confirmed!</t>
+            <t t-set="is_confirmed"
+               t-value="booking.state in ('confirmed', 'in_production', 'ready_delivery', 'delivered')"/>
+            <t t-set="is_closed" t-value="booking.state in ('cancelled', 'expired')"/>
+            <section class="confirmation_section">
+                <div class="container">
+                    <div class="confirmation_card text-center">
+                        <t t-if="not is_closed" t-call="bs_car_booking.booking_progress">
+                            <t t-set="active_step" t-value="is_confirmed and 5 or 4"/>
+                        </t>
+                        <div class="confirmation_icon">
+                            <i t-if="is_confirmed" class="fa fa-check-circle fa-4x text-success"/>
+                            <i t-elif="booking.state == 'cancelled'" class="fa fa-times-circle fa-4x text-danger"/>
+                            <i t-elif="booking.state == 'expired'" class="fa fa-hourglass-end fa-4x text-muted"/>
+                            <i t-else="" class="fa fa-clock-o fa-4x text-warning"/>
+                        </div>
+                        <h2>
+                            <t t-if="is_confirmed">🎉 Booking Confirmed!</t>
+                            <t t-elif="booking.state == 'cancelled'">Booking Cancelled</t>
+                            <t t-elif="booking.state == 'expired'">Booking Expired</t>
+                            <t t-else="">Booking In Progress</t>
+                        </h2>
+                        <div class="confirmation_status">
+                            <span t-attf-class="badge car_status_badge {{ is_confirmed and 'bg-success' or booking.state == 'cancelled' and 'bg-danger' or booking.state == 'expired' and 'bg-secondary' or 'bg-warning text-dark' }}">
+                                <t t-esc="booking.state_label"/>
+                            </span>
+                        </div>
+
+                        <div class="confirmation_details">
+                            <div class="conf_row">
+                                <span class="conf_label">Booking Ref</span>
+                                <span class="conf_value" t-esc="booking.name"/>
+                            </div>
+                            <div class="conf_row">
+                                <span class="conf_label">Car</span>
+                                <span class="conf_value">
+                                    <t t-esc="booking.model_id.brand_id.name"/> <t t-esc="booking.model_id.name"/>
+                                </span>
+                            </div>
+                            <div class="conf_row" t-if="booking.config_summary">
+                                <span class="conf_label">Configuration</span>
+                                <span class="conf_value" t-esc="booking.config_summary"/>
+                            </div>
+                            <div class="conf_row" t-if="booking.dealer_id">
+                                <span class="conf_label">Dealer</span>
+                                <span class="conf_value" t-esc="booking.dealer_id.name"/>
+                            </div>
+                            <div class="conf_row" t-if="booking.sale_order_id">
+                                <span class="conf_label">Sale Order</span>
+                                <span class="conf_value" t-esc="booking.sale_order_id.name"/>
+                            </div>
+                            <div class="conf_row">
+                                <span class="conf_label">Order Total</span>
+                                <span class="conf_value" t-esc="booking.amount_total"
+                                      t-options="{'widget': 'monetary', 'display_currency': booking.currency_id}"/>
+                            </div>
+                            <div class="conf_row">
+                                <span class="conf_label">Deposit Paid</span>
+                                <span class="conf_value" t-esc="booking.deposit_paid"
+                                      t-options="{'widget': 'monetary', 'display_currency': booking.currency_id}"/>
+                            </div>
+                        </div>
+
+                        <div t-if="booking.invoice_ids" class="confirmation_invoices">
+                            <h5>Deposit Invoice<t t-if="len(booking.invoice_ids) &gt; 1">s</t></h5>
+                            <t t-foreach="booking.invoice_ids" t-as="inv">
+                                <div class="conf_invoice_row">
+                                    <span t-esc="inv.name"/>
+                                    <span t-esc="inv.amount_total"
+                                          t-options="{'widget': 'monetary', 'display_currency': inv.currency_id}"/>
+                                    <span class="badge bg-light text-dark" t-esc="inv.payment_state"/>
+                                </div>
+                            </t>
+                        </div>
+
+                        <div class="confirmation_actions py-4">
+                            <a href="/cars" class="btn btn-outline-primary">
+                                <i class="fa fa-arrow-left"/> Browse More Cars
+                            </a>
+                            <a t-if="not is_confirmed and not is_closed"
+                               t-att-href="'/booking/%s/payment?access_token=%s' % (booking.id, access_token)"
+                               class="btn btn-success ms-2">
+                                <i class="fa fa-credit-card"/> Pay Deposit
+                            </a>
+                            <a t-att-href="booking.get_portal_url()" class="btn btn-primary ms-2">
+                                <i class="fa fa-user"/> View in My Account
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </t>
+    </template>
+</odoo>
