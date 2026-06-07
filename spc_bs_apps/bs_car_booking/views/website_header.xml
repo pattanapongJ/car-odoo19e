@@ -34,6 +34,19 @@
                                item_class.f="nav-item" link_class.f="nav-link"/>
                         </t>
                     </t>
+                    <!-- Account: Sign in (logged out) / My Account dropdown with
+                         booking history (logged in). Kept — customers reach /my here. -->
+                    <ul class="navbar-nav bs_brand_account">
+                        <t t-call="portal.placeholder_user_sign_in">
+                            <t t-set="_link_class" t-valuef="nav-link bs_brand_signin"/>
+                        </t>
+                        <t t-call="portal.user_dropdown">
+                            <t t-set="_user_name" t-value="True"/>
+                            <t t-set="_item_class" t-valuef="dropdown"/>
+                            <t t-set="_link_class" t-valuef="nav-link"/>
+                            <t t-set="_dropdown_menu_class" t-valuef="dropdown-menu-end"/>
+                        </t>
+                    </ul>
                 </div>
             </t>
             <t t-call="website.template_header_mobile"/>

@@ -94,12 +94,49 @@ html {
 /* Brand header layout — centered logo + minimal nav, taller at top,
    compact when affixed. */
 #wrapwrap > header .bs_brand_nav {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: clamp(28px, 6vw, 96px);
     min-height: 92px;
     transition: min-height 0.35s ease;
+}
+/* Account (Sign in / user dropdown) — pinned right, logo+nav stay centered. */
+#wrapwrap > header .bs_brand_account {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+}
+#wrapwrap > header .bs_brand_account .nav-link { padding: 8px 6px; }
+#wrapwrap > header .bs_brand_account .dropdown-menu {
+    background: #111 !important;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--car-radius);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+/* Force readable light text + icons on the dark dropdown. */
+#wrapwrap > header .bs_brand_account .dropdown-item,
+#wrapwrap > header .bs_brand_account .dropdown-item span,
+#wrapwrap > header .bs_brand_account .dropdown-item i,
+#wrapwrap > header .bs_brand_account .dropdown-item .fa {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+#wrapwrap > header .bs_brand_account .dropdown-item:hover,
+#wrapwrap > header .bs_brand_account .dropdown-item:focus,
+#wrapwrap > header .bs_brand_account .dropdown-item:hover span,
+#wrapwrap > header .bs_brand_account .dropdown-item:hover i,
+#wrapwrap > header .bs_brand_account .dropdown-item:hover .fa {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: var(--car-gold) !important;
+}
+@media (max-width: 1199px) {
+    #wrapwrap > header .bs_brand_account { display: none; }
 }
 #wrapwrap > header.o_header_affixed .bs_brand_nav { min-height: 58px; }
 #wrapwrap > header .bs_brand_nav .bs_brand_logo img,
