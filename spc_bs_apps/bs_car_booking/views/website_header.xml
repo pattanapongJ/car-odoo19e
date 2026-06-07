@@ -37,6 +37,11 @@
                     <!-- Account: Sign in (logged out) / My Account dropdown with
                          booking history (logged in). Kept — customers reach /my here. -->
                     <ul class="navbar-nav bs_brand_account">
+                        <!-- Language selector (EN / ไทย) — shows only when >1 lang active. -->
+                        <t t-call="website.placeholder_header_language_selector">
+                            <t t-set="_btn_class" t-valuef="nav-link"/>
+                            <t t-set="_dropdown_menu_class" t-valuef="dropdown-menu-end"/>
+                        </t>
                         <t t-call="portal.placeholder_user_sign_in">
                             <t t-set="_link_class" t-valuef="nav-link bs_brand_signin"/>
                         </t>

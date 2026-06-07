@@ -120,19 +120,31 @@ html {
     border-radius: var(--car-radius);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
 }
-/* Force readable light text + icons on the dark dropdown. */
-#wrapwrap > header .bs_brand_account .dropdown-item,
-#wrapwrap > header .bs_brand_account .dropdown-item span,
-#wrapwrap > header .bs_brand_account .dropdown-item i,
-#wrapwrap > header .bs_brand_account .dropdown-item .fa {
-    color: rgba(255, 255, 255, 0.9) !important;
+/* Force readable light text + icons on the dark dropdown — target ALL
+   descendants (items use .dropdown-item; icons carry Bootstrap !important
+   text utilities like .text-primary-emphasis, so override broadly). */
+#wrapwrap > header .bs_brand_account .dropdown-menu a,
+#wrapwrap > header .bs_brand_account .dropdown-menu .dropdown-item,
+#wrapwrap > header .bs_brand_account .dropdown-menu span,
+#wrapwrap > header .bs_brand_account .dropdown-menu i,
+#wrapwrap > header .bs_brand_account .dropdown-menu .fa,
+#wrapwrap > header .bs_brand_account .dropdown-menu [class*="text-"] {
+    color: rgba(255, 255, 255, 0.92) !important;
 }
-#wrapwrap > header .bs_brand_account .dropdown-item:hover,
-#wrapwrap > header .bs_brand_account .dropdown-item:focus,
-#wrapwrap > header .bs_brand_account .dropdown-item:hover span,
-#wrapwrap > header .bs_brand_account .dropdown-item:hover i,
-#wrapwrap > header .bs_brand_account .dropdown-item:hover .fa {
+#wrapwrap > header .bs_brand_account .dropdown-menu .dropdown-item:hover,
+#wrapwrap > header .bs_brand_account .dropdown-menu .dropdown-item:focus,
+#wrapwrap > header .bs_brand_account .dropdown-menu .dropdown-item:hover *,
+#wrapwrap > header .bs_brand_account .dropdown-menu .dropdown-item:focus * {
     background-color: rgba(255, 255, 255, 0.08) !important;
+    color: var(--car-gold) !important;
+}
+#wrapwrap > header .bs_brand_account .dropdown-menu .dropdown-divider {
+    border-color: rgba(255, 255, 255, 0.14);
+}
+/* Active language item highlight. */
+#wrapwrap > header .bs_brand_account .dropdown-menu .dropdown-item.active,
+#wrapwrap > header .bs_brand_account .dropdown-menu .js_change_lang.active {
+    background-color: rgba(255, 255, 255, 0.1) !important;
     color: var(--car-gold) !important;
 }
 @media (max-width: 1199px) {
