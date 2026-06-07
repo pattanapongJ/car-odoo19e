@@ -128,7 +128,7 @@
                     <div class="carousel-indicators bs_slider_thumbs">
                         <button t-foreach="gimgs" t-as="img" type="button"
                                 t-attf-data-bs-target="#bsGal{{ car.id }}"
-                                t-att-data-bs-slide-to="img_index"
+                                t-att-data-bs-slide-to="str(img_index)"
                                 t-attf-class="#{img_index == 0 and 'active' or ''}"
                                 t-att-aria-label="img.name or car.name">
                             <img t-att-src="'/web/image/bs.car.model.image/%s/image/220x132' % img.id"
