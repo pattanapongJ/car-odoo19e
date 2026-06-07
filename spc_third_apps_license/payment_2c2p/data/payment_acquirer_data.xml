@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+<odoo noupdate="1">
+
+    <record id="payment_method_2c2p_transfer" model="payment.method">
+        <field name="name">2C2P</field>
+        <field name="code">to_c_to_p</field>
+        <field name="sequence">1000</field>
+        <field name="image" type="base64" file="payment_2c2p/static/src/img/2c2p_icon.png" />
+        <field name="support_tokenization">False</field>
+        <field name="support_express_checkout">False</field>
+        <field name="support_refund">none</field>
+    </record>
+
+    <record id="payment_acquirer_2c2p" model="payment.provider">
+        <field name="name">2c2p</field>
+        <field name="image_128" type="base64" file="payment_2c2p/static/src/img/2c2p_icon.png" />
+        <field name="code">to_c_to_p</field>
+        <field name="company_id" ref="base.main_company" />
+        <field name="module_id" ref="base.module_payment_2c2p" />
+        <field name="redirect_form_view_id" ref="redirect_form" />
+        <field name="payment_method_ids"
+            eval="[Command.set([ref('payment_2c2p.payment_method_2c2p_transfer'),])]" />
+    </record>
+
+</odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Portal users may only see their own bookings, read-only (the funnel
+             writes via sudo). Not noupdate, so perm changes apply on upgrade. -->
+        <record id="rule_booking_portal_own" model="ir.rule">
+            <field name="name">Portal: own car bookings</field>
+            <field name="model_id" ref="model_bs_car_booking"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+    </data>
+</odoo>

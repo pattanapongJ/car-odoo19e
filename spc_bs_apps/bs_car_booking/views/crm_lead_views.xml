@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Smart button on the CRM lead/opportunity to jump to its car booking. -->
+    <record id="crm_lead_view_form_booking" model="ir.ui.view">
+        <field name="name">crm.lead.form.bs.car.booking</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <field name="bs_car_booking_id" invisible="1"/>
+                <button name="action_view_car_booking" type="object" class="oe_stat_button"
+                        icon="fa-car" invisible="not bs_car_booking_id">
+                    <div class="o_stat_info"><span class="o_stat_text">Car Booking</span></div>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

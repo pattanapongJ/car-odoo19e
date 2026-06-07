@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================
+         BRAND FOOTER — mirrors the Hongqi Thailand marketing site:
+         dark band with the Hongqi × Metro logo, HONGQI THAILAND address,
+         social links and a clean brand copyright line. Replaces Odoo's
+         default footer and hides the "Powered by Odoo" copyright bar.
+         ================================================================ -->
+
+    <!-- Disable Odoo's default footer columns first. -->
+    <record id="website.footer_custom" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
+
+    <template id="template_footer_hongqi" inherit_id="website.layout"
+              name="Hongqi Brand Footer" active="True">
+        <!-- Replace the footer body with the brand layout. -->
+        <xpath expr="//div[@id='footer']" position="replace">
+            <div id="footer" class="bs_footer_wrap" t-ignore="true" t-if="not no_footer">
+                <div class="container bs_footer">
+                    <div class="bs_footer_grid">
+                        <div class="bs_footer_brand">
+                            <img src="/bs_car_booking/static/src/img/brand/hongqi_metro_white.png"
+                                 alt="Hongqi Metro Group" loading="lazy"/>
+                        </div>
+                        <div class="bs_footer_addr">
+                            <h5>HONGQI THAILAND</h5>
+                            <p>539/2, Gypsum Metropolitan, Floor 24B,<br/>
+                               Si Ayutthaya, Thanon Phaya Thai,<br/>
+                               Ratchathewi, Bangkok 10400</p>
+                        </div>
+                        <div class="bs_footer_social">
+                            <a href="/website/social/facebook" target="_blank" rel="noopener" aria-label="Facebook">
+                                <i class="fa fa-facebook"/></a>
+                            <a href="/website/social/instagram" target="_blank" rel="noopener" aria-label="Instagram">
+                                <i class="fa fa-instagram"/></a>
+                            <a href="/website/social/youtube" target="_blank" rel="noopener" aria-label="YouTube">
+                                <i class="fa fa-youtube-play"/></a>
+                        </div>
+                    </div>
+                    <div class="bs_footer_base">
+                        <span class="bs_footer_copy">© 2026 Hongqi Thailand · Metro Group. All rights reserved.</span>
+                        <span class="bs_footer_links">
+                            <a href="/privacy">Privacy Statement</a>
+                            <a href="/contactus">Contact Us</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        <!-- Hide the default copyright bar (Powered by Odoo / Company name). -->
+        <xpath expr="//div[hasclass('o_footer_copyright')]" position="attributes">
+            <attribute name="class" add="d-none" separator=" "/>
+        </xpath>
+    </template>
+</odoo>

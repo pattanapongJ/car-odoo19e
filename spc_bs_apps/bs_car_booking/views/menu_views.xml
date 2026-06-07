@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem id="menu_bs_car_booking_root"
+              name="Car Booking"
+              sequence="80"
+              web_icon="bs_car_booking,static/description/menu_icon.png"/>
+
+    <menuitem id="menu_bs_car_booking_master"
+              name="Master Data"
+              parent="menu_bs_car_booking_root"
+              sequence="10"/>
+
+    <menuitem id="menu_bs_car_brand"
+              name="Car Brands"
+              parent="menu_bs_car_booking_master"
+              action="action_bs_car_brand"
+              sequence="10"/>
+
+    <menuitem id="menu_bs_car_model"
+              name="Car Models"
+              parent="menu_bs_car_booking_master"
+              action="action_bs_car_model"
+              sequence="20"/>
+
+    <menuitem id="menu_bs_car_variant"
+              name="Car Variants"
+              parent="menu_bs_car_booking_master"
+              action="action_bs_car_variant"
+              sequence="30"/>
+
+    <menuitem id="menu_bs_car_dealer"
+              name="Car Dealers"
+              parent="menu_bs_car_booking_master"
+              action="action_bs_car_dealer"
+              sequence="40"/>
+
+    <menuitem id="menu_bs_car_booking"
+              name="Bookings"
+              parent="menu_bs_car_booking_root"
+              action="action_bs_car_booking"
+              sequence="20"/>
+</odoo>

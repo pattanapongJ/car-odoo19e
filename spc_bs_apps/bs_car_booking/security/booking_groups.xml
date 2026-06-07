@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Loaded BEFORE ir.model.access.csv so the ACL can reference the group. -->
+
+    <!-- Car Booking Manager: full access incl. deletion of bookings. -->
+    <record id="group_bs_car_booking_manager" model="res.groups">
+        <field name="name">Car Booking Manager</field>
+        <field name="comment">Full access to car bookings, including deletion and back-office workflow.</field>
+    </record>
+
+    <!-- Settings/Administrator users inherit booking-manager rights automatically
+         (prevents locking admins out of delete/manage after the ACL split). -->
+    <record id="base.group_system" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('group_bs_car_booking_manager'))]"/>
+    </record>
+</odoo>

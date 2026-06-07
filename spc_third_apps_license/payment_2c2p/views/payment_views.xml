@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+<odoo>
+    <data>
+        <record id="acquirer_form_2c2p" model="ir.ui.view">
+            <field name="name">acquirer.form.2c2p</field>
+            <field name="model">payment.provider</field>
+            <field name="inherit_id" ref="payment.payment_provider_form" />
+            <field name="arch" type="xml">
+                <xpath expr='//group[@name="provider_credentials"]' position='after'>
+                    <group invisible="code != 'to_c_to_p'">
+                        <field name="to_c_to_p_merchant_id" required="code == 'to_c_to_p'" />
+                        <field name="to_c_to_p_secret_key" required="code == 'to_c_to_p'"
+                            password="True" />
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
