@@ -3,58 +3,79 @@
     <!-- ================================================================
          BRAND HEADER — mirrors the Hongqi Thailand marketing site:
          a centered logo + a minimal, letter-spaced nav, with none of the
-         default e-commerce extras (cart, search, phone, sign-in, CTA).
-         Mobile keeps the standard hamburger so small screens still work.
+         default e-commerce extras (cart, search, phone, CTA). Account +
+         language are kept so customers still reach /my and switch EN/ไทย.
+
+         ROBUST STRATEGY — why we replace the WHOLE header, not the nav node:
+         The earlier version disabled the default header and replaced
+         //header//nav on website.layout. That crashes on a live site once
+         the website builder has been used: editing the header creates a
+         website-specific COW copy of a header template that ALSO replaces
+         //header//nav. Whichever inheriting view runs first removes that
+         node, so the second one throws
+             "Element '//header//nav' cannot be located in parent view".
+         (Reproducible only on a customised/COW'd DB — a clean DB has a single
+         nav-replacer and never sees it.)
+
+         Instead we REPLACE THE ENTIRE <header> at the highest priority:
+           * //header always exists (from web.frontend_layout) -> the xpath can
+             never fail to locate its target, on any website or COW state;
+           * priority 999 means we run LAST, after every other header view
+             (default, website_sale cart, COW copies) has finished editing the
+             original nav, which we simply discard. No node-fight.
+         We re-add the classes the scroll/affix interactions need
+         (header#top + o_header_standard, see header_standard.js) so the
+         transparent-overlay -> solid-on-scroll behaviour keeps working.
          ================================================================ -->
 
-    <!-- Disable Odoo's default header FIRST so our template can target the
-         base layout's //header//nav (otherwise both fight over the same node). -->
-    <record id="website.template_header_default" model="ir.ui.view">
-        <field name="active" eval="False"/>
-    </record>
-
     <template id="template_header_hongqi" inherit_id="website.layout"
-              name="Hongqi Brand Header" active="True">
+              name="Hongqi Brand Header" priority="999">
         <!-- Header overlays the page ONLY where a full-bleed hero opts in via
-             `bs_hero_overlay` (set in those page templates). Non-hero pages
-             (compare, funnel, ...) keep the normal solid header — no overlap. -->
+             `bs_hero_overlay` (set in those page templates). Other pages
+             (compare, funnel, ...) keep the normal solid header (no overlap). -->
         <xpath expr="//div[@id='wrapwrap']" position="attributes">
             <attribute name="t-attf-class" add="#{'o_header_overlay' if bs_hero_overlay else ''}" separator=" "/>
         </xpath>
-        <xpath expr="//header//nav" position="replace">
-            <t t-call="website.navbar">
-                <t t-set="_navbar_classes" t-valuef="d-none d-lg-block"/>
-                <div id="o_main_nav" t-attf-class="o_main_nav #{header_content_width} bs_brand_nav">
-                    <!-- Centered brand logo -->
-                    <t t-call="website.placeholder_header_brand" _link_class.f="bs_brand_logo"/>
-                    <!-- Minimal menu (rendered from the website menu) -->
-                    <t t-call="website.navbar_nav" _nav_class.f="bs_brand_links">
-                        <t t-foreach="website.menu_id.child_id" t-as="submenu">
-                            <t t-call="website.submenu"
-                               item_class.f="nav-item" link_class.f="nav-link"/>
+
+        <!-- Authoritative brand header: overrides whatever header the website
+             would otherwise render. -->
+        <xpath expr="//header" position="replace">
+            <header id="top" data-anchor="true" data-name="Header"
+                    class="o_header_standard bs_brand_header">
+                <t t-call="website.navbar">
+                    <t t-set="_navbar_classes" t-valuef="d-none d-lg-block"/>
+                    <div id="o_main_nav" t-attf-class="o_main_nav #{header_content_width or 'container'} bs_brand_nav">
+                        <!-- Centered brand logo -->
+                        <t t-call="website.placeholder_header_brand" _link_class.f="bs_brand_logo"/>
+                        <!-- Minimal menu (rendered from the website menu) -->
+                        <t t-call="website.navbar_nav" _nav_class.f="bs_brand_links">
+                            <t t-foreach="website.menu_id.child_id" t-as="submenu">
+                                <t t-call="website.submenu"
+                                   item_class.f="nav-item" link_class.f="nav-link"/>
+                            </t>
                         </t>
-                    </t>
-                    <!-- Account: Sign in (logged out) / My Account dropdown with
-                         booking history (logged in). Kept — customers reach /my here. -->
-                    <ul class="navbar-nav bs_brand_account">
-                        <!-- Language selector (EN / ไทย) — shows only when >1 lang active. -->
-                        <t t-call="website.placeholder_header_language_selector">
-                            <t t-set="_btn_class" t-valuef="nav-link"/>
-                            <t t-set="_dropdown_menu_class" t-valuef="dropdown-menu-end"/>
-                        </t>
-                        <t t-call="portal.placeholder_user_sign_in">
-                            <t t-set="_link_class" t-valuef="nav-link bs_brand_signin"/>
-                        </t>
-                        <t t-call="portal.user_dropdown">
-                            <t t-set="_user_name" t-value="True"/>
-                            <t t-set="_item_class" t-valuef="dropdown"/>
-                            <t t-set="_link_class" t-valuef="nav-link"/>
-                            <t t-set="_dropdown_menu_class" t-valuef="dropdown-menu-end"/>
-                        </t>
-                    </ul>
-                </div>
-            </t>
-            <t t-call="website.template_header_mobile"/>
+                        <!-- Account: Sign in (logged out) / My Account dropdown
+                             with booking history (logged in) + language selector. -->
+                        <ul class="navbar-nav bs_brand_account">
+                            <!-- Language selector (EN / ไทย) - only when >1 lang active. -->
+                            <t t-call="website.placeholder_header_language_selector">
+                                <t t-set="_btn_class" t-valuef="nav-link"/>
+                                <t t-set="_dropdown_menu_class" t-valuef="dropdown-menu-end"/>
+                            </t>
+                            <t t-call="portal.placeholder_user_sign_in">
+                                <t t-set="_link_class" t-valuef="nav-link bs_brand_signin"/>
+                            </t>
+                            <t t-call="portal.user_dropdown">
+                                <t t-set="_user_name" t-value="True"/>
+                                <t t-set="_item_class" t-valuef="dropdown"/>
+                                <t t-set="_link_class" t-valuef="nav-link"/>
+                                <t t-set="_dropdown_menu_class" t-valuef="dropdown-menu-end"/>
+                            </t>
+                        </ul>
+                    </div>
+                </t>
+                <t t-call="website.template_header_mobile"/>
+            </header>
         </xpath>
     </template>
 </odoo>
