@@ -37,6 +37,12 @@ class BsCarModelOption(models.Model):
         'Swatch Colour',
         help='CSS colour for the website option swatch, e.g. #111111. '
              'Leave blank to use the colour value\'s own colour.')
+    # Optional second colour: when set, the website swatch is rendered as a
+    # diagonal two-tone (e.g. a two-tone "Black & White" interior).
+    swatch_color_2 = fields.Char(
+        'Second Swatch Colour',
+        help='Optional second colour. When set, the swatch is shown as a '
+             'two-tone (diagonal split) of both colours.')
     # On an EXTERIOR colour line: the interior options offered with it. Lets the
     # Colour Studio reveal only the interiors available for the chosen exterior.
     # Self-referential M2M restricted (in the view) to this model's interiors.
@@ -74,6 +80,16 @@ class BsCarModelOption(models.Model):
         ], order='sequence, id')
 
     def _studio_swatch(self):
-        """Resolved swatch colour for the website button."""
+        """Resolved (primary) swatch colour for the website button."""
         self.ensure_one()
         return self.swatch_color or self.value_id.html_color or '#111111'
+
+    def _studio_swatch_style(self):
+        """CSS ``background`` for the website swatch: a solid colour, or a
+        diagonal two-tone when a second colour is configured."""
+        self.ensure_one()
+        c1 = self._studio_swatch()
+        c2 = self.swatch_color_2
+        if c2:
+            return f'background:linear-gradient(135deg, {c1} 0 50%, {c2} 50% 100%)'
+        return f'background:{c1}'
