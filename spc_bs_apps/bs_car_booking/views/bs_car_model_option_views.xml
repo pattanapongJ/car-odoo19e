@@ -13,6 +13,8 @@
                         <field name="attribute_name" invisible="1"/>
                         <field name="price_extra"/>
                         <field name="swatch_color" widget="color"/>
+                        <field name="swatch_color_2" widget="color"
+                               help="Optional. Set for a two-tone swatch (e.g. two-tone interior)."/>
                     </group>
                     <group>
                         <field name="image" widget="image" options="{'preview_image': 'image'}"/>
