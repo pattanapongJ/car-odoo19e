@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Car Booking menu">
+  <defs>
+    <linearGradient id="bg" x1="16" y1="10" x2="112" y2="118" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#171717"/>
+      <stop offset="1" stop-color="#070707"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="22" y1="42" x2="110" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f1d695"/>
+      <stop offset=".55" stop-color="#b98f52"/>
+      <stop offset="1" stop-color="#f4dfb4"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+  <path d="M64 15l15 6v23L64 58 49 44V21z" fill="#b70e1c" stroke="#d4b071" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M25 78c9-15 22-24 39-26l15-1c18-1 32 6 42 23l4 7h-17c-4-7-11-11-20-11H51c-11 0-20 4-27 13H16z" fill="none" stroke="url(#gold)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="42" cy="88" r="11" fill="#080808" stroke="#d6b173" stroke-width="5"/>
+  <circle cx="98" cy="88" r="11" fill="#080808" stroke="#d6b173" stroke-width="5"/>
+  <path d="M26 105h76" stroke="#caa36b" stroke-width="4" stroke-linecap="round"/>
+</svg>

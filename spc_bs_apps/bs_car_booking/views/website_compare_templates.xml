@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================
+         COMPARE MODELS — side-by-side spec sheet for up to 4 models.
+         Models are chosen via the picker (GET ?ids=...) so the result is a
+         shareable, bookmarkable URL. Spec rows are aligned by label.
+         ================================================================ -->
+    <template id="car_compare_page" name="Compare Models">
+        <t t-call="website.layout">
+            <t t-set="title">Compare models</t>
+            <div id="wrap">
+                <section class="car_catalog_band bs_compare_wrap">
+                    <div class="container">
+                        <div class="section_header_center">
+                            <span class="car_kicker car_kicker_dark">Side by side</span>
+                            <h1 class="section_title">Compare models</h1>
+                        </div>
+
+                        <!-- Picker: tick models, submit to refresh the comparison -->
+                        <form class="bs_compare_picker" method="get" action="/compare">
+                            <div class="bs_compare_pick_grid">
+                                <label t-foreach="all_models" t-as="m" class="bs_compare_pick">
+                                    <input type="checkbox" name="ids" t-att-value="m.id"
+                                           t-att-checked="m in selected and 'checked' or None"/>
+                                    <span t-esc="m.name"/>
+                                </label>
+                            </div>
+                            <div class="bs_compare_picker_actions">
+                                <button type="submit" class="btn btn-primary car_cta_btn btn-sm">
+                                    Compare selected
+                                </button>
+                                <small class="text-muted">Choose 2–4 models.</small>
+                            </div>
+                        </form>
+
+                        <!-- Result table -->
+                        <t t-if="len(selected) &gt; 1">
+                            <div class="bs_compare_scroll">
+                                <table class="bs_compare_table">
+                                    <thead>
+                                        <tr>
+                                            <th class="bs_compare_corner">Specification</th>
+                                            <th t-foreach="selected" t-as="car" class="bs_compare_head">
+                                                <a t-att-href="'/car/%s' % car.id" class="bs_compare_carcell">
+                                                    <img t-if="car.image" loading="lazy" t-att-alt="car.name"
+                                                         t-att-src="'/web/image/bs.car.model/%s/image/400x250' % car.id"/>
+                                                    <span class="bs_compare_brand" t-esc="car.brand_id.name"/>
+                                                    <span class="bs_compare_name" t-esc="car.name"/>
+                                                </a>
+                                                <div class="bs_compare_price">
+                                                    <span>From </span>
+                                                    <strong t-esc="car.base_price"
+                                                            t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
+                                                </div>
+                                                <a t-att-href="'/car/%s/book' % car.id"
+                                                   class="btn btn-primary btn-sm car_cta_btn">Configure</a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-if="not compare_rows">
+                                            <td t-att-colspan="len(selected) + 1" class="text-center text-muted">
+                                                No specifications recorded for the selected models yet.
+                                            </td>
+                                        </tr>
+                                        <tr t-foreach="compare_rows" t-as="row">
+                                            <th class="bs_compare_rowlabel" t-esc="row['label']"/>
+                                            <td t-foreach="row['values']" t-as="val" t-esc="val"/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </t>
+                        <div t-elif="len(selected) == 1" class="bs_featured_empty alert alert-info text-center">
+                            Select at least one more model above to compare side by side.
+                        </div>
+                        <div t-else="" class="bs_featured_empty alert alert-info text-center">
+                            Pick two or more models above, then press <b>Compare selected</b>.
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bs_car_offer_list" model="ir.ui.view">
+        <field name="name">bs.car.offer.list</field>
+        <field name="model">bs.car.offer</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="badge" optional="show"/>
+                <field name="model_id" optional="hide"/>
+                <field name="date_start" optional="show"/>
+                <field name="date_end" optional="show"/>
+                <field name="is_live" widget="boolean_toggle" readonly="1"/>
+                <field name="website_published" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bs_car_offer_form" model="ir.ui.view">
+        <field name="name">bs.car.offer.form</field>
+        <field name="model">bs.car.offer</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="0% APR for 36 months"/></h1>
+                        <field name="subtitle" placeholder="On all in-stock electric models"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="badge" placeholder="Limited time"/>
+                            <field name="model_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="is_live"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="cta_label"/>
+                            <field name="cta_url" placeholder="(defaults to the linked model page)"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="website_published"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bs_car_offer" model="ir.actions.act_window">
+        <field name="name">Offers &amp; Promotions</field>
+        <field name="res_model">bs.car.offer</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a promotional offer</p>
+            <p>Offers appear on the showroom home and car pages while within their
+               validity window — set start/end dates and they go live and expire on their own.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_bs_car_offer"
+              name="Offers &amp; Promotions"
+              parent="menu_bs_car_booking_master"
+              action="action_bs_car_offer"
+              sequence="45"/>
+</odoo>

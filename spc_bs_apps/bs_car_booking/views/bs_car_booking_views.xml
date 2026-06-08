@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Booking Tree -->
+    <record id="view_bs_car_booking_tree" model="ir.ui.view">
+        <field name="name">bs.car.booking.tree</field>
+        <field name="model">bs.car.booking</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state in ('draft', 'otp_pending')"
+                  decoration-warning="state in ('payment_pending',)"
+                  decoration-success="state in ('confirmed', 'in_production', 'ready_delivery', 'delivered')"
+                  decoration-muted="state == 'expired'"
+                  decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="customer_name"/>
+                <field name="customer_phone"/>
+                <field name="model_id"/>
+                <field name="dealer_id"/>
+                <field name="car_price" widget="monetary" optional="show"/>
+                <field name="deposit_amount" widget="monetary"/>
+                <field name="deposit_paid" widget="monetary" optional="show"/>
+                <field name="state"/>
+                <field name="phone_verified" optional="show"/>
+                <field name="create_date" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Booking Form -->
+    <record id="view_bs_car_booking_form" model="ir.ui.view">
+        <field name="name">bs.car.booking.form</field>
+        <field name="model">bs.car.booking</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send_otp" type="object" string="Send OTP"
+                            invisible="state not in ('draft', 'otp_pending')" class="btn-info"/>
+                    <button name="action_confirm_booking" type="object" string="Confirm Booking"
+                            invisible="state != 'payment_pending'" class="btn-primary"
+                            confirm="Are you sure you want to confirm this booking?"/>
+                    <button name="action_start_production" type="object" string="Start Preparation"
+                            invisible="state != 'confirmed'" class="btn-primary"/>
+                    <button name="action_ready_delivery" type="object" string="Ready for Delivery"
+                            invisible="state not in ('confirmed', 'in_production')" class="btn-primary"/>
+                    <button name="action_mark_delivered" type="object" string="Mark Delivered"
+                            invisible="state != 'ready_delivery'" class="btn-success"/>
+                    <button name="action_cancel" type="object" string="Cancel Booking"
+                            invisible="state in ('delivered', 'expired', 'cancelled')"
+                            class="btn-danger" confirm="Cancel this booking?"/>
+                    <button name="action_set_draft" type="object" string="Reset to Draft"
+                            invisible="state not in ('cancelled', 'expired')"/>
+                    <field name="state" widget="statusbar" readonly="1"
+                           statusbar_visible="draft,otp_pending,otp_verified,payment_pending,confirmed,in_production,ready_delivery,delivered"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_sale_order" type="object" class="oe_stat_button"
+                                icon="fa-file-text-o" invisible="not sale_order_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Sale Order</span></div>
+                        </button>
+                        <button name="action_view_invoices" type="object" class="oe_stat_button"
+                                icon="fa-pencil-square-o" invisible="invoice_count == 0">
+                            <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                        <button name="action_view_lead" type="object" class="oe_stat_button"
+                                icon="fa-star" invisible="not lead_id">
+                            <div class="o_stat_info"><span class="o_stat_text">CRM Lead</span></div>
+                        </button>
+                        <button name="action_view_otps" type="object" class="oe_stat_button"
+                                icon="fa-shield" invisible="otp_count == 0"
+                                groups="bs_car_booking.group_bs_car_booking_manager">
+                            <field name="otp_count" widget="statinfo" string="OTP"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <field name="sale_order_id" invisible="1"/>
+                    <field name="lead_id" invisible="1"/>
+                    <notebook>
+                        <page string="Customer">
+                            <group>
+                                <group>
+                                    <field name="customer_name"/>
+                                    <field name="customer_phone"/>
+                                    <field name="customer_email"/>
+                                    <field name="customer_nrc"/>
+                                </group>
+                                <group>
+                                    <field name="customer_address"/>
+                                    <field name="phone_verified" widget="boolean_toggle" readonly="1"/>
+                                    <field name="pdpa_consent" widget="boolean_toggle" readonly="1"/>
+                                    <field name="pdpa_consent_date" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Car Selection">
+                            <group>
+                                <group>
+                                    <field name="brand_id"/>
+                                    <field name="model_id" domain="[('brand_id', '=', brand_id)]"/>
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="config_summary"/>
+                                    <field name="dealer_id" domain="[('brand_ids', 'in', [brand_id])]"/>
+                                </group>
+                                <group>
+                                    <field name="car_price" widget="monetary"/>
+                                    <field name="deposit_amount" widget="monetary"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Order &amp; Payment">
+                            <group>
+                                <group string="Order">
+                                    <field name="partner_id"/>
+                                    <field name="config_summary"/>
+                                    <field name="amount_total" widget="monetary"/>
+                                    <field name="sale_order_state"/>
+                                </group>
+                                <group string="Deposit">
+                                    <field name="deposit_amount" widget="monetary"/>
+                                    <field name="deposit_paid" widget="monetary"/>
+                                    <field name="deposit_remaining" widget="monetary"/>
+                                </group>
+                            </group>
+                            <field name="transaction_ids" readonly="1">
+                                <list>
+                                    <field name="reference"/>
+                                    <field name="provider_id"/>
+                                    <field name="amount" widget="monetary"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="state"/>
+                                    <field name="create_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Delivery">
+                            <group>
+                                <field name="estimated_delivery_date"/>
+                                <field name="actual_delivery_date"/>
+                            </group>
+                        </page>
+                        <page string="Notes">
+                            <group>
+                                <field name="notes"/>
+                                <field name="internal_notes"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Booking Kanban -->
+    <record id="view_bs_car_booking_kanban" model="ir.ui.view">
+        <field name="name">bs.car.booking.kanban</field>
+        <field name="model">bs.car.booking</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="currency_id"/>
+                <templates>
+                    <t t-name="card">
+                        <strong><field name="name"/></strong>
+                        <div><field name="customer_name"/></div>
+                        <div><field name="customer_phone"/></div>
+                        <div><field name="model_id"/> | <field name="deposit_amount" widget="monetary"/></div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Booking Search -->
+    <record id="view_bs_car_booking_search" model="ir.ui.view">
+        <field name="name">bs.car.booking.search</field>
+        <field name="model">bs.car.booking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="customer_name"/>
+                <field name="customer_phone"/>
+                <field name="model_id"/>
+                <field name="dealer_id"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="otp_pending" string="OTP Pending" domain="[('state', '=', 'otp_pending')]"/>
+                <filter name="confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="in_production" string="In Production" domain="[('state', '=', 'in_production')]"/>
+                <filter name="ready_delivery" string="Ready for Delivery" domain="[('state', '=', 'ready_delivery')]"/>
+                <filter name="delivered" string="Delivered" domain="[('state', '=', 'delivered')]"/>
+                <filter name="expired" string="Expired" domain="[('state', '=', 'expired')]"/>
+                <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter name="pending_action" string="Needs Action"
+                        domain="[('state', 'in', ['draft', 'otp_pending', 'otp_verified', 'payment_pending', 'confirmed', 'in_production', 'ready_delivery'])]"/>
+                <separator/>
+                <group>
+                    <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_by_model" string="Car Model" context="{'group_by': 'model_id'}"/>
+                    <filter name="group_by_dealer" string="Dealer" context="{'group_by': 'dealer_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Booking Graph/Pivot -->
+    <record id="view_bs_car_booking_graph" model="ir.ui.view">
+        <field name="name">bs.car.booking.graph</field>
+        <field name="model">bs.car.booking</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="model_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="deposit_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_bs_car_booking_pivot" model="ir.ui.view">
+        <field name="name">bs.car.booking.pivot</field>
+        <field name="model">bs.car.booking</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="model_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="deposit_amount" type="measure"/>
+                <field name="deposit_paid" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_bs_car_booking" model="ir.actions.act_window">
+        <field name="name">Car Bookings</field>
+        <field name="res_model">bs.car.booking</field>
+        <field name="view_mode">list,kanban,graph,pivot,form</field>
+        <field name="view_id" ref="view_bs_car_booking_tree"/>
+        <field name="context">{'search_default_pending_action': 1}</field>
+    </record>
+
+    <!-- OTP records — curated views (never expose otp_code in the UI). -->
+    <record id="view_bs_car_booking_otp_list" model="ir.ui.view">
+        <field name="name">bs.car.booking.otp.list</field>
+        <field name="model">bs.car.booking.otp</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false">
+                <field name="phone"/>
+                <field name="state"/>
+                <field name="attempts"/>
+                <field name="max_attempts" optional="hide"/>
+                <field name="expire_datetime"/>
+                <field name="verified_datetime"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bs_car_booking_otp_form" model="ir.ui.view">
+        <field name="name">bs.car.booking.otp.form</field>
+        <field name="model">bs.car.booking.otp</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <sheet>
+                    <group>
+                        <field name="booking_id"/>
+                        <field name="phone"/>
+                        <field name="state"/>
+                        <field name="attempts"/>
+                        <field name="max_attempts"/>
+                        <field name="expire_datetime"/>
+                        <field name="verified_datetime"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

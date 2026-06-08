@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bs_car_stat_list" model="ir.ui.view">
+        <field name="name">bs.car.stat.list</field>
+        <field name="model">bs.car.stat</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="source"/>
+                <field name="value" placeholder='e.g. "12,400+"'/>
+                <field name="unit" optional="show"/>
+                <field name="icon" placeholder="fa-car" optional="show"/>
+                <field name="display_value" string="Shows" readonly="1"/>
+                <field name="website_published" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bs_car_stat_form" model="ir.ui.view">
+        <field name="name">bs.car.stat.form</field>
+        <field name="model">bs.car.stat</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Cars delivered"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="source"/>
+                            <field name="value" placeholder='e.g. "12,400+"'
+                                   invisible="source != 'manual'"
+                                   required="source == 'manual'"/>
+                            <field name="unit" placeholder="km / min"/>
+                            <field name="icon" placeholder="fa-car"/>
+                        </group>
+                        <group>
+                            <field name="display_value" string="Preview"/>
+                            <field name="sequence"/>
+                            <field name="website_published"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <div class="text-muted">
+                        Choose <b>Manual</b> to type a marketing figure, or pick a source
+                        (model/dealer/booking counts, max range) to compute it live.
+                        Find icon names at <b>fontawesome.com/v4</b> (e.g. <code>fa-bolt</code>).
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bs_car_stat" model="ir.actions.act_window">
+        <field name="name">Stats</field>
+        <field name="res_model">bs.car.stat</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add a showroom stat</p>
+            <p>Big numbers for the home "Stats strip" — type a figure, or compute it
+               live from your data.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_bs_car_stat"
+              name="Stats"
+              parent="menu_bs_car_booking_master"
+              action="action_bs_car_stat"
+              sequence="46"/>
+</odoo>

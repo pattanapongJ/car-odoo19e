@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Car Dealer Form & Tree -->
+    <record id="view_bs_car_dealer_tree" model="ir.ui.view">
+        <field name="name">bs.car.dealer.tree</field>
+        <field name="model">bs.car.dealer</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="city"/>
+                <field name="country_id"/>
+                <field name="website_published"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bs_car_dealer_form" model="ir.ui.view">
+        <field name="name">bs.car.dealer.form</field>
+        <field name="model">bs.car.dealer</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Dealer Name"/></h1>
+                    </div>
+                    <notebook>
+                        <page string="General">
+                            <group>
+                                <group>
+                                    <field name="sequence"/>
+                                    <field name="phone"/>
+                                    <field name="email"/>
+                                    <field name="website_published"/>
+                                    <field name="active"/>
+                                </group>
+                                <group>
+                                    <field name="brand_ids" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                            <group string="Address">
+                                <group>
+                                    <field name="street"/>
+                                    <field name="street2"/>
+                                    <field name="city"/>
+                                    <field name="state_id"/>
+                                    <field name="country_id"/>
+                                    <field name="zip"/>
+                                </group>
+                                <group>
+                                    <field name="latitude"/>
+                                    <field name="longitude"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Details">
+                            <group>
+                                <field name="image" widget="image"/>
+                            </group>
+                            <group string="Opening Hours">
+                                <field name="opening_hours" widget="text"/>
+                            </group>
+                            <group string="Website Description">
+                                <field name="website_description" widget="html"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bs_car_dealer" model="ir.actions.act_window">
+        <field name="name">Car Dealers</field>
+        <field name="res_model">bs.car.dealer</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_bs_car_dealer_tree"/>
+    </record>
+</odoo>
