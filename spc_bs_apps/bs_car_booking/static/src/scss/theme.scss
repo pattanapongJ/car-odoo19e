@@ -93,23 +93,35 @@ html {
 }
 /* Brand header layout — centered logo + minimal nav, taller at top,
    compact when affixed. */
+/* 3-zone flex bar: [left spacer] [centred logo+nav] [account].
+   Spacer and account both flex:1, so the centre group is truly centred and can
+   never overlap the account, however many menu items there are (the old
+   absolute-positioned account overlapped once the nav grew wide). */
 #wrapwrap > header .bs_brand_nav {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(28px, 6vw, 96px);
+    gap: 16px;
     min-height: 92px;
     transition: min-height 0.35s ease;
 }
-/* Account (Sign in / user dropdown) — pinned right, logo+nav stay centered. */
+#wrapwrap > header .bs_brand_spacer { flex: 1 1 0; min-width: 0; }
+#wrapwrap > header .bs_brand_center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 1 auto;
+    min-width: 0;
+    gap: clamp(20px, 3.2vw, 64px);
+}
+/* Account (Sign in / user dropdown + language) — its own right-hand zone. */
 #wrapwrap > header .bs_brand_account {
-    position: absolute;
-    right: 6px;
-    top: 50%;
-    transform: translateY(-50%);
+    flex: 1 1 0;
+    display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: flex-end;
     gap: 6px;
     margin: 0;
 }
@@ -148,7 +160,9 @@ html {
     color: var(--car-gold) !important;
 }
 @media (max-width: 1199px) {
-    #wrapwrap > header .bs_brand_account { display: none; }
+    /* Hide account + its mirror spacer together so the centre group stays centred. */
+    #wrapwrap > header .bs_brand_account,
+    #wrapwrap > header .bs_brand_spacer { display: none; }
 }
 #wrapwrap > header.o_header_affixed .bs_brand_nav { min-height: 58px; }
 #wrapwrap > header .bs_brand_nav .bs_brand_logo img,
