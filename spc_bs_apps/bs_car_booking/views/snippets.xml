@@ -559,51 +559,113 @@
     <template id="color_studio_content" name="Colour Studio (content)">
         <t t-set="car" t-value="featured_car or request.env['bs.car.model'].sudo()._get_website_featured()"/>
         <t t-if="car">
-            <t t-set="exteriors" t-value="request.env['bs.car.showcase.item'].sudo()._get_website_items(car, 'exterior')"/>
-            <t t-set="interiors" t-value="request.env['bs.car.showcase.item'].sudo()._get_website_items(car, 'interior')"/>
-            <t t-if="exteriors or interiors">
-                <div class="container bs_color_studio">
+            <!-- Configurator-option-driven Colour Studio (preferred): swatches +
+                 imagery come from the priced options on bs.car.model.option, and
+                 the interior set is filtered by the chosen exterior colour. Falls
+                 back to the showcase-item studio below when no option imagery
+                 has been set up for the model. -->
+            <t t-set="ext_options" t-value="request.env['bs.car.model.option'].sudo()._get_color_options(car, 'bs_car_booking.attr_color')"/>
+            <t t-set="int_options" t-value="request.env['bs.car.model.option'].sudo()._get_color_options(car, 'bs_car_booking.attr_interior')"/>
+            <t t-if="ext_options.filtered('image') or int_options.filtered('image')">
+                <div class="container bs_color_studio bs_color_studio_linked" data-color-studio-linked="1">
                     <div class="section_header_center">
-                        <span class="car_kicker car_kicker_dark">Colour Options</span>
-                        <h2 class="section_title"><t t-esc="car.name"/> tailored to your presence</h2>
+                        <h2 class="car_kicker car_kicker_dark">Colour Options</h2>
                     </div>
-                    <div t-if="exteriors" class="bs_color_panel" data-showcase-group="exterior">
-                        <div class="bs_color_media">
-                            <img t-foreach="exteriors" t-as="item"
-                                 t-attf-class="bs_color_image #{item_index == 0 and 'is-active' or ''}"
-                                 t-att-data-showcase-image="item.id"
-                                 t-att-src="'/web/image/bs.car.showcase.item/%s/image/1600x900' % item.id"
-                                 t-att-alt="item.image_alt or item.name"/>
-                        </div>
-                        <div class="bs_color_controls">
-                            <button t-foreach="exteriors" t-as="item" type="button"
-                                    t-attf-class="bs_color_btn #{item_index == 0 and 'is-active' or ''}"
-                                    t-att-data-showcase-target="item.id">
+                    <!-- Exterior image: full-bleed body shot of the selected colour. -->
+                    <div class="bs_cs_stage bs_cs_stage_ext" data-cs-stage="exterior">
+                        <img t-foreach="ext_options" t-as="option"
+                             t-attf-class="bs_color_image #{option_index == 0 and 'is-active' or ''}"
+                             t-att-data-showcase-image="'ext-%s' % option.id"
+                             t-att-src="'/web/image/bs.car.model.option/%s/image/1920x1080' % option.id"
+                             t-att-alt="option.image_alt or option.display_name"/>
+                        <span class="bs_cs_caption" data-cs-caption="1"/>
+                    </div>
+                    <!-- Centred selector strip: exterior squares flanking the
+                         chosen exterior's interiors (boxed, expands on select). -->
+                    <div class="bs_cs_bar">
+                        <div t-if="ext_options" class="bs_cs_group bs_cs_exterior" data-showcase-group="exterior">
+                            <button t-foreach="ext_options" t-as="option" type="button"
+                                    t-attf-class="bs_color_btn #{option_index == 0 and 'is-active' or ''}"
+                                    t-att-data-showcase-target="'ext-%s' % option.id"
+                                    t-att-data-interior-ids="','.join(['int-%s' % i for i in (option.interior_option_ids.ids or int_options.ids)])"
+                                    t-att-title="option.value_id.name">
                                 <span class="bs_color_swatch"
-                                      t-att-style="'background:%s' % (item.swatch_color or '#111111')"/>
-                                <span t-esc="item.name"/>
+                                      t-att-style="'background:%s' % option._studio_swatch()"/>
+                                <span class="bs_color_label" t-esc="option.value_id.name"/>
+                            </button>
+                        </div>
+                        <div t-if="int_options" class="bs_cs_group bs_cs_interior" data-showcase-group="interior">
+                            <button t-foreach="int_options" t-as="option" type="button"
+                                    t-attf-class="bs_color_btn #{option_index == 0 and 'is-active' or ''}"
+                                    t-att-data-showcase-target="'int-%s' % option.id"
+                                    t-att-title="option.value_id.name">
+                                <span class="bs_color_swatch"
+                                      t-att-style="'background:%s' % option._studio_swatch()"/>
+                                <span class="bs_color_label" t-esc="option.value_id.name"/>
                             </button>
                         </div>
                     </div>
-                    <div t-if="interiors" class="bs_color_panel bs_color_panel_interior" data-showcase-group="interior">
-                        <div class="bs_color_media">
-                            <img t-foreach="interiors" t-as="item"
-                                 t-attf-class="bs_color_image #{item_index == 0 and 'is-active' or ''}"
-                                 t-att-data-showcase-image="item.id"
-                                 t-att-src="'/web/image/bs.car.showcase.item/%s/image/1400x900' % item.id"
-                                 t-att-alt="item.image_alt or item.name"/>
-                        </div>
-                        <div class="bs_color_controls">
-                            <button t-foreach="interiors" t-as="item" type="button"
+                    <!-- Interior image: full-bleed cabin shot, shown below the
+                         selector for the chosen interior colour. -->
+                    <div t-if="int_options" class="bs_cs_stage bs_cs_stage_int" data-cs-stage="interior">
+                        <img t-foreach="int_options" t-as="option"
+                             t-attf-class="bs_color_image #{option_index == 0 and 'is-active' or ''}"
+                             t-att-data-showcase-image="'int-%s' % option.id"
+                             t-att-src="'/web/image/bs.car.model.option/%s/image/1920x1080' % option.id"
+                             t-att-alt="option.image_alt or option.display_name"/>
+                        <span class="bs_cs_caption" data-cs-caption="1"/>
+                    </div>
+                </div>
+            </t>
+            <t t-else="">
+            <t t-set="exteriors" t-value="request.env['bs.car.showcase.item'].sudo()._get_website_items(car, 'exterior')"/>
+            <t t-set="interiors" t-value="request.env['bs.car.showcase.item'].sudo()._get_website_items(car, 'interior')"/>
+            <t t-if="exteriors or interiors">
+                <div class="container bs_color_studio bs_color_studio_linked" data-color-studio-linked="1">
+                    <div class="section_header_center">
+                        <h2 class="car_kicker car_kicker_dark">Colour Options</h2>
+                    </div>
+                    <!-- Shared stage: one large image; exterior bodies and
+                         interior cabins swap into the same frame. -->
+                    <div class="bs_cs_stage" data-cs-stage="1">
+                        <img t-foreach="exteriors" t-as="item"
+                             t-attf-class="bs_color_image #{item_index == 0 and 'is-active' or ''}"
+                             t-att-data-showcase-image="'ext-%s' % item.id"
+                             t-att-src="'/web/image/bs.car.showcase.item/%s/image/1600x900' % item.id"
+                             t-att-alt="item.image_alt or item.name"/>
+                        <img t-foreach="interiors" t-as="item"
+                             class="bs_color_image"
+                             t-att-data-showcase-image="'int-%s' % item.id"
+                             t-att-src="'/web/image/bs.car.showcase.item/%s/image/1600x900' % item.id"
+                             t-att-alt="item.image_alt or item.name"/>
+                        <span class="bs_cs_caption" data-cs-caption="1"/>
+                    </div>
+                    <!-- Single centred selector strip: exterior squares flanking
+                         the interiors (boxed). -->
+                    <div class="bs_cs_bar">
+                        <div t-if="exteriors" class="bs_cs_group bs_cs_exterior" data-showcase-group="exterior">
+                            <button t-foreach="exteriors" t-as="item" type="button"
                                     t-attf-class="bs_color_btn #{item_index == 0 and 'is-active' or ''}"
-                                    t-att-data-showcase-target="item.id">
+                                    t-att-data-showcase-target="'ext-%s' % item.id"
+                                    t-att-title="item.name">
                                 <span class="bs_color_swatch"
                                       t-att-style="'background:%s' % (item.swatch_color or '#111111')"/>
-                                <span t-esc="item.name"/>
+                                <span class="bs_color_label" t-esc="item.name"/>
+                            </button>
+                        </div>
+                        <div t-if="interiors" class="bs_cs_group bs_cs_interior" data-showcase-group="interior">
+                            <button t-foreach="interiors" t-as="item" type="button"
+                                    t-attf-class="bs_color_btn #{item_index == 0 and 'is-active' or ''}"
+                                    t-att-data-showcase-target="'int-%s' % item.id"
+                                    t-att-title="item.name">
+                                <span class="bs_color_swatch"
+                                      t-att-style="'background:%s' % (item.swatch_color or '#111111')"/>
+                                <span class="bs_color_label" t-esc="item.name"/>
                             </button>
                         </div>
                     </div>
                 </div>
+            </t>
             </t>
         </t>
     </template>

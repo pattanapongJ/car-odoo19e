@@ -3665,5 +3665,5 @@ msgstr "you@email.com"
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_confirmation_page
-msgid "🎉 Booking Confirmed!"
-msgstr "🎉 ยืนยันการจองแล้ว!"
+msgid "Booking Confirmed!"
+msgstr "ยืนยันการจองแล้ว!"

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bs_car_model_option_view_form" model="ir.ui.view">
+        <field name="name">bs.car.model.option.view.form.inherit</field>
+        <field name="model">bs.car.model.option</field>
+        <field name="arch" type="xml">
+            <form string="Car Model Option">
+                <sheet>
+                    <group>
+                        <field name="model_id"/>
+                        <field name="value_id"/>
+                        <field name="attribute_name" invisible="1"/>
+                        <field name="price_extra"/>
+                        <field name="swatch_color" widget="color"/>
+                    </group>
+                    <group>
+                        <field name="image" widget="image" options="{'preview_image': 'image'}"/>
+                        <field name="image_alt"/>
+                    </group>
+                    <!-- On an exterior colour line: pick which interiors are
+                         offered with it (drives the website Colour Studio). -->
+                    <group string="Available Interiors (exterior colours only)"
+                           invisible="attribute_name != 'Exterior Color'">
+                        <field name="interior_option_ids" nolabel="1" widget="many2many_tags"
+                               domain="[('model_id', '=', model_id), ('attribute_name', '=', 'Interior')]"
+                               context="{'default_model_id': model_id}"
+                               placeholder="Leave empty to offer all interiors"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

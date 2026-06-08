@@ -2766,6 +2766,141 @@ html {
     box-shadow: inset 0 0 0 2px rgba(255,255,255,0.55);
 }
 
+/* ------------------------------------------------------------------
+   Option-driven Colour Studio (linked exterior + interior).
+   Centred layout matching the Hongqi reference: a large car image in a
+   single shared stage, with one centred selector strip beneath it —
+   exterior squares flanking the chosen exterior's interiors (boxed).
+   Scoped to .bs_color_studio_linked; the original studio is unchanged.
+   ------------------------------------------------------------------ */
+.bs_color_studio_linked {
+    text-align: center;
+    padding-bottom: 16px;
+
+    .bs_cs_heading {
+        font-family: var(--car-font-serif);
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        margin: 4px 0 0;
+    }
+
+    /* Full-bleed image frames (break out of the centred container to span
+       the whole viewport width). */
+    .bs_cs_stage {
+        position: relative;
+        width: 100vw;
+        max-width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+        min-height: clamp(360px, 56vh, 720px);
+    }
+    .bs_cs_stage_ext {
+        margin-top: 18px;
+    }
+    .bs_cs_stage_int {
+        margin-top: 26px;
+    }
+    .bs_color_image {
+        object-fit: contain;
+    }
+    /* Selected colour name, shown over the image. */
+    .bs_cs_caption {
+        position: absolute;
+        left: 50%;
+        bottom: 8px;
+        transform: translateX(-50%);
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--car-text-primary);
+        opacity: 0.78;
+        pointer-events: none;
+    }
+
+    /* Single centred selector strip. */
+    .bs_cs_bar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 26px;
+    }
+    .bs_cs_group {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    /* Single highlight box: wraps the selected exterior swatch together with
+       its interior swatches, so the pair reads as one highlighted unit. */
+    .bs_cs_combo {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 8px;
+        border: 1px solid var(--car-gold);
+        border-radius: 12px;
+        background: var(--car-bg-card);
+        box-shadow: 0 0 0 1px var(--car-gold), 0 8px 20px rgba(12, 10, 8, 0.10);
+    }
+    /* The chosen exterior's interiors are hidden until an exterior is picked,
+       then expand inside the combo box next to the swatch. */
+    .bs_cs_interior {
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: max-width 460ms ease, opacity 320ms ease;
+    }
+    .bs_cs_interior.is-open {
+        max-width: 680px;
+        opacity: 1;
+    }
+
+    /* Square, icon-only colour chips. */
+    .bs_color_btn {
+        min-height: 0;
+        padding: 4px;
+        border-radius: 8px;
+        gap: 0;
+        background: #fff;
+    }
+    /* The combo box is the only highlight — neutralise the swatch's own ring. */
+    .bs_color_btn.is-active {
+        border-color: var(--car-border);
+        box-shadow: none;
+        transform: none;
+    }
+    .bs_color_swatch {
+        width: 44px;
+        height: 44px;
+        border-radius: 5px;
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+    }
+    /* Interior swatches are smaller than the exterior ones. */
+    .bs_cs_interior .bs_color_btn {
+        padding: 3px;
+        border-radius: 6px;
+    }
+    .bs_cs_interior .bs_color_swatch {
+        width: 28px;
+        height: 28px;
+        border-radius: 4px;
+    }
+    /* Name kept for accessibility / tooltip; hidden to match the chip design. */
+    .bs_color_label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+}
+
 .s_bs_highlights {
     background: var(--car-bg-section);
 }

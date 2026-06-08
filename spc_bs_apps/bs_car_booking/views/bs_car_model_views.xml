@@ -120,13 +120,16 @@
                                 their extra price. Click <b>Generate / Update Product</b> after editing.
                             </p>
                             <field name="option_ids" context="{'default_model_id': id}">
-                                <list editable="bottom">
+                                <list>
                                     <field name="attribute_id" readonly="1" optional="show"/>
                                     <field name="value_id"
                                            domain="[('attribute_id.create_variant', '=', 'no_variant')]"
                                            options="{'no_create_edit': True}"/>
                                     <field name="price_extra" widget="monetary"/>
                                     <field name="currency_id" column_invisible="1"/>
+                                    <field name="image" widget="image" width="100px" height="100px"/>
+                                    <field name="image_alt" optional="show"/>
+                                    <field name="attribute_name" column_invisible="1"/>
                                     <field name="sequence" optional="hide"/>
                                 </list>
                             </field>

@@ -11,6 +11,7 @@ export class HomeShowcase extends Interaction {
         this._stageTimers = [];
         this._initStages();
         this._initColorStudios();
+        this._initLinkedColorStudios();
         this._initHighlights();
         this.registerCleanup(() => {
             for (const timer of this._stageTimers) {
@@ -130,6 +131,11 @@ export class HomeShowcase extends Interaction {
 
     _initColorStudios() {
         for (const panel of this.el.querySelectorAll("[data-showcase-group]")) {
+            // Linked (option-driven) studios are handled by _initLinkedColorStudios
+            // so their exterior/interior panels stay in sync — skip them here.
+            if (panel.closest("[data-color-studio-linked]")) {
+                continue;
+            }
             const buttons = Array.from(panel.querySelectorAll("[data-showcase-target]"));
             const images = Array.from(panel.querySelectorAll("[data-showcase-image]"));
             const show = (id) => {
@@ -141,6 +147,129 @@ export class HomeShowcase extends Interaction {
                 });
             };
             buttons.forEach((btn) => btn.addEventListener("click", () => show(btn.dataset.showcaseTarget)));
+        }
+    }
+
+    /* Option-driven Colour Studio with one shared image stage.
+       Picking an exterior shows the body image and filters the interior
+       swatches to those offered with it (boxed group), highlighting the first
+       one. Picking an interior swaps the stage to its cabin image. */
+    _initLinkedColorStudios() {
+        for (const studio of this.el.querySelectorAll("[data-color-studio-linked]")) {
+            const extGroup = studio.querySelector('[data-showcase-group="exterior"]');
+            const intGroup = studio.querySelector('[data-showcase-group="interior"]');
+            const extStage = studio.querySelector('[data-cs-stage="exterior"]');
+            const intStage = studio.querySelector('[data-cs-stage="interior"]');
+            const extBtns = extGroup ? Array.from(extGroup.querySelectorAll("[data-showcase-target]")) : [];
+            const intBtns = intGroup ? Array.from(intGroup.querySelectorAll("[data-showcase-target]")) : [];
+            if (!extBtns.length && !intBtns.length) {
+                continue;
+            }
+            const labelOf = (btn) => (btn.querySelector(".bs_color_label")?.textContent || btn.title || "").trim();
+            const showInStage = (stage, btn) => {
+                if (!stage) {
+                    return;
+                }
+                const target = btn.dataset.showcaseTarget;
+                stage.querySelectorAll("[data-showcase-image]").forEach(
+                    (i) => i.classList.toggle("is-active", i.dataset.showcaseImage === target));
+                const caption = stage.querySelector("[data-cs-caption]");
+                if (caption) {
+                    caption.textContent = labelOf(btn);
+                }
+            };
+            const setActive = (btns, btn) => {
+                btns.forEach((b) => b.classList.toggle("is-active", b === btn));
+            };
+            // Interior image lives in its own full-width stage below the selector.
+            const selectInterior = (btn) => {
+                setActive(intBtns, btn);
+                showInStage(intStage, btn);
+            };
+            // A single highlight box wraps the selected exterior swatch together
+            // with its interior swatches. We move both into a combo element so
+            // there is one highlight around the pair, restoring the swatch to its
+            // original slot when another exterior is chosen.
+            let combo = null;
+            let wrappedBtn = null;
+            const unwrapCombo = () => {
+                if (!combo) {
+                    return;
+                }
+                if (wrappedBtn) {
+                    combo.replaceWith(wrappedBtn);             // swatch back in place
+                }
+                if (intGroup) {
+                    intGroup.classList.remove("is-open");
+                }
+                combo = null;
+                wrappedBtn = null;
+            };
+            const wrapCombo = (btn) => {
+                unwrapCombo();
+                combo = document.createElement("div");
+                combo.className = "bs_cs_combo";
+                btn.replaceWith(combo);
+                combo.appendChild(btn);
+                wrappedBtn = btn;
+                if (intGroup) {
+                    combo.appendChild(intGroup);
+                }
+            };
+            const expandInteriors = (btn) => {
+                const allowed = (btn.dataset.interiorIds || "").split(",").filter(Boolean);
+                let first = null;
+                intBtns.forEach((b) => {
+                    const ok = !allowed.length || allowed.includes(b.dataset.showcaseTarget);
+                    b.classList.toggle("d-none", !ok);
+                    if (ok && !first) {
+                        first = b;
+                    }
+                });
+                if (first) {
+                    wrapCombo(btn);
+                    if (intGroup) {
+                        intGroup.classList.add("is-open");
+                    }
+                    if (intStage) {
+                        intStage.classList.remove("d-none");
+                    }
+                    selectInterior(first);
+                } else {
+                    unwrapCombo();
+                    if (intStage) {
+                        intStage.classList.add("d-none");
+                    }
+                }
+            };
+            const selectExterior = (btn) => {
+                setActive(extBtns, btn);
+                showInStage(extStage, btn);
+                expandInteriors(btn);
+            };
+            // Initial state: show the first exterior, but keep the interiors
+            // hidden until the buyer actually picks an exterior colour.
+            const initExterior = (btn) => {
+                setActive(extBtns, btn);
+                showInStage(extStage, btn);
+                unwrapCombo();
+                if (intStage) {
+                    intStage.classList.add("d-none");
+                }
+            };
+            extBtns.forEach((b) => b.addEventListener("click", () => selectExterior(b)));
+            intBtns.forEach((b) => b.addEventListener("click", () => selectInterior(b)));
+            if (extBtns.length) {
+                initExterior(extBtns[0]);
+            } else if (intBtns.length) {
+                if (intGroup) {
+                    intGroup.classList.add("is-open");
+                }
+                if (intStage) {
+                    intStage.classList.remove("d-none");
+                }
+                selectInterior(intBtns[0]);
+            }
         }
     }
 }

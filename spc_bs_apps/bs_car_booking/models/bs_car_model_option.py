@@ -19,12 +19,33 @@ class BsCarModelOption(models.Model):
                                required=True, ondelete='cascade')
     attribute_id = fields.Many2one('product.attribute', related='value_id.attribute_id',
                                    string='Attribute', store=True, index=True)
+    attribute_name = fields.Char(related='attribute_id.name', string='Attribute Name', store=True)
     attribute_sequence = fields.Integer(
         related='attribute_id.sequence', string='Attribute Sequence', store=True)
     sequence = fields.Integer(string='Option Sequence', default=10)
     price_extra = fields.Monetary('Extra Price', currency_field='currency_id',
                                   help='Additional price for this option on this model.')
     currency_id = fields.Many2one(related='model_id.currency_id')
+    
+    image = fields.Image(max_width=1920, max_height=1080)
+    image_alt = fields.Char(translate=True)
+
+    # --- Colour Studio (website) extensions ---------------------------------
+    # Swatch colour shown on the website option button. Falls back to the
+    # attribute value's native html_color (set on exterior colours) when blank.
+    swatch_color = fields.Char(
+        'Swatch Colour',
+        help='CSS colour for the website option swatch, e.g. #111111. '
+             'Leave blank to use the colour value\'s own colour.')
+    # On an EXTERIOR colour line: the interior options offered with it. Lets the
+    # Colour Studio reveal only the interiors available for the chosen exterior.
+    # Self-referential M2M restricted (in the view) to this model's interiors.
+    interior_option_ids = fields.Many2many(
+        'bs.car.model.option', relation='bs_car_option_ext_int_rel',
+        column1='exterior_option_id', column2='interior_option_id',
+        string='Available Interiors',
+        help='Interior options offered with this exterior colour. '
+             'Leave empty to offer every interior configured on the model.')
 
     _model_value_uniq = models.Constraint(
         'UNIQUE(model_id, value_id)',
@@ -37,3 +58,22 @@ class BsCarModelOption(models.Model):
             attr = rec.attribute_id.name or ''
             val = rec.value_id.name or ''
             rec.display_name = f'{attr}: {val}' if attr else val
+
+    @api.model
+    def _get_color_options(self, model, attribute_ref):
+        """Option lines of ``model`` for the given attribute (by xmlid), in
+        display order. Used by the Colour Studio to source exterior/interior
+        swatches from the priced configurator options."""
+        attr = self.env.ref(attribute_ref, raise_if_not_found=False)
+        if not attr:
+            return self.browse()
+        model_id = model.id if hasattr(model, 'id') else int(model or 0)
+        return self.sudo().search([
+            ('model_id', '=', model_id),
+            ('attribute_id', '=', attr.id),
+        ], order='sequence, id')
+
+    def _studio_swatch(self):
+        """Resolved swatch colour for the website button."""
+        self.ensure_one()
+        return self.swatch_color or self.value_id.html_color or '#111111'
