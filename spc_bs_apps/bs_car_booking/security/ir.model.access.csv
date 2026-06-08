@@ -41,3 +41,5 @@ access_bs_car_offer_public,bs.car.offer.public,model_bs_car_offer,,1,0,0,0
 access_bs_car_stat_user,bs.car.stat.user,model_bs_car_stat,base.group_user,1,0,0,0
 access_bs_car_stat_manager,bs.car.stat.manager,model_bs_car_stat,bs_car_booking.group_bs_car_booking_manager,1,1,1,1
 access_bs_car_stat_public,bs.car.stat.public,model_bs_car_stat,,1,0,0,0
+access_bs_car_booking_otp_purpose_user,bs.car.booking.otp.purpose.user,model_bs_car_booking_otp_purpose,base.group_user,1,0,0,0
+access_bs_car_booking_otp_purpose_manager,bs.car.booking.otp.purpose.manager,model_bs_car_booking_otp_purpose,base.group_system,1,1,1,1

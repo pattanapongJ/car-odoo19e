@@ -6,21 +6,23 @@
          default e-commerce extras (cart, search, phone, CTA). Account +
          language are kept so customers still reach /my and switch EN/ไทย.
 
-         ROBUST STRATEGY — replace the WHOLE <header>, not just //header//nav.
-         A "selectable header" that replaces //header//nav is the textbook
-         pattern, BUT it is FRAGILE in production: if any other active view (a
-         website-specific COW copy of a header template created by the builder,
-         or a website_sale header variant) has already replaced //header//nav,
-         that node no longer exists when our xpath runs and rendering dies with
+         ROBUST STRATEGY — why we replace the WHOLE header, not the nav node:
+         The earlier version disabled the default header and replaced
+         //header//nav on website.layout. That crashes on a live site once
+         the website builder has been used: editing the header creates a
+         website-specific COW copy of a header template that ALSO replaces
+         //header//nav. Whichever inheriting view runs first removes that
+         node, so the second one throws
              "Element '//header//nav' cannot be located in parent view".
-         This is environment-dependent (a clean dev DB never sees it; a live,
-         builder-edited / website_sale DB does), so we DO NOT rely on it.
+         (Reproducible only on a customised/COW'd DB — a clean DB has a single
+         nav-replacer and never sees it.)
 
          Instead we REPLACE THE ENTIRE <header> at the highest priority:
-           * //header ALWAYS exists (from web.frontend_layout) -> the xpath can
-             never fail to locate its target, on any website / COW state;
-           * priority 999 means we run LAST, after every other header view has
-             finished editing the original nav, which we simply discard.
+           * //header always exists (from web.frontend_layout) -> the xpath can
+             never fail to locate its target, on any website or COW state;
+           * priority 999 means we run LAST, after every other header view
+             (default, website_sale cart, COW copies) has finished editing the
+             original nav, which we simply discard. No node-fight.
          We re-add the classes the scroll/affix interactions need
          (header#top + o_header_standard, see header_standard.js) so the
          transparent-overlay -> solid-on-scroll behaviour keeps working.
@@ -36,15 +38,16 @@
         </xpath>
 
         <!-- Authoritative brand header: overrides whatever header the website
-             would otherwise render (crash-proof regardless of COW state). -->
+             would otherwise render. -->
         <xpath expr="//header" position="replace">
             <header id="top" data-anchor="true" data-name="Header"
                     class="o_header_standard bs_brand_header">
                 <t t-call="website.navbar">
                     <t t-set="_navbar_classes" t-valuef="d-none d-lg-block"/>
                     <div id="o_main_nav" t-attf-class="o_main_nav #{header_content_width or 'container'} bs_brand_nav">
-                        <!-- Left spacer mirrors the account block so the centred
-                             logo+nav stays centred (3-zone flex, no overlap). -->
+                        <!-- Left spacer: mirrors the account block's width so the
+                             centred logo+nav stays truly centred (3-zone flex
+                             layout prevents the nav from overlapping the account). -->
                         <span class="bs_brand_spacer" aria-hidden="true"/>
                         <!-- Centred group: brand logo + minimal menu -->
                         <div class="bs_brand_center">

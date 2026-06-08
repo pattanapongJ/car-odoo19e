@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="sms_template_otp_booking" model="sms.template">
+            <field name="name">Car Booking OTP - Booking Verification</field>
+            <field name="model_id" ref="bs_car_booking.model_bs_car_booking_otp"/>
+            <field name="body">Your booking verification code is: {{ object.otp_code }}. Valid for 5 minutes. Do not share this code with anyone.</field>
+        </record>
+
+        <record id="sms_template_otp_tracking" model="sms.template">
+            <field name="name">Car Booking OTP - Tracking Access</field>
+            <field name="model_id" ref="bs_car_booking.model_bs_car_booking_otp"/>
+            <field name="body">Your booking tracking code is: {{ object.otp_code }}. Valid for 5 minutes.</field>
+        </record>
+
+    </data>
+</odoo>

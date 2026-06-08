@@ -16,13 +16,6 @@
             </video>
         </t>
         <t t-elif="car.hero_media_type in ('youtube', 'vimeo')">
-            <!-- Poster image is the base layer: it shows behind the video on
-                 desktop and REPLACES it on mobile, where YouTube/Vimeo block
-                 muted autoplay and force their play/pause/next chrome over the
-                 hero (the embed is hidden < lg via .bs_hero_embed). -->
-            <img t-if="car.image" t-attf-class="{{ hero_class }} bs_hero_poster"
-                 t-att-alt="car.name"
-                 t-att-src="'/web/image/bs.car.model/%s/image/%s' % (car.id, img_w)"/>
             <div t-attf-class="bs_hero_embed {{ hero_class }}">
                 <iframe t-att-src="car.hero_embed_url" frameborder="0" loading="eager" title="Hero video"
                         tabindex="-1" aria-hidden="true"

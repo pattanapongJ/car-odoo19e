@@ -312,11 +312,11 @@ class BsCarBooking(models.Model):
         if not self.pdpa_consent:
             return {'success': False, 'error': _('Privacy consent (PDPA) is required.')}
         otp = self.otp_ids.filtered(
-            lambda o: o.state == 'pending' and o.purpose == 'booking')
+            lambda o: o.state == 'pending' and o.purpose_code == 'booking')
         if not otp:
             raise ValidationError(_('No pending OTP found. Please request a new one.'))
 
-        result = otp[-1].verify_otp(otp_code)
+        result = otp[0].verify_otp(otp_code)
         if result['success']:
             self.phone_verified = True
             self._transition_to('otp_verified')
@@ -510,9 +510,6 @@ class BsCarBooking(models.Model):
         self.ensure_one()
         if self.customer_phone and self.phone_verified:
             try:
-                # Include a one-click, token-gated tracking link so the customer
-                # can follow their booking without an account (the magic-link
-                # path; the /track page is the fallback if the link is lost).
                 msg = _(
                     'Booking %(ref)s confirmed! Your %(model)s is reserved. '
                     'Track it here: %(url)s'
@@ -520,9 +517,10 @@ class BsCarBooking(models.Model):
                     'ref': self.name, 'model': self.model_id.name,
                     'url': self._get_tracking_url(),
                 }
-                self.env['sms.sms'].sudo().create({
+                sms = self.env['sms.sms'].sudo().create({
                     'number': self.customer_phone, 'body': msg,
                 })
+                sms.send()
             except Exception as e:  # noqa: BLE001 - SMS gateway optional in dev
                 _logger.warning('Failed to send confirmation SMS: %s', str(e))
 
@@ -720,7 +718,7 @@ class BsCarBooking(models.Model):
         """Verify the latest pending tracking OTP. Returns {success, ...}."""
         self.ensure_one()
         otp = self.otp_ids.sudo().filtered(
-            lambda o: o.state == 'pending' and o.purpose == 'tracking'
+            lambda o: o.state == 'pending' and o.purpose_code == 'tracking'
         ).sorted('create_date', reverse=True)[:1]
         if not otp:
             return {'success': False, 'error': _('No active code. Please request a new one.')}

@@ -13,6 +13,7 @@ from . import bs_car_variant
 from . import bs_car_dealer
 from . import product_template
 from . import bs_car_booking
+from . import bs_car_booking_otp_purpose
 from . import bs_car_booking_otp
 from . import payment_transaction
 from . import crm_lead
