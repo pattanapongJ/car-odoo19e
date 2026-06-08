@@ -175,7 +175,7 @@
                             <i t-else="" class="fa fa-clock-o fa-4x text-warning"/>
                         </div>
                         <h2>
-                            <t t-if="is_confirmed">🎉 Booking Confirmed!</t>
+                            <t t-if="is_confirmed">Booking Confirmed!</t>
                             <t t-elif="booking.state == 'cancelled'">Booking Cancelled</t>
                             <t t-elif="booking.state == 'expired'">Booking Expired</t>
                             <t t-else="">Booking In Progress</t>
