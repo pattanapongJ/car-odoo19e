@@ -585,7 +585,7 @@
                              t-att-data-showcase-image="'ext-%s' % option.id"
                              t-att-src="'/web/image/bs.car.model.option/%s/image/1920x1080' % option.id"
                              t-att-alt="option.image_alt or option.display_name"/>
-                        <span class="bs_cs_caption" data-cs-caption="1"/>
+                        <!-- <span class="bs_cs_caption" data-cs-caption="1"/> -->
                     </div>
                     <!-- Centred selector strip: exterior squares flanking the
                          chosen exterior's interiors (boxed, expands on select). -->
@@ -597,7 +597,7 @@
                                     t-att-data-interior-ids="','.join(['int-%s' % i for i in (option.interior_option_ids.ids or int_options.ids)])"
                                     t-att-title="option.value_id.name">
                                 <span class="bs_color_swatch"
-                                      t-att-style="'background:%s' % option._studio_swatch()"/>
+                                      t-att-style="option._studio_swatch_style()"/>
                                 <span class="bs_color_label" t-esc="option.value_id.name"/>
                             </button>
                         </div>
@@ -607,7 +607,7 @@
                                     t-att-data-showcase-target="'int-%s' % option.id"
                                     t-att-title="option.value_id.name">
                                 <span class="bs_color_swatch"
-                                      t-att-style="'background:%s' % option._studio_swatch()"/>
+                                      t-att-style="option._studio_swatch_style()"/>
                                 <span class="bs_color_label" t-esc="option.value_id.name"/>
                             </button>
                         </div>
@@ -620,7 +620,7 @@
                              t-att-data-showcase-image="'int-%s' % option.id"
                              t-att-src="'/web/image/bs.car.model.option/%s/image/1920x1080' % option.id"
                              t-att-alt="option.image_alt or option.display_name"/>
-                        <span class="bs_cs_caption" data-cs-caption="1"/>
+                        <!-- <span class="bs_cs_caption" data-cs-caption="1"/> -->
                     </div>
                 </div>
             </t>
@@ -645,7 +645,7 @@
                              t-att-data-showcase-image="'int-%s' % item.id"
                              t-att-src="'/web/image/bs.car.showcase.item/%s/image/1600x900' % item.id"
                              t-att-alt="item.image_alt or item.name"/>
-                        <span class="bs_cs_caption" data-cs-caption="1"/>
+                        <!-- <span class="bs_cs_caption" data-cs-caption="1"/> -->
                     </div>
                     <!-- Single centred selector strip: exterior squares flanking
                          the interiors (boxed). -->
@@ -656,7 +656,7 @@
                                     t-att-data-showcase-target="'ext-%s' % item.id"
                                     t-att-title="item.name">
                                 <span class="bs_color_swatch"
-                                      t-att-style="'background:%s' % (item.swatch_color or '#111111')"/>
+                                      t-att-style="item._studio_swatch_style()"/>
                                 <span class="bs_color_label" t-esc="item.name"/>
                             </button>
                         </div>
@@ -666,7 +666,7 @@
                                     t-att-data-showcase-target="'int-%s' % item.id"
                                     t-att-title="item.name">
                                 <span class="bs_color_swatch"
-                                      t-att-style="'background:%s' % (item.swatch_color or '#111111')"/>
+                                      t-att-style="item._studio_swatch_style()"/>
                                 <span class="bs_color_label" t-esc="item.name"/>
                             </button>
                         </div>

@@ -2819,7 +2819,7 @@ html {
         margin-top: 26px;
     }
     .bs_color_image {
-        object-fit: contain;
+        object-fit: cover;
     }
     /* Selected colour name, shown over the image. */
     .bs_cs_caption {
@@ -2890,8 +2890,8 @@ html {
         transform: none;
     }
     .bs_color_swatch {
-        width: 44px;
-        height: 44px;
+        width: 42.6px;
+        height: 42.6px;
         border-radius: 5px;
         box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
     }
@@ -2901,8 +2901,8 @@ html {
         border-radius: 6px;
     }
     .bs_cs_interior .bs_color_swatch {
-        width: 28px;
-        height: 28px;
+        width: 24px;
+        height: 24px;
         border-radius: 4px;
     }
     /* Name kept for accessibility / tooltip; hidden to match the chip design. */
@@ -3368,6 +3368,21 @@ html {
     }
     .bs_color_media {
         min-height: 270px;
+    }
+    /* Option-driven studio: let each stage hug the (16:9) image so there's no
+       empty gap between the image and the swatch row on small screens. */
+    .bs_color_studio_linked .bs_cs_stage {
+        min-height: 0;
+        aspect-ratio: 16 / 9;
+    }
+    .bs_color_studio_linked .bs_cs_stage_ext {
+        margin-top: 8px;
+    }
+    .bs_color_studio_linked .bs_cs_stage_int {
+        margin-top: 14px;
+    }
+    .bs_color_studio_linked .bs_cs_bar {
+        margin-top: 16px;
     }
     .bs_cabin_story {
         min-height: 540px;
