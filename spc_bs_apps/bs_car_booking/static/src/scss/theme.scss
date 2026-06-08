@@ -2153,6 +2153,9 @@ html {
     overflow: hidden;
     pointer-events: none;
 }
+.bs_hero_embed {
+    z-index: 1;             /* video sits above the poster on desktop */
+}
 .bs_hero_embed iframe {
     position: absolute;
     top: 50%;
@@ -2164,6 +2167,21 @@ html {
     min-width: 177.78vh;    /* 16:9 sized by height (cover tall heroes) */
     border: 0;
     pointer-events: none;
+}
+/* Poster: base layer behind the video, and the standalone hero on mobile. */
+.bs_hero_poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+@media (max-width: 991.98px) {
+    /* Mobile YouTube/Vimeo ignore controls=0 and block muted autoplay, forcing
+       their play/pause/next chrome over the hero. Drop the embed on mobile and
+       show the clean poster image instead (also lighter to load). */
+    .bs_hero_embed { display: none !important; }
 }
 .bs_featured_img {
     user-select: none;

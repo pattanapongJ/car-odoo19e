@@ -28,7 +28,7 @@ Website Journey:
 6. Receive booking confirmation via SMS
 """,
     'category': 'Website/Booking',
-    'version': '19.0.6.0.3',
+    'version': '19.0.6.0.4',
     'author': 'Basic Solution Co., Ltd.',
     'maintainer': 'Basic Solution Co., Ltd.',
     'website': 'https://basicsolution.com/',
@@ -37,9 +37,15 @@ Website Journey:
     'depends': [
         'base',
         'website',
-        'website_sale',
-        'sale_management',
-        'account_payment',
+        # website_payment bridges the website with the payment framework (the
+        # deposit page renders payment.form in website context) WITHOUT pulling
+        # in the e-commerce shop. We deliberately do NOT depend on website_sale:
+        # this is a configurator + dealer + OTP + deposit reservation funnel, not
+        # an add-to-cart shop, and website_sale only added a header cart icon,
+        # /shop, wishlist and competing COW header templates we never used.
+        'website_payment',
+        'sale_management',   # sale.order, down-payment invoice, _get_payment_values
+        'account_payment',   # payment <-> accounting (deposit invoice + reconcile)
         'payment',
         'payment_demo',
         'crm',
