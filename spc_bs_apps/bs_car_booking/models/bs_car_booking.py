@@ -6,7 +6,7 @@ from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.tools import float_compare
+from odoo.tools import float_compare, consteq
 
 _logger = logging.getLogger(__name__)
 
@@ -230,19 +230,16 @@ class BsCarBooking(models.Model):
                 self.deposit_amount = self.model_id.deposit_amount
 
     # === Actions ===
-    def action_send_otp(self):
-        """Send OTP to customer's phone."""
+    def _otp_throttle_or_raise(self, phone):
+        """Shared OTP rate-limit, raises ValidationError when exceeded:
+          * resend cooldown vs the last OTP for THIS booking (server-side; the
+            JS countdown is cosmetic only), and
+          * a per-phone hourly cap across ALL bookings/purposes (a per-booking
+            cooldown alone is trivially bypassed by starting a new booking).
+        """
         self.ensure_one()
-        if self.state not in ('draft', 'otp_pending'):
-            raise ValidationError(_('OTP can only be sent before the phone is verified.'))
-        if self.phone_verified:
-            raise ValidationError(_('This phone number is already verified.'))
-        if not self.customer_phone:
-            raise ValidationError(_('Customer phone number is required.'))
-
-        # Server-side resend throttle (the JS cooldown is client-side only).
-        cooldown = self.env['ir.config_parameter'].sudo().get_param(
-            'bs_car_booking.otp_resend_seconds', '30')
+        ICP = self.env['ir.config_parameter'].sudo()
+        cooldown = ICP.get_param('bs_car_booking.otp_resend_seconds', '30')
         try:
             cooldown = max(int(cooldown), 0)
         except (TypeError, ValueError):
@@ -255,11 +252,8 @@ class BsCarBooking(models.Model):
                     'Please wait %s seconds before requesting another code.'
                 ) % int(cooldown - elapsed))
 
-        # Per-phone hourly cap across ALL bookings — mitigates SMS bombing /
-        # cost abuse (a per-booking cooldown alone is bypassed by new bookings).
-        norm_phone = (self.customer_phone or '').strip().replace(' ', '')
-        max_per_hour = self.env['ir.config_parameter'].sudo().get_param(
-            'bs_car_booking.otp_max_per_hour', '5')
+        norm_phone = (phone or '').strip().replace(' ', '')
+        max_per_hour = ICP.get_param('bs_car_booking.otp_max_per_hour', '5')
         try:
             max_per_hour = max(int(max_per_hour), 0)
         except (TypeError, ValueError):
@@ -273,8 +267,23 @@ class BsCarBooking(models.Model):
                     'Too many verification codes requested for this number. '
                     'Please try again later.'))
 
+    def action_send_otp(self):
+        """Send OTP to customer's phone."""
+        self.ensure_one()
+        if self.state not in ('draft', 'otp_pending'):
+            raise ValidationError(_('OTP can only be sent before the phone is verified.'))
+        if self.phone_verified:
+            raise ValidationError(_('This phone number is already verified.'))
+        if not self.customer_phone:
+            raise ValidationError(_('Customer phone number is required.'))
+
+        # Rate-limit (resend cooldown + per-phone hourly cap). Shared with the
+        # tracking-OTP flow so both funnel verification and tracking re-auth are
+        # protected against SMS bombing / cost abuse.
+        self._otp_throttle_or_raise(self.customer_phone)
+
         otp_record = self.env['bs.car.booking.otp'].sudo().send_otp(
-            self.customer_phone, self.id
+            self.customer_phone, self.id, purpose='booking'
         )
         self._transition_to('otp_pending')
 
@@ -302,7 +311,8 @@ class BsCarBooking(models.Model):
             raise ValidationError(_('OTP can only be verified while the booking is waiting for OTP.'))
         if not self.pdpa_consent:
             return {'success': False, 'error': _('Privacy consent (PDPA) is required.')}
-        otp = self.otp_ids.filtered(lambda o: o.state == 'pending')
+        otp = self.otp_ids.filtered(
+            lambda o: o.state == 'pending' and o.purpose == 'booking')
         if not otp:
             raise ValidationError(_('No pending OTP found. Please request a new one.'))
 
@@ -500,8 +510,15 @@ class BsCarBooking(models.Model):
         self.ensure_one()
         if self.customer_phone and self.phone_verified:
             try:
-                msg = _('Booking %(ref)s confirmed! Your %(model)s is reserved. Thank you!') % {
+                # Include a one-click, token-gated tracking link so the customer
+                # can follow their booking without an account (the magic-link
+                # path; the /track page is the fallback if the link is lost).
+                msg = _(
+                    'Booking %(ref)s confirmed! Your %(model)s is reserved. '
+                    'Track it here: %(url)s'
+                ) % {
                     'ref': self.name, 'model': self.model_id.name,
+                    'url': self._get_tracking_url(),
                 }
                 self.env['sms.sms'].sudo().create({
                     'number': self.customer_phone, 'body': msg,
@@ -655,3 +672,56 @@ class BsCarBooking(models.Model):
         super()._compute_access_url()
         for rec in self:
             rec.access_url = f'/my/booking/{rec.id}'
+
+    # === Booking tracking (guest, no login) ===
+    def _get_tracking_url(self):
+        """Absolute, token-gated tracking link for SMS/email (works without a
+        login). The access_token is an unguessable UUID checked with consteq."""
+        self.ensure_one()
+        token = self._portal_ensure_token()
+        return f'{self.get_base_url()}/my/booking/{self.id}?access_token={token}'
+
+    @api.model
+    def _match_for_tracking(self, reference, phone):
+        """Return the booking matching BOTH reference and phone, else empty set.
+
+        Looked up via sudo (public users have no ACL on bookings). We require
+        reference AND a matching phone so a guessable, sequential reference
+        alone can never resolve a booking. Phone is compared with consteq to
+        avoid a timing oracle. The CALLER MUST return an identical generic
+        response whether or not this finds a record, so the endpoint cannot be
+        used to enumerate references or phone numbers.
+        """
+        reference = (reference or '').strip()
+        phone = (phone or '').strip().replace(' ', '')
+        if not reference or len(phone) < 7:
+            return self.browse()
+        booking = self.sudo().search([('name', '=', reference)], limit=1)
+        if not booking:
+            return self.browse()
+        stored = (booking.customer_phone or '').strip().replace(' ', '')
+        if not stored or not consteq(stored, phone):
+            return self.browse()
+        return booking
+
+    def _send_tracking_otp(self):
+        """Send a tracking-access OTP to this booking's phone. Unlike the funnel
+        ``action_send_otp`` it does NOT change booking state or phone_verified;
+        it only re-proves ownership to unlock the (already token-gated) status
+        view. Throttled with the same limits as funnel OTPs."""
+        self.ensure_one()
+        if not self.customer_phone:
+            raise ValidationError(_('No phone number on this booking.'))
+        self._otp_throttle_or_raise(self.customer_phone)
+        return self.env['bs.car.booking.otp'].sudo().send_otp(
+            self.customer_phone, self.id, purpose='tracking')
+
+    def _verify_tracking_otp(self, code):
+        """Verify the latest pending tracking OTP. Returns {success, ...}."""
+        self.ensure_one()
+        otp = self.otp_ids.sudo().filtered(
+            lambda o: o.state == 'pending' and o.purpose == 'tracking'
+        ).sorted('create_date', reverse=True)[:1]
+        if not otp:
+            return {'success': False, 'error': _('No active code. Please request a new one.')}
+        return otp.verify_otp(code)

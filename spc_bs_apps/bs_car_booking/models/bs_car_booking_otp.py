@@ -20,6 +20,15 @@ class BsCarBookingOtp(models.Model):
     phone = fields.Char('Phone Number', required=True, index=True)
     otp_code = fields.Char('OTP Code', required=True)
     booking_id = fields.Many2one('bs.car.booking', string='Booking', ondelete='cascade')
+    # Why a purpose: the same OTP model serves two flows that must never mix.
+    # 'booking' = initial phone verification during the funnel (moves the booking
+    # to phone_verified). 'tracking' = re-proving ownership later to view status
+    # WITHOUT touching booking state. Verification filters by purpose so a
+    # tracking code can't satisfy funnel verification and vice versa.
+    purpose = fields.Selection([
+        ('booking', 'Booking Verification'),
+        ('tracking', 'Tracking Access'),
+    ], default='booking', required=True, index=True)
     state = fields.Selection([
         ('pending', 'Pending'),
         ('verified', 'Verified'),
@@ -41,35 +50,41 @@ class BsCarBookingOtp(models.Model):
         return ''.join(secrets.choice(string.digits) for _ in range(length))
 
     @api.model
-    def send_otp(self, phone, booking_id=None):
+    def send_otp(self, phone, booking_id=None, purpose='booking'):
         """Send OTP to the given phone number via SMS.
-        
+
         This uses Odoo's built-in SMS gateway (IAP or third-party provider).
         For production, configure an SMS provider in Settings > SMS.
-        
+
         Returns the OTP record.
         """
         # Clean phone number
         phone = phone.strip().replace(' ', '')
-        
+
         # Generate OTP
         otp_code = self._generate_otp()
         expire_minutes = 5
         expire_datetime = fields.Datetime.now() + timedelta(minutes=expire_minutes)
-        
+
         # Create OTP record
         otp_record = self.create({
             'phone': phone,
             'otp_code': otp_code,
             'booking_id': booking_id,
+            'purpose': purpose,
             'expire_datetime': expire_datetime,
         })
-        
+
         # Send SMS via Odoo's SMS gateway
-        message = _('Your car booking verification code is: %s. Valid for %s minutes.') % (
-            otp_code, expire_minutes
-        )
-        
+        if purpose == 'tracking':
+            message = _('Your booking tracking code is: %s. Valid for %s minutes.') % (
+                otp_code, expire_minutes
+            )
+        else:
+            message = _('Your car booking verification code is: %s. Valid for %s minutes.') % (
+                otp_code, expire_minutes
+            )
+
         try:
             sms_record = self.env['sms.sms'].create({
                 'number': phone,

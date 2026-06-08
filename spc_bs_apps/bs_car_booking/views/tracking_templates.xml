@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Public "Track my booking" page: reference + phone -> one-time code ->
+         hand off to the token-gated status view. No login required. -->
+    <template id="tracking_page" name="Track Booking">
+        <t t-call="website.layout">
+            <t t-set="title">Track your booking</t>
+            <t t-set="bs_hero_overlay" t-value="True"/>
+            <div id="wrap" class="bs_track_shell">
+                <section class="bs_track_hero">
+                    <div class="container">
+                        <span class="car_kicker">Hongqi Thailand</span>
+                        <h1 class="bs_track_title">Track your booking</h1>
+                        <p class="bs_track_sub">
+                            Enter your booking reference and the phone number you used.
+                            We will send a one-time code to confirm it is you.
+                        </p>
+                    </div>
+                </section>
+                <section class="bs_track_body">
+                    <div class="container">
+                        <div class="bs_track_card" id="bs_track">
+                            <!-- Step 1: reference + phone -->
+                            <div class="bs_track_step" data-track-step="lookup">
+                                <div class="mb-3">
+                                    <label class="bs_track_label">Booking reference</label>
+                                    <input type="text" class="form-control bs_track_input"
+                                           data-track-ref="1" placeholder="e.g. CBK/2026/06/00042"
+                                           autocomplete="off"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="bs_track_label">Phone number</label>
+                                    <input type="tel" class="form-control bs_track_input"
+                                           data-track-phone="1" placeholder="Phone on the booking"
+                                           autocomplete="off"/>
+                                </div>
+                                <button type="button" class="btn btn-primary car_cta_btn w-100"
+                                        data-track-send="1">
+                                    Send code <i class="fa fa-arrow-right"/>
+                                </button>
+                            </div>
+                            <!-- Step 2: OTP -->
+                            <div class="bs_track_step d-none" data-track-step="otp">
+                                <p class="bs_track_otp_hint">
+                                    Enter the 6-digit code we sent to your phone.
+                                </p>
+                                <input type="text" inputmode="numeric" maxlength="6"
+                                       class="form-control bs_track_input bs_track_otp"
+                                       data-track-code="1" placeholder="------" autocomplete="one-time-code"/>
+                                <button type="button" class="btn btn-primary car_cta_btn w-100 mt-3"
+                                        data-track-verify="1">
+                                    View my booking <i class="fa fa-arrow-right"/>
+                                </button>
+                                <button type="button" class="btn btn-link w-100 mt-2 bs_track_resend"
+                                        data-track-resend="1">Resend code</button>
+                            </div>
+                            <!-- Feedback -->
+                            <div class="bs_track_msg d-none" data-track-msg="1" role="status"/>
+                        </div>
+                        <p class="bs_track_help">
+                            Already have an account?
+                            <a href="/my/bookings">Track from My Account</a>.
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>

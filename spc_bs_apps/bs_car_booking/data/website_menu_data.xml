@@ -20,5 +20,12 @@
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence" type="int">37</field>
         </record>
+        <!-- Public booking tracking (no login needed) -->
+        <record id="menu_website_track" model="website.menu">
+            <field name="name">Track</field>
+            <field name="url">/track</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">38</field>
+        </record>
     </data>
 </odoo>
