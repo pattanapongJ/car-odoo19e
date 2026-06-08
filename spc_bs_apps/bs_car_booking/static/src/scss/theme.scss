@@ -1918,6 +1918,10 @@ html {
         grid-template-columns: 1fr;
     }
 
+    .bs_color_image_exterior {
+        object-fit: cover !important;
+    }
+
     .hero_metric {
         min-height: 92px;
     }
@@ -2820,6 +2824,9 @@ html {
     }
     .bs_color_image {
         object-fit: cover;
+    }
+    .bs_color_image_exterior {
+        object-fit: contain;
     }
     /* Selected colour name, shown over the image. */
     .bs_cs_caption {

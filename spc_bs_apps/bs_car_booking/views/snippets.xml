@@ -581,7 +581,7 @@
                     <!-- Exterior image: full-bleed body shot of the selected colour. -->
                     <div class="bs_cs_stage bs_cs_stage_ext" data-cs-stage="exterior">
                         <img t-foreach="ext_options" t-as="option"
-                             t-attf-class="bs_color_image #{option_index == 0 and 'is-active' or ''}"
+                             t-attf-class="bs_color_image bs_color_image_exterior #{option_index == 0 and 'is-active' or ''}"
                              t-att-data-showcase-image="'ext-%s' % option.id"
                              t-att-src="'/web/image/bs.car.model.option/%s/image/1920x1080' % option.id"
                              t-att-alt="option.image_alt or option.display_name"/>
@@ -636,7 +636,7 @@
                          interior cabins swap into the same frame. -->
                     <div class="bs_cs_stage" data-cs-stage="1">
                         <img t-foreach="exteriors" t-as="item"
-                             t-attf-class="bs_color_image #{item_index == 0 and 'is-active' or ''}"
+                             t-attf-class="bs_color_image bs_color_image_exterior #{item_index == 0 and 'is-active' or ''}"
                              t-att-data-showcase-image="'ext-%s' % item.id"
                              t-att-src="'/web/image/bs.car.showcase.item/%s/image/1600x900' % item.id"
                              t-att-alt="item.image_alt or item.name"/>
