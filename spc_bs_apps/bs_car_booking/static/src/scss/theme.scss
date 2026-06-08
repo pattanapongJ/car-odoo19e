@@ -212,6 +212,47 @@ html {
     color: #fff !important;
 }
 
+/* ===== MOBILE off-canvas menu =====
+   The slide-in panel has a light background, so the "all header text goes
+   light" rule above would render its links white-on-white (invisible). Force
+   readable dark text INSIDE the off-canvas, and drop the e-commerce cart +
+   search box so the mobile menu matches the minimal brand header. The desktop
+   bar keeps its light-on-dark styling (it is not inside .o_navbar_mobile). */
+#wrapwrap > header .o_navbar_mobile {
+    background: #ffffff;
+}
+#wrapwrap > header .o_navbar_mobile,
+#wrapwrap > header .o_navbar_mobile a:not(.btn),
+#wrapwrap > header .o_navbar_mobile .nav-link,
+#wrapwrap > header .o_navbar_mobile i,
+#wrapwrap > header .o_navbar_mobile .fa,
+#wrapwrap > header .o_navbar_mobile span {
+    color: var(--car-text-primary, #1a1a1a) !important;
+}
+#wrapwrap > header .o_navbar_mobile .nav-link {
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+}
+#wrapwrap > header .o_navbar_mobile .nav-link:hover,
+#wrapwrap > header .o_navbar_mobile .nav-item.active > .nav-link,
+#wrapwrap > header .o_navbar_mobile .nav-link.active {
+    color: var(--car-accent) !important;
+}
+/* Hide cart + search on mobile (no e-commerce clutter, matches desktop). */
+#wrapwrap > header .o_header_mobile_buttons_wrap,
+#wrapwrap > header .o_navbar_mobile .o_searchbar_form,
+#wrapwrap > header .o_navbar_mobile .s_searchbar_input,
+#wrapwrap > header .o_navbar_mobile form[role="search"] {
+    display: none !important;
+}
+/* Bottom CTA (Contact Us) stays brand-red with white text. */
+#wrapwrap > header .o_navbar_mobile .btn-primary,
+#wrapwrap > header .o_navbar_mobile .btn-primary span {
+    color: #fff !important;
+}
+
 .car_kicker,
 .cfg_brand,
 .car_card_brand,
