@@ -407,9 +407,14 @@ class BsCarModel(models.Model):
                 'name': f'{model.brand_id.name} {model.name}'.strip(),
                 'type': 'consu',
                 'list_price': model.base_price or 0.0,
-                'is_published': model.website_published,
                 'bs_car_model_id': model.id,
             }
+            # `is_published` only exists on product.template when website_sale is
+            # installed. This module does NOT depend on website_sale (cars are
+            # sold via the booking funnel, not the shop), so set it only if the
+            # field is present — avoids "Invalid field is_published" on generate.
+            if 'is_published' in self.env['product.template']._fields:
+                vals['is_published'] = model.website_published
             if tax:
                 vals['taxes_id'] = [(6, 0, tax.ids)]
             if model.image:

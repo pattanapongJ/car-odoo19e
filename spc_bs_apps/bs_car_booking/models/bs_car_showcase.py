@@ -38,6 +38,18 @@ class BsCarShowcaseItem(models.Model):
     cta_label = fields.Char('Button Label', translate=True)
     cta_url = fields.Char('Button Link')
 
+    def _studio_swatch(self):
+        """Resolved swatch colour for the colour-studio button."""
+        self.ensure_one()
+        return self.swatch_color or '#111111'
+
+    def _studio_swatch_style(self):
+        """CSS ``background`` for the colour-studio swatch. Mirrors the method
+        on bs.car.model.option so the shared color_studio template can call it
+        on showcase items too (the template uses both)."""
+        self.ensure_one()
+        return f'background:{self._studio_swatch()}'
+
     @api.model
     def _get_website_items(self, model, item_type, limit=None):
         model_id = model.id if hasattr(model, 'id') else int(model or 0)
