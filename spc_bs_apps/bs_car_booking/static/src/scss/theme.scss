@@ -267,6 +267,39 @@ html {
     color: #fff !important;
 }
 
+/* ================================================================
+   MOBILE STICKY HEADER — prevent Odoo scroll-hide on small screens.
+   header_standard.js sets transform: translate(0,-100%) once the
+   user scrolls past the header height (~60 px), hiding the bar
+   until 300 px. On mobile we cancel that slide-out so the navbar
+   stays pinned at the top the whole time. The position:fixed +
+   z-index ensure it floats above the page even before o_header_affixed
+   is applied by JS.
+   ================================================================ */
+@media (max-width: 991.98px) {
+    #wrapwrap > header.o_header_standard {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        transform: none !important;
+        z-index: 1050;
+        transition: background-color 0.35s ease, box-shadow 0.35s ease !important;
+    }
+    /* Compact bar height on mobile */
+    #wrapwrap > header .bs_brand_nav {
+        min-height: 60px !important;
+    }
+    /* Non-overlay pages: header is now out of flow (fixed), so push content
+       down to avoid it being obscured. Overlay/hero pages keep the header
+       floating on top of the full-bleed image — no padding needed there. */
+    #wrapwrap:not(.o_header_overlay) > main {
+        padding-top: 60px;
+    }
+}
+
+
 .car_kicker,
 .cfg_brand,
 .car_card_brand,
