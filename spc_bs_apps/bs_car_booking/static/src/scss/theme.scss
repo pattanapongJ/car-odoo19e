@@ -3553,3 +3553,46 @@ html {
 .info_agreement .bs_policy_name { font-weight: 600; }
 /* Document "remove" (×) button sits flush with the file input. */
 .info_doc_field .info_doc_clear { flex: 0 0 auto; }
+
+/* ===== Customer-info: deposit-button gating + upload polish ===== */
+.info_submit_btn:disabled,
+.info_submit_btn.is-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    filter: grayscale(0.3);
+}
+.info_submit_hint { color: var(--car-text-secondary, #777); }
+
+.info_subhead {
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid #ece9e1;
+    font-weight: 700;
+}
+/* Native file button restyled to match the brand. */
+.info_doc_input { cursor: pointer; }
+.info_doc_input::file-selector-button {
+    border: 0;
+    margin: -0.375rem 0.75rem -0.375rem -0.75rem;
+    padding: 0.5rem 0.9rem;
+    background: #f1efe9;
+    color: #1a1a1a;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.info_doc_input::file-selector-button:hover { background: #e6e3da; }
+/* Uploaded state: green border + a check on the label. */
+.info_doc_field.has-file .form-control { border-color: #1f7a36; }
+.info_doc_field.has-file > label.form-label::after {
+    content: " \2713";
+    color: #1f7a36;
+    font-weight: 700;
+}
+.info_doc_clear { border-color: #dfdcd4; }
+.info_doc_clear:hover {
+    background: #fdecec;
+    color: #b3261e;
+    border-color: #f1c4c4;
+}

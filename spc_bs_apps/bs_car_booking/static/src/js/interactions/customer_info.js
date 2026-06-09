@@ -20,25 +20,33 @@ export class CustomerInfoForm extends Interaction {
     }
 
     start() {
+        this.submitBtn = this.el.querySelector(".info_submit_btn");
+        this.hintEl = this.el.querySelector(".info_submit_hint");
         this.el.addEventListener("submit", (e) => this._onSubmit(e));
 
-        // Customer-type toggle: show/hide the right field group, documents and
-        // agreements (each carries data-applies-to = individual/company/both).
-        this.el.querySelectorAll('input[name="customer_type"]').forEach((r) =>
-            r.addEventListener("change", () => this._applyType(this._currentType()))
-        );
-        this._applyType(this._currentType());
+        // Single handler for every change: keep the type groups, the file
+        // "remove" buttons and the submit-button gating in sync.
+        const onChange = (ev) => {
+            const t = ev.target;
+            if (t && t.name === "customer_type") {
+                this._applyType(this._currentType());
+            }
+            if (t && t.classList && t.classList.contains("info_doc_input")) {
+                this._toggleClear(t);
+            }
+            this._refresh();
+        };
+        this.el.addEventListener("input", onChange);
+        this.el.addEventListener("change", onChange);
 
-        // File "remove" buttons: show once a file is chosen; clear on click.
-        this.el.querySelectorAll(".info_doc_input").forEach((input) =>
-            input.addEventListener("change", () => this._toggleClear(input))
-        );
+        // Clearing a file input does not fire 'change', so refresh explicitly.
         this.el.querySelectorAll(".info_doc_clear").forEach((btn) =>
             btn.addEventListener("click", () => {
                 const input = btn.closest(".input-group")?.querySelector(".info_doc_input");
                 if (input) {
                     input.value = "";
                     this._toggleClear(input);
+                    this._refresh();
                 }
             })
         );
@@ -54,7 +62,57 @@ export class CustomerInfoForm extends Interaction {
                 set('[name="customer_name"]', useBtn.dataset.name);
                 set('[name="customer_email"]', useBtn.dataset.email);
                 set('[name="customer_address"]', useBtn.dataset.street);
+                this._refresh();
             });
+        }
+
+        this._applyType(this._currentType());
+        this._refresh();   // start disabled until the form is complete
+    }
+
+    /** True only when every requirement for the selected type is satisfied. */
+    _validate() {
+        const type = this._currentType();
+        const val = (sel) => (this.el.querySelector(sel)?.value || "").trim();
+        if (type === "company") {
+            if (!val('[name="company_name"]') || !val('[name="tax_id"]') || !val('[name="contact_person"]')) {
+                return false;
+            }
+        } else if (!val('[name="customer_name"]') || !val('[name="customer_nrc"]')) {
+            return false;
+        }
+        // Required documents for this type must have a file.
+        for (const f of this.el.querySelectorAll(".info_doc_field")) {
+            if (f.classList.contains("d-none") || f.dataset.required !== "1") {
+                continue;
+            }
+            const input = f.querySelector(".info_doc_input");
+            if (!(input && input.files && input.files.length)) {
+                return false;
+            }
+        }
+        // Required agreements for this type must be ticked.
+        for (const a of this.el.querySelectorAll(".info_agreement")) {
+            if (a.classList.contains("d-none") || a.dataset.required !== "1") {
+                continue;
+            }
+            const cb = a.querySelector(".info_agree_check");
+            if (!(cb && cb.checked)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /** Enable/disable the deposit button + hint from the live form state. */
+    _refresh() {
+        const ok = this._validate();
+        if (this.submitBtn) {
+            this.submitBtn.disabled = !ok;
+            this.submitBtn.classList.toggle("is-disabled", !ok);
+        }
+        if (this.hintEl) {
+            this.hintEl.classList.toggle("d-none", ok);
         }
     }
 
@@ -64,10 +122,12 @@ export class CustomerInfoForm extends Interaction {
     }
 
     _toggleClear(input) {
+        const has = !!(input.files && input.files.length);
         const btn = input.closest(".input-group")?.querySelector(".info_doc_clear");
         if (btn) {
-            btn.classList.toggle("d-none", !(input.files && input.files.length));
+            btn.classList.toggle("d-none", !has);
         }
+        input.closest(".info_doc_field")?.classList.toggle("has-file", has);
     }
 
     _matches(el, type) {
