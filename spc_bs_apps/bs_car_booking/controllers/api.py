@@ -6,6 +6,7 @@ import logging
 from werkzeug.urls import url_encode
 
 from odoo import _, fields, http
+from odoo.exceptions import ValidationError
 from odoo.http import request
 from odoo.tools import consteq
 from odoo.tools import format_amount
@@ -76,7 +77,7 @@ class BsCarBookingAPI(http.Controller):
                     or model.brand_id not in dealer.brand_ids:
                 return {'success': False, 'error': 'Please choose a valid dealer.'}
 
-            booking = request.env['bs.car.booking'].sudo().create({
+            vals = {
                 'brand_id': model.brand_id.id,
                 'model_id': model.id,
                 'dealer_id': dealer.id,
@@ -85,9 +86,27 @@ class BsCarBookingAPI(http.Controller):
                 'currency_id': (model.currency_id or request.env.company.currency_id).id,
                 'pdpa_consent': True,
                 'pdpa_consent_date': fields.Datetime.now(),
-            })
-            booking._apply_configuration([int(p) for p in (ptav_ids or [])])
-            booking.action_send_otp()
+            }
+            # Reuse the session's in-progress draft for the same model instead of
+            # creating a duplicate when the customer goes Back and re-submits the
+            # configurator. Only pre-verification bookings are reused.
+            Booking = request.env['bs.car.booking'].sudo()
+            prev = Booking.browse(request.session.get('bs_funnel_booking') or 0)
+            reuse = (prev.exists() and prev.state in ('draft', 'otp_pending')
+                     and not prev.phone_verified and prev.model_id.id == model.id)
+            if reuse:
+                booking = prev
+                booking.write(vals)
+                booking._apply_configuration([int(p) for p in (ptav_ids or [])])
+                try:
+                    booking.action_send_otp()   # resend; existing code stays valid if throttled
+                except ValidationError:
+                    pass
+            else:
+                booking = Booking.create(vals)
+                request.session['bs_funnel_booking'] = booking.id
+                booking._apply_configuration([int(p) for p in (ptav_ids or [])])
+                booking.action_send_otp()
             token = booking._portal_ensure_token()
             return {
                 'success': True,

@@ -81,13 +81,15 @@ export class CustomerInfoForm extends Interaction {
         } else if (!val('[name="customer_name"]') || !val('[name="customer_nrc"]')) {
             return false;
         }
-        // Required documents for this type must have a file.
+        // Required documents for this type must have a file — OR already be
+        // uploaded (rehydrated after Back), so we don't force a re-upload.
         for (const f of this.el.querySelectorAll(".info_doc_field")) {
             if (f.classList.contains("d-none") || f.dataset.required !== "1") {
                 continue;
             }
             const input = f.querySelector(".info_doc_input");
-            if (!(input && input.files && input.files.length)) {
+            const hasFile = input && input.files && input.files.length;
+            if (!hasFile && f.dataset.uploaded !== "1") {
                 return false;
             }
         }

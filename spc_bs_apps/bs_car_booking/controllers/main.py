@@ -214,6 +214,11 @@ class BsCarBookingWebsite(CustomerPortal):
             'doc_types': doc_types,
             'agreements': agreements,
             'max_doc_mb': max_doc_mb,
+            # Rehydration when the customer navigates Back: which docs are already
+            # uploaded and which agreements were already accepted (saved on the
+            # booking), so we don't make them redo completed work.
+            'uploaded_doc_type_ids': booking.document_ids.mapped('document_type_id').ids,
+            'accepted_agreement_ids': booking.agreement_ids.filtered('accepted').mapped('agreement_id').ids,
         })
 
     # ── Deposit payment (reuses native payment.form via sale order) ─────
