@@ -198,10 +198,16 @@ class BsCarBookingWebsite(CustomerPortal):
         # own account — never auto-filled, to avoid leaking PII on a shared device.
         user = request.env.user
         account_partner = user.partner_id if not user._is_public() else False
+        # All applicable document types + agreements for both customer types;
+        # the form shows/hides each by its `applies_to` as the customer toggles.
+        doc_types = request.env['bs.car.document.type'].sudo().search([])
+        agreements = request.env['bs.car.agreement'].sudo().search([])
         return request.render('bs_car_booking.booking_info_page', {
             'booking': booking,
             'access_token': booking._portal_ensure_token(),
             'account_partner': account_partner,
+            'doc_types': doc_types,
+            'agreements': agreements,
         })
 
     # ── Deposit payment (reuses native payment.form via sale order) ─────

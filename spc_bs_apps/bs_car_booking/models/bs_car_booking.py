@@ -45,6 +45,20 @@ class BsCarBooking(models.Model):
     customer_email = fields.Char('Email')
     customer_nrc = fields.Char('NRC/ID Number', help='National Registration Card or ID')
     customer_address = fields.Text('Address')
+
+    # Customer type drives which fields/documents/agreements are required and
+    # how the res.partner is built (company => VAT tax invoice).
+    customer_type = fields.Selection([
+        ('individual', 'Individual'),
+        ('company', 'Company'),
+    ], string='Customer Type', default='individual', required=True)
+    company_name = fields.Char('Company Name')
+    tax_id = fields.Char('Tax ID', help='Company VAT / Tax ID (printed on the invoice).')
+    contact_person = fields.Char('Contact Person', help='Authorised person for a company booking.')
+
+    # Uploaded documents + accepted agreements (configurable per customer type).
+    document_ids = fields.One2many('bs.car.booking.document', 'booking_id', string='Documents')
+    agreement_ids = fields.One2many('bs.car.booking.agreement', 'booking_id', string='Agreements')
     
     # OTP Verification
     phone_verified = fields.Boolean('Phone Verified', default=False, copy=False)
@@ -339,18 +353,88 @@ class BsCarBooking(models.Model):
                 phone_domain = ['|', *phone_domain, ('mobile', '=', self.customer_phone)]
             partner = Partner.search(phone_domain, limit=1)
         if not partner:
-            partner_vals = {
-                'name': self.customer_name or _('Website Customer'),
-                'email': self.customer_email or False,
-                'phone': self.customer_phone or False,
-                'street': self.customer_address or False,
-                'comment': self.customer_nrc and _('NRC/ID: %s') % self.customer_nrc or False,
-            }
-            if 'mobile' in Partner._fields:
-                partner_vals['mobile'] = self.customer_phone or False
-            partner = Partner.create(partner_vals)
+            if self.customer_type == 'company':
+                # Company => is_company + VAT so the deposit invoice is a proper
+                # tax invoice carrying the company's Tax ID.
+                partner_vals = {
+                    'name': self.company_name or self.customer_name or _('Company Customer'),
+                    'is_company': True,
+                    'vat': self.tax_id or False,
+                    'email': self.customer_email or False,
+                    'phone': self.customer_phone or False,
+                    'street': self.customer_address or False,
+                }
+                if 'mobile' in Partner._fields:
+                    partner_vals['mobile'] = self.customer_phone or False
+                partner = Partner.create(partner_vals)
+                if self.contact_person:
+                    Partner.create({
+                        'name': self.contact_person,
+                        'parent_id': partner.id,
+                        'type': 'contact',
+                        'email': self.customer_email or False,
+                        'phone': self.customer_phone or False,
+                    })
+            else:
+                partner_vals = {
+                    'name': self.customer_name or _('Website Customer'),
+                    'email': self.customer_email or False,
+                    'phone': self.customer_phone or False,
+                    'street': self.customer_address or False,
+                    'comment': self.customer_nrc and _('NRC/ID: %s') % self.customer_nrc or False,
+                }
+                if 'mobile' in Partner._fields:
+                    partner_vals['mobile'] = self.customer_phone or False
+                partner = Partner.create(partner_vals)
+        else:
+            # Reuse an existing partner but make sure a company booking stamps
+            # the Tax ID for the invoice.
+            if self.customer_type == 'company' and self.tax_id and not partner.vat:
+                partner.write({'vat': self.tax_id, 'is_company': True})
         self.partner_id = partner
         return partner
+
+    # === Customer requirements (configurable, per customer type) ===
+    def _applicable_document_types(self, customer_type=None):
+        """Active document types required/optional for the given customer type."""
+        ctype = customer_type or self.customer_type or 'individual'
+        types = self.env['bs.car.document.type'].sudo().search([])
+        return types.filtered(lambda d: d._matches(ctype))
+
+    def _applicable_agreements(self, customer_type=None):
+        """Active agreements applicable to the given customer type."""
+        ctype = customer_type or self.customer_type or 'individual'
+        agreements = self.env['bs.car.agreement'].sudo().search([])
+        return agreements.filtered(lambda a: a._matches(ctype))
+
+    def _missing_requirements(self, customer_type):
+        """Server-side validation: returns a list of human messages for any
+        unmet requirement (type fields, required documents, required agreements)."""
+        self.ensure_one()
+        errors = []
+        if customer_type == 'company':
+            if not (self.company_name or '').strip():
+                errors.append(_('Company name is required.'))
+            if not (self.tax_id or '').strip():
+                errors.append(_('Tax ID is required for a company.'))
+            if not (self.contact_person or '').strip():
+                errors.append(_('Contact person is required for a company.'))
+        else:
+            if not (self.customer_name or '').strip():
+                errors.append(_('Full name is required.'))
+            if not (self.customer_nrc or '').strip():
+                errors.append(_('NRC/ID number is required.'))
+        # Required documents uploaded?
+        uploaded_type_ids = set(self.document_ids.mapped('document_type_id').ids)
+        for dtype in self._applicable_document_types(customer_type).filtered('required'):
+            if dtype.id not in uploaded_type_ids:
+                errors.append(_('Document "%s" is required.') % dtype.name)
+        # Required agreements accepted?
+        accepted_ids = set(self.agreement_ids.filtered('accepted').mapped('agreement_id').ids)
+        for agr in self._applicable_agreements(customer_type).filtered('required'):
+            if agr.id not in accepted_ids:
+                errors.append(_('Please accept "%s".') % agr.name)
+        return errors
 
     def _apply_configuration(self, ptav_ids):
         """Resolve selected template attribute values to a variant + options.

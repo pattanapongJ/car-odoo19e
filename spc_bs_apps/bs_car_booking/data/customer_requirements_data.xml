@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Default document requirements (admin can edit/add in
+             Master Data ▸ Document Types). -->
+        <record id="doc_type_id_card" model="bs.car.document.type">
+            <field name="name">National ID / NRC</field>
+            <field name="code">id_card</field>
+            <field name="applies_to">individual</field>
+            <field name="required" eval="True"/>
+            <field name="sequence" type="int">10</field>
+            <field name="help_text">A clear photo or scan of your ID card / NRC.</field>
+        </record>
+        <record id="doc_type_driver_license" model="bs.car.document.type">
+            <field name="name">Driver's License</field>
+            <field name="code">driver_license</field>
+            <field name="applies_to">individual</field>
+            <field name="required" eval="False"/>
+            <field name="sequence" type="int">20</field>
+        </record>
+        <record id="doc_type_company_registration" model="bs.car.document.type">
+            <field name="name">Company Registration</field>
+            <field name="code">company_reg</field>
+            <field name="applies_to">company</field>
+            <field name="required" eval="True"/>
+            <field name="sequence" type="int">30</field>
+            <field name="help_text">Company registration / incorporation certificate.</field>
+        </record>
+        <record id="doc_type_vat_certificate" model="bs.car.document.type">
+            <field name="name">VAT / Tax Certificate</field>
+            <field name="code">vat_cert</field>
+            <field name="applies_to">company</field>
+            <field name="required" eval="True"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+        <record id="doc_type_authorization_letter" model="bs.car.document.type">
+            <field name="name">Authorization Letter</field>
+            <field name="code">auth_letter</field>
+            <field name="applies_to">company</field>
+            <field name="required" eval="False"/>
+            <field name="sequence" type="int">50</field>
+        </record>
+
+        <!-- Default agreements (admin can edit in Master Data ▸ Agreements).
+             page_url links to the editable policy pages. -->
+        <record id="agreement_terms" model="bs.car.agreement">
+            <field name="name">Terms &amp; Conditions</field>
+            <field name="cta_label">I accept the Terms &amp; Conditions</field>
+            <field name="page_url">/terms</field>
+            <field name="applies_to">both</field>
+            <field name="required" eval="True"/>
+            <field name="sequence" type="int">10</field>
+        </record>
+        <record id="agreement_refund" model="bs.car.agreement">
+            <field name="name">Refund Policy</field>
+            <field name="cta_label">I acknowledge the Refund Policy</field>
+            <field name="page_url">/refund-policy</field>
+            <field name="applies_to">both</field>
+            <field name="required" eval="True"/>
+            <field name="sequence" type="int">20</field>
+        </record>
+        <record id="agreement_cancellation" model="bs.car.agreement">
+            <field name="name">Cancellation Policy</field>
+            <field name="cta_label">I acknowledge the Cancellation Policy</field>
+            <field name="page_url">/cancellation-policy</field>
+            <field name="applies_to">both</field>
+            <field name="required" eval="True"/>
+            <field name="sequence" type="int">30</field>
+        </record>
+    </data>
+</odoo>

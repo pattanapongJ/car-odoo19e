@@ -43,3 +43,9 @@ access_bs_car_stat_manager,bs.car.stat.manager,model_bs_car_stat,bs_car_booking.
 access_bs_car_stat_public,bs.car.stat.public,model_bs_car_stat,,1,0,0,0
 access_bs_car_booking_otp_purpose_user,bs.car.booking.otp.purpose.user,model_bs_car_booking_otp_purpose,base.group_user,1,0,0,0
 access_bs_car_booking_otp_purpose_manager,bs.car.booking.otp.purpose.manager,model_bs_car_booking_otp_purpose,base.group_system,1,1,1,1
+access_bs_car_document_type_public,bs.car.document.type.public,model_bs_car_document_type,,1,0,0,0
+access_bs_car_document_type_manager,bs.car.document.type.manager,model_bs_car_document_type,base.group_system,1,1,1,1
+access_bs_car_agreement_public,bs.car.agreement.public,model_bs_car_agreement,,1,0,0,0
+access_bs_car_agreement_manager,bs.car.agreement.manager,model_bs_car_agreement,base.group_system,1,1,1,1
+access_bs_car_booking_document_user,bs.car.booking.document.user,model_bs_car_booking_document,base.group_user,1,1,1,1
+access_bs_car_booking_agreement_user,bs.car.booking.agreement.user,model_bs_car_booking_agreement,base.group_user,1,1,1,1

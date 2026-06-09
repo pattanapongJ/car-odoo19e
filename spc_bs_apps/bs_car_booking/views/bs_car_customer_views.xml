@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ===== Document Types ===== -->
+    <record id="view_bs_car_document_type_list" model="ir.ui.view">
+        <field name="name">bs.car.document.type.list</field>
+        <field name="model">bs.car.document.type</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="applies_to"/>
+                <field name="required"/>
+                <field name="help_text"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_bs_car_document_type" model="ir.actions.act_window">
+        <field name="name">Document Types</field>
+        <field name="res_model">bs.car.document.type</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Define a document customers must provide</p>
+            <p>Set <b>Applies To</b> (Individual / Company / Both) and <b>Required</b>.
+               The booking form asks for these on the customer-info step.</p>
+        </field>
+    </record>
+    <menuitem id="menu_bs_car_document_type"
+              name="Document Types"
+              parent="menu_bs_car_booking_master"
+              action="action_bs_car_document_type"
+              sequence="47"/>
+
+    <!-- ===== Agreements ===== -->
+    <record id="view_bs_car_agreement_list" model="ir.ui.view">
+        <field name="name">bs.car.agreement.list</field>
+        <field name="model">bs.car.agreement</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="cta_label"/>
+                <field name="page_url"/>
+                <field name="applies_to"/>
+                <field name="required"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_bs_car_agreement" model="ir.actions.act_window">
+        <field name="name">Agreements</field>
+        <field name="res_model">bs.car.agreement</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Define an agreement the customer must accept</p>
+            <p>Each shows as a checkbox on the booking form, linking to its policy page
+               (e.g. <b>/terms</b>). Required ones must be ticked to continue.</p>
+        </field>
+    </record>
+    <menuitem id="menu_bs_car_agreement"
+              name="Agreements"
+              parent="menu_bs_car_booking_master"
+              action="action_bs_car_agreement"
+              sequence="48"/>
+
+    <!-- ===== Booking form: Customer type + Documents/Agreements tabs ===== -->
+    <record id="view_bs_car_booking_form_customer" model="ir.ui.view">
+        <field name="name">bs.car.booking.form.customer</field>
+        <field name="model">bs.car.booking</field>
+        <field name="inherit_id" ref="view_bs_car_booking_form"/>
+        <field name="arch" type="xml">
+            <!-- show customer type + company fields next to the name -->
+            <field name="customer_name" position="before">
+                <field name="customer_type"/>
+                <field name="company_name" invisible="customer_type != 'company'"/>
+                <field name="tax_id" invisible="customer_type != 'company'"/>
+                <field name="contact_person" invisible="customer_type != 'company'"/>
+            </field>
+            <!-- add Documents + Agreements pages to the notebook -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Documents">
+                    <field name="document_ids">
+                        <list>
+                            <field name="document_type_id"/>
+                            <field name="filename"/>
+                            <field name="uploaded_date"/>
+                            <field name="attachment" filename="filename" widget="binary"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Agreements">
+                    <field name="agreement_ids">
+                        <list>
+                            <field name="agreement_id"/>
+                            <field name="accepted"/>
+                            <field name="accepted_date"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

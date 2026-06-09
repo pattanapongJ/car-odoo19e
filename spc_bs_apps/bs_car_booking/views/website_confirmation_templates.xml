@@ -71,24 +71,68 @@
                         <form id="bs_info_form" class="info_form"
                               t-att-data-booking-id="booking.id"
                               t-att-data-access-token="access_token">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Full Name *</label>
-                                    <input type="text" name="customer_name" class="form-control form-control-lg"
-                                           t-att-value="booking.customer_name or ''"
-                                           placeholder="Your full name" required="required"/>
+                            <!-- Customer type -->
+                            <div class="info_type_toggle mb-4">
+                                <label class="form-label d-block">This booking is for *</label>
+                                <div class="btn-group" role="group" aria-label="Customer type">
+                                    <input type="radio" class="btn-check" name="customer_type" id="ct_individual"
+                                           value="individual" checked="checked"/>
+                                    <label class="btn btn-outline-primary" for="ct_individual">
+                                        <i class="fa fa-user me-1"/> Individual
+                                    </label>
+                                    <input type="radio" class="btn-check" name="customer_type" id="ct_company"
+                                           value="company"/>
+                                    <label class="btn btn-outline-primary" for="ct_company">
+                                        <i class="fa fa-building me-1"/> Company
+                                    </label>
                                 </div>
+                            </div>
+
+                            <!-- Individual fields -->
+                            <div data-type-group="individual">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Full Name *</label>
+                                        <input type="text" name="customer_name" class="form-control form-control-lg"
+                                               t-att-value="booking.customer_name or ''" placeholder="Your full name"/>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">NRC / ID Number *</label>
+                                        <input type="text" name="customer_nrc" class="form-control form-control-lg"
+                                               t-att-value="booking.customer_nrc or ''" placeholder="ID / NRC"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Company fields -->
+                            <div data-type-group="company" class="d-none">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Company Name *</label>
+                                        <input type="text" name="company_name" class="form-control form-control-lg"
+                                               t-att-value="booking.company_name or ''" placeholder="Registered company name"/>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Tax ID *</label>
+                                        <input type="text" name="tax_id" class="form-control form-control-lg"
+                                               t-att-value="booking.tax_id or ''" placeholder="VAT / Tax ID (on invoice)"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Contact Person *</label>
+                                        <input type="text" name="contact_person" class="form-control form-control-lg"
+                                               t-att-value="booking.contact_person or ''" placeholder="Authorised person"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Common -->
+                            <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Email</label>
                                     <input type="email" name="customer_email" class="form-control form-control-lg"
                                            t-att-value="booking.customer_email or ''" placeholder="you@email.com"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">NRC / ID Number</label>
-                                    <input type="text" name="customer_nrc" class="form-control form-control-lg"
-                                           t-att-value="booking.customer_nrc or ''" placeholder="(optional)"/>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Phone</label>
@@ -101,6 +145,44 @@
                                 <textarea name="customer_address" class="form-control" rows="2"
                                           placeholder="(optional)"><t t-esc="booking.customer_address or ''"/></textarea>
                             </div>
+
+                            <!-- Documents (the JS shows the ones for the selected type) -->
+                            <t t-if="doc_types">
+                                <h5 class="info_subhead">Documents</h5>
+                                <div class="row">
+                                    <div t-foreach="doc_types" t-as="dt"
+                                         class="col-md-6 mb-3 info_doc_field"
+                                         t-att-data-applies-to="dt.applies_to"
+                                         t-att-data-required="dt.required and '1' or '0'">
+                                        <label class="form-label">
+                                            <t t-esc="dt.name"/><t t-if="dt.required"> *</t>
+                                        </label>
+                                        <input type="file" class="form-control info_doc_input"
+                                               t-att-data-doc-type-id="dt.id"
+                                               accept=".pdf,.jpg,.jpeg,.png,.webp"/>
+                                        <small t-if="dt.help_text" class="text-muted d-block" t-esc="dt.help_text"/>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- Agreements -->
+                            <t t-if="agreements">
+                                <div class="info_agreements mb-3">
+                                    <div t-foreach="agreements" t-as="ag"
+                                         class="form-check info_agreement"
+                                         t-att-data-applies-to="ag.applies_to"
+                                         t-att-data-required="ag.required and '1' or '0'">
+                                        <input type="checkbox" class="form-check-input info_agree_check"
+                                               t-attf-id="agree_{{ ag.id }}" t-att-data-agreement-id="ag.id"/>
+                                        <label class="form-check-label" t-attf-for="agree_{{ ag.id }}">
+                                            <t t-esc="ag.cta_label"/>
+                                            <a t-if="ag.page_url" t-att-href="ag.page_url"
+                                               target="_blank" rel="noopener">(read)</a>
+                                        </label>
+                                    </div>
+                                </div>
+                            </t>
+
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary btn-lg info_submit_btn">
                                     Continue to Deposit <i class="fa fa-arrow-right"/>

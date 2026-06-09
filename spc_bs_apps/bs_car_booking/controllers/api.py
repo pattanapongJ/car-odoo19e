@@ -98,10 +98,17 @@ class BsCarBookingAPI(http.Controller):
             return {'success': False, 'error': str(e)}
 
     # ── Customer info step ──────────────────────────────────────────────
+    # Max upload size per document (bytes) — guards against abuse.
+    _MAX_DOC_BYTES = 10 * 1024 * 1024
+
     @http.route('/shop/booking/info', type='jsonrpc', auth='public', website=True, methods=['POST'])
-    def booking_info(self, booking_id, access_token=None, name=None, email=None,
-                     nrc=None, address=None, **kw):
-        """Save customer info, create the partner + sale order, go to deposit."""
+    def booking_info(self, booking_id, access_token=None, customer_type=None,
+                     name=None, email=None, nrc=None, address=None,
+                     company_name=None, tax_id=None, contact_person=None,
+                     documents=None, agreements=None, **kw):
+        """Save customer info (individual/company), uploaded documents and
+        accepted agreements; validate server-side; then create the partner +
+        sale order and move to the deposit step."""
         try:
             booking = request.env['bs.car.booking'].sudo().browse(int(booking_id))
             if not booking.exists():
@@ -112,14 +119,62 @@ class BsCarBookingAPI(http.Controller):
                 return {'success': False, 'error': 'This booking is not ready for customer info.'}
             if not booking.phone_verified:
                 return {'success': False, 'error': 'Please verify your phone first.'}
-            if not name or not name.strip():
-                return {'success': False, 'error': 'Full name is required.'}
+
+            ctype = customer_type if customer_type in ('individual', 'company') else 'individual'
             booking.write({
-                'customer_name': name.strip(),
+                'customer_type': ctype,
+                'customer_name': (name or '').strip(),
                 'customer_email': (email or '').strip(),
                 'customer_nrc': (nrc or '').strip(),
                 'customer_address': (address or '').strip(),
+                'company_name': (company_name or '').strip(),
+                'tax_id': (tax_id or '').strip(),
+                'contact_person': (contact_person or '').strip(),
             })
+
+            # --- Persist uploaded documents (base64), one per document type ---
+            Doc = request.env['bs.car.booking.document'].sudo()
+            for d in (documents or []):
+                try:
+                    dtype_id = int(d.get('document_type_id'))
+                    data = d.get('data') or ''
+                except (TypeError, ValueError):
+                    continue
+                if not data:
+                    continue
+                # data is raw base64 (the client strips the data-URL prefix).
+                if len(data) > self._MAX_DOC_BYTES * 4 // 3 + 64:
+                    return {'success': False, 'error': 'A document exceeds the 10 MB limit.'}
+                # Replace any previous upload for the same type on this booking.
+                Doc.search([('booking_id', '=', booking.id),
+                            ('document_type_id', '=', dtype_id)]).unlink()
+                Doc.create({
+                    'booking_id': booking.id,
+                    'document_type_id': dtype_id,
+                    'attachment': data,
+                    'filename': (d.get('filename') or 'document')[:200],
+                })
+
+            # --- Record accepted agreements (with timestamp, legal audit) ---
+            Agr = request.env['bs.car.booking.agreement'].sudo()
+            accepted_ids = {int(a) for a in (agreements or []) if str(a).isdigit()}
+            for agr in booking._applicable_agreements(ctype):
+                existing = Agr.search([('booking_id', '=', booking.id),
+                                       ('agreement_id', '=', agr.id)], limit=1)
+                is_accepted = agr.id in accepted_ids
+                vals = {'accepted': is_accepted}
+                if is_accepted:
+                    vals['accepted_date'] = fields.Datetime.now()
+                if existing:
+                    existing.write(vals)
+                else:
+                    Agr.create({'booking_id': booking.id, 'agreement_id': agr.id, **vals})
+
+            # --- Server-side validation (type fields + required docs + agreements) ---
+            errors = booking._missing_requirements(ctype)
+            if errors:
+                return {'success': False, 'error': ' '.join(errors)}
+
             booking._ensure_partner()
             booking._ensure_sale_order()
             booking._transition_to('payment_pending')
