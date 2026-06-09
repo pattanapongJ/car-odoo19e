@@ -69,7 +69,6 @@ Website Journey:
         'data/customer_requirements_data.xml',
 
         # Views - Backend
-        'views/bs_car_booking_otp_purpose_views.xml',
         'views/bs_car_brand_views.xml',
         'views/bs_car_model_views.xml',
         'views/bs_car_variant_views.xml',
@@ -77,6 +76,7 @@ Website Journey:
         'views/bs_car_booking_views.xml',
         'views/crm_lead_views.xml',
         'views/menu_views.xml',
+        'views/bs_car_booking_otp_purpose_views.xml',
         'views/bs_car_offer_views.xml',
         'views/bs_car_stat_views.xml',
         'views/bs_car_home_block_views.xml',
