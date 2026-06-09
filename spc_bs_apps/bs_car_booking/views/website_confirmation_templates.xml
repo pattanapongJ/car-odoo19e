@@ -70,7 +70,8 @@
                         </div>
                         <form id="bs_info_form" class="info_form"
                               t-att-data-booking-id="booking.id"
-                              t-att-data-access-token="access_token">
+                              t-att-data-access-token="access_token"
+                              t-att-data-max-mb="max_doc_mb">
                             <!-- Customer type -->
                             <div class="info_type_toggle mb-4">
                                 <label class="form-label d-block">This booking is for *</label>
@@ -149,6 +150,9 @@
                             <!-- Documents (the JS shows the ones for the selected type) -->
                             <t t-if="doc_types">
                                 <h5 class="info_subhead">Documents</h5>
+                                <p class="text-muted small mb-2">
+                                    Accepted: PDF, JPG, PNG · max <t t-esc="max_doc_mb"/> MB per file.
+                                </p>
                                 <div class="row">
                                     <div t-foreach="doc_types" t-as="dt"
                                          class="col-md-6 mb-3 info_doc_field"

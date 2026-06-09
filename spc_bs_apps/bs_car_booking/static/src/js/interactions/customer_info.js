@@ -15,6 +15,7 @@ export class CustomerInfoForm extends Interaction {
     setup() {
         this.bookingId = parseInt(this.el.dataset.bookingId || "0");
         this.accessToken = this.el.dataset.accessToken || "";
+        this.maxMb = parseInt(this.el.dataset.maxMb || "10") || 10;
         this.errorEl = this.el.querySelector("#info_error");
     }
 
@@ -91,8 +92,8 @@ export class CustomerInfoForm extends Interaction {
             const input = f.querySelector(".info_doc_input");
             const file = input && input.files && input.files[0];
             if (file) {
-                if (file.size > 10 * 1024 * 1024) {
-                    throw new Error(`"${file.name}" is larger than 10 MB.`);
+                if (file.size > this.maxMb * 1024 * 1024) {
+                    throw new Error(`"${file.name}" is larger than ${this.maxMb} MB.`);
                 }
                 docs.push({
                     document_type_id: parseInt(input.dataset.docTypeId),

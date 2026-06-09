@@ -202,12 +202,18 @@ class BsCarBookingWebsite(CustomerPortal):
         # the form shows/hides each by its `applies_to` as the customer toggles.
         doc_types = request.env['bs.car.document.type'].sudo().search([])
         agreements = request.env['bs.car.agreement'].sudo().search([])
+        ICP = request.env['ir.config_parameter'].sudo()
+        try:
+            max_doc_mb = max(int(ICP.get_param('bs_car_booking.max_doc_mb', '10')), 1)
+        except (TypeError, ValueError):
+            max_doc_mb = 10
         return request.render('bs_car_booking.booking_info_page', {
             'booking': booking,
             'access_token': booking._portal_ensure_token(),
             'account_partner': account_partner,
             'doc_types': doc_types,
             'agreements': agreements,
+            'max_doc_mb': max_doc_mb,
         })
 
     # ── Deposit payment (reuses native payment.form via sale order) ─────

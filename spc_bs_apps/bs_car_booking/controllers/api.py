@@ -5,7 +5,7 @@ import logging
 
 from werkzeug.urls import url_encode
 
-from odoo import fields, http
+from odoo import _, fields, http
 from odoo.http import request
 from odoo.tools import consteq
 from odoo.tools import format_amount
@@ -98,8 +98,15 @@ class BsCarBookingAPI(http.Controller):
             return {'success': False, 'error': str(e)}
 
     # ── Customer info step ──────────────────────────────────────────────
-    # Max upload size per document (bytes) — guards against abuse.
-    _MAX_DOC_BYTES = 10 * 1024 * 1024
+    def _max_doc_mb(self):
+        """Per-document upload limit in MB. Configurable via System Parameter
+        `bs_car_booking.max_doc_mb` (default 10)."""
+        mb = request.env['ir.config_parameter'].sudo().get_param(
+            'bs_car_booking.max_doc_mb', '10')
+        try:
+            return max(int(mb), 1)
+        except (TypeError, ValueError):
+            return 10
 
     @http.route('/shop/booking/info', type='jsonrpc', auth='public', website=True, methods=['POST'])
     def booking_info(self, booking_id, access_token=None, customer_type=None,
@@ -134,6 +141,8 @@ class BsCarBookingAPI(http.Controller):
 
             # --- Persist uploaded documents (base64), one per document type ---
             Doc = request.env['bs.car.booking.document'].sudo()
+            max_mb = self._max_doc_mb()
+            max_b64_len = (max_mb * 1024 * 1024) * 4 // 3 + 64  # base64 ~+33%
             for d in (documents or []):
                 try:
                     dtype_id = int(d.get('document_type_id'))
@@ -143,8 +152,9 @@ class BsCarBookingAPI(http.Controller):
                 if not data:
                     continue
                 # data is raw base64 (the client strips the data-URL prefix).
-                if len(data) > self._MAX_DOC_BYTES * 4 // 3 + 64:
-                    return {'success': False, 'error': 'A document exceeds the 10 MB limit.'}
+                if len(data) > max_b64_len:
+                    return {'success': False,
+                            'error': _('A document exceeds the %s MB limit.') % max_mb}
                 # Replace any previous upload for the same type on this booking.
                 Doc.search([('booking_id', '=', booking.id),
                             ('document_type_id', '=', dtype_id)]).unlink()
