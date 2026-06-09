@@ -266,7 +266,6 @@ html {
 #wrapwrap > header .o_navbar_mobile .btn-primary span {
     color: #fff !important;
 }
-
 /* ================================================================
    MOBILE STICKY HEADER — prevent Odoo scroll-hide on small screens.
    header_standard.js sets transform: translate(0,-100%) once the
@@ -275,6 +274,9 @@ html {
    stays pinned at the top the whole time. The position:fixed +
    z-index ensure it floats above the page even before o_header_affixed
    is applied by JS.
+   NOTE: no JS transform patch — transform:none!important means the
+   header never creates a stacking context, keeping the offcanvas
+   (hamburger panel) anchored to the viewport correctly.
    ================================================================ */
 @media (max-width: 991.98px) {
     #wrapwrap > header.o_header_standard {
@@ -283,21 +285,23 @@ html {
         left: 0 !important;
         right: 0 !important;
         width: 100% !important;
+        /* Cancel JS-applied translate(0,-100%) — !important beats inline style. */
         transform: none !important;
         z-index: 1050;
         transition: background-color 0.35s ease, box-shadow 0.35s ease !important;
     }
-    /* Compact bar height on mobile */
-    #wrapwrap > header .bs_brand_nav {
-        min-height: 60px !important;
+    /* Desktop nav is d-none on mobile; only o_header_mobile is shown.
+       Keep it at a consistent compact height. */
+    #wrapwrap > header .o_header_mobile {
+        min-height: 60px;
     }
-    /* Non-overlay pages: header is now out of flow (fixed), so push content
-       down to avoid it being obscured. Overlay/hero pages keep the header
-       floating on top of the full-bleed image — no padding needed there. */
+    /* Non-overlay pages: header is fixed (out of document flow), push
+       main content down so it isn't hidden behind the bar. */
     #wrapwrap:not(.o_header_overlay) > main {
         padding-top: 60px;
     }
 }
+
 
 
 .car_kicker,
