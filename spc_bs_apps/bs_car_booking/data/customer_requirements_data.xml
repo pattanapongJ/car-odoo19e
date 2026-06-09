@@ -45,7 +45,7 @@
              page_url links to the editable policy pages. -->
         <record id="agreement_terms" model="bs.car.agreement">
             <field name="name">Terms &amp; Conditions</field>
-            <field name="cta_label">I accept the Terms &amp; Conditions</field>
+            <field name="cta_label">I accept the</field>
             <field name="page_url">/terms</field>
             <field name="applies_to">both</field>
             <field name="required" eval="True"/>
@@ -53,7 +53,7 @@
         </record>
         <record id="agreement_refund" model="bs.car.agreement">
             <field name="name">Refund Policy</field>
-            <field name="cta_label">I acknowledge the Refund Policy</field>
+            <field name="cta_label">I acknowledge the</field>
             <field name="page_url">/refund-policy</field>
             <field name="applies_to">both</field>
             <field name="required" eval="True"/>
@@ -61,7 +61,7 @@
         </record>
         <record id="agreement_cancellation" model="bs.car.agreement">
             <field name="name">Cancellation Policy</field>
-            <field name="cta_label">I acknowledge the Cancellation Policy</field>
+            <field name="cta_label">I acknowledge the</field>
             <field name="page_url">/cancellation-policy</field>
             <field name="applies_to">both</field>
             <field name="required" eval="True"/>

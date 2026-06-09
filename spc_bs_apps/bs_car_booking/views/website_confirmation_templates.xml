@@ -161,9 +161,15 @@
                                         <label class="form-label">
                                             <t t-esc="dt.name"/><t t-if="dt.required"> *</t>
                                         </label>
-                                        <input type="file" class="form-control info_doc_input"
-                                               t-att-data-doc-type-id="dt.id"
-                                               accept=".pdf,.jpg,.jpeg,.png,.webp"/>
+                                        <div class="input-group">
+                                            <input type="file" class="form-control info_doc_input"
+                                                   t-att-data-doc-type-id="dt.id"
+                                                   accept=".pdf,.jpg,.jpeg,.png,.webp"/>
+                                            <button type="button" class="btn btn-outline-secondary info_doc_clear d-none"
+                                                    title="Remove file" aria-label="Remove file">
+                                                <i class="fa fa-times"/>
+                                            </button>
+                                        </div>
                                         <small t-if="dt.help_text" class="text-muted d-block" t-esc="dt.help_text"/>
                                     </div>
                                 </div>
@@ -180,9 +186,12 @@
                                                t-attf-id="agree_{{ ag.id }}" t-att-data-agreement-id="ag.id"/>
                                         <label class="form-check-label" t-attf-for="agree_{{ ag.id }}">
                                             <t t-esc="ag.cta_label"/>
-                                            <a t-if="ag.page_url" t-att-href="ag.page_url"
-                                               target="_blank" rel="noopener">(read)</a>
                                         </label>
+                                        <!-- Policy name itself is the link (opens in a new tab; sits
+                                             outside the label so it doesn't toggle the checkbox). -->
+                                        <a t-if="ag.page_url" class="bs_policy_link" t-att-href="ag.page_url"
+                                           target="_blank" rel="noopener" t-esc="ag.name"/>
+                                        <span t-else="" class="bs_policy_name" t-esc="ag.name"/>
                                     </div>
                                 </div>
                             </t>

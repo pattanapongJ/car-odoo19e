@@ -3539,3 +3539,17 @@ html {
     margin-top: 22px;
     color: var(--car-text-secondary, #666);
 }
+
+/* ===== Customer-info: agreement policy links + doc remove button ===== */
+.info_agreement { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px; }
+.info_agreement .form-check-input { margin-top: 0.3rem; }
+.info_agreement .bs_policy_link {
+    color: var(--car-accent, #b3261e);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.info_agreement .bs_policy_link:hover { color: var(--car-accent-hover, #8a0f10); }
+.info_agreement .bs_policy_name { font-weight: 600; }
+/* Document "remove" (×) button sits flush with the file input. */
+.info_doc_field .info_doc_clear { flex: 0 0 auto; }

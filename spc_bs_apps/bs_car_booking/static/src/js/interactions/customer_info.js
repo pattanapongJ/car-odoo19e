@@ -29,6 +29,20 @@ export class CustomerInfoForm extends Interaction {
         );
         this._applyType(this._currentType());
 
+        // File "remove" buttons: show once a file is chosen; clear on click.
+        this.el.querySelectorAll(".info_doc_input").forEach((input) =>
+            input.addEventListener("change", () => this._toggleClear(input))
+        );
+        this.el.querySelectorAll(".info_doc_clear").forEach((btn) =>
+            btn.addEventListener("click", () => {
+                const input = btn.closest(".input-group")?.querySelector(".info_doc_input");
+                if (input) {
+                    input.value = "";
+                    this._toggleClear(input);
+                }
+            })
+        );
+
         // Optional: prefill from the logged-in account (button is outside the form).
         const useBtn = document.getElementById("info_use_my_details");
         if (useBtn) {
@@ -47,6 +61,13 @@ export class CustomerInfoForm extends Interaction {
     _currentType() {
         const checked = this.el.querySelector('input[name="customer_type"]:checked');
         return checked ? checked.value : "individual";
+    }
+
+    _toggleClear(input) {
+        const btn = input.closest(".input-group")?.querySelector(".info_doc_clear");
+        if (btn) {
+            btn.classList.toggle("d-none", !(input.files && input.files.length));
+        }
     }
 
     _matches(el, type) {
