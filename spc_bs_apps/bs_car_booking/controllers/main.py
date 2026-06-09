@@ -194,6 +194,10 @@ class BsCarBookingWebsite(CustomerPortal):
             return request.redirect(self._booking_step_url(booking, 'confirmation'))
         if not booking.phone_verified:
             return request.redirect(self._booking_step_url(booking, 'verify'))
+        # Once paid/confirmed the info is locked — pressing Back must not land on
+        # an editable form (the payment step already guards this the same way).
+        if booking.state in ('confirmed', 'in_production', 'ready_delivery', 'delivered'):
+            return request.redirect(self._booking_step_url(booking, 'confirmation'))
         # Offer (explicit opt-in) to fill the form from the logged-in user's
         # own account — never auto-filled, to avoid leaking PII on a shared device.
         user = request.env.user
