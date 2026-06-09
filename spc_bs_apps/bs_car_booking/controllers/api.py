@@ -41,13 +41,16 @@ class BsCarBookingAPI(http.Controller):
         ptav_ids = [int(p) for p in (ptav_ids or [])]
         combo = request.env['product.template.attribute.value'].sudo().browse(ptav_ids)
         combo = combo.exists().filtered(lambda p: p.product_tmpl_id == tmpl)
-        info = tmpl.sudo()._get_combination_info(combination=combo)
-        price = info.get('price') or 0.0
+        # Price = template list price + each selected value's price_extra (set by
+        # action_generate_product). Computed directly from product-core fields so
+        # we don't depend on website_sale's _get_combination_info (no shop here).
+        list_price = tmpl.list_price or 0.0
+        price = list_price + sum(combo.mapped('price_extra'))
         return {
             'success': True,
             'price': price,
             'price_formatted': format_amount(request.env, price, currency),
-            'list_price': info.get('list_price'),
+            'list_price': list_price,
             'currency_id': currency.id,
         }
 
