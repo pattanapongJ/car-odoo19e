@@ -178,7 +178,7 @@
                                 </div>
                                 <hr/>
                                 <a t-if="booking.state not in ('confirmed','in_production','ready_delivery','delivered','cancelled','expired')"
-                                   t-att-href="'/booking/%s/payment' % booking.id"
+                                   t-att-href="'/booking/%s/payment?access_token=%s' % (booking.id, access_token)"
                                    class="btn btn-success w-100">
                                     <i class="fa fa-credit-card"/> Pay Deposit
                                 </a>

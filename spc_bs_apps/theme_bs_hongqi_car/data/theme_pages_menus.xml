@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="hongqi_home_view" model="theme.ir.ui.view">
+            <field name="name">Hongqi Car Home</field>
+            <field name="key">theme_bs_hongqi_car.hongqi_home</field>
+            <field name="type">qweb</field>
+            <field name="arch" type="xml">
+                <t t-name="theme_bs_hongqi_car.hongqi_home">
+                    <t t-call="website.layout">
+                        <t t-set="title">Hongqi Thailand</t>
+                        <t t-set="bs_hero_overlay" t-value="True"/>
+                        <div id="wrap">
+                            <!-- Data-driven sections (managed via backend Section records, NOT the
+                                 builder). They use t-call, so they must NOT sit inside an oe_structure
+                                 or the editor turns the whole region read-only. -->
+                            <t t-call="bs_car_booking.home_sections_content"/>
+                            <!-- Builder drop zone: free-form Odoo snippets can be dropped/saved here
+                                 (per website), while the cinematic sections above stay data-driven. -->
+                            <div class="oe_structure" id="oe_structure_hongqi_home"/>
+                        </div>
+                    </t>
+                </t>
+            </field>
+        </record>
+        <record id="hongqi_home_page" model="theme.website.page">
+            <field name="url">/showroom</field>
+            <field name="view_id" ref="hongqi_home_view"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="privacy_policy_view" model="theme.ir.ui.view">
+            <field name="name">Hongqi Privacy Policy</field>
+            <field name="key">theme_bs_hongqi_car.privacy_policy</field>
+            <field name="type">qweb</field>
+            <field name="arch" type="xml">
+                <t t-name="theme_bs_hongqi_car.privacy_policy">
+                    <t t-call="website.layout">
+                        <t t-set="title">Privacy Policy</t>
+                        <div id="wrap" class="oe_structure">
+                            <section class="container py-5">
+                                <h1>Privacy Policy</h1>
+                                <p>This page explains how customer information is collected and used during the vehicle booking journey.</p>
+                                <p>Update this page in Website Builder before using it in production.</p>
+                            </section>
+                        </div>
+                    </t>
+                </t>
+            </field>
+        </record>
+        <record id="privacy_policy_page" model="theme.website.page">
+            <field name="url">/privacy</field>
+            <field name="view_id" ref="privacy_policy_view"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="terms_view" model="theme.ir.ui.view">
+            <field name="name">Hongqi Terms</field>
+            <field name="key">theme_bs_hongqi_car.terms</field>
+            <field name="type">qweb</field>
+            <field name="arch" type="xml">
+                <t t-name="theme_bs_hongqi_car.terms">
+                    <t t-call="website.layout">
+                        <t t-set="title">Terms and Conditions</t>
+                        <div id="wrap" class="oe_structure">
+                            <section class="container py-5">
+                                <h1>Terms and Conditions</h1>
+                                <p>These terms govern vehicle reservations and booking deposit payments.</p>
+                            </section>
+                        </div>
+                    </t>
+                </t>
+            </field>
+        </record>
+        <record id="terms_page" model="theme.website.page">
+            <field name="url">/terms</field>
+            <field name="view_id" ref="terms_view"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="refund_policy_view" model="theme.ir.ui.view">
+            <field name="name">Hongqi Refund Policy</field>
+            <field name="key">theme_bs_hongqi_car.refund_policy</field>
+            <field name="type">qweb</field>
+            <field name="arch" type="xml">
+                <t t-name="theme_bs_hongqi_car.refund_policy">
+                    <t t-call="website.layout">
+                        <t t-set="title">Refund Policy</t>
+                        <div id="wrap" class="oe_structure">
+                            <section class="container py-5">
+                                <h1>Refund Policy</h1>
+                                <p>This policy explains when and how a booking deposit may be refunded.</p>
+                            </section>
+                        </div>
+                    </t>
+                </t>
+            </field>
+        </record>
+        <record id="refund_policy_page" model="theme.website.page">
+            <field name="url">/refund-policy</field>
+            <field name="view_id" ref="refund_policy_view"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="cancellation_policy_view" model="theme.ir.ui.view">
+            <field name="name">Hongqi Cancellation Policy</field>
+            <field name="key">theme_bs_hongqi_car.cancellation_policy</field>
+            <field name="type">qweb</field>
+            <field name="arch" type="xml">
+                <t t-name="theme_bs_hongqi_car.cancellation_policy">
+                    <t t-call="website.layout">
+                        <t t-set="title">Cancellation Policy</t>
+                        <div id="wrap" class="oe_structure">
+                            <section class="container py-5">
+                                <h1>Cancellation Policy</h1>
+                                <p>This policy explains booking cancellation handling before and after dealer confirmation.</p>
+                            </section>
+                        </div>
+                    </t>
+                </t>
+            </field>
+        </record>
+        <record id="cancellation_policy_page" model="theme.website.page">
+            <field name="url">/cancellation-policy</field>
+            <field name="view_id" ref="cancellation_policy_view"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="contact_us_view" model="theme.ir.ui.view">
+            <field name="name">Hongqi Contact Us</field>
+            <field name="key">theme_bs_hongqi_car.contact_us</field>
+            <field name="type">qweb</field>
+            <field name="arch" type="xml">
+                <t t-name="theme_bs_hongqi_car.contact_us">
+                    <t t-call="website.layout">
+                        <t t-set="title">Contact Hongqi Thailand</t>
+                        <div id="wrap" class="oe_structure">
+                            <section class="bs_contact_page">
+                                <div class="container">
+                                    <div class="bs_contact_shell">
+                                        <div class="bs_contact_intro">
+                                            <img class="bs_contact_logo"
+                                                 src="/theme_bs_hongqi_car/static/src/img/brand/logo_white_gold.png"
+                                                 alt="Hongqi Metro Group"/>
+                                            <span class="car_kicker">Connect With Us</span>
+                                            <h1>Registration / Contact Us</h1>
+                                            <p>
+                                                กรุณาเลือกหัวข้อที่ท่านสนใจและกรอกข้อมูลด้านล่าง<br/>
+                                                Please select your interest and fill out the details below.
+                                            </p>
+                                        </div>
+
+                                        <section class="s_website_form bs_contact_form" data-vcss="001" data-snippet="s_website_form">
+                                            <form id="hongqi_contact_form"
+                                                  action="/website/form/"
+                                                  method="post"
+                                                  enctype="multipart/form-data"
+                                                  class="o_mark_required"
+                                                  data-mark="*"
+                                                  data-model_name="crm.lead"
+                                                  data-success-mode="message"
+                                                  data-success-page="/contactus-thank-you"
+                                                  data-pre-fill="true">
+                                                <input type="hidden" class="s_website_form_input" name="description" value="Submitted from Hongqi Thailand contact page."/>
+                                                <div class="s_website_form_rows row s_col_no_bgcolor">
+                                                    <div class="mb-4 col-12">
+                                                        <div class="bs_contact_topics">
+                                                            <div class="bs_contact_topic">
+                                                                <input class="s_website_form_input bs_contact_radio"
+                                                                       type="radio"
+                                                                       name="name"
+                                                                       id="topic_catalog"
+                                                                       value="Request E-Catalog"
+                                                                       required="1"
+                                                                       checked="checked"/>
+                                                                <label for="topic_catalog">
+                                                                    <strong>รับ E-Catalog / Request E-Catalog</strong>
+                                                                    <span>ระบบจะส่งลิงก์ดาวน์โหลด E-Catalog ไปยังอีเมลของท่านโดยอัตโนมัติ (Automated email)</span>
+                                                                </label>
+                                                            </div>
+                                                            <div class="bs_contact_topic">
+                                                                <input class="s_website_form_input bs_contact_radio"
+                                                                       type="radio"
+                                                                       name="name"
+                                                                       id="topic_dealer"
+                                                                       value="Dealership Application"
+                                                                       required="1"/>
+                                                                <label for="topic_dealer">
+                                                                    <strong>สมัครเป็นผู้แทนจำหน่าย / Dealership Application</strong>
+                                                                </label>
+                                                            </div>
+                                                            <div class="bs_contact_topic">
+                                                                <input class="s_website_form_input bs_contact_radio"
+                                                                       type="radio"
+                                                                       name="name"
+                                                                       id="topic_job"
+                                                                       value="Job Application"
+                                                                       required="1"/>
+                                                                <label for="topic_job">
+                                                                    <strong>สมัครงาน / Job Application</strong>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div data-name="Field"
+                                                         class="s_website_form_field mb-4 col-md-6 s_website_form_required"
+                                                         data-type="char"
+                                                         data-translated-name="Full Name">
+                                                        <label class="form-label" for="contact_name">ชื่อ-นามสกุล / Full Name <span class="text-danger">*</span></label>
+                                                        <input class="form-control s_website_form_input bs_contact_input"
+                                                               type="text"
+                                                               name="contact_name"
+                                                               required="1"
+                                                               id="contact_name"
+                                                               placeholder="ชื่อ-นามสกุล / John Doe"/>
+                                                    </div>
+                                                    <div data-name="Field"
+                                                         class="s_website_form_field mb-4 col-md-6 s_website_form_required"
+                                                         data-type="tel"
+                                                         data-translated-name="Phone Number">
+                                                        <label class="form-label" for="phone">เบอร์โทรศัพท์ / Phone Number <span class="text-danger">*</span></label>
+                                                        <input class="form-control s_website_form_input bs_contact_input"
+                                                               type="tel"
+                                                               name="phone"
+                                                               required="1"
+                                                               id="phone"
+                                                               placeholder="08X-XXX-XXXX / +66"/>
+                                                    </div>
+
+                                                    <div data-name="Field"
+                                                         class="s_website_form_field mb-4 col-md-6"
+                                                         data-type="char"
+                                                         data-translated-name="Line ID">
+                                                        <label class="form-label" for="line_id">Line ID</label>
+                                                        <input class="form-control s_website_form_input bs_contact_input"
+                                                               type="text"
+                                                               name="Line ID"
+                                                               id="line_id"
+                                                               placeholder="Line ID (Optional)"/>
+                                                    </div>
+                                                    <div data-name="Field"
+                                                         class="s_website_form_field mb-4 col-md-6 s_website_form_required"
+                                                         data-type="email"
+                                                         data-translated-name="Email">
+                                                        <label class="form-label" for="email_from">อีเมล / Email <span class="text-danger">*</span></label>
+                                                        <input class="form-control s_website_form_input bs_contact_input"
+                                                               type="email"
+                                                               name="email_from"
+                                                               required="1"
+                                                               id="email_from"
+                                                               placeholder="example@email.com"/>
+                                                    </div>
+
+                                                    <div data-name="Field"
+                                                         class="s_website_form_field mb-4 col-md-6"
+                                                         data-type="char"
+                                                         data-translated-name="Proposed Location">
+                                                        <label class="form-label" for="proposed_location">ทำเลที่สนใจ / Proposed Location</label>
+                                                        <input class="form-control s_website_form_input bs_contact_input"
+                                                               type="text"
+                                                               name="Proposed Location"
+                                                               id="proposed_location"
+                                                               placeholder="Bangkok, Chiang Mai, Phuket..."/>
+                                                    </div>
+                                                    <div data-name="Field"
+                                                         class="s_website_form_field mb-4 col-md-6"
+                                                         data-type="binary"
+                                                         data-translated-name="Attachment">
+                                                        <label class="form-label" for="contact_attachment">แนบไฟล์ / Attachment</label>
+                                                        <input class="form-control s_website_form_input bs_contact_input"
+                                                               type="file"
+                                                               name="Attachment"
+                                                               id="contact_attachment"
+                                                               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"/>
+                                                    </div>
+
+                                                    <div class="mb-5 col-12">
+                                                        <div class="bs_contact_consent">
+                                                            <input class="s_website_form_input"
+                                                                   type="checkbox"
+                                                                   name="Privacy Consent"
+                                                                   value="Accepted"
+                                                                   required="1"
+                                                                   id="privacy_consent"/>
+                                                            <label for="privacy_consent">
+                                                                ข้าพเจ้ายินยอมให้ <strong>Metro Group</strong> เก็บรวบรวมและใช้ข้อมูลส่วนบุคคล เพื่อการติดต่อกลับและนำเสนอข้อมูล ตาม
+                                                                <a href="/privacy">นโยบายความเป็นส่วนตัว</a> <span class="text-danger">*</span><br/>
+                                                                I consent to data collection for communication purposes in accordance with the
+                                                                <a href="/privacy">Privacy Policy</a>. <span class="text-danger">*</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-12 s_website_form_submit" data-name="Submit Button">
+                                                        <a href="#" role="button" class="btn bs_contact_submit s_website_form_send">ตกลง / Submit</a>
+                                                        <span id="s_website_form_result" class="me-2 small text-danger"/>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                            <div class="s_website_form_end_message d-none">
+                                                <div class="oe_structure">
+                                                    <section class="bs_contact_success text-center">
+                                                        <i class="fa fa-check-circle fa-4x mb-4" role="img" aria-hidden="true" title="Success"/>
+                                                        <h2>ส่งข้อมูลสำเร็จ! / Successfully Submitted!</h2>
+                                                        <p>ทีมงานของเราจะติดต่อกลับหาท่านโดยเร็วที่สุด<br/>Our team will get back to you as soon as possible.</p>
+                                                    </section>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </t>
+                </t>
+            </field>
+        </record>
+        <record id="contact_us_page" model="theme.website.page">
+            <field name="url">/contactus</field>
+            <field name="view_id" ref="contact_us_view"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="about_us_view" model="theme.ir.ui.view">
+            <field name="name">Hongqi About Us</field>
+            <field name="key">theme_bs_hongqi_car.about_us</field>
+            <field name="type">qweb</field>
+            <field name="arch" type="xml">
+                <t t-name="theme_bs_hongqi_car.about_us">
+                    <t t-call="website.layout">
+                        <t t-set="title">About Hongqi Thailand</t>
+                        <div id="wrap" class="oe_structure">
+                            <section class="bs_about_page">
+                                <div class="container">
+                                    <span class="car_kicker">Metro Group Presents</span>
+                                    <h1>Hongqi Thailand</h1>
+                                    <p>Official HONGQI dealer in Thailand by Metro Group, presenting flagship luxury with heritage-led design and modern electric performance.</p>
+                                </div>
+                            </section>
+                        </div>
+                    </t>
+                </t>
+            </field>
+        </record>
+        <record id="about_us_page" model="theme.website.page">
+            <field name="url">/about-us</field>
+            <field name="view_id" ref="about_us_view"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="menu_website_home" model="theme.website.menu">
+            <field name="name">Home</field>
+            <field name="url">/showroom</field>
+            <field name="sequence">5</field>
+        </record>
+        <record id="menu_website_cars" model="theme.website.menu">
+            <field name="name">Models</field>
+            <field name="url">/cars</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="menu_website_compare" model="theme.website.menu">
+            <field name="name">Compare</field>
+            <field name="url">/compare</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="menu_website_stories" model="theme.website.menu">
+            <field name="name">Stories</field>
+            <field name="url">/stories</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="menu_website_track" model="theme.website.menu">
+            <field name="name">Track Booking</field>
+            <field name="url">/track</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="menu_website_about" model="theme.website.menu">
+            <field name="name">About Us</field>
+            <field name="url">/about-us</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="menu_website_contact" model="theme.website.menu">
+            <field name="name">Contact Us</field>
+            <field name="url">/contactus</field>
+            <field name="sequence">60</field>
+        </record>
+    </data>
+</odoo>

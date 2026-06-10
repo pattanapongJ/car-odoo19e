@@ -11,7 +11,9 @@ class BsCarModelOption(models.Model):
     product.template.attribute.value records with price_extra set."""
     _name = 'bs.car.model.option'
     _description = 'Car Model Option'
+    _inherit = ['bs.car.website.scope.mixin']
     _order = 'attribute_sequence, sequence, id'
+    _bs_clear_website_cache_on_write = True
 
     model_id = fields.Many2one('bs.car.model', string='Car Model',
                                required=True, ondelete='cascade', index=True)
@@ -19,7 +21,7 @@ class BsCarModelOption(models.Model):
                                required=True, ondelete='cascade')
     attribute_id = fields.Many2one('product.attribute', related='value_id.attribute_id',
                                    string='Attribute', store=True, index=True)
-    attribute_name = fields.Char(related='attribute_id.name', string='Attribute Name', store=True)
+    attribute_name = fields.Char(related='attribute_id.name', string='Attribute Name')
     attribute_sequence = fields.Integer(
         related='attribute_id.sequence', string='Attribute Sequence', store=True)
     sequence = fields.Integer(string='Option Sequence', default=10)

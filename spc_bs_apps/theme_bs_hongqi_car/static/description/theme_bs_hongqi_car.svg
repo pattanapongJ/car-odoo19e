@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1944" viewBox="0 0 720 1944" role="img" aria-label="Hongqi car dealer theme preview">
+  <defs>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101216"/>
+      <stop offset="0.48" stop-color="#23262c"/>
+      <stop offset="1" stop-color="#7b1116"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#d7b46a"/>
+      <stop offset="1" stop-color="#f2dd9b"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#000000" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+  <rect width="720" height="1944" fill="#f5f3ef"/>
+  <rect width="720" height="720" fill="url(#hero)"/>
+  <rect y="720" width="720" height="1224" fill="#f7f5f1"/>
+
+  <g transform="translate(52 44)">
+    <rect width="616" height="64" rx="0" fill="#ffffff" opacity="0.92"/>
+    <rect x="22" y="18" width="34" height="28" rx="3" fill="#8b1118"/>
+    <rect x="66" y="24" width="98" height="16" rx="8" fill="#1b1f25"/>
+    <rect x="424" y="24" width="42" height="14" rx="7" fill="#8b8f97"/>
+    <rect x="484" y="24" width="42" height="14" rx="7" fill="#8b8f97"/>
+    <rect x="544" y="18" width="48" height="26" rx="13" fill="#8b1118"/>
+  </g>
+
+  <g transform="translate(72 180)">
+    <rect width="118" height="18" rx="9" fill="url(#gold)"/>
+    <rect y="48" width="430" height="58" rx="8" fill="#ffffff" opacity="0.94"/>
+    <rect y="122" width="506" height="58" rx="8" fill="#ffffff" opacity="0.86"/>
+    <rect y="214" width="292" height="18" rx="9" fill="#ffffff" opacity="0.68"/>
+    <rect y="248" width="238" height="18" rx="9" fill="#ffffff" opacity="0.48"/>
+    <rect y="316" width="152" height="48" rx="24" fill="#8b1118"/>
+    <rect x="176" y="316" width="128" height="48" rx="24" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.8"/>
+  </g>
+
+  <g transform="translate(112 510)" filter="url(#softShadow)">
+    <path d="M22 72 C66 22 160 0 282 0 L386 0 C430 0 466 22 496 64 L544 76 C560 80 570 94 570 110 L570 140 L0 140 L0 112 C0 92 8 80 22 72 Z" fill="#fafafa"/>
+    <path d="M120 62 C166 30 232 18 318 20 C360 21 392 36 418 62 Z" fill="#23262c"/>
+    <circle cx="126" cy="140" r="48" fill="#171a20"/>
+    <circle cx="444" cy="140" r="48" fill="#171a20"/>
+    <circle cx="126" cy="140" r="22" fill="#c8c4bd"/>
+    <circle cx="444" cy="140" r="22" fill="#c8c4bd"/>
+    <path d="M338 76 L526 92" stroke="#8b1118" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <g transform="translate(56 800)">
+    <rect width="608" height="86" rx="0" fill="#111419"/>
+    <rect x="28" y="26" width="142" height="18" rx="9" fill="url(#gold)"/>
+    <rect x="28" y="54" width="220" height="12" rx="6" fill="#ffffff" opacity="0.48"/>
+    <rect x="472" y="25" width="96" height="36" rx="18" fill="#8b1118"/>
+  </g>
+
+  <g transform="translate(56 934)">
+    <rect width="608" height="320" rx="0" fill="#ffffff"/>
+    <rect x="28" y="28" width="104" height="14" rx="7" fill="#8b1118"/>
+    <rect x="28" y="60" width="286" height="30" rx="8" fill="#1b1f25"/>
+    <g transform="translate(28 126)">
+      <rect width="168" height="154" rx="8" fill="#f0eee9"/>
+      <rect x="18" y="24" width="132" height="52" rx="8" fill="#22262d"/>
+      <rect x="18" y="100" width="96" height="14" rx="7" fill="#1b1f25"/>
+      <rect x="18" y="126" width="118" height="10" rx="5" fill="#9da1a8"/>
+    </g>
+    <g transform="translate(220 126)">
+      <rect width="168" height="154" rx="8" fill="#f0eee9"/>
+      <rect x="18" y="24" width="132" height="52" rx="8" fill="#8b1118"/>
+      <rect x="18" y="100" width="96" height="14" rx="7" fill="#1b1f25"/>
+      <rect x="18" y="126" width="118" height="10" rx="5" fill="#9da1a8"/>
+    </g>
+    <g transform="translate(412 126)">
+      <rect width="168" height="154" rx="8" fill="#f0eee9"/>
+      <rect x="18" y="24" width="132" height="52" rx="8" fill="#d7b46a"/>
+      <rect x="18" y="100" width="96" height="14" rx="7" fill="#1b1f25"/>
+      <rect x="18" y="126" width="118" height="10" rx="5" fill="#9da1a8"/>
+    </g>
+  </g>
+
+  <g transform="translate(56 1310)">
+    <rect width="608" height="300" rx="0" fill="#171a20"/>
+    <rect x="32" y="42" width="142" height="16" rx="8" fill="url(#gold)"/>
+    <rect x="32" y="78" width="340" height="34" rx="8" fill="#ffffff" opacity="0.9"/>
+    <rect x="32" y="132" width="248" height="14" rx="7" fill="#ffffff" opacity="0.48"/>
+    <rect x="32" y="164" width="290" height="14" rx="7" fill="#ffffff" opacity="0.36"/>
+    <rect x="396" y="48" width="164" height="206" rx="8" fill="#f7f5f1"/>
+    <circle cx="478" cy="120" r="36" fill="#8b1118"/>
+    <rect x="432" y="178" width="92" height="12" rx="6" fill="#1b1f25"/>
+    <rect x="432" y="204" width="86" height="10" rx="5" fill="#9da1a8"/>
+  </g>
+
+  <g transform="translate(56 1668)">
+    <rect width="608" height="176" rx="0" fill="#ffffff"/>
+    <rect x="32" y="34" width="118" height="14" rx="7" fill="#8b1118"/>
+    <rect x="32" y="68" width="248" height="28" rx="8" fill="#1b1f25"/>
+    <rect x="32" y="118" width="182" height="14" rx="7" fill="#9da1a8"/>
+    <rect x="400" y="44" width="144" height="88" rx="8" fill="#f0eee9"/>
+    <path d="M424 106 L462 74 L492 96 L516 66 L544 106 Z" fill="#8b1118"/>
+  </g>
+</svg>

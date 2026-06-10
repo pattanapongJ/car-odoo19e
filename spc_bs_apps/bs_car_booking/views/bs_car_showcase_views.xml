@@ -4,7 +4,7 @@
         <field name="name">bs.car.showcase.item.list</field>
         <field name="model">bs.car.showcase.item</field>
         <field name="arch" type="xml">
-            <list editable="bottom">
+            <list>
                 <field name="sequence" widget="handle"/>
                 <field name="model_id"/>
                 <field name="item_type"/>
@@ -22,16 +22,22 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Highlight title, colour name, or slide caption"/></h1>
+                        <h3>
+                            <field name="subtitle" placeholder="Short kicker / supporting line"/>
+                        </h3>
+                    </div>
                     <group>
-                        <group>
-                            <field name="name"/>
+                        <group string="Placement">
                             <field name="model_id" options="{'no_create': True}"/>
                             <field name="item_type"/>
                             <field name="sequence"/>
                             <field name="website_published"/>
                             <field name="active"/>
                         </group>
-                        <group>
+                        <group string="Main Image">
                             <field name="image" widget="image" class="oe_avatar"/>
                             <field name="image_alt"/>
                             <field name="swatch_color"
@@ -39,14 +45,49 @@
                                    placeholder="#111111"/>
                         </group>
                     </group>
-                    <group>
-                        <field name="subtitle"/>
-                        <field name="description" widget="html"/>
-                    </group>
-                    <group string="CTA">
-                        <field name="cta_label"/>
-                        <field name="cta_url"/>
-                    </group>
+                    <notebook>
+                        <page string="Content">
+                            <field name="description" widget="html" nolabel="1"
+                                   placeholder="Short website copy shown on this showcase block."/>
+                        </page>
+                        <page string="Highlight Gallery" invisible="item_type != 'highlight'">
+                            <p class="text-muted">
+                                Add close-up, wide, or alternate images for this highlight.
+                                They appear as thumbnails inside the lightbox when the card is opened.
+                            </p>
+                            <field name="highlight_image_ids" nolabel="1">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="image" widget="image"/>
+                                    <field name="name"/>
+                                    <field name="image_alt" optional="show"/>
+                                </list>
+                                <form string="Highlight Image">
+                                    <sheet>
+                                        <div class="oe_title">
+                                            <label for="name"/>
+                                            <h1><field name="name" placeholder="Close-up, wide view, rear detail..."/></h1>
+                                        </div>
+                                        <group>
+                                            <group>
+                                                <field name="sequence"/>
+                                                <field name="image_alt"/>
+                                            </group>
+                                            <group string="Image">
+                                                <field name="image" widget="image" class="oe_avatar"/>
+                                            </group>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="CTA">
+                            <group>
+                                <field name="cta_label"/>
+                                <field name="cta_url"/>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
@@ -138,13 +179,13 @@
 
     <menuitem id="menu_bs_car_showcase_item"
               name="Showcase Items"
-              parent="menu_bs_car_booking_master"
+              parent="menu_bs_car_website_content"
               action="action_bs_car_showcase_item"
-              sequence="45"/>
+              sequence="20"/>
 
     <menuitem id="menu_bs_car_story"
               name="Stories"
-              parent="menu_bs_car_booking_master"
+              parent="menu_bs_car_website_content"
               action="action_bs_car_story"
-              sequence="46"/>
+              sequence="30"/>
 </odoo>

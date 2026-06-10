@@ -2,6 +2,7 @@
 # Part of Basic Solution Co., Ltd.
 
 import json
+from urllib.parse import quote
 
 from markupsafe import Markup
 
@@ -13,11 +14,20 @@ class BsCarDealer(models.Model):
     _name = 'bs.car.dealer'
     _description = 'Car Dealer / Showroom'
     _order = 'sequence, name'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = [
+        'mail.thread',
+        'mail.activity.mixin',
+        'website.published.multi.mixin',
+        'bs.car.website.scope.mixin',
+    ]
+    _bs_clear_website_cache_on_write = True
 
     name = fields.Char(required=True, translate=True)
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
+    company_id = fields.Many2one(
+        'res.company', string='Company', default=lambda self: self.env.company,
+        index=True, help='Leave empty to share this dealer across companies.')
     
     # Contact
     partner_id = fields.Many2one('res.partner', string='Contact Partner',
@@ -46,9 +56,15 @@ class BsCarDealer(models.Model):
     brand_ids = fields.Many2many('bs.car.brand', string='Brands Available')
     
     # Website
-    website_published = fields.Boolean('Published on Website', default=True)
     maps_query = fields.Char(compute='_compute_maps_query',
                              help='Query for the "Get directions" link (lat,long or address).')
+    map_embed_url = fields.Char(compute='_compute_maps_query',
+                                help='Keyless Google Maps embed URL for the showroom map iframe.')
+    directions_url = fields.Char(compute='_compute_maps_query',
+                                 help='Google Maps directions link (opens in a new tab).')
+
+    def _default_is_published(self):
+        return True
 
     @api.depends('latitude', 'longitude', 'street', 'city', 'country_id')
     def _compute_maps_query(self):
@@ -58,6 +74,13 @@ class BsCarDealer(models.Model):
             else:
                 d.maps_query = ', '.join(
                     p for p in [d.street, d.city, d.country_id.name] if p)
+            q = quote(d.maps_query) if d.maps_query else ''
+            d.map_embed_url = (
+                'https://maps.google.com/maps?q=%s&t=m&z=14&ie=UTF8&iwloc=&output=embed' % q
+            ) if q else False
+            d.directions_url = (
+                'https://www.google.com/maps/dir/?api=1&destination=%s' % q
+            ) if q else False
 
     @api.model
     def _website_autodealer_jsonld(self):
@@ -65,7 +88,7 @@ class BsCarDealer(models.Model):
         Returns empty when rendered outside a website request (e.g. the
         builder's snippet preview via render_public_asset)."""
         try:
-            website = request.website
+            website = getattr(request, 'website', False) or self.env['website'].get_current_website()
         except (AttributeError, RuntimeError):
             website = False
         if not website:
@@ -78,7 +101,8 @@ class BsCarDealer(models.Model):
             'url': base,
         }
         departments = []
-        for d in self.sudo().search([('active', '=', True), ('website_published', '=', True)]):
+        for d in self.sudo().search(
+                [('active', '=', True), ('website_published', '=', True)] + self._public_scope_domain()):
             loc = {'@type': 'AutoDealer', 'name': d.name}
             addr = {k: v for k, v in {
                 'streetAddress': d.street, 'addressLocality': d.city,

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="bs.car.model" name="action_generate_product">
+        <value eval="ref('model_hongqi_ehs9')"/>
+    </function>
+    <function model="bs.car.model" name="action_generate_product">
+        <value eval="ref('model_hongqi_eh7')"/>
+    </function>
+    <function model="bs.car.model" name="action_generate_product">
+        <value eval="ref('model_hongqi_hs5')"/>
+    </function>
+</odoo>

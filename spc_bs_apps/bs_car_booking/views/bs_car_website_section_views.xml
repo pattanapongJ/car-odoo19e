@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bs_car_website_section_list" model="ir.ui.view">
+        <field name="name">bs.car.website.section.list</field>
+        <field name="model">bs.car.website.section</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="section_type"/>
+                <field name="brand_id" optional="show"/>
+                <field name="model_id" optional="hide"/>
+                <field name="theme_variant" optional="hide"/>
+                <field name="website_id" optional="hide"/>
+                <field name="company_id" optional="hide"/>
+                <field name="website_published" widget="boolean_toggle"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bs_car_website_section_form" model="ir.ui.view">
+        <field name="name">bs.car.website.section.form</field>
+        <field name="model">bs.car.website.section</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Homepage cover"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="section_type"/>
+                            <field name="theme_variant" widget="radio"/>
+                            <field name="website_id"/>
+                            <field name="company_id"/>
+                            <field name="website_published"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="brand_id"/>
+                            <field name="model_id"
+                                   invisible="section_type in ('brand_cover', 'latest_arrivals', 'dealer_locator')"/>
+                            <field name="image_alt"/>
+                        </group>
+                    </group>
+                    <group string="Hero Media"
+                           invisible="section_type not in ('brand_cover', 'featured_model', 'model_stage', 'cabin_story')">
+                        <group>
+                            <field name="video_filename" invisible="1"/>
+                            <field name="video_file" widget="binary" filename="video_filename"/>
+                            <field name="mobile_video_filename" invisible="1"/>
+                            <field name="mobile_video_file" widget="binary" filename="mobile_video_filename"/>
+                            <field name="video_url" placeholder="YouTube, Vimeo, or direct .mp4/.webm URL"
+                                   readonly="video_file"/>
+                        </group>
+                        <group>
+                            <field name="video_media_type" readonly="1"/>
+                            <div class="text-muted" colspan="2">
+                                Upload MP4/WebM for reliable autoplay. Add a portrait mobile video when the phone crop needs separate framing. YouTube/Vimeo are shown on desktop and fall back to the cover image on mobile.
+                            </div>
+                        </group>
+                    </group>
+                    <group string="Content">
+                        <field name="eyebrow" placeholder="Official dealer"/>
+                        <field name="title" placeholder="Brand or offer title"/>
+                        <field name="title_image" widget="image"/>
+                        <field name="title_image_alt"/>
+                        <field name="subtitle" placeholder="Short supporting copy"/>
+                        <field name="body_html" widget="html" nolabel="1" colspan="2"/>
+                    </group>
+                    <group string="Calls to Action">
+                        <group>
+                            <field name="primary_cta_label"/>
+                            <field name="primary_cta_url"/>
+                        </group>
+                        <group>
+                            <field name="secondary_cta_label"/>
+                            <field name="secondary_cta_url"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bs_car_website_section_search" model="ir.ui.view">
+        <field name="name">bs.car.website.section.search</field>
+        <field name="model">bs.car.website.section</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="brand_id"/>
+                <field name="model_id"/>
+                <filter name="published" string="Published" domain="[('website_published', '=', True), ('active', '=', True)]"/>
+                <filter name="brand_cover" string="Brand Cover" domain="[('section_type', '=', 'brand_cover')]"/>
+                <filter name="model_sections" string="Model Sections"
+                        domain="[('section_type', 'in', ['featured_model', 'model_stage', 'color_studio', 'model_specs', 'highlights', 'cabin_story'])]"/>
+                <filter name="by_website" string="Website" context="{'group_by': 'website_id'}"/>
+                <filter name="by_company" string="Company" context="{'group_by': 'company_id'}"/>
+                <filter name="by_type" string="Type" context="{'group_by': 'section_type'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bs_car_website_section" model="ir.actions.act_window">
+        <field name="name">Website Sections</field>
+        <field name="res_model">bs.car.website.section</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create website sections</p>
+            <p>Use these for data-driven home blocks such as brand covers, model lineup, dealers, offers, and stories.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_bs_car_website_section"
+              name="Website Sections"
+              parent="menu_bs_car_website_content"
+              action="action_bs_car_website_section"
+              sequence="10"/>
+</odoo>

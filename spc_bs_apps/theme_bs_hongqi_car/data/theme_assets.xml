@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="asset_hongqi_car_theme_scss" model="theme.ir.asset">
+            <field name="name">Hongqi Car Theme SCSS</field>
+            <field name="key">theme_bs_hongqi_car.asset_hongqi_car_theme_scss</field>
+            <field name="bundle">web.assets_frontend</field>
+            <field name="directive">append</field>
+            <field name="path">theme_bs_hongqi_car/static/src/scss/theme.scss</field>
+        </record>
+    </data>
+</odoo>

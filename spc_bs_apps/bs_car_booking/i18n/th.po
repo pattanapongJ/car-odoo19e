@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-06 13:52+0000\n"
-"PO-Revision-Date: 2026-06-06 13:52+0000\n"
+"POT-Creation-Date: 2026-06-10 10:07+0000\n"
+"PO-Revision-Date: 2026-06-10 10:07+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: th_TH\n"
@@ -32,17 +32,6 @@ msgid "(optional)"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_home_block_list
-msgid "(uses Featured on Home)"
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_home_block_form
-msgid "(uses the model flagged Featured on Home)"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:bs.car.offer,name:bs_car_booking.offer_zero_apr
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_offer_form
 msgid "0% APR for 36 months"
 msgstr ""
@@ -51,13 +40,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__acceleration
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__acceleration
 msgid "0-100 km/h (s)"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:bs.car.model.spec,name:bs_car_booking.spec_eh7_accel
-#: model:bs.car.model.spec,name:bs_car_booking.spec_ehs9_accel
-#: model:bs.car.model.spec,name:bs_car_booking.spec_hs5_accel
-msgid "0–100 km/h"
 msgstr ""
 
 #. module: bs_car_booking
@@ -81,31 +63,8 @@ msgid "21\" Performance Wheels"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.model,highlight_features:bs_car_booking.model_hongqi_ehs9
-msgid ""
-"548 km WLTP range\n"
-"120 kWh battery architecture\n"
-"Dual-motor output: 202 + 160 kW\n"
-"Torque: 306 + 300 N·m\n"
-"Flagship dimensions: 5209 x 2010 x 1713 mm\n"
-"3110 mm wheelbase for executive cabin space\n"
-"Panoramic sunroof, welcome lighting, and deluxe cabin layout"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:bs.car.model,highlight_features:bs_car_booking.model_hongqi_eh7
-msgid ""
-"653 km range\n"
-"Dual-motor performance\n"
-"Rear executive lounge seating\n"
-"Frameless doors and acoustic glazing"
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid ""
-"<em>Please replace this template with your organisation's official PDPA\n"
-"                                   privacy notice.</em>"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.story_detail_page
+msgid "<i class=\"fa fa-arrow-left\"/> Back to Stories"
 msgstr ""
 
 #. module: bs_car_booking
@@ -114,9 +73,21 @@ msgid "<i class=\"fa fa-arrow-left\"/> Browse More Cars"
 msgstr "<i class=\"fa fa-arrow-left\"/> ดูรถเพิ่มเติม"
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "<i class=\"fa fa-building me-1\"/> Company"
+msgstr ""
+
+#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.otp_verification_page
 msgid "<i class=\"fa fa-check\"/> Verify"
 msgstr "<i class=\"fa fa-check\"/> ยืนยัน"
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid ""
+"<i class=\"fa fa-check-circle me-1\"/>Uploaded — choose a new file to "
+"replace."
+msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_confirmation_page
@@ -126,13 +97,25 @@ msgstr "<i class=\"fa fa-credit-card\"/> ชำระเงินมัดจำ
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.dealer_locator_content
-msgid "<i class=\"fa fa-location-arrow\"/> Get directions"
-msgstr "<i class=\"fa fa-location-arrow\"/> นำทาง"
+msgid "<i class=\"fa fa-location-arrow\"/> Directions"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid ""
+"<i class=\"fa fa-lock me-1\"/>Complete the required details, documents and "
+"agreements to continue."
+msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_configurator_page
 msgid "<i class=\"fa fa-shield\"/> Continue to Verify"
 msgstr "<i class=\"fa fa-shield\"/> ดำเนินการต่อเพื่อยืนยัน"
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "<i class=\"fa fa-user me-1\"/> Individual"
+msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
@@ -159,10 +142,21 @@ msgid ""
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.finance_calculator_content
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.highlights_content
 msgid ""
-"<span class=\"bs_fin_label\">Estimated monthly</span>\n"
-"                        <span class=\"bs_fin_monthly\">—</span>"
+"<span class=\"bs_highlight_more\">\n"
+"                                    View detail <i class=\"fa fa-arrow-right\"/>\n"
+"                                </span>"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.story_detail_page
+msgid "<span class=\"bs_story_eyebrow\">Latest Story</span>"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.story_index_page
+msgid "<span class=\"bs_story_eyebrow\">Stories</span>"
 msgstr ""
 
 #. module: bs_car_booking
@@ -181,14 +175,14 @@ msgid "<span class=\"car_kicker car_kicker_dark\">Dealer network</span>"
 msgstr "<span class=\"car_kicker car_kicker_dark\">เครือข่ายผู้จำหน่าย</span>"
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.finance_calculator_content
-msgid "<span class=\"car_kicker car_kicker_dark\">Finance</span>"
-msgstr "<span class=\"car_kicker car_kicker_dark\">สินเชื่อ</span>"
-
-#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.latest_arrivals_content
 msgid "<span class=\"car_kicker car_kicker_dark\">Just landed</span>"
 msgstr "<span class=\"car_kicker car_kicker_dark\">มาใหม่</span>"
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.stories_content
+msgid "<span class=\"car_kicker car_kicker_dark\">Latest Stories</span>"
+msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_listing_page
@@ -216,24 +210,19 @@ msgid "<span class=\"car_kicker car_kicker_dark\">Specifications</span>"
 msgstr "<span class=\"car_kicker car_kicker_dark\">ข้อมูลจำเพาะ</span>"
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.showroom_home_view
-msgid "<span class=\"car_kicker car_kicker_dark\">The lineup</span>"
-msgstr "<span class=\"car_kicker car_kicker_dark\">ไลน์อัพ</span>"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
+msgid "<span class=\"car_kicker car_kicker_dark\">Standard Package</span>"
+msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
-msgid "<span class=\"car_kicker car_kicker_dark\">Trims</span>"
-msgstr "<span class=\"car_kicker car_kicker_dark\">รุ่นย่อย</span>"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.tracking_page
+msgid "<span class=\"car_kicker\">Booking Status</span>"
+msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
 msgid "<span class=\"car_kicker\">Booking deposit</span>"
 msgstr "<span class=\"car_kicker\">เงินมัดจำการจอง</span>"
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.featured_model_content
-msgid "<span class=\"car_kicker\">Featured Model</span>"
-msgstr "<span class=\"car_kicker\">รุ่นเด่น</span>"
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
@@ -244,6 +233,13 @@ msgstr "<span class=\"car_kicker\">แกลเลอรี</span>"
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_listing_page
 msgid "<span class=\"car_kicker\">Premium dealer booking</span>"
 msgstr "<span class=\"car_kicker\">การจองระดับพรีเมียม</span>"
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.brand_cover_content
+msgid ""
+"<span class=\"car_showroom_scroll_line\"/>\n"
+"                    <span class=\"car_showroom_scroll_text\">Scroll</span>"
+msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_configurator_page
@@ -339,9 +335,9 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
 msgid ""
 "<span class=\"text-muted\">\n"
-"                                    Upload an .mp4/.webm <b>or</b> paste a direct video URL (CDN) to play as a\n"
-"                                    looping hero background. The <b>Main Image</b> is used as the poster/fallback.\n"
-"                                    Keep uploads small (≈ a few MB).\n"
+"                                    Upload an .mp4/.webm or paste a direct video URL to play in the model\n"
+"                                    hero areas. Use Home Showcase only for campaign-specific stage,\n"
+"                                    highlight, and cabin story media.\n"
 "                                </span>"
 msgstr ""
 
@@ -378,7 +374,6 @@ msgstr ""
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_listing_page
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.latest_arrivals_content
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.showroom_home_view
 msgid "<span>From</span>"
 msgstr ""
 
@@ -413,8 +408,14 @@ msgid "<strong>Your Car</strong>"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.brand,heritage_title:bs_car_booking.brand_hongqi
-msgid "A flagship legacy, electrified"
+#: model:bs.car.document.type,help_text:bs_car_booking.doc_type_id_card
+msgid "A clear photo or scan of your ID card / NRC."
+msgstr ""
+
+#. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/controllers/api.py:0
+msgid "A document exceeds the %s MB limit."
 msgstr ""
 
 #. module: bs_car_booking
@@ -429,6 +430,21 @@ msgid "A sale order can only be created after phone verification."
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_agreement__accepted
+msgid "Accepted"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_agreement__accepted_date
+msgid "Accepted On"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "Accepted: PDF, JPG, PNG · max"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__access_warning
 msgid "Access warning"
 msgstr ""
@@ -440,13 +456,17 @@ msgid "Action Needed"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__active
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp_purpose__active
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__active
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__active
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_home_block__active
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__active
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__active
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__active
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__active
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__active
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__active
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__active
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__active
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_brand_search
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_search
 msgid "Active"
@@ -489,25 +509,27 @@ msgid ""
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_stat
-msgid "Add a showroom stat"
+#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_story
+msgid "Add brand stories"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.model_gallery_content
-msgid "Add gallery images to the featured car model to populate this slider."
+#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_showcase_item
+msgid "Add campaign showcase content"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_home_block
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
 msgid ""
-"Add ordered sections (hero, gallery, specs, lineup) — each can target its "
-"own car model."
+"Add close-up, wide, or alternate images for this highlight.\n"
+"                                                        They appear as thumbnails in the lightbox."
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.stats_strip_content
-msgid "Add showroom stats (Master Data → Stats) to populate this band."
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_form
+msgid ""
+"Add close-up, wide, or alternate images for this highlight.\n"
+"                                They appear as thumbnails inside the lightbox when the card is opened."
 msgstr ""
 
 #. module: bs_car_booking
@@ -528,6 +550,11 @@ msgid "Additional Notes"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_showcase_item__highlight_image_ids
+msgid "Additional images shown in the highlight lightbox."
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_model_option__price_extra
 msgid "Additional price for this option on this model."
 msgstr ""
@@ -540,6 +567,25 @@ msgid "Address"
 msgstr "ที่อยู่"
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_agreement__agreement_id
+msgid "Agreement"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_agreement__name
+msgid "Agreement Name"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.actions.act_window,name:bs_car_booking.action_bs_car_agreement
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__agreement_ids
+#: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_agreement
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_form_customer
+msgid "Agreements"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:product.attribute.value,name:bs_car_booking.val_int_black
 msgid "All Black"
 msgstr ""
@@ -550,9 +596,25 @@ msgid "All Brands"
 msgstr "ทุกแบรนด์"
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.story_detail_page
+msgid "All Stories"
+msgstr ""
+
+#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
 msgid "Almost there — tell us who the booking is for."
 msgstr "อีกนิดเดียว — กรุณาระบุข้อมูลผู้จอง"
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.tracking_page
+msgid "Already have an account?"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__applies_to
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__applies_to
+msgid "Applies To"
+msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_form
@@ -588,8 +650,34 @@ msgid "Attribute"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__attribute_name
+msgid "Attribute Name"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__attribute_sequence
 msgid "Attribute Sequence"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "Authorised person"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_booking__contact_person
+msgid "Authorised person for a company booking."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:bs.car.document.type,name:bs_car_booking.doc_type_authorization_letter
+msgid "Authorization Letter"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__interior_option_ids
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_model_option_view_form
+msgid "Available Interiors"
 msgstr ""
 
 #. module: bs_car_booking
@@ -598,13 +686,13 @@ msgid "Available Units"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
-msgid "Available variants"
-msgstr "รุ่นย่อยที่มี"
-
-#. module: bs_car_booking
 #: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_booking__state__payment_pending
 msgid "Awaiting Deposit"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model,name:bs_car_booking.model_bs_car_website_scope_mixin
+msgid "BS Car Website/Company Scope Helpers"
 msgstr ""
 
 #. module: bs_car_booking
@@ -618,15 +706,18 @@ msgid "Base Price"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_stat
-msgid ""
-"Big numbers for the home \"Stats strip\" — type a figure, or compute it\n"
-"               live from your data."
+#: model:product.attribute.value,name:bs_car_booking.val_int_white
+msgid "Black & White"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:product.attribute.value,name:bs_car_booking.val_int_white
-msgid "Black & White"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__body
+msgid "Body"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__body_html
+msgid "Body Html"
 msgstr ""
 
 #. module: bs_car_booking
@@ -640,11 +731,8 @@ msgid "Book Now <i class=\"fa fa-arrow-right\"/>"
 msgstr "จองเลย <i class=\"fa fa-arrow-right\"/>"
 
 #. module: bs_car_booking
-#: model:bs.car.offer,cta_label:bs_car_booking.offer_trade_in
-msgid "Book a valuation"
-msgstr ""
-
-#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_agreement__booking_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_document__booking_id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp__booking_id
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.deposit_payment_page
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.portal_my_booking
@@ -654,7 +742,19 @@ msgstr ""
 #. module: bs_car_booking
 #. odoo-python
 #: code:addons/bs_car_booking/models/bs_car_booking.py:0
-msgid "Booking %(ref)s confirmed! Your %(model)s is reserved. Thank you!"
+msgid ""
+"Booking %(ref)s confirmed! Your %(model)s is reserved. Track it here: "
+"%(url)s"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model,name:bs_car_booking.model_bs_car_agreement
+msgid "Booking Agreement / Policy"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model,name:bs_car_booking.model_bs_car_booking_agreement
+msgid "Booking Agreement Acceptance"
 msgstr ""
 
 #. module: bs_car_booking
@@ -666,6 +766,11 @@ msgstr "ยกเลิกการจองแล้ว"
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_confirmation_page
 msgid "Booking Confirmed!"
 msgstr "ยืนยันการจองแล้ว!"
+
+#. module: bs_car_booking
+#: model:ir.model,name:bs_car_booking.model_bs_car_booking_document
+msgid "Booking Customer Document"
+msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_confirmation_page
@@ -683,8 +788,13 @@ msgid "Booking Reference"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid "Booking details: selected model, configuration and preferred dealer."
+#: model:bs.car.booking.otp.purpose,name:bs_car_booking.otp_purpose_booking
+msgid "Booking Verification"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.tracking_page
+msgid "Booking reference"
 msgstr ""
 
 #. module: bs_car_booking
@@ -693,27 +803,29 @@ msgid "Bookings"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_stat__source__bookings_count
-msgid "Bookings placed"
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:bs.car.brand,heritage_html:bs_car_booking.brand_hongqi
-msgid ""
-"Born in 1958 as the motorcade of Chinese state ceremony, Hongqi — “Red Flag” —\n"
-"            was built to carry presidents and dignitaries with absolute composure."
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_agreement__applies_to__both
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_document_type__applies_to__both
+msgid "Both"
 msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__brand_id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__brand_id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__brand_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__brand_id
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
 msgid "Brand"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_home_block__block_type__heritage
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__section_type__brand_cover
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_booking_snippets
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_search
+msgid "Brand Cover"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__section_type__heritage
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_booking_snippets
 msgid "Brand Heritage"
 msgstr ""
@@ -734,13 +846,18 @@ msgid "Brand description shown on website"
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_form
+msgid "Brand or offer title"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_brand__website_featured
 msgid "Brand shown in the home \"Heritage\" section."
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_stat__source__brands_count
-msgid "Brands"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.brand_cover_content
+msgid "Brand video"
 msgstr ""
 
 #. module: bs_car_booking
@@ -751,28 +868,87 @@ msgstr ""
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_configurator_page
 msgid ""
-"Build the exact trim, color, interior, wheel, and add-on combination\n"
+"Build the exact color, interior, wheel, and add-on combination\n"
 "                            before choosing your preferred dealer."
 msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_home_block
-msgid "Build your home page from the back office"
-msgstr ""
+"Build the exact trim, color, interior, wheel, and add-on combination\n"
+"                            before choosing your preferred dealer."
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__cta_label
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__cta_label
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__cta_label
 msgid "Button Label"
 msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__cta_url
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__cta_url
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__cta_url
 msgid "Button Link"
 msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__lead_id
 msgid "CRM Lead"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_model_option__swatch_color
+msgid ""
+"CSS colour for the website option swatch, e.g. #111111. Leave blank to use "
+"the colour value's own colour."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_showcase_item__swatch_color
+msgid "CSS colour used by exterior/interior option buttons, e.g. #111111."
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_form
+msgid "CTA"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__cabin_item_ids
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_showcase_item__item_type__cabin
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__section_type__cabin_story
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_booking_snippets
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Cabin Story"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Cabin Story — editorial wide band"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Cabin story headline"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.cabin_story_content
+msgid "Cabin video"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_form
+msgid "Calls to Action"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__can_publish
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__can_publish
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__can_publish
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__can_publish
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__can_publish
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__can_publish
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__can_publish
+msgid "Can Publish"
 msgstr ""
 
 #. module: bs_car_booking
@@ -798,6 +974,11 @@ msgid "Cancel this booking?"
 msgstr "ยกเลิกการจองนี้?"
 
 #. module: bs_car_booking
+#: model:bs.car.agreement,name:bs_car_booking.agreement_cancellation
+msgid "Cancellation Policy"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_booking__state__cancelled
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_search
 msgid "Cancelled"
@@ -816,8 +997,9 @@ msgid "Cannot move booking %(booking)s from %(current)s to %(target)s."
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields,help:bs_car_booking.field_bs_car_stat__name
-msgid "Caption under the number, e.g. \"Cars delivered\"."
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item_image__name
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Caption"
 msgstr ""
 
 #. module: bs_car_booking
@@ -840,6 +1022,16 @@ msgstr ""
 #. module: bs_car_booking
 #: model:res.groups,name:bs_car_booking.group_bs_car_booking_manager
 msgid "Car Booking Manager"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:sms.template,name:bs_car_booking.sms_template_otp_booking
+msgid "Car Booking OTP - Booking Verification"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:sms.template,name:bs_car_booking.sms_template_otp_tracking
+msgid "Car Booking OTP - Tracking Access"
 msgstr ""
 
 #. module: bs_car_booking
@@ -871,6 +1063,11 @@ msgid "Car Brand"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model,name:bs_car_booking.model_bs_car_story
+msgid "Car Brand Story"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.actions.act_window,name:bs_car_booking.action_bs_car_brand
 #: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_brand
 msgid "Car Brands"
@@ -890,7 +1087,6 @@ msgstr ""
 #. module: bs_car_booking
 #: model:ir.model,name:bs_car_booking.model_bs_car_model
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__model_id
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_home_block__model_id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_image__model_id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__model_id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_spec__model_id
@@ -913,6 +1109,7 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model,name:bs_car_booking.model_bs_car_model_option
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_model_option_view_form
 msgid "Car Model Option"
 msgstr ""
 
@@ -938,33 +1135,43 @@ msgid "Car Selection"
 msgstr "เลือกรถ"
 
 #. module: bs_car_booking
+#: model:ir.model,name:bs_car_booking.model_bs_car_showcase_item
+msgid "Car Showcase Item"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model,name:bs_car_booking.model_bs_car_showcase_item_image
+msgid "Car Showcase Item Image"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model,name:bs_car_booking.model_bs_car_variant
-msgid "Car Variant / Trim"
+msgid "Car Standard Package"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.actions.act_window,name:bs_car_booking.action_bs_car_variant
-#: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_variant
-msgid "Car Variants"
+#: model:ir.model,name:bs_car_booking.model_bs_car_website_section
+msgid "Car Website Section"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:website.menu,name:bs_car_booking.menu_website_cars
-msgid "Cars"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Card Image"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.stat,name:bs_car_booking.stat_delivered
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_stat_form
-msgid "Cars delivered"
-msgstr "ส่งมอบแล้ว (คัน)"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_story_form
+msgid "Changchun, China"
+msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_stat_form
-msgid ""
-"Choose <b>Manual</b> to type a marketing figure, or pick a source\n"
-"                        (model/dealer/booking counts, max range) to compute it live.\n"
-"                        Find icon names at <b>fontawesome.com/v4</b> (e.g. <code>fa-bolt</code>)."
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__cta_label
+msgid "Checkbox Label"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_website_section__theme_variant
+msgid "Choose the visual layout. Brand themes can add their own layouts."
 msgstr ""
 
 #. module: bs_car_booking
@@ -983,13 +1190,91 @@ msgid "City"
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Close-up or wide view"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_form
+msgid "Close-up, wide view, rear detail..."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp_purpose__code
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__code
+msgid "Code"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__exterior_color_code
 msgid "Color Hex Code"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:website.menu,name:bs_car_booking.menu_website_compare
-msgid "Compare"
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__section_type__color_studio
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_booking_snippets
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_model_option_view_form
+msgid "Colour Studio"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__theme_variant__compact
+msgid "Compact"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__company_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__company_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__company_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__company_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__company_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__company_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__company_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__company_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__company_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__company_id
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_agreement__applies_to__company
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_booking__customer_type__company
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_document_type__applies_to__company
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_search
+msgid "Company"
+msgstr ""
+
+#. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/models/bs_car_booking.py:0
+msgid "Company Customer"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__company_name
+msgid "Company Name"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "Company Name *"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:bs.car.document.type,name:bs_car_booking.doc_type_company_registration
+msgid "Company Registration"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_booking__tax_id
+msgid "Company VAT / Tax ID (printed on the invoice)."
+msgstr ""
+
+#. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/models/bs_car_booking.py:0
+msgid "Company name is required."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:bs.car.document.type,help_text:bs_car_booking.doc_type_company_registration
+msgid "Company registration / incorporation certificate."
 msgstr ""
 
 #. module: bs_car_booking
@@ -1010,17 +1295,13 @@ msgid "Compare selected"
 msgstr "เปรียบเทียบที่เลือก"
 
 #. module: bs_car_booking
-#: model:bs.car.offer,name:bs_car_booking.offer_flagship
-msgid "Complimentary first-year service"
-msgstr ""
-
-#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__product_tmpl_id
 msgid "Configurable Product"
 msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__config_summary
+#: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_booking_config
 msgid "Configuration"
 msgstr ""
 
@@ -1032,7 +1313,6 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_compare_page
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.featured_model_content
 msgid "Configure"
 msgstr "ปรับแต่ง"
 
@@ -1045,7 +1325,9 @@ msgstr "ปรับแต่ง <i class=\"fa fa-sliders\"/>"
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
 msgid ""
 "Configure selectable options (color, interior, wheels, add-ons) and\n"
-"                                their extra price. Click <b>Generate / Update Product</b> after editing."
+"                                their extra price. Exterior Color and Interior option lines also drive the\n"
+"                                website Colour Studio: set swatches, images, and available interiors on\n"
+"                                those option records. Click <b>Generate / Update Product</b> after editing."
 msgstr ""
 
 #. module: bs_car_booking
@@ -1075,18 +1357,31 @@ msgid "Consent Date"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid "Consent record: date and time you accepted this policy."
-msgstr ""
-
-#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__partner_id
 msgid "Contact Partner"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid "Contact details: name, mobile number, email, address."
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__contact_person
+msgid "Contact Person"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "Contact Person *"
+msgstr ""
+
+#. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/models/bs_car_booking.py:0
+msgid "Contact person is required for a company."
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_form
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_form
+msgid "Content"
 msgstr ""
 
 #. module: bs_car_booking
@@ -1097,16 +1392,6 @@ msgstr "ดำเนินการต่อเพื่อชำระมัด
 #. module: bs_car_booking
 #: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_model__body_type__convertible
 msgid "Convertible"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__count_display
-msgid "Count Display"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__count_target
-msgid "Count Target"
 msgstr ""
 
 #. module: bs_car_booking
@@ -1121,6 +1406,16 @@ msgid "Coupe"
 msgstr "คูเป้"
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__image
+msgid "Cover Image"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__theme_variant
+msgid "Cover Layout"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:product.attribute.value,name:bs_car_booking.val_int_cream
 msgid "Cream"
 msgstr ""
@@ -1128,6 +1423,12 @@ msgstr ""
 #. module: bs_car_booking
 #: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_offer
 msgid "Create a promotional offer"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.brand_cover_content
+msgid ""
+"Create a published Brand Cover in Website Sections to populate this block."
 msgstr ""
 
 #. module: bs_car_booking
@@ -1142,35 +1443,63 @@ msgid "Create the sale order before confirming this booking."
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_website_section
+msgid "Create website sections"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__create_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__create_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_agreement__create_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_document__create_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp__create_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp_purpose__create_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__create_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__create_uid
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_home_block__create_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__create_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__create_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_image__create_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__create_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_spec__create_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__create_uid
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__create_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__create_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item_image__create_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__create_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__create_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__create_uid
 msgid "Created by"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__create_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__create_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_agreement__create_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_document__create_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp__create_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp_purpose__create_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__create_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__create_date
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_home_block__create_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__create_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__create_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_image__create_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__create_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_spec__create_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__create_date
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__create_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__create_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item_image__create_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__create_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__create_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__create_date
 msgid "Created on"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid ""
+"Curate editorial home-page sections for this model. Do not duplicate shared\n"
+"                                product media here unless the image needs section-specific copy, ordering,\n"
+"                                gallery thumbnails, or CTA behavior. Colour Studio is driven by\n"
+"                                <b>Options &amp; Pricing</b>."
 msgstr ""
 
 #. module: bs_car_booking
@@ -1193,8 +1522,18 @@ msgid "Customer"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model,name:bs_car_booking.model_bs_car_document_type
+msgid "Customer Document Type"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_booking__access_url
 msgid "Customer Portal URL"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__customer_type
+msgid "Customer Type"
 msgstr ""
 
 #. module: bs_car_booking
@@ -1209,13 +1548,23 @@ msgid "Customer phone number is required."
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "Customer type"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_story__location
+msgid "Dateline location shown with the date, e.g. \"Changchun, China\"."
+msgstr ""
+
+#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.portal_my_bookings
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_search
 msgid "Dealer"
 msgstr "ผู้จำหน่าย"
 
 #. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_home_block__block_type__dealers
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__section_type__dealer_locator
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_booking_snippets
 msgid "Dealer Locator"
 msgstr ""
@@ -1241,6 +1590,25 @@ msgid "Deep Blue Metallic"
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_document_type
+msgid "Define a document customers must provide"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_agreement
+msgid "Define an agreement the customer must accept"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid ""
+"Define the default booking package for this model. If the business does\n"
+"                                not sell multiple grades, keep one active line named <b>Standard</b>.\n"
+"                                Exterior colours, interiors, wheels, and add-ons are maintained under\n"
+"                                <b>Options &amp; Pricing</b>."
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_booking__state__delivered
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_search
 msgid "Delivered"
@@ -1249,18 +1617,6 @@ msgstr "ส่งมอบแล้ว"
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_form
 msgid "Delivery"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:bs.car.variant,name:bs_car_booking.variant_hq_hs5_deluxe
-msgid "Deluxe"
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:bs.car.dealer,website_description:bs_car_booking.dealer_hongqi_bangkok
-msgid ""
-"Demo Hongqi flagship contact point for E-HS9 consultation, private viewing, "
-"and booking handover."
 msgstr ""
 
 #. module: bs_car_booking
@@ -1304,6 +1660,7 @@ msgstr "เงินมัดจำเพื่อจอง:"
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__description
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__description
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__description
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_offer_form
 msgid "Description"
@@ -1313,6 +1670,21 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
 msgid "Design in detail"
 msgstr "ดีไซน์ในทุกรายละเอียด"
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__video_file
+msgid "Desktop Video Upload"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Detail Gallery"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Detail Hero Video (optional)"
+msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_dealer_form
@@ -1330,29 +1702,38 @@ msgid "Direct .mp4/.webm URL (e.g. a CDN) — alternative to uploading a file."
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.featured_model_content
-msgid "Discover <i class=\"fa fa-arrow-right\"/>"
-msgstr "ดูรายละเอียด <i class=\"fa fa-arrow-right\"/>"
-
-#. module: bs_car_booking
-#: model:bs.car.offer,cta_label:bs_car_booking.offer_flagship
-msgid "Discover the E-HS9"
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__video_media_type__direct
+msgid "Direct Video URL"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__directions_url
+msgid "Directions Url"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__display_name
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__display_name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_agreement__display_name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_document__display_name
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp__display_name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp_purpose__display_name
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__display_name
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__display_name
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_home_block__display_name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__display_name
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__display_name
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_image__display_name
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__display_name
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_spec__display_name
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__display_name
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__display_name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__display_name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item_image__display_name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__display_name
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__display_name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_scope_mixin__display_name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__display_name
 #: model:ir.model.fields,field_description:bs_car_booking.field_crm_lead__display_name
+#: model:ir.model.fields,field_description:bs_car_booking.field_ir_module_module__display_name
 #: model:ir.model.fields,field_description:bs_car_booking.field_payment_transaction__display_name
 #: model:ir.model.fields,field_description:bs_car_booking.field_product_template__display_name
 msgid "Display Name"
@@ -1364,9 +1745,34 @@ msgid "Display Value"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.finance_calculator_content
-msgid "Down payment"
-msgstr "เงินดาวน์"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_document__name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__name
+msgid "Document"
+msgstr ""
+
+#. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/models/bs_car_booking.py:0
+msgid "Document \"%s\" is required."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_document__document_type_id
+msgid "Document Type"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.actions.act_window,name:bs_car_booking.action_bs_car_document_type
+#: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_document_type
+msgid "Document Types"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__document_ids
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_form_customer
+msgid "Documents"
+msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_booking__state__draft
@@ -1375,27 +1781,20 @@ msgid "Draft"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:bs.car.offer,description:bs_car_booking.offer_zero_apr
+#: model:bs.car.document.type,name:bs_car_booking.doc_type_driver_license
+msgid "Driver's License"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_agreement
 msgid ""
-"Drive home today with zero interest. Qualified buyers\n"
-"            enjoy 0% APR financing over 36 months with no hidden fees."
+"Each shows as a checkbox on the booking form, linking to its policy page\n"
+"               (e.g. <b>/terms</b>). Required ones must be ticked to continue."
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.model.spec,name:bs_car_booking.spec_eh7_drive
-#: model:bs.car.model.spec,name:bs_car_booking.spec_ehs9_drive
-#: model:bs.car.model.spec,name:bs_car_booking.spec_hs5_drive
-msgid "Drivetrain"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:bs.car.model,name:bs_car_booking.model_hongqi_ehs9
-msgid "E-HS9"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:bs.car.model,name:bs_car_booking.model_hongqi_eh7
-msgid "EH7"
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__theme_variant__editorial
+msgid "Editorial"
 msgstr ""
 
 #. module: bs_car_booking
@@ -1421,14 +1820,21 @@ msgid "Ends On"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
-msgid "Est. delivery:"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.tracking_page
+msgid "Enter the 6-digit code we sent to your phone."
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.finance_calculator_content
-msgid "Estimate your monthly payment"
-msgstr "ประมาณค่างวดต่อเดือน"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.tracking_page
+msgid ""
+"Enter your booking reference and the phone number you used.\n"
+"                            We will send a one-time code to confirm it is you."
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
+msgid "Est. delivery:"
+msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__estimated_delivery_days
@@ -1451,8 +1857,8 @@ msgid "Estimated price"
 msgstr "ราคาประมาณ"
 
 #. module: bs_car_booking
-#: model:bs.car.variant,name:bs_car_booking.variant_hq_ehs9_executive
-msgid "Executive"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__excerpt
+msgid "Excerpt"
 msgstr ""
 
 #. module: bs_car_booking
@@ -1483,19 +1889,24 @@ msgid "Explore our cars"
 msgstr "สำรวจรถยนต์ของเรา"
 
 #. module: bs_car_booking
-#: model:bs.car.brand,heritage_cta_label:bs_car_booking.brand_hongqi
-msgid "Explore the lineup"
-msgstr "สำรวจไลน์อัพ"
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.showroom_home_view
-msgid "Explore the range"
-msgstr "สำรวจไลน์อัพ"
-
-#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__exterior_color
 #: model:product.attribute,name:bs_car_booking.attr_color
 msgid "Exterior Color"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_showcase_item__item_type__exterior
+msgid "Exterior Colour"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__exterior_item_ids
+msgid "Exterior Colours"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__video_url
+msgid "External Video URL"
 msgstr ""
 
 #. module: bs_car_booking
@@ -1504,13 +1915,25 @@ msgid "Extra Price"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.offer,subtitle:bs_car_booking.offer_trade_in
-msgid "Extra value on top of your car's market price"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__eyebrow
+msgid "Eyebrow"
 msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_booking_otp__state__failed
 msgid "Failed"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp_purpose__sms_fallback_body
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_otp_purpose_form
+msgid "Fallback Message"
+msgstr ""
+
+#. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/models/bs_car_booking_otp_purpose.py:0
+msgid "Fallback message must contain %(otp_code)s placeholder."
 msgstr ""
 
 #. module: bs_car_booking
@@ -1529,8 +1952,14 @@ msgid "Featured Car"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_home_block__block_type__featured_hero
-msgid "Featured Hero"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__model_id
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__section_type__featured_model
+msgid "Featured Model"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.featured_model_content
+msgid "Featured model video"
 msgstr ""
 
 #. module: bs_car_booking
@@ -1539,35 +1968,29 @@ msgid "Featured on Home"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_document__attachment
+msgid "File"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_document__filename
+msgid "Filename"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.car_listing_page
+msgid "Filter cars by body type"
+msgstr ""
+
+#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_listing_page
 msgid "Filter cars by brand"
 msgstr "กรองรถตามแบรนด์"
 
 #. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_home_block__block_type__finance
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_booking_snippets
-msgid "Finance Calculator"
-msgstr ""
-
-#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.dealer_locator_content
 msgid "Find a dealer near you"
 msgstr "ค้นหาผู้จำหน่ายใกล้คุณ"
-
-#. module: bs_car_booking
-#: model:bs.car.offer,badge:bs_car_booking.offer_flagship
-#: model:bs.car.variant,name:bs_car_booking.variant_hq_ehs9_flagship
-msgid "Flagship"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:bs.car.model,highlight_features:bs_car_booking.model_hongqi_hs5
-msgid ""
-"Flagship grille and presence\n"
-"Quilted leather cabin\n"
-"Advanced driver assistance\n"
-"Panoramic roof"
-msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__message_follower_ids
@@ -1582,21 +2005,9 @@ msgid "Followers (Partners)"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields,help:bs_car_booking.field_bs_car_stat__icon
-msgid "Font Awesome class, e.g. \"fa-car\", \"fa-bolt\"."
-msgstr ""
-
-#. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_booking__activity_type_icon
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_dealer__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:bs.car.brand,website_description:bs_car_booking.brand_hongqi
-msgid ""
-"Founded in 1958 as the car of state ceremony, Hongqi (“Red Flag”) now brings its\n"
-"            flagship craftsmanship to Thailand with a refined electric lineup led by the E-HS9."
 msgstr ""
 
 #. module: bs_car_booking
@@ -1615,6 +2026,11 @@ msgid "Full Name *"
 msgstr "ชื่อ-นามสกุล *"
 
 #. module: bs_car_booking
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__theme_variant__fullscreen
+msgid "Full Screen Cover"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:product.attribute.value,name:bs_car_booking.val_addon_fsd
 msgid "Full Self-Driving (Supervised)"
 msgstr ""
@@ -1626,6 +2042,12 @@ msgid ""
 msgstr ""
 
 #. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/models/bs_car_booking.py:0
+msgid "Full name is required."
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__gallery_image_ids
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
@@ -1633,9 +2055,9 @@ msgid "Gallery"
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_otp_purpose_form
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_dealer_form
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_variant_form
 msgid "General"
 msgstr ""
 
@@ -1650,8 +2072,13 @@ msgid "Generated product that powers pricing & ordering."
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.model,name:bs_car_booking.model_hongqi_hs5
-msgid "HS5"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_story_form
+msgid "Gold lead line under the headline"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_dealer__directions_url
+msgid "Google Maps directions link (opens in a new tab)."
 msgstr ""
 
 #. module: bs_car_booking
@@ -1666,6 +2093,16 @@ msgid "Has Message"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__has_mobile_video_file
+msgid "Has Mobile Video File"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__has_video_file
+msgid "Has Video File"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_model__body_type__hatchback
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_search
 msgid "Hatchback"
@@ -1673,6 +2110,8 @@ msgstr "แฮทช์แบ็ก"
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__name
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
 msgid "Headline"
 msgstr ""
 
@@ -1707,11 +2146,6 @@ msgid "Heritage Title"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.variant,name:bs_car_booking.variant_hq_ehs9_heritage
-msgid "Heritage Two-Tone"
-msgstr ""
-
-#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__hero_embed_url
 msgid "Hero Embed Url"
 msgstr ""
@@ -1722,6 +2156,11 @@ msgid "Hero Highlight"
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_form
+msgid "Hero Media"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__hero_media_type
 msgid "Hero Media Type"
 msgstr ""
@@ -1729,11 +2168,6 @@ msgstr ""
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__hero_video
 msgid "Hero Video"
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
-msgid "Hero Video (optional)"
 msgstr ""
 
 #. module: bs_car_booking
@@ -1757,60 +2191,74 @@ msgid "Hero video"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_showcase_item__item_type__highlight
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Highlight Card"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__highlight_item_ids
+msgid "Highlight Cards"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__highlight_features
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
 msgid "Highlight Features"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.actions.act_window,name:bs_car_booking.action_bs_car_home_block
-#: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_home_block
-msgid "Home Layout"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__highlight_image_ids
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_form
+msgid "Highlight Gallery"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model,name:bs_car_booking.model_bs_car_home_block
-msgid "Home Page Section"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_form
+msgid "Highlight Image"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.brand,name:bs_car_booking.brand_hongqi
-msgid "Hongqi"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_form
+msgid "Highlight title, colour name, or slide caption"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.dealer,name:bs_car_booking.dealer_hongqi_chiangmai
-msgid "Hongqi Chiang Mai"
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__section_type__highlights
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_booking_snippets
+msgid "Highlights"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:bs.car.model,description:bs_car_booking.model_hongqi_ehs9
-msgid ""
-"Hongqi E-HS9 is a full-size luxury electric SUV built around presence, silence, and passenger comfort.\n"
-"            The Thailand launch presentation highlights a 120 kWh battery, flagship dimensions, dual-motor output,\n"
-"            and a cabin focused on leather, ambient lighting, acoustic glazing, and a composed arrival experience."
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Highlights — editorial feature cards"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.dealer,name:bs_car_booking.dealer_hongqi_phuket
-msgid "Hongqi Gallery Phuket"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__help_text
+msgid "Hint"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.dealer,name:bs_car_booking.dealer_hongqi_bangkok
-msgid "Hongqi Thailand Bangkok"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Home Showcase"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:bs.car.brand,website_description:bs_car_booking.brand_hongqi
-msgid ""
-"Hongqi blends Chinese flagship heritage with a quiet, chauffeur-grade "
-"electric experience."
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_form
+msgid "Homepage cover"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid "How we use it"
+#: model:bs.car.agreement,cta_label:bs_car_booking.agreement_terms
+msgid "I accept the"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:bs.car.agreement,cta_label:bs_car_booking.agreement_cancellation
+#: model:bs.car.agreement,cta_label:bs_car_booking.agreement_refund
+msgid "I acknowledge the"
 msgstr ""
 
 #. module: bs_car_booking
@@ -1819,28 +2267,41 @@ msgid "I agree to the"
 msgstr "ฉันยอมรับ"
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_agreement__id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_document__id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp__id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp_purpose__id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__id
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_home_block__id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_image__id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_spec__id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__id
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item_image__id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__id
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_scope_mixin__id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__id
 #: model:ir.model.fields,field_description:bs_car_booking.field_crm_lead__id
+#: model:ir.model.fields,field_description:bs_car_booking.field_ir_module_module__id
 #: model:ir.model.fields,field_description:bs_car_booking.field_payment_transaction__id
 #: model:ir.model.fields,field_description:bs_car_booking.field_product_template__id
 msgid "ID"
 msgstr "ไอดี"
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "ID / NRC"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__activity_exception_icon
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__activity_exception_icon
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__icon
 msgid "Icon"
 msgstr ""
 
@@ -1866,8 +2327,22 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_image__image
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__image
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__image
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__image
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item_image__image
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__image
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_form
 msgid "Image"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__image_alt
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__image_alt
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item_image__image_alt
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__image_alt
+msgid "Image Alt"
 msgstr ""
 
 #. module: bs_car_booking
@@ -1882,14 +2357,16 @@ msgid "Inactive"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.finance_calculator_content
-msgid "Indicative only — excludes taxes &amp; fees."
-msgstr "เป็นการประมาณการเท่านั้น — ไม่รวมภาษีและค่าธรรมเนียม"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
+msgid "Included booking package"
+msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.finance_calculator_content
-msgid "Interest rate (APR %)"
-msgstr "อัตราดอกเบี้ย (APR %)"
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_agreement__applies_to__individual
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_booking__customer_type__individual
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_document_type__applies_to__individual
+msgid "Individual"
+msgstr ""
 
 #. module: bs_car_booking
 #: model:product.attribute,name:bs_car_booking.attr_interior
@@ -1902,13 +2379,31 @@ msgid "Interior Color"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_showcase_item__item_type__interior
+msgid "Interior Theme"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__interior_item_ids
+msgid "Interior Themes"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_model_option__interior_option_ids
+msgid ""
+"Interior options offered with this exterior colour. Leave empty to offer "
+"every interior configured on the model."
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__internal_notes
 msgid "Internal Notes"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields,help:bs_car_booking.field_bs_car_home_block__name
-msgid "Internal label for this section."
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_agreement__name
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_booking_agreement__name
+msgid "Internal name, e.g. \"Terms & Conditions\"."
 msgstr ""
 
 #. module: bs_car_booking
@@ -1940,6 +2435,22 @@ msgid "Is Follower"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__is_published
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__is_published
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__is_published
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__is_published
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__is_published
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__is_published
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__is_published
+msgid "Is Published"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__item_type
+msgid "Item Type"
+msgstr ""
+
+#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
 msgid "Key features"
 msgstr "คุณสมบัติเด่น"
@@ -1950,53 +2461,71 @@ msgid "Key features displayed on website, one per line"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_home_block__name
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_dealer__map_embed_url
+msgid "Keyless Google Maps embed URL for the showroom map iframe."
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_spec__name
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__name
 msgid "Label"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__write_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__write_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_agreement__write_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_document__write_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp__write_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp_purpose__write_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__write_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__write_uid
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_home_block__write_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__write_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__write_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_image__write_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__write_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_spec__write_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__write_uid
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__write_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__write_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item_image__write_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__write_uid
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__write_uid
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__write_uid
 msgid "Last Updated by"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__write_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__write_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_agreement__write_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_document__write_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp__write_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp_purpose__write_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__write_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__write_date
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_home_block__write_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__write_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__write_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_image__write_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__write_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_spec__write_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__write_date
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__write_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__write_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item_image__write_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__write_date
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__write_date
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__write_date
 msgid "Last Updated on"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid "Last updated on booking submission."
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__section_type__latest_arrivals
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_booking_snippets
+msgid "Latest Arrivals"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_home_block__block_type__arrivals
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_booking_snippets
-msgid "Latest Arrivals"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.story_index_page
+msgid "Latest Stories"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2025,6 +2554,56 @@ msgid "Leave empty for an open-ended offer."
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_model_option_view_form
+msgid "Leave empty to offer all interiors"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_agreement__company_id
+msgid "Leave empty to share this agreement across companies."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_brand__company_id
+msgid "Leave empty to share this brand across companies."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_dealer__company_id
+msgid "Leave empty to share this dealer across companies."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_document_type__company_id
+msgid "Leave empty to share this document type across companies."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_model__company_id
+msgid "Leave empty to share this model across companies."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_offer__company_id
+msgid "Leave empty to share this offer across companies."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_website_section__company_id
+msgid "Leave empty to share this section across companies."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_showcase_item__company_id
+msgid "Leave empty to share this showcase item across companies."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_story__company_id
+msgid "Leave empty to share this story across companies."
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_offer__date_start
 msgid "Leave empty to start immediately."
 msgstr ""
@@ -2035,7 +2614,6 @@ msgid "Leave empty to use model default"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.offer,badge:bs_car_booking.offer_zero_apr
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_offer_form
 msgid "Limited time"
 msgstr "ระยะเวลาจำกัด"
@@ -2056,17 +2634,24 @@ msgid "Live Now"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__location
+msgid "Location"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__longitude
 msgid "Longitude"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.variant,name:bs_car_booking.variant_hq_eh7_lounge
-msgid "Lounge"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "MB per file."
 msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__image
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_form
 msgid "Main Image"
 msgstr ""
 
@@ -2081,18 +2666,8 @@ msgid "Make it yours."
 msgstr "ทำให้เป็นของคุณ"
 
 #. module: bs_car_booking
-#: model:ir.model.fields,help:bs_car_booking.field_bs_car_stat__source
-msgid "Manual = type the figure yourself; the others are computed live."
-msgstr ""
-
-#. module: bs_car_booking
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__value
-msgid "Manual Value"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_stat__source__manual
-msgid "Manual value"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__map_embed_url
+msgid "Map Embed Url"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2122,18 +2697,13 @@ msgid "Max Attempts"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.stat,name:bs_car_booking.stat_range
-msgid "Max range"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_stat__source__max_range
-msgid "Max range (km)"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Media"
 msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
-msgid "Media"
+msgid "Media Library"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2154,14 +2724,25 @@ msgid "Mobile Number"
 msgstr "เบอร์โทรศัพท์มือถือ"
 
 #. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_home_block__block_type__gallery
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_booking_snippets
-msgid "Model Gallery"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__mobile_video_filename
+msgid "Mobile Video Filename"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_home_block__block_type__lineup
-msgid "Model Lineup"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__mobile_video_src
+msgid "Mobile Video Src"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__mobile_video_file
+msgid "Mobile Video Upload"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__model_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__model_id
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_search
+msgid "Model"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2170,7 +2751,12 @@ msgid "Model Name"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_home_block__block_type__specs
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_search
+msgid "Model Sections"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__section_type__model_specs
 msgid "Model Specifications"
 msgstr ""
 
@@ -2180,11 +2766,25 @@ msgid "Model Specs"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields,help:bs_car_booking.field_bs_car_home_block__model_id
-msgid ""
-"Model shown in this section (hero / gallery / specs). Leave empty to use the"
-" model flagged \"Featured on Home\". The Lineup section ignores this and "
-"lists all published models."
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__section_type__model_stage
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_booking_snippets
+msgid "Model Stage"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_showcase_item__item_type__stage
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Model Stage Slide"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__stage_item_ids
+msgid "Model Stage Slides"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Model Stage — campaign slides with copy/CTA"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2194,8 +2794,13 @@ msgid "Models"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.stat,name:bs_car_booking.stat_models
-msgid "Models available"
+#: model:ir.model,name:bs_car_booking.model_ir_module_module
+msgid "Module"
+msgstr "โมดูล"
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_agreement__required
+msgid "Must be ticked to continue."
 msgstr ""
 
 #. module: bs_car_booking
@@ -2206,12 +2811,18 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
-msgid "NRC / ID Number"
-msgstr "เลขบัตรประชาชน"
+msgid "NRC / ID Number *"
+msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__customer_nrc
 msgid "NRC/ID Number"
+msgstr ""
+
+#. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/models/bs_car_booking.py:0
+msgid "NRC/ID number is required."
 msgstr ""
 
 #. module: bs_car_booking
@@ -2224,8 +2835,15 @@ msgstr ""
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__name
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__name
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__name
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__name
 msgid "Name"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:bs.car.document.type,name:bs_car_booking.doc_type_id_card
+msgid "National ID / NRC"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2246,6 +2864,13 @@ msgstr "ใหม่"
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__is_new_arrival
 msgid "New Arrival"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid ""
+"News / editorial cards for the home \"Latest Stories\" section. Leave a story's\n"
+"                                model empty to make it brand-wide; set it here to tie the story to this model."
 msgstr ""
 
 #. module: bs_car_booking
@@ -2273,6 +2898,25 @@ msgid "Next Activity Type"
 msgstr ""
 
 #. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/models/bs_car_booking_otp.py:0
+msgid ""
+"No SMS template or fallback body configured for purpose '%s'. Please check "
+"Settings > Car Booking > OTP Purposes."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__video_media_type__none
+msgid "No Video"
+msgstr ""
+
+#. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/models/bs_car_booking.py:0
+msgid "No active code. Please request a new one."
+msgstr ""
+
+#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_listing_page
 msgid "No cars available yet"
 msgstr "ยังไม่มีรถในขณะนี้"
@@ -2281,6 +2925,12 @@ msgstr "ยังไม่มีรถในขณะนี้"
 #. odoo-python
 #: code:addons/bs_car_booking/models/bs_car_booking.py:0
 msgid "No pending OTP found. Please request a new one."
+msgstr ""
+
+#. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/models/bs_car_booking.py:0
+msgid "No phone number on this booking."
 msgstr ""
 
 #. module: bs_car_booking
@@ -2328,9 +2978,27 @@ msgid "OTP Code"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp__otp_hash
+msgid "OTP Hash"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_booking__state__otp_pending
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_search
 msgid "OTP Pending"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model,name:bs_car_booking.model_bs_car_booking_otp_purpose
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_otp_purpose_form
+msgid "OTP Purpose"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.actions.act_window,name:bs_car_booking.action_bs_car_booking_otp_purpose
+#: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_booking_otp_purpose
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_otp_purpose_list
+msgid "OTP Purposes"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2338,6 +3006,11 @@ msgstr ""
 #: code:addons/bs_car_booking/models/bs_car_booking.py:0
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__otp_ids
 msgid "OTP Records"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp__otp_salt
+msgid "OTP Salt"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2371,8 +3044,20 @@ msgid "OTP has expired. Please request a new one."
 msgstr ""
 
 #. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/models/bs_car_booking_otp.py:0
+msgid ""
+"OTP purpose '%s' is not configured or not active. Please check Settings > "
+"Car Booking > OTP Purposes."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__section_type__offers
+msgid "Offers"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.actions.act_window,name:bs_car_booking.action_bs_car_offer
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_home_block__block_type__offers
 #: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_offer
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_booking_snippets
 msgid "Offers & Promotions"
@@ -2386,23 +3071,37 @@ msgid ""
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_form
+msgid "Official dealer"
+msgstr ""
+
+#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_offer_form
 msgid "On all in-stock electric models"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.offer,subtitle:bs_car_booking.offer_zero_apr
-msgid "On the EH7 executive sedan"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:bs.car.offer,subtitle:bs_car_booking.offer_flagship
-msgid "On the Hongqi E-HS9 flagship"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_model_option_view_form
+msgid ""
+"On an exterior colour, choose which interior options are offered with it.\n"
+"                                Leave empty to offer every interior configured on this model."
 msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
 msgid "One feature per line..."
+msgstr ""
+
+#. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/controllers/api.py:0
+msgid "One uploaded document is not a valid file."
+msgstr ""
+
+#. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/controllers/api.py:0
+msgid "Only PDF, JPEG, and PNG documents are allowed."
 msgstr ""
 
 #. module: bs_car_booking
@@ -2452,6 +3151,40 @@ msgid "Option Sequence"
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_model_option_view_form
+msgid "Option value"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_website_section__video_url
+msgid ""
+"Optional YouTube/Vimeo URL or direct .mp4/.webm URL. Uploaded video takes "
+"priority."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_website_section__title_image
+msgid "Optional graphic title/logo rendered instead of the text title."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_website_section__mobile_video_file
+msgid "Optional portrait video for mobile hero playback."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_model_option__swatch_color_2
+msgid ""
+"Optional second colour. When set, the swatch is shown as a two-tone "
+"(diagonal split) of both colours."
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Optional supporting line"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_offer__model_id
 msgid "Optional — links the call-to-action to this model."
 msgstr ""
@@ -2459,6 +3192,11 @@ msgstr ""
 #. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_offer__cta_url
 msgid "Optional. Defaults to the linked model's page when set."
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_model_option_view_form
+msgid "Optional. Set for a two-tone swatch (e.g. two-tone interior)."
 msgstr ""
 
 #. module: bs_car_booking
@@ -2507,6 +3245,12 @@ msgid "PDPA Consent"
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_variant_form
+msgid "Package"
+msgstr ""
+
+#. module: bs_car_booking
 #. odoo-python
 #: code:addons/bs_car_booking/models/bs_car_booking.py:0
 msgid "Paid bookings cannot be reset to draft."
@@ -2538,11 +3282,6 @@ msgid "Pending"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.variant,name:bs_car_booking.variant_hq_eh7_performance
-msgid "Performance"
-msgstr ""
-
-#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__phone
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
 msgid "Phone"
@@ -2567,6 +3306,16 @@ msgid "Phone already verified."
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.tracking_page
+msgid "Phone number"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.tracking_page
+msgid "Phone on the booking"
+msgstr ""
+
+#. module: bs_car_booking
 #. odoo-python
 #: code:addons/bs_car_booking/models/bs_car_booking_otp.py:0
 msgid "Phone verified successfully!"
@@ -2581,6 +3330,18 @@ msgstr ""
 #. module: bs_car_booking
 #: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_model__body_type__pickup
 msgid "Pickup"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_form
+msgid "Placement"
+msgstr ""
+
+#. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/models/bs_car_booking.py:0
+msgid "Please accept \"%s\"."
 msgstr ""
 
 #. module: bs_car_booking
@@ -2608,15 +3369,13 @@ msgid "Please wait %s seconds before requesting another code."
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__access_url
-msgid "Portal Access URL"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__page_url
+msgid "Policy Page URL"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.model.spec,name:bs_car_booking.spec_eh7_power
-#: model:bs.car.model.spec,name:bs_car_booking.spec_ehs9_power
-#: model:bs.car.model.spec,name:bs_car_booking.spec_hs5_power
-msgid "Power"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__access_url
+msgid "Portal Access URL"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2632,18 +3391,8 @@ msgid "Preferred dealer: %s"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.variant,name:bs_car_booking.variant_hq_hs5_premium
-msgid "Premium"
-msgstr ""
-
-#. module: bs_car_booking
 #: model:product.attribute.value,name:bs_car_booking.val_addon_connect
 msgid "Premium Connectivity (1 yr)"
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_stat_form
-msgid "Preview"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2658,7 +3407,12 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_variant__price
-msgid "Price for this specific variant"
+msgid "Price for this booking package"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_model_option_view_form
+msgid "Pricing"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2669,13 +3423,17 @@ msgid ""
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid "Privacy Policy"
-msgstr "นโยบายความเป็นส่วนตัว"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__primary_cta_label
+msgid "Primary Button"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__primary_cta_url
+msgid "Primary Link"
+msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_configurator_page
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
 msgid "Privacy Policy (PDPA)"
 msgstr "นโยบายความเป็นส่วนตัว (PDPA)"
 
@@ -2693,6 +3451,11 @@ msgstr "สินค้า"
 #. module: bs_car_booking
 #: model:ir.model,name:bs_car_booking.model_bs_car_offer
 msgid "Promotional Offer"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__publish_date
+msgid "Publish Date"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2714,6 +3477,11 @@ msgid "Publish a car model in the backend to show it on this page."
 msgstr "เผยแพร่รุ่นรถจากระบบหลังบ้านเพื่อแสดงในหน้านี้"
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.model_stage_content
+msgid "Publish a car model to populate this section."
+msgstr ""
+
+#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.dealer_locator_content
 msgid "Publish a dealer/showroom to populate this section."
 msgstr "เผยแพร่ผู้จำหน่าย/โชว์รูมเพื่อแสดงในส่วนนี้"
@@ -2727,21 +3495,34 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_search
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_search
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_search
 msgid "Published"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_stat__source__models_count
-msgid "Published models"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__website_published
+msgid "Published on Website"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__website_published
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__website_published
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__website_published
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__website_published
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__website_published
-msgid "Published on Website"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp__purpose_id
+msgid "Purpose"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp__purpose_code
+msgid "Purpose Code"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp_purpose__name
+msgid "Purpose Name"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.constraint,message:bs_car_booking.constraint_bs_car_booking_otp_purpose_code_uniq
+msgid "Purpose code must be unique."
 msgstr ""
 
 #. module: bs_car_booking
@@ -2752,13 +3533,6 @@ msgstr ""
 #. module: bs_car_booking
 #: model:product.attribute.value,name:bs_car_booking.val_color_silver
 msgid "Quicksilver"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:bs.car.model.spec,name:bs_car_booking.spec_eh7_range
-#: model:bs.car.model.spec,name:bs_car_booking.spec_ehs9_range
-#: model:bs.car.model.spec,name:bs_car_booking.spec_hs5_range
-msgid "Range (WLTP)"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2786,6 +3560,27 @@ msgid "Reference"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:bs.car.agreement,name:bs_car_booking.agreement_refund
+msgid "Refund Policy"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "Registered company name"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "Remove file"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__required
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__required
+msgid "Required"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_model__deposit_amount
 msgid "Required deposit for booking"
 msgstr ""
@@ -2801,31 +3596,19 @@ msgid "Resend Code"
 msgstr "ส่งรหัสอีกครั้ง"
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.tracking_page
+msgid "Resend code"
+msgstr ""
+
+#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
 msgid "Reserve"
 msgstr "จอง"
 
 #. module: bs_car_booking
-#: model:bs.car.offer,cta_label:bs_car_booking.offer_zero_apr
-msgid "Reserve now"
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:bs.car.offer,description:bs_car_booking.offer_flagship
-msgid ""
-"Reserve the E-HS9 and receive a full year of\n"
-"            scheduled maintenance, courtesy of our flagship ownership programme."
-msgstr ""
-
-#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_listing_page
 msgid "Reserve the flagship that fits your drive."
 msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.finance_calculator_content
-msgid "Reserve this car"
-msgstr "จองรถคันนี้"
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
@@ -2835,11 +3618,6 @@ msgstr "จอง"
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_form
 msgid "Reset to Draft"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__display_value
-msgid "Resolved Value"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2864,8 +3642,29 @@ msgid "Responsible User"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_brand__website_id
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_dealer__website_id
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_model__website_id
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_offer__website_id
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_showcase_item__website_id
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_story__website_id
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_website_section__website_id
+msgid "Restrict to a specific website."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_booking_otp__otp_code
+msgid "Runtime-only value used while rendering SMS templates."
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__is_seo_optimized
 msgid "SEO optimized"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_otp_purpose_form
+msgid "SMS Configuration"
 msgstr ""
 
 #. module: bs_car_booking
@@ -2880,6 +3679,16 @@ msgid "SMS Record"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp_purpose__sms_template_id
+msgid "SMS Template"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_booking_otp_purpose__sms_template_id
+msgid "SMS template used when sending OTP for this purpose."
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_model__body_type__suv
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_search
 msgid "SUV"
@@ -2891,15 +3700,32 @@ msgid "Sale Order"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.model.spec,name:bs_car_booking.spec_eh7_seats
-#: model:bs.car.model.spec,name:bs_car_booking.spec_ehs9_seats
-#: model:bs.car.model.spec,name:bs_car_booking.spec_hs5_seats
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.story_detail_page
+msgid "Scroll"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__seats
 msgid "Seats"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_home_block__block_type
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__swatch_color_2
+msgid "Second Swatch Colour"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__secondary_cta_label
+msgid "Secondary Button"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__secondary_cta_url
+msgid "Secondary Link"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__section_type
 msgid "Section Type"
 msgstr ""
 
@@ -2950,26 +3776,48 @@ msgid "Send OTP"
 msgstr "ส่งรหัส OTP"
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.tracking_page
+msgid "Send code <i class=\"fa fa-arrow-right\"/>"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__seo_name
 msgid "Seo name"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_agreement__sequence
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_agreement__sequence
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_document__sequence
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp_purpose__sequence
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__sequence
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__sequence
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_home_block__sequence
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_document_type__sequence
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__sequence
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_image__sequence
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_spec__sequence
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__sequence
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__sequence
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__sequence
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item_image__sequence
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__sequence
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__sequence
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__sequence
 msgid "Sequence"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.finance_calculator_content
-msgid "Set a featured car model to show the finance calculator."
+#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_document_type
+msgid ""
+"Set <b>Applies To</b> (Individual / Company / Both) and <b>Required</b>.\n"
+"               The booking form asks for these on the customer-info step."
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid ""
+"Shared model media. The main image is used by listings, booking cards,\n"
+"                                detail-page fallback/poster, and SEO previews. The gallery is used by the\n"
+"                                car detail page."
 msgstr ""
 
 #. module: bs_car_booking
@@ -2978,8 +3826,29 @@ msgid "Short brand line, e.g. \"The flag bearer of Chinese luxury\"."
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_document_type__help_text
+msgid "Short guidance shown under the upload field."
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_form
+msgid "Short kicker / supporting line"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_form
+msgid "Short supporting copy"
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_offer__badge
 msgid "Short tag shown on the card, e.g. \"Limited time\"."
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_form
+msgid "Short website copy shown on this showcase block."
 msgstr ""
 
 #. module: bs_car_booking
@@ -2993,13 +3862,20 @@ msgid "Show this spec prominently (e.g. in the hero metrics strip)."
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields,help:bs_car_booking.field_bs_car_stat__unit
-msgid "Shown after the value with spacing, e.g. \"km\", \"min\"."
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__showcase_count
+msgid "Showcase Count"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.showroom_home_view
-msgid "Showroom"
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item_image__item_id
+msgid "Showcase Item"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.actions.act_window,name:bs_car_booking.action_bs_car_showcase_item
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__showcase_item_ids
+#: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_showcase_item
+msgid "Showcase Items"
 msgstr ""
 
 #. module: bs_car_booking
@@ -3008,24 +3884,23 @@ msgid "Showroom Image"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model,name:bs_car_booking.model_bs_car_stat
-msgid "Showroom Statistic"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.dealer_locator_content
+msgid "Showroom location"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.stat,name:bs_car_booking.stat_dealers
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_stat__source__dealers_count
-msgid "Showrooms"
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_stat_list
-msgid "Shows"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Slide caption"
 msgstr ""
 
 #. module: bs_car_booking
 #: model:product.attribute.value,name:bs_car_booking.val_color_black
 msgid "Solid Black"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__website_id
+msgid "Source Website"
 msgstr ""
 
 #. module: bs_car_booking
@@ -3040,11 +3915,29 @@ msgstr "ข้อมูลจำเพาะ"
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__spec_ids
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.model_specs_content
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_variant_form
 msgid "Specifications"
 msgstr "ข้อมูลจำเพาะ"
+
+#. module: bs_car_booking
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__theme_variant__standard
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_variant_form
+msgid "Standard"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:product.attribute,name:bs_car_booking.attr_trim
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_variant_form
+msgid "Standard Package"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.actions.act_window,name:bs_car_booking.action_bs_car_variant
+#: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_variant
+msgid "Standard Packages"
+msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_form
@@ -3065,18 +3958,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_otp__state
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__state_id
 msgid "State"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:ir.actions.act_window,name:bs_car_booking.action_bs_car_stat
-#: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_stat
-msgid "Stats"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_home_block__block_type__stats
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.bs_car_booking_snippets
-msgid "Stats Strip"
 msgstr ""
 
 #. module: bs_car_booking
@@ -3107,6 +3988,23 @@ msgid "Stealth Grey"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.actions.act_window,name:bs_car_booking.action_bs_car_story
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__story_ids
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__section_type__stories
+#: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_story
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.story_index_page
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Stories"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_story
+msgid ""
+"Stories appear on the showroom home page and can link to a model or an "
+"external story page."
+msgstr ""
+
+#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__street
 msgid "Street"
 msgstr ""
@@ -3118,12 +4016,37 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__subtitle
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__subtitle
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__subtitle
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__subtitle
 msgid "Subtitle"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_option__swatch_color
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__swatch_color
+msgid "Swatch Colour"
 msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__tagline
 msgid "Tagline"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__tax_id
+msgid "Tax ID"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "Tax ID *"
+msgstr ""
+
+#. module: bs_car_booking
+#. odoo-python
+#: code:addons/bs_car_booking/models/bs_car_booking.py:0
+msgid "Tax ID is required for a company."
 msgstr ""
 
 #. module: bs_car_booking
@@ -3134,44 +4057,19 @@ msgstr ""
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
 msgid ""
-"Technical spec sheet shown on the website detail page and the\n"
-"                                home \"featured model\" section. Mark a few as <b>Hero Highlight</b>."
+"Technical spec sheet shown on the website detail page and home sections.\n"
+"                                Range, 0-100 km/h, and top speed are synced from these rows into website\n"
+"                                filters and model cards. Mark a few rows as <b>Hero Highlight</b>."
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.finance_calculator_content
-msgid ""
-"Term (months)\n"
-"                            <select class=\"form-select bs_fin_term\">\n"
-"                                <option value=\"12\">12</option>\n"
-"                                <option value=\"24\">24</option>\n"
-"                                <option value=\"36\">36</option>\n"
-"                                <option value=\"48\">48</option>\n"
-"                                <option value=\"60\">60</option>\n"
-"                                <option value=\"72\">72</option>\n"
-"                            </select>"
+#: model:bs.car.agreement,name:bs_car_booking.agreement_terms
+msgid "Terms & Conditions"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_home_block_form
-msgid ""
-"The <b>/showroom</b> page renders these sections in order. Leave\n"
-"                        <b>Car Model</b> empty to use the model flagged “Featured on Home”.\n"
-"                        The <b>Lineup</b> section always lists all published models."
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:bs.car.model,description:bs_car_booking.model_hongqi_eh7
-msgid ""
-"The Hongqi EH7 is an executive electric sedan pairing long range with a hushed,\n"
-"            rear-lounge cabin. Demo content — replace with brand-owned imagery and final specs."
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:bs.car.model,description:bs_car_booking.model_hongqi_hs5
-msgid ""
-"The Hongqi HS5 brings flagship design language to a refined mid-size SUV.\n"
-"            Demo content — replace with brand-owned imagery and final specs."
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_agreement__cta_label
+msgid "Text shown next to the checkbox, e.g. \"I accept the Terms & Conditions\"."
 msgstr ""
 
 #. module: bs_car_booking
@@ -3182,9 +4080,35 @@ msgid ""
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.brand,tagline:bs_car_booking.brand_hongqi
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_brand_form
 msgid "The flag bearer of Chinese luxury"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_brand__website_absolute_url
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_dealer__website_absolute_url
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_model__website_absolute_url
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_offer__website_absolute_url
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_showcase_item__website_absolute_url
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_story__website_absolute_url
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_website_section__website_absolute_url
+msgid "The full absolute URL to access the document through the website."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_brand__website_url
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_dealer__website_url
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_model__website_url
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_offer__website_url
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_showcase_item__website_url
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_story__website_url
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_website_section__website_url
+msgid "The full relative URL to access the document through the website."
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.stories_content
+msgid "The journey behind the red flag"
 msgstr ""
 
 #. module: bs_car_booking
@@ -3194,11 +4118,36 @@ msgid "The required deposit has not been paid yet."
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_variant_form
+msgid ""
+"The standard package is the base product variant used by booking pricing.\n"
+"                                Keep one active line named Standard unless the business later introduces\n"
+"                                multiple official packages."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.constraint,message:bs_car_booking.constraint_bs_car_booking_agreement_uniq_booking_agreement
+msgid "This agreement is already recorded for the booking."
+msgstr ""
+
+#. module: bs_car_booking
 #. odoo-python
 #: code:addons/bs_car_booking/models/bs_car_booking.py:0
 msgid ""
 "This booking already has a successful payment. Process the refund/accounting"
 " cancellation first, then cancel the booking."
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "This booking is for *"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_configurator_page
+msgid ""
+"This model is not ready for online booking yet. Ask a booking manager to "
+"generate the configurable product in the back office."
 msgstr ""
 
 #. module: bs_car_booking
@@ -3213,11 +4162,6 @@ msgid "This phone number is already verified."
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.offer,badge:bs_car_booking.offer_trade_in
-msgid "This season"
-msgstr ""
-
-#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
 msgid ""
 "This will create or refresh the configurable product and its options. "
@@ -3226,30 +4170,19 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_image__name
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__title
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
 msgid "Title"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid ""
-"To contact you (phone/SMS/email) about your booking and related offers."
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__title_image
+msgid "Title Image"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid "To create and manage your booking, deposit invoice and payment."
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid "To send a one-time verification code (OTP) to your mobile."
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:bs.car.brand,heritage_html:bs_car_booking.brand_hongqi
-msgid ""
-"Today that flagship pedigree is reimagined for the electric era: hand-finished cabins,\n"
-"            acoustic glazing, and a serene, chauffeur-grade ride, now arriving in Thailand."
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__title_image_alt
+msgid "Title Image Alt"
 msgstr ""
 
 #. module: bs_car_booking
@@ -3267,13 +4200,6 @@ msgid ""
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.model.spec,name:bs_car_booking.spec_eh7_top
-#: model:bs.car.model.spec,name:bs_car_booking.spec_ehs9_top
-#: model:bs.car.model.spec,name:bs_car_booking.spec_hs5_top
-msgid "Top Speed"
-msgstr ""
-
-#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__top_speed
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__top_speed
 msgid "Top Speed (km/h)"
@@ -3285,13 +4211,23 @@ msgid "Tow Package"
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.tracking_page
+msgid "Track from My Account"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.tracking_page
+msgid "Track your booking"
+msgstr ""
+
+#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.portal_my_home_booking
 msgid "Track your reservations &amp; deposits"
 msgstr "ติดตามการจองและเงินมัดจำของคุณ"
 
 #. module: bs_car_booking
-#: model:bs.car.offer,name:bs_car_booking.offer_trade_in
-msgid "Trade-in bonus — up to ฿150,000"
+#: model:bs.car.booking.otp.purpose,name:bs_car_booking.otp_purpose_tracking
+msgid "Tracking Access"
 msgstr ""
 
 #. module: bs_car_booking
@@ -3300,14 +4236,9 @@ msgid "Transactions"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:product.attribute,name:bs_car_booking.attr_trim
-msgid "Trim"
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
-msgid "Trims"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_showcase_item_search
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_search
+msgid "Type"
 msgstr ""
 
 #. module: bs_car_booking
@@ -3323,7 +4254,6 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_spec__unit
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__unit
 msgid "Unit"
 msgstr ""
 
@@ -3338,10 +4268,18 @@ msgid "Until"
 msgstr "ถึง"
 
 #. module: bs_car_booking
-#: model_terms:bs.car.offer,description:bs_car_booking.offer_trade_in
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_form
 msgid ""
-"Upgrade your drive: we top up your trade-in\n"
-"            valuation by up to ฿150,000 when you reserve a new model."
+"Upload MP4/WebM for reliable autoplay. Add a portrait mobile video when the "
+"phone crop needs separate framing. YouTube/Vimeo are shown on desktop and "
+"fall back to the cover image on mobile."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_website_section__video_file
+msgid ""
+"Upload an .mp4/.webm file to use as a looping background video. This works "
+"better than YouTube on mobile."
 msgstr ""
 
 #. module: bs_car_booking
@@ -3352,23 +4290,47 @@ msgid ""
 msgstr ""
 
 #. module: bs_car_booking
-#: model:ir.model.fields,help:bs_car_booking.field_bs_car_stat__value
-msgid "Used when Source is Manual, e.g. \"12,400+\" or \"98%\"."
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_document__uploaded_date
+msgid "Uploaded"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__video_media_type__upload
+msgid "Uploaded Video"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_website_section
+msgid ""
+"Use these for data-driven home blocks such as brand covers, model lineup, "
+"dealers, offers, and stories."
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.actions.act_window,help:bs_car_booking.action_bs_car_showcase_item
+msgid ""
+"Use these records for the model stage, colour studio, highlights and cabin "
+"story sections."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_booking_otp_purpose__sms_fallback_body
+msgid "Used when SMS template is missing. Use %(otp_code)s as placeholder."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:bs.car.document.type,name:bs_car_booking.doc_type_vat_certificate
+msgid "VAT / Tax Certificate"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "VAT / Tax ID (on invoice)"
 msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model_spec__value
 msgid "Value"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__source
-msgid "Value Source"
-msgstr ""
-
-#. module: bs_car_booking
-#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_stat__value_suffix
-msgid "Value Suffix"
 msgstr ""
 
 #. module: bs_car_booking
@@ -3382,19 +4344,9 @@ msgid "Variant Count"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_variant_form
-msgid "Variant Name"
-msgstr ""
-
-#. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__variant_ids
 msgid "Variants"
 msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.finance_calculator_content
-msgid "Vehicle price"
-msgstr "ราคารถ"
 
 #. module: bs_car_booking
 #. odoo-python
@@ -3428,6 +4380,26 @@ msgid "Video"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__video_embed_url
+msgid "Video Embed Url"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__video_filename
+msgid "Video Filename"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__video_media_type
+msgid "Video Media Type"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__video_src
+msgid "Video Src"
+msgstr ""
+
+#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_listing_page
 msgid "View Featured <i class=\"fa fa-arrow-right\"/>"
 msgstr "ดูรุ่นเด่น <i class=\"fa fa-arrow-right\"/>"
@@ -3438,18 +4410,58 @@ msgid "View Specs <i class=\"fa fa-arrow-down\"/>"
 msgstr "ดูข้อมูลจำเพาะ <i class=\"fa fa-arrow-down\"/>"
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid ""
-"We collect and process your personal data — including your name,\n"
-"                                   mobile number, email and the vehicle configuration you select — in\n"
-"                                   order to verify your identity (via mobile OTP), prepare your booking\n"
-"                                   and deposit, and contact you about your reservation."
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.tracking_page
+msgid "View my booking <i class=\"fa fa-arrow-right\"/>"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__video_media_type__vimeo
+msgid "Vimeo"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__website_published
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__website_published
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__website_published
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__website_published
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__website_published
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__website_published
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__website_published
+msgid "Visible on current website"
 msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.otp_verification_page
 msgid "We've sent a 6-digit verification code to"
 msgstr "เราได้ส่งรหัสยืนยัน 6 หลักไปที่"
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__website_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__website_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__website_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__website_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__website_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__website_id
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__website_id
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_search
+msgid "Website"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__website_absolute_url
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__website_absolute_url
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__website_absolute_url
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__website_absolute_url
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__website_absolute_url
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__website_absolute_url
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__website_absolute_url
+msgid "Website Absolute URL"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_website_content
+msgid "Website Content"
+msgstr ""
 
 #. module: bs_car_booking
 #. odoo-python
@@ -3472,7 +4484,19 @@ msgid "Website Messages"
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.actions.act_window,name:bs_car_booking.action_bs_car_website_section
+#: model:ir.ui.menu,name:bs_car_booking.menu_bs_car_website_section
+msgid "Website Sections"
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_brand__website_url
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__website_url
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__website_url
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_offer__website_url
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_showcase_item__website_url
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__website_url
+#: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_website_section__website_url
 msgid "Website URL"
 msgstr ""
 
@@ -3503,8 +4527,18 @@ msgid "Website opengraph image"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid "What we collect"
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_agreement__page_url
+msgid "Website page with the full text, e.g. /terms. The label links to it."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_booking__website_id
+msgid "Website where this booking was created."
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Welcome Light, Executive Cabin..."
 msgstr ""
 
 #. module: bs_car_booking
@@ -3525,16 +4559,28 @@ msgid ""
 msgstr ""
 
 #. module: bs_car_booking
+#: model:ir.model.fields,help:bs_car_booking.field_bs_car_document_type__applies_to
+msgid "Which customer type must provide this document."
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_model_form
+msgid "Wide Image"
+msgstr ""
+
+#. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.portal_my_bookings
 msgid "You have no car bookings yet."
 msgstr "คุณยังไม่มีการจองรถ"
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid ""
-"You may withdraw consent, or request access, correction or deletion of\n"
-"                                   your personal data at any time by contacting our dealership. We retain\n"
-"                                   your data only as long as necessary for the booking and legal obligations."
+#: model:ir.model.fields.selection,name:bs_car_booking.selection__bs_car_website_section__video_media_type__youtube
+msgid "YouTube"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_website_section_form
+msgid "YouTube, Vimeo, or direct .mp4/.webm URL"
 msgstr ""
 
 #. module: bs_car_booking
@@ -3543,20 +4589,22 @@ msgid "Your Details"
 msgstr "ข้อมูลของคุณ"
 
 #. module: bs_car_booking
-#. odoo-python
-#: code:addons/bs_car_booking/models/bs_car_booking_otp.py:0
-msgid "Your car booking verification code is: %s. Valid for %s minutes."
+#: model:sms.template,body:bs_car_booking.sms_template_otp_tracking
+msgid ""
+"Your booking tracking code is: {{ object.otp_code }}. Valid for 5 minutes."
+msgstr ""
+
+#. module: bs_car_booking
+#: model:sms.template,body:bs_car_booking.sms_template_otp_booking
+msgid ""
+"Your booking verification code is: {{ object.otp_code }}. Valid for 5 "
+"minutes. Do not share this code with anyone."
 msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
 msgid "Your full name"
 msgstr "ชื่อ-นามสกุลของคุณ"
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.privacy_policy_view
-msgid "Your rights"
-msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_dealer__zip
@@ -3580,12 +4628,6 @@ msgid "days"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_stat_form
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_stat_list
-msgid "e.g. \"12,400+\""
-msgstr ""
-
-#. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_model_spec__value
 msgid "e.g. \"548\", \"120\", \"202 + 160\"."
 msgstr ""
@@ -3601,9 +4643,13 @@ msgid "e.g. #FF0000"
 msgstr ""
 
 #. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_stat_form
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_stat_list
-msgid "fa-car"
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.tracking_page
+msgid "e.g. CBK/2026/06/00042"
+msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_booking_otp_purpose_form
+msgid "e.g. Your verification code is: {otp_code}. Valid for 5 minutes."
 msgstr ""
 
 #. module: bs_car_booking
@@ -3612,14 +4658,8 @@ msgid "https://cdn.example.com/hero.mp4"
 msgstr ""
 
 #. module: bs_car_booking
-#: model:bs.car.stat,unit:bs_car_booking.stat_range
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
 msgid "km"
-msgstr ""
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.view_bs_car_stat_form
-msgid "km / min"
 msgstr ""
 
 #. module: bs_car_booking
@@ -3661,9 +4701,4 @@ msgstr ""
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
 msgid "you@email.com"
-msgstr "you@email.com"
-
-#. module: bs_car_booking
-#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_confirmation_page
-msgid "Booking Confirmed!"
-msgstr "ยืนยันการจองแล้ว!"
+msgstr ""

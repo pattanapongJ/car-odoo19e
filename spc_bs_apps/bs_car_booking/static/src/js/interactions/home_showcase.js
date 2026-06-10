@@ -1,5 +1,5 @@
 /** @odoo-module **/
-/* Data-driven Hongqi-style home showcase interactions. */
+/* Data-driven home showcase interactions. */
 
 import { Interaction } from "@web/public/interaction";
 import { registry } from "@web/core/registry";
@@ -25,8 +25,7 @@ export class HomeShowcase extends Interaction {
         });
     }
 
-    /* Highlights: click a card to open a split image + info lightbox
-       (mirrors the Hongqi Thailand highlights modal). */
+    /* Highlights: click a card to open a split image + info lightbox. */
     _initHighlights() {
         const cards = Array.from(this.el.querySelectorAll(".bs_highlight_card[data-hl-img]"));
         if (!cards.length) {
@@ -37,7 +36,10 @@ export class HomeShowcase extends Interaction {
         o.className = "bs_hl_lightbox d-none";
         o.innerHTML =
             '<div class="bs_hl_lb_inner">' +
-            '  <div class="bs_hl_lb_media"><img class="bs_hl_lb_img" alt=""/></div>' +
+            '  <div class="bs_hl_lb_media">' +
+            '    <img class="bs_hl_lb_img" alt=""/>' +
+            '    <div class="bs_hl_lb_thumbs"></div>' +
+            '  </div>' +
             '  <div class="bs_hl_lb_panel">' +
             '    <button class="bs_hl_lb_close" aria-label="Close">×</button>' +
             '    <span class="bs_hl_lb_kicker"></span>' +
@@ -51,19 +53,73 @@ export class HomeShowcase extends Interaction {
         document.body.appendChild(o);
         this._hlOverlay = o;
         const imgEl = o.querySelector(".bs_hl_lb_img");
+        const thumbsEl = o.querySelector(".bs_hl_lb_thumbs");
         const kEl = o.querySelector(".bs_hl_lb_kicker");
         const tEl = o.querySelector(".bs_hl_lb_title");
         const dEl = o.querySelector(".bs_hl_lb_desc");
         const cEl = o.querySelector(".bs_hl_lb_count");
         let idx = 0;
+        let gallery = [];
+        let galleryIdx = 0;
+        const parseGallery = (card) => {
+            try {
+                const parsed = JSON.parse(card.dataset.hlGallery || "[]");
+                if (Array.isArray(parsed) && parsed.length) {
+                    return parsed;
+                }
+            } catch {
+                // Fall back to the legacy single-image attributes below.
+            }
+            return [{
+                src: card.dataset.hlImg || "",
+                thumb: card.dataset.hlImg || "",
+                alt: card.dataset.hlTitle || "",
+                title: card.dataset.hlTitle || "",
+            }];
+        };
+        const renderGalleryImage = (i) => {
+            if (!gallery.length) {
+                return;
+            }
+            galleryIdx = (i + gallery.length) % gallery.length;
+            const current = gallery[galleryIdx] || {};
+            imgEl.src = current.src || "";
+            imgEl.alt = current.alt || "";
+            thumbsEl.querySelectorAll("button").forEach((btn, thumbIdx) => {
+                btn.classList.toggle("is-active", thumbIdx === galleryIdx);
+            });
+            cEl.textContent = pad(idx + 1) + " / " + pad(cards.length) +
+                (gallery.length > 1 ? " · Image " + pad(galleryIdx + 1) + " / " + pad(gallery.length) : "");
+        };
+        const renderThumbs = () => {
+            thumbsEl.replaceChildren();
+            thumbsEl.classList.toggle("d-none", gallery.length < 2);
+            gallery.forEach((image, imageIdx) => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "bs_hl_lb_thumb";
+                btn.setAttribute("aria-label", image.title || image.alt || "Highlight image");
+                const thumb = document.createElement("img");
+                thumb.src = image.thumb || image.src;
+                thumb.alt = image.alt || "";
+                btn.appendChild(thumb);
+                btn.addEventListener("click", (ev) => {
+                    ev.stopPropagation();
+                    renderGalleryImage(imageIdx);
+                });
+                thumbsEl.appendChild(btn);
+            });
+        };
         const render = (i) => {
             idx = (i + cards.length) % cards.length;
             const c = cards[idx].dataset;
-            imgEl.src = c.hlImg;
             kEl.textContent = c.hlKicker || "";
             tEl.textContent = c.hlTitle || "";
             dEl.innerHTML = c.hlDesc || "";
-            cEl.textContent = pad(idx + 1) + " / " + pad(cards.length);
+            gallery = parseGallery(cards[idx]);
+            galleryIdx = 0;
+            renderThumbs();
+            renderGalleryImage(0);
         };
         const open = (i) => {
             render(i);
@@ -105,6 +161,8 @@ export class HomeShowcase extends Interaction {
             if (e.key === "Escape") close();
             else if (e.key === "ArrowLeft") render(idx - 1);
             else if (e.key === "ArrowRight") render(idx + 1);
+            else if (e.key === "ArrowUp" && gallery.length > 1) renderGalleryImage(galleryIdx - 1);
+            else if (e.key === "ArrowDown" && gallery.length > 1) renderGalleryImage(galleryIdx + 1);
         };
         document.addEventListener("keydown", this._hlKey);
     }
@@ -150,16 +208,18 @@ export class HomeShowcase extends Interaction {
         }
     }
 
-    /* Option-driven Colour Studio with one shared image stage.
+    /* Option-driven Colour Studio.
        Picking an exterior shows the body image and filters the interior
-       swatches to those offered with it (boxed group), highlighting the first
-       one. Picking an interior swaps the stage to its cabin image. */
+       swatches to those offered with it. If interiors exist, the first
+       available interior is selected on load so the section never starts
+       half-empty. */
     _initLinkedColorStudios() {
         for (const studio of this.el.querySelectorAll("[data-color-studio-linked]")) {
             const extGroup = studio.querySelector('[data-showcase-group="exterior"]');
             const intGroup = studio.querySelector('[data-showcase-group="interior"]');
-            const extStage = studio.querySelector('[data-cs-stage="exterior"]');
-            const intStage = studio.querySelector('[data-cs-stage="interior"]');
+            const sharedStage = studio.querySelector('[data-cs-stage="1"]');
+            const extStage = studio.querySelector('[data-cs-stage="exterior"]') || sharedStage;
+            const intStage = studio.querySelector('[data-cs-stage="interior"]') || sharedStage;
             const extBtns = extGroup ? Array.from(extGroup.querySelectorAll("[data-showcase-target]")) : [];
             const intBtns = intGroup ? Array.from(intGroup.querySelectorAll("[data-showcase-target]")) : [];
             if (!extBtns.length && !intBtns.length) {
@@ -247,20 +307,10 @@ export class HomeShowcase extends Interaction {
                 showInStage(extStage, btn);
                 expandInteriors(btn);
             };
-            // Initial state: show the first exterior, but keep the interiors
-            // hidden until the buyer actually picks an exterior colour.
-            const initExterior = (btn) => {
-                setActive(extBtns, btn);
-                showInStage(extStage, btn);
-                unwrapCombo();
-                if (intStage) {
-                    intStage.classList.add("d-none");
-                }
-            };
             extBtns.forEach((b) => b.addEventListener("click", () => selectExterior(b)));
             intBtns.forEach((b) => b.addEventListener("click", () => selectInterior(b)));
             if (extBtns.length) {
-                initExterior(extBtns[0]);
+                selectExterior(extBtns[0]);
             } else if (intBtns.length) {
                 if (intGroup) {
                     intGroup.classList.add("is-open");

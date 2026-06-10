@@ -9,7 +9,12 @@
     <menuitem id="menu_bs_car_booking_master"
               name="Master Data"
               parent="menu_bs_car_booking_root"
-              sequence="10"/>
+              sequence="30"/>
+
+    <menuitem id="menu_bs_car_website_content"
+              name="Website Content"
+              parent="menu_bs_car_booking_root"
+              sequence="20"/>
 
     <menuitem id="menu_bs_car_brand"
               name="Car Brands"
@@ -24,7 +29,7 @@
               sequence="20"/>
 
     <menuitem id="menu_bs_car_variant"
-              name="Car Variants"
+              name="Standard Packages"
               parent="menu_bs_car_booking_master"
               action="action_bs_car_variant"
               sequence="30"/>
@@ -39,5 +44,6 @@
               name="Bookings"
               parent="menu_bs_car_booking_root"
               action="action_bs_car_booking"
-              sequence="20"/>
+              groups="bs_car_booking.group_bs_car_booking_manager"
+              sequence="10"/>
 </odoo>

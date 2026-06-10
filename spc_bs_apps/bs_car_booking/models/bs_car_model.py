@@ -25,23 +25,12 @@ OPTION_ATTRIBUTE_REFS = (
     'bs_car_booking.attr_addons',
 )
 
-# (option value xmlid, default extra price) used to seed demo configurations.
-DEMO_OPTION_PRICES = [
-    ('val_color_white', 0), ('val_color_black', 0), ('val_color_grey', 0),
-    ('val_color_blue', 1500), ('val_color_red', 2000), ('val_color_silver', 1500),
-    ('val_int_black', 0), ('val_int_white', 1500), ('val_int_cream', 2000),
-    ('val_wheel_aero', 0), ('val_wheel_sport', 1500),
-    ('val_wheel_induction', 2500), ('val_wheel_perf', 4000),
-    ('val_addon_fsd', 8000), ('val_addon_tow', 1000),
-    ('val_addon_connect', 500), ('val_addon_ppf', 1500),
-]
-
-
 class BsCarModel(models.Model):
     _name = 'bs.car.model'
     _description = 'Car Model'
-    _inherit = ['website.seo.metadata']
+    _inherit = ['website.seo.metadata', 'website.published.multi.mixin', 'bs.car.website.scope.mixin']
     _order = 'brand_id, sequence, name'
+    _bs_clear_website_cache_on_write = True
 
     def _default_website_meta(self):
         """Per-car SEO/OpenGraph defaults: car image as og:image, model
@@ -77,7 +66,7 @@ class BsCarModel(models.Model):
         Returned as Markup so the template emits it raw inside a JSON-LD script."""
         self.ensure_one()
         try:
-            website = request.website
+            website = getattr(request, 'website', False) or self.env['website'].get_current_website()
         except (AttributeError, RuntimeError):
             website = False
         if not website:
@@ -97,7 +86,7 @@ class BsCarModel(models.Model):
         if self.description:
             data['description'] = tools.html2plaintext(self.description).strip()[:500]
         if self.image:
-            data['image'] = request.website.image_url(self, 'image')
+            data['image'] = website.image_url(self, 'image')
         if self.base_price:
             data['offers'] = {
                 '@type': 'Offer',
@@ -113,6 +102,9 @@ class BsCarModel(models.Model):
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
     brand_id = fields.Many2one('bs.car.brand', string='Brand', required=True, ondelete='cascade')
+    company_id = fields.Many2one(
+        'res.company', string='Company', default=lambda self: self.env.company,
+        index=True, help='Leave empty to share this model across companies.')
     
     # Model details
     body_type = fields.Selection([
@@ -208,10 +200,8 @@ class BsCarModel(models.Model):
     variant_count = fields.Integer(compute='_compute_variant_count')
     
     # Website
-    website_published = fields.Boolean('Published on Website', default=True)
     website_featured = fields.Boolean('Featured on Home',
                                       help='Show this model in the home "Featured Model" section.')
-    website_url = fields.Char('Website URL', compute='_compute_website_url')
     arrival_date = fields.Date('Arrival Date',
                                help='When this model arrived/launched. Drives the '
                                     '"Latest arrivals" section and the "New" badge.')
@@ -231,7 +221,8 @@ class BsCarModel(models.Model):
     def _get_latest_arrivals(self, limit=6):
         """Published models, newest first — by arrival date, then by creation.
         Models without an arrival date sort last (still shown)."""
-        recs = self.sudo().search([('website_published', '=', True), ('active', '=', True)])
+        recs = self.sudo().search(
+            [('website_published', '=', True), ('active', '=', True)] + self._public_scope_domain())
         recs = recs.sorted(
             key=lambda c: (c.arrival_date or date.min, c.create_date or datetime.min),
             reverse=True)
@@ -241,7 +232,7 @@ class BsCarModel(models.Model):
     def _get_website_featured(self):
         """Return the model to showcase on the home page: the flagged one,
         else the first published model."""
-        base = [('website_published', '=', True), ('active', '=', True)]
+        base = [('website_published', '=', True), ('active', '=', True)] + self._public_scope_domain()
         return (self.sudo().search([('website_featured', '=', True)] + base, limit=1)
                 or self.sudo().search(base, order='sequence, id', limit=1))
 
@@ -271,50 +262,6 @@ class BsCarModel(models.Model):
                       for m in per_model]
             rows.append({'label': label, 'values': values})
         return rows
-
-    @api.model
-    def _get_browse_facets(self):
-        """Entry tiles for the home "Browse" section: body-type tiles (derived
-        from published models) + price-band chips (thresholds from the system
-        parameter ``bs_car_booking.browse_price_bands``, default 2M/4M).
-        Empty bands are omitted. Each entry carries a representative model id
-        for its image and a link into the filtered ``/cars`` listing."""
-        models = self.sudo().search(
-            [('website_published', '=', True), ('active', '=', True)], order='sequence, id')
-        types = dict(self._fields['body_type'].selection)
-        body = []
-        for bt in dict.fromkeys(models.mapped('body_type')):
-            if not bt:
-                continue
-            grp = models.filtered(lambda m: m.body_type == bt)
-            rep = grp.filtered('image')[:1] or grp[:1]
-            body.append({'label': types.get(bt, bt), 'key': bt,
-                         'count': len(grp), 'model_id': rep.id})
-
-        ICP = self.env['ir.config_parameter'].sudo()
-        raw = ICP.get_param('bs_car_booking.browse_price_bands', '2000000,4000000')
-        thresholds = sorted(float(x) for x in raw.split(',') if x.strip())
-        sym = (models[:1].currency_id.symbol or '') if models else ''
-
-        def fmt(n):
-            return f'{sym}{n / 1_000_000:g}M' if n >= 1_000_000 else f'{sym}{n:g}'
-
-        price = []
-        edges = [0.0] + thresholds + [None]
-        for i in range(len(edges) - 1):
-            lo, hi = edges[i], edges[i + 1]
-            grp = models.filtered(
-                lambda m: (m.base_price or 0) >= lo and (hi is None or (m.base_price or 0) < hi))
-            if not grp:
-                continue
-            if lo == 0 and hi:
-                label, url = f'Under {fmt(hi)}', f'/cars?price_max={int(hi)}'
-            elif hi is None:
-                label, url = f'{fmt(lo)}+', f'/cars?price_min={int(lo)}'
-            else:
-                label, url = f'{fmt(lo)} – {fmt(hi)}', f'/cars?price_min={int(lo)}&price_max={int(hi)}'
-            price.append({'label': label, 'url': url, 'count': len(grp)})
-        return {'body': body, 'price': price}
 
     # === Commerce backbone (native product) ===
     product_tmpl_id = fields.Many2one('product.template', string='Configurable Product',
@@ -362,7 +309,7 @@ class BsCarModel(models.Model):
 
     # === Product generation ===
     def _get_or_create_pav(self, attribute, name):
-        """Get or create a product.attribute.value for a (per-model) trim name."""
+        """Get or create a product.attribute.value for a per-model package."""
         PAV = self.env['product.attribute.value']
         pav = PAV.search([('attribute_id', '=', attribute.id), ('name', '=', name)], limit=1)
         if not pav:
@@ -374,7 +321,7 @@ class BsCarModel(models.Model):
         self.ensure_one()
         trim_attr = self.env.ref('bs_car_booking.attr_trim')
         config = {}
-        # Trim values come from the model's variants (name + price delta).
+        # Standard package values come from the model's package records.
         for variant in self.variant_ids.filtered('active'):
             pav = self._get_or_create_pav(trim_attr, variant.name)
             extra = (variant.price or self.base_price or 0.0) - (self.base_price or 0.0)
@@ -458,86 +405,16 @@ class BsCarModel(models.Model):
             'target': 'current',
         }
 
-    # === Demo seeding (invoked from demo data) ===
-    @api.model
-    def _demo_seed(self):
-        """Seed standard options on every model, generate products, and create
-        one fully-paid sample booking for the portal demo. Best-effort."""
-        Option = self.env['bs.car.model.option']
-        for model in self.search([]):
-            if not model.option_ids:
-                for xmlid, price in DEMO_OPTION_PRICES:
-                    val = self.env.ref('bs_car_booking.' + xmlid, raise_if_not_found=False)
-                    if val:
-                        Option.create({
-                            'model_id': model.id, 'value_id': val.id, 'price_extra': price,
-                        })
-            try:
-                model.action_generate_product()
-            except Exception as e:  # noqa: BLE001
-                _logger.warning('Demo: product generation failed for %s: %s', model.name, e)
-        try:
-            self._demo_sample_booking()
-        except Exception as e:  # noqa: BLE001
-            _logger.warning('Demo: sample booking skipped: %s', e)
-        return True
-
-    @api.model
-    def _demo_sample_booking(self):
-        model = self.env.ref('bs_car_booking.model_model3', raise_if_not_found=False)
-        if not model or not model.product_tmpl_id:
-            return
-        Booking = self.env['bs.car.booking']
-        if Booking.search_count([('model_id', '=', model.id),
-                                 ('customer_email', '=', 'demo.buyer@example.com')]):
-            return  # already seeded
-        partner = self.env['res.partner'].search(
-            [('email', '=', 'demo.buyer@example.com')], limit=1)
-        if not partner:
-            partner = self.env['res.partner'].create({
-                'name': 'Demo Buyer', 'email': 'demo.buyer@example.com',
-                'phone': '+95 9 123 456 789',
-            })
-        booking = Booking.create({
-            'brand_id': model.brand_id.id, 'model_id': model.id,
-            'customer_name': 'Demo Buyer', 'customer_phone': '+95 9 123 456 789',
-            'customer_email': 'demo.buyer@example.com', 'phone_verified': True,
-            'deposit_amount': model.deposit_amount, 'currency_id': model.currency_id.id,
-            'partner_id': partner.id,
-            'state': 'otp_verified',
-        })
-        tmpl = model.product_tmpl_id
-        trim_attr = self.env.ref('bs_car_booking.attr_trim')
-        color_attr = self.env.ref('bs_car_booking.attr_color')
-        trim_ptav = tmpl.attribute_line_ids.filtered(
-            lambda l: l.attribute_id == trim_attr).product_template_value_ids[:1]
-        color_ptav = tmpl.attribute_line_ids.filtered(
-            lambda l: l.attribute_id == color_attr).product_template_value_ids[:1]
-        booking._apply_configuration((trim_ptav + color_ptav).ids)
-        order = booking._ensure_sale_order()
-        booking._transition_to('payment_pending')
-        order.action_confirm()
-        # Deposit invoice + payment so the portal demo shows real documents.
-        wizard = self.env['sale.advance.payment.inv'].create({
-            'advance_payment_method': 'fixed',
-            'fixed_amount': booking.deposit_amount,
-            'sale_order_ids': [(6, 0, order.ids)],
-        })
-        invoices = wizard._create_invoices(order)
-        invoices.action_post()
-        register = self.env['account.payment.register'].with_context(
-            active_model='account.move', active_ids=invoices.ids).create({})
-        register._create_payments()
-        booking.write({'deposit_paid': booking.deposit_amount})
-        booking._transition_to('confirmed')
-
-
 class BsCarModelImage(models.Model):
     _name = 'bs.car.model.image'
     _description = 'Car Model Image'
+    _inherit = ['bs.car.website.scope.mixin']
     _order = 'sequence, id'
+    _bs_clear_website_cache_on_write = True
 
     name = fields.Char('Title')
     sequence = fields.Integer(default=10)
     model_id = fields.Many2one('bs.car.model', string='Car Model', required=True, ondelete='cascade')
     image = fields.Image('Image', max_width=1920, max_height=1080, required=True)
+    def _default_is_published(self):
+        return True

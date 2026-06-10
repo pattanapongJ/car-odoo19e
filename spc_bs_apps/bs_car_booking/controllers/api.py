@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Basic Solution Co., Ltd.
 
+import base64
+import binascii
 import logging
 
 from werkzeug.urls import url_encode
@@ -17,6 +19,12 @@ _logger = logging.getLogger(__name__)
 class BsCarBookingAPI(http.Controller):
     """JSON-RPC endpoints for the AJAX booking funnel."""
 
+    _ALLOWED_DOCUMENT_SIGNATURES = (
+        ('application/pdf', b'%PDF-'),
+        ('image/jpeg', b'\xff\xd8\xff'),
+        ('image/png', b'\x89PNG\r\n\x1a\n'),
+    )
+
     def _booking_step_url(self, booking, step):
         return '/booking/%s/%s?%s' % (
             booking.id,
@@ -27,12 +35,26 @@ class BsCarBookingAPI(http.Controller):
     def _check_booking_token(self, booking, access_token=None):
         return bool(access_token and consteq(booking.access_token or '', access_token))
 
+    def _scoped_env(self, model_name):
+        return request.env[model_name].sudo().with_context(website_id=request.website.id)
+
+    def _company_domain(self, model_name):
+        Model = request.env[model_name]
+        if 'company_id' not in Model._fields:
+            return []
+        return [('company_id', 'in', [False, request.website.company_id.id])]
+
+    def _is_current_company_record(self, record):
+        return not getattr(record, 'company_id', False) or record.company_id == request.website.company_id
+
     # ── Live price for a configuration ──────────────────────────────────
-    @http.route('/shop/car/price', type='jsonrpc', auth='public', website=True, methods=['POST'])
+    @http.route(['/car_booking/car/price', '/shop/car/price'], type='jsonrpc',
+                auth='public', website=True, methods=['POST'])
     def car_price(self, model_id, ptav_ids=None):
         """Return the live price for a selected attribute combination."""
-        model = request.env['bs.car.model'].sudo().browse(int(model_id))
-        if not model.exists() or not model.website_published or not model.active:
+        model = self._scoped_env('bs.car.model').browse(int(model_id))
+        if (not model.exists() or not model.website_published or not model.active
+                or not self._is_current_company_record(model)):
             return {'success': False, 'error': 'Unknown model.'}
         tmpl = model.product_tmpl_id
         currency = model.currency_id or request.env.company.currency_id
@@ -56,7 +78,8 @@ class BsCarBookingAPI(http.Controller):
         }
 
     # ── Create booking from configurator ────────────────────────────────
-    @http.route('/shop/car/book', type='jsonrpc', auth='public', website=True, methods=['POST'])
+    @http.route(['/car_booking/car/book', '/shop/car/book'], type='jsonrpc',
+                auth='public', website=True, methods=['POST'])
     def car_book(self, model_id, ptav_ids=None, dealer_id=None, phone=None,
                  pdpa_consent=False, **kw):
         """Create a draft booking from the configurator and send the OTP.
@@ -64,20 +87,29 @@ class BsCarBookingAPI(http.Controller):
         PDPA consent is captured here (before the OTP SMS is sent), so we never
         contact a customer who has not consented."""
         try:
-            model = request.env['bs.car.model'].sudo().browse(int(model_id))
-            if not model.exists() or not model.website_published or not model.active:
+            model = self._scoped_env('bs.car.model').browse(int(model_id))
+            if (not model.exists() or not model.website_published or not model.active
+                    or not self._is_current_company_record(model)):
                 return {'success': False, 'error': 'Unknown model.'}
+            if not model.product_tmpl_id:
+                return {
+                    'success': False,
+                    'error': 'This model is not ready for online booking yet.',
+                }
             if not phone or len(phone.strip()) < 7:
                 return {'success': False, 'error': 'Please enter a valid phone number.'}
             if not pdpa_consent:
                 return {'success': False,
                         'error': 'Please accept the privacy policy (PDPA) to continue.'}
-            dealer = request.env['bs.car.dealer'].sudo().browse(int(dealer_id or 0))
+            dealer = self._scoped_env('bs.car.dealer').browse(int(dealer_id or 0))
             if not dealer.exists() or not dealer.active or not dealer.website_published \
-                    or model.brand_id not in dealer.brand_ids:
+                    or model.brand_id not in dealer.brand_ids \
+                    or not self._is_current_company_record(dealer):
                 return {'success': False, 'error': 'Please choose a valid dealer.'}
 
             vals = {
+                'website_id': request.website.id,
+                'company_id': request.website.company_id.id,
                 'brand_id': model.brand_id.id,
                 'model_id': model.id,
                 'dealer_id': dealer.id,
@@ -130,7 +162,28 @@ class BsCarBookingAPI(http.Controller):
         except (TypeError, ValueError):
             return 10
 
-    @http.route('/shop/booking/info', type='jsonrpc', auth='public', website=True, methods=['POST'])
+    def _clean_document_upload(self, upload, max_mb):
+        """Validate and normalize a browser-provided base64 document payload."""
+        try:
+            dtype_id = int(upload.get('document_type_id'))
+            data = upload.get('data') or ''
+        except (AttributeError, TypeError, ValueError):
+            return None, None, None
+        if not data:
+            return None, None, None
+        try:
+            raw = base64.b64decode(data, validate=True)
+        except (binascii.Error, ValueError):
+            raise ValidationError(_('One uploaded document is not a valid file.'))
+        if len(raw) > max_mb * 1024 * 1024:
+            raise ValidationError(_('A document exceeds the %s MB limit.') % max_mb)
+        if not any(raw.startswith(signature) for _mime, signature in self._ALLOWED_DOCUMENT_SIGNATURES):
+            raise ValidationError(_('Only PDF, JPEG, and PNG documents are allowed.'))
+        filename = (upload.get('filename') or 'document').replace('\\', '/').split('/')[-1]
+        return dtype_id, base64.b64encode(raw).decode(), filename[:200]
+
+    @http.route(['/car_booking/booking/info', '/shop/booking/info'], type='jsonrpc',
+                auth='public', website=True, methods=['POST'])
     def booking_info(self, booking_id, access_token=None, customer_type=None,
                      name=None, email=None, nrc=None, address=None,
                      company_name=None, tax_id=None, contact_person=None,
@@ -143,6 +196,8 @@ class BsCarBookingAPI(http.Controller):
             if not booking.exists():
                 return {'success': False, 'error': 'Booking not found.'}
             if not self._check_booking_token(booking, access_token):
+                return {'success': False, 'error': 'This booking link is no longer valid.'}
+            if booking.website_id and booking.website_id != request.website:
                 return {'success': False, 'error': 'This booking link is no longer valid.'}
             if booking.state not in ('otp_verified', 'payment_pending'):
                 return {'success': False, 'error': 'This booking is not ready for customer info.'}
@@ -164,19 +219,13 @@ class BsCarBookingAPI(http.Controller):
             # --- Persist uploaded documents (base64), one per document type ---
             Doc = request.env['bs.car.booking.document'].sudo()
             max_mb = self._max_doc_mb()
-            max_b64_len = (max_mb * 1024 * 1024) * 4 // 3 + 64  # base64 ~+33%
             for d in (documents or []):
                 try:
-                    dtype_id = int(d.get('document_type_id'))
-                    data = d.get('data') or ''
-                except (TypeError, ValueError):
-                    continue
+                    dtype_id, data, filename = self._clean_document_upload(d, max_mb)
+                except ValidationError as e:
+                    return {'success': False, 'error': str(e)}
                 if not data:
                     continue
-                # data is raw base64 (the client strips the data-URL prefix).
-                if len(data) > max_b64_len:
-                    return {'success': False,
-                            'error': _('A document exceeds the %s MB limit.') % max_mb}
                 # Replace any previous upload for the same type on this booking.
                 Doc.search([('booking_id', '=', booking.id),
                             ('document_type_id', '=', dtype_id)]).unlink()
@@ -184,7 +233,7 @@ class BsCarBookingAPI(http.Controller):
                     'booking_id': booking.id,
                     'document_type_id': dtype_id,
                     'attachment': data,
-                    'filename': (d.get('filename') or 'document')[:200],
+                    'filename': filename,
                 })
 
             # --- Record accepted agreements (with timestamp, legal audit) ---
@@ -216,13 +265,16 @@ class BsCarBookingAPI(http.Controller):
             return {'success': False, 'error': str(e)}
 
     # ── OTP: send / verify / resend ─────────────────────────────────────
-    @http.route('/shop/booking/otp/send', type='jsonrpc', auth='public', website=True, methods=['POST'])
+    @http.route(['/car_booking/booking/otp/send', '/shop/booking/otp/send'], type='jsonrpc',
+                auth='public', website=True, methods=['POST'])
     def otp_send(self, booking_id, access_token=None, **kw):
         try:
             booking = request.env['bs.car.booking'].sudo().browse(int(booking_id))
             if not booking.exists():
                 return {'success': False, 'error': 'Booking not found.'}
             if not self._check_booking_token(booking, access_token):
+                return {'success': False, 'error': 'This booking link is no longer valid.'}
+            if booking.website_id and booking.website_id != request.website:
                 return {'success': False, 'error': 'This booking link is no longer valid.'}
             if booking.state not in ('draft', 'otp_pending') or booking.phone_verified:
                 return {'success': False, 'error': 'OTP cannot be resent for this booking.'}
@@ -233,13 +285,16 @@ class BsCarBookingAPI(http.Controller):
             _logger.exception('Failed to send OTP')
             return {'success': False, 'error': str(e)}
 
-    @http.route('/shop/booking/otp/verify', type='jsonrpc', auth='public', website=True, methods=['POST'])
+    @http.route(['/car_booking/booking/otp/verify', '/shop/booking/otp/verify'], type='jsonrpc',
+                auth='public', website=True, methods=['POST'])
     def otp_verify(self, booking_id, otp_code, access_token=None, **kw):
         try:
             booking = request.env['bs.car.booking'].sudo().browse(int(booking_id))
             if not booking.exists():
                 return {'success': False, 'error': 'Booking not found.'}
             if not self._check_booking_token(booking, access_token):
+                return {'success': False, 'error': 'This booking link is no longer valid.'}
+            if booking.website_id and booking.website_id != request.website:
                 return {'success': False, 'error': 'This booking link is no longer valid.'}
             if booking.state != 'otp_pending':
                 return {'success': False, 'error': 'This booking is not waiting for OTP.'}
@@ -251,6 +306,7 @@ class BsCarBookingAPI(http.Controller):
             _logger.exception('OTP verification failed')
             return {'success': False, 'error': str(e)}
 
-    @http.route('/shop/booking/otp/resend', type='jsonrpc', auth='public', website=True, methods=['POST'])
+    @http.route(['/car_booking/booking/otp/resend', '/shop/booking/otp/resend'], type='jsonrpc',
+                auth='public', website=True, methods=['POST'])
     def otp_resend(self, booking_id, access_token=None, **kw):
         return self.otp_send(booking_id=booking_id, access_token=access_token, **kw)

@@ -55,7 +55,6 @@ class CarBookingPortal(CustomerPortal):
             'booking': booking_sudo,
             'page_name': 'booking',
             'bs_booking': booking_sudo,
+            'access_token': access_token or booking_sudo._portal_ensure_token(),
         }
-        if access_token:
-            values['access_token'] = access_token
         return request.render('bs_car_booking.portal_my_booking', values)

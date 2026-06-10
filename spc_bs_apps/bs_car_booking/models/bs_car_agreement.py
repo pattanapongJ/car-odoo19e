@@ -13,6 +13,9 @@ class BsCarAgreement(models.Model):
 
     name = fields.Char('Agreement', required=True, translate=True,
                        help='Internal name, e.g. "Terms & Conditions".')
+    company_id = fields.Many2one(
+        'res.company', string='Company', default=lambda self: self.env.company,
+        index=True, help='Leave empty to share this agreement across companies.')
     cta_label = fields.Char('Checkbox Label', required=True, translate=True,
                             help='Text shown next to the checkbox, e.g. '
                                  '"I accept the Terms & Conditions".')
@@ -44,12 +47,12 @@ class BsCarBookingAgreement(models.Model):
                                  required=True, ondelete='cascade', index=True)
     agreement_id = fields.Many2one('bs.car.agreement', string='Agreement',
                                    required=True, ondelete='restrict')
-    name = fields.Char(related='agreement_id.name', store=True)
+    name = fields.Char(related='agreement_id.name', string='Agreement Name')
     sequence = fields.Integer(related='agreement_id.sequence', store=True)
     accepted = fields.Boolean('Accepted', default=False)
     accepted_date = fields.Datetime('Accepted On', readonly=True)
 
-    _sql_constraints = [
-        ('uniq_booking_agreement', 'unique(booking_id, agreement_id)',
-         'This agreement is already recorded for the booking.'),
-    ]
+    _uniq_booking_agreement = models.Constraint(
+        'UNIQUE(booking_id, agreement_id)',
+        'This agreement is already recorded for the booking.',
+    )

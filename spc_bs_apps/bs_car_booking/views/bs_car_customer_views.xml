@@ -8,6 +8,7 @@
             <list editable="bottom">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
+                <field name="company_id" optional="hide"/>
                 <field name="applies_to"/>
                 <field name="required"/>
                 <field name="help_text"/>
@@ -27,9 +28,9 @@
     </record>
     <menuitem id="menu_bs_car_document_type"
               name="Document Types"
-              parent="menu_bs_car_booking_master"
+              parent="menu_bs_car_booking_config"
               action="action_bs_car_document_type"
-              sequence="47"/>
+              sequence="20"/>
 
     <!-- ===== Agreements ===== -->
     <record id="view_bs_car_agreement_list" model="ir.ui.view">
@@ -39,6 +40,7 @@
             <list editable="bottom">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
+                <field name="company_id" optional="hide"/>
                 <field name="cta_label"/>
                 <field name="page_url"/>
                 <field name="applies_to"/>
@@ -59,9 +61,9 @@
     </record>
     <menuitem id="menu_bs_car_agreement"
               name="Agreements"
-              parent="menu_bs_car_booking_master"
+              parent="menu_bs_car_booking_config"
               action="action_bs_car_agreement"
-              sequence="48"/>
+              sequence="30"/>
 
     <!-- ===== Booking form: Customer type + Documents/Agreements tabs ===== -->
     <record id="view_bs_car_booking_form_customer" model="ir.ui.view">

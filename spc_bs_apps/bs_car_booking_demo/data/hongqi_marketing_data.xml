@@ -1,0 +1,855 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================
+         HONGQI THAILAND DEMO DATA
+         A premium single-brand showcase for the Hongqi Thailand import
+         lineup (E-HS9 flagship + EH7 + HS5). Specs/prices are demo
+         placeholders, not official Thailand pricing.
+         ================================================================ -->
+
+    <!-- ── Brand (with heritage story) ────────────────────────────── -->
+    <record id="brand_hongqi" model="bs.car.brand">
+        <field name="name">Hongqi</field>
+        <field name="sequence">5</field>
+        <field name="website_featured">1</field>
+        <field name="tagline">The flag bearer of Chinese luxury</field>
+        <field name="heritage_title">A flagship legacy, electrified</field>
+        <field name="website_description"><![CDATA[
+            <p class="lead">Hongqi blends Chinese flagship heritage with a quiet, chauffeur-grade electric experience.</p>
+            <p>Founded in 1958 as the car of state ceremony, Hongqi (“Red Flag”) now brings its
+            flagship craftsmanship to Thailand with a refined electric lineup led by the E-HS9.</p>
+        ]]></field>
+        <field name="heritage_html"><![CDATA[
+            <p>Born in 1958 as the motorcade of Chinese state ceremony, Hongqi — “Red Flag” —
+            was built to carry presidents and dignitaries with absolute composure.</p>
+            <p>Today that flagship pedigree is reimagined for the electric era: hand-finished cabins,
+            acoustic glazing, and a serene, chauffeur-grade ride, now arriving in Thailand.</p>
+        ]]></field>
+        <field name="heritage_cta_label">Explore the lineup</field>
+        <field name="heritage_cta_url">/cars</field>
+        <field name="heritage_image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/heritage.jpg"/>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- E-HS9  (Flagship electric SUV)                                 -->
+    <!-- ============================================================== -->
+    <record id="model_hongqi_ehs9" model="bs.car.model">
+        <field name="name">E-HS9</field>
+        <field name="arrival_date">2026-03-15</field>
+        <field name="website_featured">1</field>
+        <field name="brand_id" ref="brand_hongqi"/>
+        <field name="currency_id" ref="base.THB"/>
+        <field name="body_type">suv</field>
+        <field name="base_price">5090000.00</field>
+        <field name="deposit_amount">100000.00</field>
+        <field name="range_km">548</field>
+        <field name="acceleration">5.9</field>
+        <field name="top_speed">200</field>
+        <field name="seats">6</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9.jpg"/>
+        <field name="hero_video_url">https://www.youtube.com/watch?v=5TZyCEi9vII</field>
+        <field name="description"><![CDATA[
+            <p>Hongqi E-HS9 is a full-size luxury electric SUV built around presence, silence, and passenger comfort.
+            The Thailand launch presentation highlights a 120 kWh battery, flagship dimensions, dual-motor output,
+            and a cabin focused on leather, ambient lighting, acoustic glazing, and a composed arrival experience.</p>
+        ]]></field>
+        <field name="highlight_features">548 km WLTP range
+120 kWh battery architecture
+Dual-motor output: 202 + 160 kW
+Torque: 306 + 300 N·m
+Flagship dimensions: 5209 x 2010 x 1713 mm
+3110 mm wheelbase for executive cabin space
+Panoramic sunroof, welcome lighting, and deluxe cabin layout</field>
+    </record>
+
+    <record id="variant_hq_ehs9_executive" model="bs.car.variant">
+        <field name="name">Standard</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="sequence">10</field>
+        <field name="exterior_color">Glacier White</field>
+        <field name="exterior_color_code">#F3F1EC</field>
+        <field name="interior_color">Black</field>
+        <field name="wheel_type">21&quot; Aero Luxury Wheels</field>
+        <field name="price">5090000.00</field>
+        <field name="range_km">548</field>
+        <field name="acceleration">5.9</field>
+        <field name="top_speed">200</field>
+        <field name="available_qty">6</field>
+        <field name="estimated_delivery_days">45</field>
+    </record>
+
+    <record id="variant_hq_ehs9_flagship" model="bs.car.variant">
+        <field name="name">Flagship</field>
+        <field name="active">0</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="sequence">20</field>
+        <field name="exterior_color">Phantom Night Black II</field>
+        <field name="exterior_color_code">#111111</field>
+        <field name="interior_color">Brown Nappa</field>
+        <field name="wheel_type">22&quot; Flagship Wheels</field>
+        <field name="price">5590000.00</field>
+        <field name="range_km">548</field>
+        <field name="acceleration">5.9</field>
+        <field name="top_speed">200</field>
+        <field name="available_qty">4</field>
+        <field name="estimated_delivery_days">60</field>
+    </record>
+
+    <record id="variant_hq_ehs9_heritage" model="bs.car.variant">
+        <field name="name">Heritage Two-Tone</field>
+        <field name="active">0</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="sequence">30</field>
+        <field name="exterior_color">Polar Black + Glacier Silver</field>
+        <field name="exterior_color_code">#2A2A2A</field>
+        <field name="interior_color">Two Tone</field>
+        <field name="wheel_type">22&quot; Two-Tone Luxury Wheels</field>
+        <field name="price">5990000.00</field>
+        <field name="range_km">548</field>
+        <field name="acceleration">5.9</field>
+        <field name="top_speed">200</field>
+        <field name="available_qty">2</field>
+        <field name="estimated_delivery_days">75</field>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- EH7  (Executive electric sedan)                                -->
+    <!-- ============================================================== -->
+    <record id="model_hongqi_eh7" model="bs.car.model">
+        <field name="name">EH7</field>
+        <field name="arrival_date">2026-05-10</field>
+        <field name="brand_id" ref="brand_hongqi"/>
+        <field name="currency_id" ref="base.THB"/>
+        <field name="body_type">sedan</field>
+        <field name="base_price">2490000.00</field>
+        <field name="deposit_amount">50000.00</field>
+        <field name="range_km">653</field>
+        <field name="acceleration">3.2</field>
+        <field name="top_speed">200</field>
+        <field name="seats">5</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7.jpg"/>
+        <field name="description"><![CDATA[
+            <p>The Hongqi EH7 is an executive electric sedan pairing long range with a hushed,
+            rear-lounge cabin built around flagship refinement.</p>
+        ]]></field>
+        <field name="highlight_features">653 km range
+Dual-motor performance
+Rear executive lounge seating
+Frameless doors and acoustic glazing</field>
+    </record>
+
+    <record id="variant_hq_eh7_lounge" model="bs.car.variant">
+        <field name="name">Standard</field>
+        <field name="model_id" ref="model_hongqi_eh7"/>
+        <field name="sequence">10</field>
+        <field name="exterior_color">Glacier White</field>
+        <field name="exterior_color_code">#F3F1EC</field>
+        <field name="interior_color">Beige Nappa</field>
+        <field name="wheel_type">19&quot; Aero Wheels</field>
+        <field name="price">2490000.00</field>
+        <field name="range_km">653</field>
+        <field name="acceleration">3.2</field>
+        <field name="top_speed">200</field>
+        <field name="available_qty">5</field>
+        <field name="estimated_delivery_days">50</field>
+    </record>
+
+    <record id="variant_hq_eh7_performance" model="bs.car.variant">
+        <field name="name">Performance</field>
+        <field name="active">0</field>
+        <field name="model_id" ref="model_hongqi_eh7"/>
+        <field name="sequence">20</field>
+        <field name="exterior_color">Phantom Night Black</field>
+        <field name="exterior_color_code">#111111</field>
+        <field name="interior_color">Black Nappa</field>
+        <field name="wheel_type">20&quot; Performance Wheels</field>
+        <field name="price">2790000.00</field>
+        <field name="range_km">620</field>
+        <field name="acceleration">3.2</field>
+        <field name="top_speed">200</field>
+        <field name="available_qty">3</field>
+        <field name="estimated_delivery_days">60</field>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- HS5  (Luxury SUV)                                              -->
+    <!-- ============================================================== -->
+    <record id="model_hongqi_hs5" model="bs.car.model">
+        <field name="name">HS5</field>
+        <field name="arrival_date">2026-04-20</field>
+        <field name="brand_id" ref="brand_hongqi"/>
+        <field name="currency_id" ref="base.THB"/>
+        <field name="body_type">suv</field>
+        <field name="base_price">1690000.00</field>
+        <field name="deposit_amount">40000.00</field>
+        <field name="range_km">500</field>
+        <field name="acceleration">8.0</field>
+        <field name="top_speed">200</field>
+        <field name="seats">5</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/hs5.jpg"/>
+        <field name="description"><![CDATA[
+            <p>The Hongqi HS5 brings flagship design language to a refined mid-size SUV
+            with a quilted-leather cabin and confident road presence.</p>
+        ]]></field>
+        <field name="highlight_features">Flagship grille and presence
+Quilted leather cabin
+Advanced driver assistance
+Panoramic roof</field>
+    </record>
+
+    <record id="variant_hq_hs5_deluxe" model="bs.car.variant">
+        <field name="name">Standard</field>
+        <field name="model_id" ref="model_hongqi_hs5"/>
+        <field name="sequence">10</field>
+        <field name="exterior_color">Glacier White</field>
+        <field name="exterior_color_code">#F3F1EC</field>
+        <field name="interior_color">Black</field>
+        <field name="wheel_type">19&quot; Alloy Wheels</field>
+        <field name="price">1690000.00</field>
+        <field name="range_km">500</field>
+        <field name="acceleration">8.0</field>
+        <field name="top_speed">200</field>
+        <field name="available_qty">8</field>
+        <field name="estimated_delivery_days">40</field>
+    </record>
+
+    <record id="variant_hq_hs5_premium" model="bs.car.variant">
+        <field name="name">Premium</field>
+        <field name="active">0</field>
+        <field name="model_id" ref="model_hongqi_hs5"/>
+        <field name="sequence">20</field>
+        <field name="exterior_color">Phantom Night Black</field>
+        <field name="exterior_color_code">#111111</field>
+        <field name="interior_color">Brown</field>
+        <field name="wheel_type">20&quot; Premium Wheels</field>
+        <field name="price">1890000.00</field>
+        <field name="range_km">500</field>
+        <field name="acceleration">8.0</field>
+        <field name="top_speed">200</field>
+        <field name="available_qty">5</field>
+        <field name="estimated_delivery_days">55</field>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- SPECIFICATIONS  (aligned labels for the Compare page)          -->
+    <!-- ============================================================== -->
+    <record id="spec_ehs9_range" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_ehs9"/><field name="sequence">10</field>
+        <field name="name">Range (WLTP)</field><field name="value">548</field>
+        <field name="unit">km</field><field name="is_highlight">1</field>
+    </record>
+    <record id="spec_ehs9_accel" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_ehs9"/><field name="sequence">20</field>
+        <field name="name">0–100 km/h</field><field name="value">5.9</field>
+        <field name="unit">s</field><field name="is_highlight">1</field>
+    </record>
+    <record id="spec_ehs9_power" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_ehs9"/><field name="sequence">30</field>
+        <field name="name">Power</field><field name="value">551</field>
+        <field name="unit">hp</field><field name="is_highlight">1</field>
+    </record>
+    <record id="spec_ehs9_top" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_ehs9"/><field name="sequence">40</field>
+        <field name="name">Top Speed</field><field name="value">200</field><field name="unit">km/h</field>
+    </record>
+    <record id="spec_ehs9_drive" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_ehs9"/><field name="sequence">50</field>
+        <field name="name">Drivetrain</field><field name="value">Dual Motor AWD</field>
+    </record>
+    <record id="spec_ehs9_seats" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_ehs9"/><field name="sequence">60</field>
+        <field name="name">Seats</field><field name="value">6</field>
+    </record>
+
+    <record id="spec_eh7_range" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="sequence">10</field>
+        <field name="name">Range (WLTP)</field><field name="value">653</field>
+        <field name="unit">km</field><field name="is_highlight">1</field>
+    </record>
+    <record id="spec_eh7_accel" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="sequence">20</field>
+        <field name="name">0–100 km/h</field><field name="value">3.2</field>
+        <field name="unit">s</field><field name="is_highlight">1</field>
+    </record>
+    <record id="spec_eh7_power" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="sequence">30</field>
+        <field name="name">Power</field><field name="value">643</field><field name="unit">hp</field>
+    </record>
+    <record id="spec_eh7_top" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="sequence">40</field>
+        <field name="name">Top Speed</field><field name="value">200</field><field name="unit">km/h</field>
+    </record>
+    <record id="spec_eh7_drive" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="sequence">50</field>
+        <field name="name">Drivetrain</field><field name="value">Dual Motor AWD</field>
+    </record>
+    <record id="spec_eh7_seats" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="sequence">60</field>
+        <field name="name">Seats</field><field name="value">5</field>
+    </record>
+
+    <record id="spec_hs5_range" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="sequence">10</field>
+        <field name="name">Range (WLTP)</field><field name="value">500</field>
+        <field name="unit">km</field><field name="is_highlight">1</field>
+    </record>
+    <record id="spec_hs5_accel" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="sequence">20</field>
+        <field name="name">0–100 km/h</field><field name="value">8.0</field>
+        <field name="unit">s</field><field name="is_highlight">1</field>
+    </record>
+    <record id="spec_hs5_power" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="sequence">30</field>
+        <field name="name">Power</field><field name="value">224</field><field name="unit">hp</field>
+    </record>
+    <record id="spec_hs5_top" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="sequence">40</field>
+        <field name="name">Top Speed</field><field name="value">200</field><field name="unit">km/h</field>
+    </record>
+    <record id="spec_hs5_drive" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="sequence">50</field>
+        <field name="name">Drivetrain</field><field name="value">AWD</field>
+    </record>
+    <record id="spec_hs5_seats" model="bs.car.model.spec">
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="sequence">60</field>
+        <field name="name">Seats</field><field name="value">5</field>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- GALLERIES  (E-HS9 demo photos; replace brand-owned assets)     -->
+    <!-- ============================================================== -->
+    <record id="gal_hq_ehs9_1" model="bs.car.model.image">
+        <field name="name">E-HS9 — Studio side profile</field><field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_1.jpg"/>
+    </record>
+    <record id="gal_hq_ehs9_2" model="bs.car.model.image">
+        <field name="name">E-HS9 — Rear three-quarter</field><field name="sequence">20</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_2.jpg"/>
+    </record>
+    <record id="gal_hq_ehs9_3" model="bs.car.model.image">
+        <field name="name">E-HS9 — Color body detail</field><field name="sequence">30</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_3.jpg"/>
+    </record>
+    <record id="gal_hq_ehs9_4" model="bs.car.model.image">
+        <field name="name">E-HS9 — Welcome light</field><field name="sequence">40</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_detail_light.jpg"/>
+    </record>
+    <record id="gal_hq_ehs9_5" model="bs.car.model.image">
+        <field name="name">E-HS9 — Executive interior</field><field name="sequence">50</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_interior.jpg"/>
+    </record>
+    <record id="gal_hq_ehs9_6" model="bs.car.model.image">
+        <field name="name">E-HS9 — Panoramic sunroof</field><field name="sequence">60</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_sunroof.jpg"/>
+    </record>
+    <record id="gal_hq_ehs9_7" model="bs.car.model.image">
+        <field name="name">E-HS9 — Colour body detail</field><field name="sequence">70</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_colour_body.jpg"/>
+    </record>
+
+    <record id="gal_eh7_1" model="bs.car.model.image">
+        <field name="name">EH7 — Front three-quarter</field><field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_eh7"/>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7_gallery_1.jpg"/>
+    </record>
+    <record id="gal_eh7_2" model="bs.car.model.image">
+        <field name="name">EH7 — Profile</field><field name="sequence">20</field>
+        <field name="model_id" ref="model_hongqi_eh7"/>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7_gallery_2.jpg"/>
+    </record>
+    <record id="gal_eh7_3" model="bs.car.model.image">
+        <field name="name">EH7 — Rear</field><field name="sequence">30</field>
+        <field name="model_id" ref="model_hongqi_eh7"/>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7_gallery_3.jpg"/>
+    </record>
+
+    <record id="gal_hs5_1" model="bs.car.model.image">
+        <field name="name">HS5 — Front three-quarter</field><field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_hs5"/>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/hs5_gallery_1.jpg"/>
+    </record>
+    <record id="gal_hs5_2" model="bs.car.model.image">
+        <field name="name">HS5 — Profile</field><field name="sequence">20</field>
+        <field name="model_id" ref="model_hongqi_hs5"/>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/hs5_gallery_2.jpg"/>
+    </record>
+    <record id="gal_hs5_3" model="bs.car.model.image">
+        <field name="name">HS5 — Rear three-quarter</field><field name="sequence">30</field>
+        <field name="model_id" ref="model_hongqi_hs5"/>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/hs5_gallery_3.jpg"/>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- SHOWROOM HOME CAMPAIGN CONTENT                                  -->
+    <!-- Data-driven sections inspired by Hongqi Thailand's campaign      -->
+    <!-- flow: model stage, colour studio, highlights, cabin, stories.    -->
+    <!-- ============================================================== -->
+    <record id="showcase_ehs9_stage_presence" model="bs.car.showcase.item">
+        <field name="name">E-HS9 Flagship Presence</field>
+        <field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">stage</field>
+        <field name="subtitle">Flagship Electric SUV</field>
+        <field name="description"><![CDATA[
+            <p>A full-size electric SUV composed for arrival, executive comfort, and quiet long-distance travel.</p>
+        ]]></field>
+        <field name="image_alt">Hongqi E-HS9 flagship electric SUV studio profile</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_1.jpg"/>
+    </record>
+    <record id="showcase_ehs9_stage_rear" model="bs.car.showcase.item">
+        <field name="name">Sculpted Rear Signature</field>
+        <field name="sequence">20</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">stage</field>
+        <field name="subtitle">Designed to be Seen</field>
+        <field name="description"><![CDATA[
+            <p>Clean proportions, a long wheelbase, and a confident rear light signature carry the flagship stance.</p>
+        ]]></field>
+        <field name="image_alt">Hongqi E-HS9 rear three-quarter studio view</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_2.jpg"/>
+    </record>
+    <record id="showcase_ehs9_stage_detail" model="bs.car.showcase.item">
+        <field name="name">Electric Luxury Detail</field>
+        <field name="sequence">30</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">stage</field>
+        <field name="subtitle">Refined From Every Angle</field>
+        <field name="description"><![CDATA[
+            <p>Precision surfaces, illuminated details, and a composed cabin create a calm flagship experience.</p>
+        ]]></field>
+        <field name="image_alt">Hongqi E-HS9 exterior detail view</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_3.jpg"/>
+    </record>
+
+    <record id="showcase_ehs9_exterior_black" model="bs.car.showcase.item">
+        <field name="name">Phantom Night Black II</field>
+        <field name="active">0</field>
+        <field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">exterior</field>
+        <field name="subtitle">Exterior Colour</field>
+        <field name="swatch_color">#111111</field>
+        <field name="image_alt">Hongqi E-HS9 in black exterior finish</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9.jpg"/>
+    </record>
+    <record id="showcase_ehs9_exterior_white" model="bs.car.showcase.item">
+        <field name="name">Glacier White</field>
+        <field name="active">0</field>
+        <field name="sequence">20</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">exterior</field>
+        <field name="subtitle">Exterior Colour</field>
+        <field name="swatch_color">#F3F1EC</field>
+        <field name="image_alt">Hongqi E-HS9 in white exterior finish</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_1.jpg"/>
+    </record>
+    <record id="showcase_ehs9_exterior_blue" model="bs.car.showcase.item">
+        <field name="name">Starry Lake Blue</field>
+        <field name="active">0</field>
+        <field name="sequence">30</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">exterior</field>
+        <field name="subtitle">Exterior Colour</field>
+        <field name="swatch_color">#1E4C74</field>
+        <field name="image_alt">Hongqi E-HS9 blue exterior mood view</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_2.jpg"/>
+    </record>
+
+    <record id="showcase_ehs9_interior_black" model="bs.car.showcase.item">
+        <field name="name">Executive Black</field>
+        <field name="active">0</field>
+        <field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">interior</field>
+        <field name="subtitle">Interior Theme</field>
+        <field name="swatch_color">#171717</field>
+        <field name="image_alt">Hongqi E-HS9 black executive interior</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_interior.jpg"/>
+    </record>
+    <record id="showcase_ehs9_interior_brown" model="bs.car.showcase.item">
+        <field name="name">Warm Brown Nappa</field>
+        <field name="active">0</field>
+        <field name="sequence">20</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">interior</field>
+        <field name="subtitle">Interior Theme</field>
+        <field name="swatch_color">#7A4A2F</field>
+        <field name="image_alt">Hongqi E-HS9 warm brown cabin theme</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_sunroof.jpg"/>
+    </record>
+    <record id="showcase_ehs9_interior_light" model="bs.car.showcase.item">
+        <field name="name">Two-tone Light</field>
+        <field name="active">0</field>
+        <field name="sequence">30</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">interior</field>
+        <field name="subtitle">Interior Theme</field>
+        <field name="swatch_color">#D8D0C1</field>
+        <field name="image_alt">Hongqi E-HS9 light two-tone interior mood</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_interior.jpg"/>
+    </record>
+
+    <record id="showcase_ehs9_highlight_light" model="bs.car.showcase.item">
+        <field name="name">Welcome Light</field>
+        <field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">highlight</field>
+        <field name="subtitle">Signature detail</field>
+        <field name="description"><![CDATA[<p>Illuminated elements announce the car before the door opens.</p>]]></field>
+        <field name="image_alt">Hongqi E-HS9 welcome lighting detail</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_detail_light.jpg"/>
+    </record>
+    <record id="showcase_ehs9_highlight_light_gallery_close" model="bs.car.showcase.item.image">
+        <field name="item_id" ref="showcase_ehs9_highlight_light"/>
+        <field name="sequence">10</field>
+        <field name="name">Welcome light close-up</field>
+        <field name="image_alt">Hongqi E-HS9 welcome light close-up detail</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_detail_light.jpg"/>
+    </record>
+    <record id="showcase_ehs9_highlight_light_gallery_wide" model="bs.car.showcase.item.image">
+        <field name="item_id" ref="showcase_ehs9_highlight_light"/>
+        <field name="sequence">20</field>
+        <field name="name">Welcome light wide view</field>
+        <field name="image_alt">Hongqi E-HS9 welcome light wide exterior view</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_2.jpg"/>
+    </record>
+    <record id="showcase_ehs9_highlight_light_gallery_arrival" model="bs.car.showcase.item.image">
+        <field name="item_id" ref="showcase_ehs9_highlight_light"/>
+        <field name="sequence">30</field>
+        <field name="name">Arrival presence</field>
+        <field name="image_alt">Hongqi E-HS9 flagship arrival exterior angle</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_1.jpg"/>
+    </record>
+    <record id="showcase_ehs9_highlight_presence" model="bs.car.showcase.item">
+        <field name="name">Graceful Presence</field>
+        <field name="sequence">20</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">highlight</field>
+        <field name="subtitle">Flagship proportions</field>
+        <field name="description"><![CDATA[<p>A long wheelbase and clean bodywork give the SUV a ceremonial stance.</p>]]></field>
+        <field name="image_alt">Hongqi E-HS9 side profile flagship proportions</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_1.jpg"/>
+    </record>
+    <record id="showcase_ehs9_highlight_colour_body" model="bs.car.showcase.item">
+        <field name="name">Sculpted Colour Body</field>
+        <field name="sequence">30</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">highlight</field>
+        <field name="subtitle">Exterior finish</field>
+        <field name="description"><![CDATA[<p>Large surfaces are shaped to hold light with a restrained, formal character.</p>]]></field>
+        <field name="image_alt">Hongqi E-HS9 colour body exterior detail</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_colour_body.jpg"/>
+    </record>
+    <record id="showcase_ehs9_highlight_cabin" model="bs.car.showcase.item">
+        <field name="name">Executive Cabin Layout</field>
+        <field name="sequence">40</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">highlight</field>
+        <field name="subtitle">Passenger-first comfort</field>
+        <field name="description"><![CDATA[<p>Six-seat configuration, quiet surfaces, and soft touch points shape a lounge-like ride.</p>]]></field>
+        <field name="image_alt">Hongqi E-HS9 executive passenger cabin</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_interior.jpg"/>
+    </record>
+    <record id="showcase_ehs9_highlight_sunroof" model="bs.car.showcase.item">
+        <field name="name">Panoramic Sunroof</field>
+        <field name="sequence">50</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">highlight</field>
+        <field name="subtitle">Open cabin feeling</field>
+        <field name="description"><![CDATA[<p>The glass roof brings light into the flagship cabin without changing its calm tone.</p>]]></field>
+        <field name="image_alt">Hongqi E-HS9 panoramic sunroof cabin view</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_sunroof.jpg"/>
+    </record>
+    <record id="showcase_ehs9_highlight_battery" model="bs.car.showcase.item">
+        <field name="name">120 kWh Battery</field>
+        <field name="sequence">60</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">highlight</field>
+        <field name="subtitle">Long-range foundation</field>
+        <field name="description"><![CDATA[<p>The E-HS9 demo specification centers the drive around 548 km WLTP range.</p>]]></field>
+        <field name="image_alt">Hongqi E-HS9 electric flagship rear three-quarter</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_3.jpg"/>
+    </record>
+
+    <record id="showcase_ehs9_cabin_story" model="bs.car.showcase.item">
+        <field name="name">A quiet flagship cabin</field>
+        <field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="item_type">cabin</field>
+        <field name="subtitle">Crafted Sanctuary</field>
+        <field name="description"><![CDATA[
+            <p>The E-HS9 cabin is configured like a private lounge: broad seats, acoustic comfort, ambient light, and material choices that keep the ride composed for every passenger.</p>
+        ]]></field>
+        <field name="cta_label">Book a private viewing</field>
+        <field name="cta_url">/cars</field>
+        <field name="image_alt">Hongqi E-HS9 crafted executive cabin</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_interior.jpg"/>
+    </record>
+
+    <!-- ── EH7 showcase ─────────────────────────────────────────────── -->
+    <record id="showcase_eh7_stage_1" model="bs.car.showcase.item">
+        <field name="name">EH7 Executive Presence</field><field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="item_type">stage</field>
+        <field name="subtitle">Electric Executive Sedan</field>
+        <field name="image_alt">Hongqi EH7 front three-quarter</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7_gallery_1.jpg"/>
+    </record>
+    <record id="showcase_eh7_stage_2" model="bs.car.showcase.item">
+        <field name="name">Aerodynamic Profile</field><field name="sequence">20</field>
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="item_type">stage</field>
+        <field name="subtitle">Designed for Range</field>
+        <field name="image_alt">Hongqi EH7 profile</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7_gallery_2.jpg"/>
+    </record>
+    <record id="showcase_eh7_stage_3" model="bs.car.showcase.item">
+        <field name="name">Sculpted Rear</field><field name="sequence">30</field>
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="item_type">stage</field>
+        <field name="subtitle">Refined From Every Angle</field>
+        <field name="image_alt">Hongqi EH7 rear</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7_gallery_3.jpg"/>
+    </record>
+    <record id="showcase_eh7_ext_white" model="bs.car.showcase.item">
+        <field name="name">Glacier White</field><field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="item_type">exterior</field>
+        <field name="subtitle">Exterior Colour</field><field name="swatch_color">#F3F1EC</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7.jpg"/>
+    </record>
+    <record id="showcase_eh7_ext_black" model="bs.car.showcase.item">
+        <field name="name">Phantom Night Black</field><field name="sequence">20</field>
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="item_type">exterior</field>
+        <field name="subtitle">Exterior Colour</field><field name="swatch_color">#111111</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7_gallery_1.jpg"/>
+    </record>
+    <record id="showcase_eh7_ext_blue" model="bs.car.showcase.item">
+        <field name="name">Starry Lake Blue</field><field name="sequence">30</field>
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="item_type">exterior</field>
+        <field name="subtitle">Exterior Colour</field><field name="swatch_color">#1E4C74</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7_gallery_2.jpg"/>
+    </record>
+    <record id="showcase_eh7_hl_range" model="bs.car.showcase.item">
+        <field name="name">653 km Range</field><field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="item_type">highlight</field>
+        <field name="subtitle">Long-distance confidence</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7_gallery_1.jpg"/>
+    </record>
+    <record id="showcase_eh7_hl_perf" model="bs.car.showcase.item">
+        <field name="name">3.2s 0–100 km/h</field><field name="sequence">20</field>
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="item_type">highlight</field>
+        <field name="subtitle">Dual-motor performance</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7_gallery_2.jpg"/>
+    </record>
+    <record id="showcase_eh7_hl_lounge" model="bs.car.showcase.item">
+        <field name="name">Rear Lounge Seating</field><field name="sequence">30</field>
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="item_type">highlight</field>
+        <field name="subtitle">Executive comfort</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7_gallery_3.jpg"/>
+    </record>
+    <record id="showcase_eh7_cabin" model="bs.car.showcase.item">
+        <field name="name">A serene electric lounge</field><field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_eh7"/><field name="item_type">cabin</field>
+        <field name="subtitle">Crafted Sanctuary</field>
+        <field name="description"><![CDATA[<p>The EH7 cabin pairs frameless calm with acoustic glazing and a rear lounge built for long, quiet journeys.</p>]]></field>
+        <field name="cta_label">Reserve the EH7</field><field name="cta_url">/cars</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/eh7_gallery_2.jpg"/>
+    </record>
+
+    <!-- ── HS5 showcase ─────────────────────────────────────────────── -->
+    <record id="showcase_hs5_stage_1" model="bs.car.showcase.item">
+        <field name="name">HS5 Confident Stance</field><field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="item_type">stage</field>
+        <field name="subtitle">Luxury SUV</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/hs5_gallery_1.jpg"/>
+    </record>
+    <record id="showcase_hs5_stage_2" model="bs.car.showcase.item">
+        <field name="name">Flagship Design Language</field><field name="sequence">20</field>
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="item_type">stage</field>
+        <field name="subtitle">Presence in Every Line</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/hs5_gallery_2.jpg"/>
+    </record>
+    <record id="showcase_hs5_stage_3" model="bs.car.showcase.item">
+        <field name="name">Bold Rear Signature</field><field name="sequence">30</field>
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="item_type">stage</field>
+        <field name="subtitle">Refined From Every Angle</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/hs5_gallery_3.jpg"/>
+    </record>
+    <record id="showcase_hs5_ext_white" model="bs.car.showcase.item">
+        <field name="name">Glacier White</field><field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="item_type">exterior</field>
+        <field name="subtitle">Exterior Colour</field><field name="swatch_color">#F3F1EC</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/hs5.jpg"/>
+    </record>
+    <record id="showcase_hs5_ext_black" model="bs.car.showcase.item">
+        <field name="name">Phantom Night Black</field><field name="sequence">20</field>
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="item_type">exterior</field>
+        <field name="subtitle">Exterior Colour</field><field name="swatch_color">#111111</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/hs5_gallery_1.jpg"/>
+    </record>
+    <record id="showcase_hs5_hl_grille" model="bs.car.showcase.item">
+        <field name="name">Flagship Grille</field><field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="item_type">highlight</field>
+        <field name="subtitle">Unmistakable presence</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/hs5_gallery_1.jpg"/>
+    </record>
+    <record id="showcase_hs5_hl_cabin" model="bs.car.showcase.item">
+        <field name="name">Quilted Leather Cabin</field><field name="sequence">20</field>
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="item_type">highlight</field>
+        <field name="subtitle">Crafted comfort</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/hs5_gallery_2.jpg"/>
+    </record>
+    <record id="showcase_hs5_hl_adas" model="bs.car.showcase.item">
+        <field name="name">Advanced Driver Assistance</field><field name="sequence">30</field>
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="item_type">highlight</field>
+        <field name="subtitle">Confidence on every road</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/hs5_gallery_3.jpg"/>
+    </record>
+    <record id="showcase_hs5_cabin" model="bs.car.showcase.item">
+        <field name="name">Refined everyday luxury</field><field name="sequence">10</field>
+        <field name="model_id" ref="model_hongqi_hs5"/><field name="item_type">cabin</field>
+        <field name="subtitle">Crafted Sanctuary</field>
+        <field name="description"><![CDATA[<p>The HS5 brings flagship craftsmanship to a refined SUV cabin with quilted leather and a panoramic roof.</p>]]></field>
+        <field name="cta_label">Reserve the HS5</field><field name="cta_url">/cars</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/hs5_gallery_2.jpg"/>
+    </record>
+
+    <record id="story_hongqi_thailand_arrival" model="bs.car.story">
+        <field name="name">FAW × Metro Autohaus</field>
+        <field name="sequence">10</field>
+        <field name="publish_date">2026-01-09</field>
+        <field name="location">Changchun, China</field>
+        <field name="subtitle">ก้าวสำคัญของความร่วมมือระหว่าง FAW Group และ Metro Autohaus ในการรุกตลาดรถยนต์ไฟฟ้าหรูในไทย</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="excerpt">เมโทร กรุ๊ป คว้าสิทธิ์จัดจำหน่าย “หงฉี : HONGQI” รถหรูชั้นนำ เดินหน้าปักธงในตลาดรถยนต์ระดับอัลตราลักชัวรีและพรีเมียม</field>
+        <field name="body"><![CDATA[
+            <p>เมโทร กรุ๊ป ลงนามข้อตกลงความร่วมมือกับบริษัท China FAW Group Import &amp; Export จำกัด รับการแต่งตั้งเป็นผู้จัดจำหน่าย “HONGQI” (หงฉี) รถยนต์ระดับหรูที่เป็น “แบรนด์ประวัติศาสตร์” ของจีนอย่างเป็นทางการในประเทศไทย ณ เมืองฉางชุน สาธารณรัฐประชาชนจีน ครอบคลุมความร่วมมือเชิงกลยุทธ์ทั้งการแต่งตั้งผู้แทนจำหน่าย การสร้างแบรนด์ การขาย การส่งเสริมการตลาด และบริการหลังการขาย</p>
+            <p>นายบดินทร์ บุญวิสุทธิ์ ประธานเจ้าหน้าที่บริหาร เมโทร กรุ๊ป เผยว่า “หงฉี” (HONGQI) เป็นแบรนด์รถยนต์จีนที่มีประวัติศาสตร์ยาวนานและภาพลักษณ์สุดหรู ผลิตโดย FAW Group (First Automotive Works) บริษัทรถยนต์แห่งแรกของจีน โดยมีเมโทร กรุ๊ป ซึ่งเชี่ยวชาญธุรกิจยานยนต์ไทยมากว่า 70 ปี สืบทอดถึงรุ่นที่ 3 เป็นผู้จัดจำหน่ายและพันธมิตรเชิงกลยุทธ์</p>
+            <p>“หงฉี” หรือ HONGQI มีความหมายว่า ธงแดง เป็นรถยนต์ที่ถูกใช้เป็นยานพาหนะของผู้นำจีนจนกลายเป็นสัญลักษณ์และความภาคภูมิใจของประเทศ โดยจะทำตลาดในไทยตั้งแต่ระดับอัลตราลักชัวรีจนถึงระดับพรีเมียม นำโดยรถยนต์ไฟฟ้ารุ่นแรกอย่าง HONGQI E-HS9</p>
+        ]]></field>
+        <field name="cta_label">View the flagship</field>
+        <field name="cta_url">/cars</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/stories/story_faw_metro.jpg"/>
+    </record>
+    <record id="story_ehs9_private_viewing" model="bs.car.story">
+        <field name="name">One Belt One Road</field>
+        <field name="sequence">20</field>
+        <field name="publish_date">2026-04-25</field>
+        <field name="location">China → Thailand</field>
+        <field name="subtitle">หนึ่งเส้นทาง… หนึ่งการเชื่อมโยง โดย HONGQI E-HS9</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="excerpt">เริ่มแล้ว! “One Belt One Road” ระยะทางกว่า 6,000 กม. HONGQI E-HS9 ทะยานจากแดนมังกรสู่สยามประเทศ</field>
+        <field name="body"><![CDATA[
+            <p>นายบดินทร์ บุญวิสุทธิ์ ประธานเจ้าหน้าที่บริหาร เมโทร กรุ๊ป ร่วมกับผู้แทนจาก China FAW Group ทำพิธีปล่อยขบวนรถยนต์ SUV ไฟฟ้า HONGQI E-HS9 ในการเดินทางครั้งประวัติศาสตร์ “หนึ่งเส้นทาง…หนึ่งการเชื่อมโยง” จากสาธารณรัฐประชาชนจีน ผ่าน สปป. ลาว สู่ประเทศไทย ระยะทางกว่า 6,000 กม. ณ กำแพงเมืองจีน เมื่อวันที่ 25 เมษายน</p>
+            <p>“การเดินทางครั้งนี้ไม่ใช่แค่การพิสูจน์สมรรถนะของรถยนต์ไฟฟ้า แต่คือการแสดงให้เห็นว่าความฝันของการเชื่อมโยงระหว่างสองอารยธรรมอันยิ่งใหญ่ สามารถเป็นจริงได้ด้วยเทคโนโลยีสะอาดที่ขับเคลื่อนด้วยพลังงานไฟฟ้า”</p>
+            <p>เส้นทางผ่านคุนหมิงและสิบสองปันนา ข้ามพรมแดนสู่หลวงพระบาง แล้วเข้าสู่ไทยที่อำเภอปัว จังหวัดน่าน ต่อด้วยสุโขทัยและพระนครศรีอยุธยา ก่อนปิดท้าย ณ กรุงเทพมหานคร เพื่อพิสูจน์สมรรถนะของ HONGQI E-HS9 บนเส้นทางระยะไกลกว่า 6,000 กม. และเสริมความมั่นใจให้ผู้บริโภคชาวไทย</p>
+        ]]></field>
+        <field name="cta_label">Experience the E-HS9</field>
+        <field name="cta_url">/cars</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/stories/story_one_belt.jpg"/>
+    </record>
+    <record id="story_electric_flagship_specs" model="bs.car.story">
+        <field name="name">HONGQI E-HS9 — reservations open in Thailand</field>
+        <field name="sequence">30</field>
+        <field name="publish_date">2026-05-10</field>
+        <field name="location">Bangkok, Thailand</field>
+        <field name="subtitle">รถ SUV ไฟฟ้าระดับอัลตราลักชัวรี พร้อมเปิดให้จองแล้วในประเทศไทย</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="excerpt">แบรนด์ “หงฉี” พร้อมเข้าสู่ตลาดไทยอย่างเต็มรูปแบบด้วยรถยนต์ไฟฟ้ารุ่นแรก HONGQI E-HS9.</field>
+        <field name="body"><![CDATA[
+            <p>HONGQI E-HS9 รถ SUV ไฟฟ้าระดับพรีเมียม มาพร้อมแบตเตอรี่ 120 kWh ระยะทางขับขี่ 548 กม. (WLTP) และระบบขับเคลื่อนสองมอเตอร์ ตอบโจทย์ลูกค้าชาวไทยที่มองหารถยนต์ไฟฟ้าระดับหรูหราสูงสุด</p>
+            <p>ผู้สนใจสามารถกำหนดค่าตัวรถ เลือกสี เลือกผู้แทนจำหน่าย และวางเงินมัดจำเพื่อจองได้ผ่านขั้นตอนออนไลน์ที่ครบวงจร</p>
+        ]]></field>
+        <field name="cta_label">Reserve the E-HS9</field>
+        <field name="cta_url">/cars</field>
+        <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_3.jpg"/>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- HONGQI THAILAND SHOWROOMS                                       -->
+    <!-- ============================================================== -->
+    <record id="dealer_hongqi_bangkok" model="bs.car.dealer">
+        <field name="name">Hongqi Thailand Bangkok</field>
+        <field name="sequence">5</field>
+        <field name="email">info@hongqithailand-demo.com</field>
+        <field name="street">539/2 Gypsum Metropolitan, Floor 24B</field>
+        <field name="street2">Si Ayutthaya, Thanon Phaya Thai</field>
+        <field name="city">Bangkok</field>
+        <field name="country_id" ref="base.th"/>
+        <field name="latitude">13.7563</field>
+        <field name="longitude">100.5018</field>
+        <field name="opening_hours">Mon–Sat: 10:00 AM – 7:00 PM</field>
+        <field name="website_description"><![CDATA[
+            <p>Demo Hongqi flagship contact point for E-HS9 consultation, private viewing, and booking handover.</p>
+        ]]></field>
+        <field name="brand_ids" eval="[(6, 0, [ref('brand_hongqi')])]"/>
+    </record>
+
+    <record id="dealer_hongqi_chiangmai" model="bs.car.dealer">
+        <field name="name">Hongqi Chiang Mai</field>
+        <field name="sequence">10</field>
+        <field name="email">chiangmai@hongqithailand-demo.com</field>
+        <field name="street">Mahidol Road</field>
+        <field name="city">Chiang Mai</field>
+        <field name="country_id" ref="base.th"/>
+        <field name="latitude">18.7883</field>
+        <field name="longitude">98.9853</field>
+        <field name="opening_hours">Mon–Sat: 9:30 AM – 6:30 PM</field>
+        <field name="brand_ids" eval="[(6, 0, [ref('brand_hongqi')])]"/>
+    </record>
+
+    <record id="dealer_hongqi_phuket" model="bs.car.dealer">
+        <field name="name">Hongqi Gallery Phuket</field>
+        <field name="sequence">15</field>
+        <field name="email">phuket@hongqithailand-demo.com</field>
+        <field name="street">Premium Import Gallery</field>
+        <field name="city">Phuket</field>
+        <field name="country_id" ref="base.th"/>
+        <field name="latitude">7.8804</field>
+        <field name="longitude">98.3923</field>
+        <field name="opening_hours">Fri–Sun: Private appointment only</field>
+        <field name="brand_ids" eval="[(6, 0, [ref('brand_hongqi')])]"/>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- Promotional offers (time-boxed campaigns)                       -->
+    <!-- ============================================================== -->
+    <record id="offer_zero_apr" model="bs.car.offer">
+        <field name="name">0% APR for 36 months</field>
+        <field name="subtitle">On the EH7 executive sedan</field>
+        <field name="badge">Limited time</field>
+        <field name="sequence">10</field>
+        <field name="date_start">2026-05-01</field>
+        <field name="date_end">2026-08-31</field>
+        <field name="model_id" ref="model_hongqi_eh7"/>
+        <field name="cta_label">Reserve now</field>
+        <field name="description"><![CDATA[<p>Drive home today with zero interest. Qualified buyers
+            enjoy 0% APR financing over 36 months with no hidden fees.</p>]]></field>
+    </record>
+    <record id="offer_trade_in" model="bs.car.offer">
+        <field name="name">Trade-in bonus — up to ฿150,000</field>
+        <field name="subtitle">Extra value on top of your car's market price</field>
+        <field name="badge">This season</field>
+        <field name="sequence">20</field>
+        <field name="date_start">2026-06-01</field>
+        <field name="date_end">2026-07-15</field>
+        <field name="cta_label">Book a valuation</field>
+        <field name="description"><![CDATA[<p>Upgrade your drive: we top up your trade-in
+            valuation by up to ฿150,000 when you reserve a new model.</p>]]></field>
+    </record>
+    <record id="offer_flagship" model="bs.car.offer">
+        <field name="name">Complimentary first-year service</field>
+        <field name="subtitle">On the Hongqi E-HS9 flagship</field>
+        <field name="badge">Flagship</field>
+        <field name="sequence">30</field>
+        <field name="model_id" ref="model_hongqi_ehs9"/>
+        <field name="cta_label">Discover the E-HS9</field>
+        <field name="description"><![CDATA[<p>Reserve the E-HS9 and receive a full year of
+            scheduled maintenance, courtesy of our flagship ownership programme.</p>]]></field>
+    </record>
+
+</odoo>

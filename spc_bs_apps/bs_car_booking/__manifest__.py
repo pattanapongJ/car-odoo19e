@@ -28,7 +28,7 @@ Website Journey:
 6. Receive booking confirmation via SMS
 """,
     'category': 'Website/Booking',
-    'version': '19.0.8.0.4',
+    'version': '19.0.9.0.1',
     'author': 'Basic Solution Co., Ltd.',
     'maintainer': 'Basic Solution Co., Ltd.',
     'website': 'https://basicsolution.com/',
@@ -47,11 +47,11 @@ Website Journey:
         'sale_management',   # sale.order, down-payment invoice, _get_payment_values
         'account_payment',   # payment <-> accounting (deposit invoice + reconcile)
         'payment',
-        'payment_demo',
         'crm',
         'sms',
         'mail',
         'contacts',
+        'html_builder'
     ],
     'data': [
         # Security
@@ -62,10 +62,10 @@ Website Journey:
         # Data
         'data/booking_sequence_data.xml',
         'data/booking_cron_data.xml',
+        'data/legacy_cleanup.xml',
         'data/sms_template_data.xml',
         'data/otp_purpose_data.xml',
         'data/product_attribute_data.xml',
-        'data/home_layout_data.xml',
         'data/customer_requirements_data.xml',
 
         # Views - Backend
@@ -78,15 +78,12 @@ Website Journey:
         'views/menu_views.xml',
         'views/bs_car_booking_otp_purpose_views.xml',
         'views/bs_car_offer_views.xml',
-        'views/bs_car_stat_views.xml',
-        'views/bs_car_home_block_views.xml',
+        'views/bs_car_website_section_views.xml',
         'views/bs_car_showcase_views.xml',
         'views/bs_car_model_option_views.xml',
         'views/bs_car_customer_views.xml',
 
         # Views - Website
-        'views/website_header.xml',
-        'views/website_footer.xml',
         'views/website_templates.xml',
         'views/website_compare_templates.xml',
         'views/website_booking_templates.xml',
@@ -95,34 +92,23 @@ Website Journey:
         'views/story_templates.xml',
         'views/tracking_templates.xml',
         'views/snippets.xml',
-        'views/showroom_home.xml',
-        'views/privacy_page.xml',
-        'views/legal_pages.xml',
-
-        # Website navigation menu
-        'data/website_menu_data.xml',
     ],
     'assets': {
         'web.assets_frontend': [
-            'bs_car_booking/static/src/scss/theme.scss',
             'bs_car_booking/static/src/js/interactions/booking_form.js',
             'bs_car_booking/static/src/js/interactions/customer_info.js',
-            'bs_car_booking/static/src/js/interactions/finance_calc.js',
             'bs_car_booking/static/src/js/interactions/gallery_lightbox.js',
             'bs_car_booking/static/src/js/interactions/home_showcase.js',
             'bs_car_booking/static/src/js/interactions/otp_verification.js',
             'bs_car_booking/static/src/js/interactions/booking_tracking.js',
+            'bs_car_booking/static/src/js/interactions/dealer_locator.js',
             'bs_car_booking/static/src/js/interactions/showroom_motion.js',
         ],
     },
-    'demo': [
-        'demo/car_demo.xml',
-    ],
     'images': [
-        'static/description/cover.png',
+        'static/description/icon.png',
     ],
     'installable': True,
     'application': True,
     'auto_install': False,
-    'post_init_hook': 'post_init_hook',
 }

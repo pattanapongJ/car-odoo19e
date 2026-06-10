@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="val_color_white" model="product.attribute.value">
+            <field name="attribute_id" ref="bs_car_booking.attr_color"/>
+            <field name="name">Pearl White</field>
+            <field name="html_color">#E8E8E8</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="val_color_black" model="product.attribute.value">
+            <field name="attribute_id" ref="bs_car_booking.attr_color"/>
+            <field name="name">Phantom Black</field>
+            <field name="html_color">#0A0A0A</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="val_color_blue" model="product.attribute.value">
+            <field name="attribute_id" ref="bs_car_booking.attr_color"/>
+            <field name="name">Deep Blue Metallic</field>
+            <field name="html_color">#25344F</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="val_color_silver" model="product.attribute.value">
+            <field name="attribute_id" ref="bs_car_booking.attr_color"/>
+            <field name="name">Glacier Silver</field>
+            <field name="html_color">#B4B7BA</field>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="val_int_black" model="product.attribute.value">
+            <field name="attribute_id" ref="bs_car_booking.attr_interior"/>
+            <field name="name">Black Nappa</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="val_int_brown" model="product.attribute.value">
+            <field name="attribute_id" ref="bs_car_booking.attr_interior"/>
+            <field name="name">Brown Nappa</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="val_int_light" model="product.attribute.value">
+            <field name="attribute_id" ref="bs_car_booking.attr_interior"/>
+            <field name="name">Light Executive</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="val_wheel_20" model="product.attribute.value">
+            <field name="attribute_id" ref="bs_car_booking.attr_wheels"/>
+            <field name="name">20&quot; Luxury Wheels</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="val_wheel_21" model="product.attribute.value">
+            <field name="attribute_id" ref="bs_car_booking.attr_wheels"/>
+            <field name="name">21&quot; Aero Luxury Wheels</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="val_wheel_22" model="product.attribute.value">
+            <field name="attribute_id" ref="bs_car_booking.attr_wheels"/>
+            <field name="name">22&quot; Flagship Wheels</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="val_addon_service" model="product.attribute.value">
+            <field name="attribute_id" ref="bs_car_booking.attr_addons"/>
+            <field name="name">First-Year Service Package</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="val_addon_ppf" model="product.attribute.value">
+            <field name="attribute_id" ref="bs_car_booking.attr_addons"/>
+            <field name="name">Paint Protection Film</field>
+            <field name="sequence">20</field>
+        </record>
+    </data>
+</odoo>

@@ -5,18 +5,6 @@
          Image-led showroom experience for catalog and model detail pages.
          ================================================================ -->
 
-    <!-- Brand fonts (match the Hongqi Thailand marketing site): a Playfair
-         Display serif for headings + a Jost geometric sans for body/nav.
-         Loaded in <head> because a mid-bundle CSS @import would be ignored. -->
-    <template id="brand_fonts" inherit_id="website.layout" name="Hongqi Brand Fonts">
-        <xpath expr="//head" position="inside">
-            <link rel="preconnect" href="https://fonts.googleapis.com"/>
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
-            <link rel="stylesheet"
-                  href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&amp;family=Jost:wght@300;400;500;600;700&amp;display=swap"/>
-        </xpath>
-    </template>
-
     <!-- ── Car Listing Page ─────────────────────────────────────────── -->
     <template id="car_listing_page" name="Car Listing">
         <t t-call="website.layout">
@@ -242,7 +230,7 @@
                 <div class="container car_detail_nav_inner">
                     <span><t t-esc="car.brand_id.name"/> <t t-esc="car.name"/></span>
                     <div>
-                        <a href="#variants" t-if="variants">Trims</a>
+                        <a href="#variants" t-if="variants">Package</a>
                         <a href="#gallery" t-if="car.gallery_image_ids">Gallery</a>
                         <a href="#dealers" t-if="dealers">Dealers</a>
                         <a t-att-href="'/car/%s/book' % car.id" class="btn btn-primary btn-sm">
@@ -274,20 +262,13 @@
 
             <section id="variants" t-if="variants" class="container car_variants py-5">
                 <div class="section_header_center" data-bs-car-reveal="up">
-                    <span class="car_kicker car_kicker_dark">Trims</span>
-                    <h2 class="section_title">Available variants</h2>
+                    <span class="car_kicker car_kicker_dark">Standard Package</span>
+                    <h2 class="section_title">Included booking package</h2>
                 </div>
                 <div class="variant_grid">
                     <t t-foreach="variants" t-as="variant">
                         <div class="variant_card" data-bs-car-reveal="up">
-                            <div class="variant_color"
-                                 t-att-style="'background-color: %s' % (variant.exterior_color_code or '#333')"/>
                             <h4 t-esc="variant.name"/>
-                            <div class="variant_details">
-                                <span t-if="variant.exterior_color" t-esc="variant.exterior_color"/>
-                                <span t-if="variant.interior_color" t-esc="variant.interior_color"/>
-                                <span t-if="variant.wheel_type" t-esc="variant.wheel_type"/>
-                            </div>
                             <div class="variant_specs">
                                 <span t-if="variant.range_km or car.range_km">
                                     <strong t-esc="variant.range_km or car.range_km"/> km
@@ -356,13 +337,6 @@
             <!-- Active offers for this model (plus global offers) -->
             <section class="s_bs_offers car_catalog_band">
                 <t t-call="bs_car_booking.offers_content">
-                    <t t-set="featured_car" t-value="car"/>
-                </t>
-            </section>
-
-            <!-- Finance calculator for this model -->
-            <section class="s_bs_finance car_catalog_band">
-                <t t-call="bs_car_booking.finance_calculator_content">
                     <t t-set="featured_car" t-value="car"/>
                 </t>
             </section>

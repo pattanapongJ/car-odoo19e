@@ -23,6 +23,12 @@ class BsCarBooking(models.Model):
 
     # === Booking Reference & Status ===
     name = fields.Char('Booking Reference', readonly=True, copy=False, default='/')
+    website_id = fields.Many2one(
+        'website', string='Source Website', readonly=True, copy=False, index=True,
+        help='Website where this booking was created.')
+    company_id = fields.Many2one(
+        'res.company', string='Company', default=lambda self: self.env.company,
+        required=True, readonly=True, copy=False, index=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('otp_pending', 'OTP Pending'),
@@ -168,6 +174,7 @@ class BsCarBooking(models.Model):
                     'target': labels.get(target_state, target_state),
                 })
         self.with_context(bs_booking_bypass_state_guard=True).write({'state': target_state})
+        self._sync_lead_outcome(target_state)
         return True
 
     def _has_successful_payment(self):
@@ -212,6 +219,9 @@ class BsCarBooking(models.Model):
         for vals in vals_list:
             if vals.get('name', '/') == '/':
                 vals['name'] = self.env['ir.sequence'].next_by_code('bs.car.booking') or '/'
+            if vals.get('website_id') and not vals.get('company_id'):
+                website = self.env['website'].browse(vals['website_id'])
+                vals['company_id'] = website.company_id.id or self.env.company.id
         return super().create(vals_list)
 
     def write(self, vals):
@@ -302,7 +312,7 @@ class BsCarBooking(models.Model):
         self._transition_to('otp_pending')
 
         if self.env['ir.config_parameter'].sudo().get_param('bs_car_booking.log_otp') == '1':
-            _logger.info('OTP for %s: %s', self.customer_phone, otp_record.otp_code)
+            _logger.info('OTP generated for %s (otp_id=%s)', self.customer_phone, otp_record.id)
         
         return {
             'type': 'ir.actions.client',
@@ -398,13 +408,21 @@ class BsCarBooking(models.Model):
     def _applicable_document_types(self, customer_type=None):
         """Active document types required/optional for the given customer type."""
         ctype = customer_type or self.customer_type or 'individual'
-        types = self.env['bs.car.document.type'].sudo().search([])
+        company = self.company_id or self.env.company
+        types = self.env['bs.car.document.type'].sudo().search([
+            ('company_id', 'in', [False, company.id]),
+            ('active', '=', True),
+        ])
         return types.filtered(lambda d: d._matches(ctype))
 
     def _applicable_agreements(self, customer_type=None):
         """Active agreements applicable to the given customer type."""
         ctype = customer_type or self.customer_type or 'individual'
-        agreements = self.env['bs.car.agreement'].sudo().search([])
+        company = self.company_id or self.env.company
+        agreements = self.env['bs.car.agreement'].sudo().search([
+            ('company_id', 'in', [False, company.id]),
+            ('active', '=', True),
+        ])
         return agreements.filtered(lambda a: a._matches(ctype))
 
     def _missing_requirements(self, customer_type):
@@ -440,7 +458,7 @@ class BsCarBooking(models.Model):
         """Resolve selected template attribute values to a variant + options.
 
         :param ptav_ids: list of product.template.attribute.value ids selected
-            across all attributes (Trim + Color/Interior/Wheels/Add-ons).
+            across all attributes (Standard Package + Color/Interior/Wheels/Add-ons).
         """
         self.ensure_one()
         model = self.model_id
@@ -454,7 +472,7 @@ class BsCarBooking(models.Model):
         trim_ptav = selected.filtered(lambda p: p.attribute_id == trim_attr)[:1]
         option_ptavs = selected.filtered(lambda p: p.attribute_id != trim_attr)
 
-        # Only Trim creates variants; resolve/create by trim alone while
+        # Only the Standard Package attribute creates variants; resolve/create by package while
         # ignoring no-variant attributes (so the combination is "possible").
         variant = tmpl._get_variant_for_combination(trim_ptav) if trim_ptav else tmpl.env['product.product']
         if not variant and trim_ptav and tmpl.has_dynamic_attributes() \
@@ -487,17 +505,20 @@ class BsCarBooking(models.Model):
         order_vals = {
             'partner_id': partner.id,
             'client_order_ref': self.name,
+            'company_id': self.company_id.id,
             'order_line': [(0, 0, {
                 'product_id': self.product_id.id,
                 'product_uom_qty': 1.0,
                 'product_no_variant_attribute_value_ids': [(6, 0, self.option_value_ids.ids)],
             })],
         }
+        if self.website_id and 'website_id' in self.env['sale.order']._fields:
+            order_vals['website_id'] = self.website_id.id
         # Native CRM<->Sale link (sale_crm): ties the order to the opportunity
         # so the lead shows Quotations/Orders + revenue automatically.
         if self.lead_id and 'opportunity_id' in self.env['sale.order']._fields:
             order_vals['opportunity_id'] = self.lead_id.id
-        order = self.env['sale.order'].sudo().create(order_vals)
+        order = self.env['sale.order'].sudo().with_company(self.company_id).create(order_vals)
         self.sudo().write({
             'sale_order_id': order.id,
             'car_price': order.amount_total,
@@ -527,6 +548,7 @@ class BsCarBooking(models.Model):
             'expected_revenue': self.amount_total or self.car_price or model.base_price or 0.0,
             'partner_id': self.partner_id.id or False,
             'bs_car_booking_id': self.id,
+            'company_id': self.company_id.id,
         }
         medium = self.env.ref('utm.utm_medium_website', raise_if_not_found=False)
         if medium:
@@ -554,6 +576,29 @@ class BsCarBooking(models.Model):
             'partner_id': self.partner_id.id or lead.partner_id.id,
             'expected_revenue': self.amount_total or self.car_price or lead.expected_revenue,
         })
+
+    def _sync_lead_outcome(self, target_state):
+        """Keep the linked CRM lead in step with the booking outcome:
+        confirmed -> won, expired/cancelled -> lost, reopened (draft) -> restored.
+        Defensive on purpose: a CRM hiccup must never abort a booking transition
+        or the nightly expiry cron."""
+        for rec in self:
+            lead = rec.lead_id.sudo()
+            if not lead:
+                continue
+            try:
+                if target_state == 'confirmed':
+                    if lead.probability < 100:
+                        lead.action_set_won()
+                elif target_state in ('expired', 'cancelled'):
+                    if lead.active:
+                        lead.action_set_lost()
+                elif target_state == 'draft' and not lead.active:
+                    # booking reopened from expired/cancelled -> revive the lead
+                    lead.action_unarchive()
+            except Exception as exc:  # noqa: BLE001 - CRM must never block the booking
+                _logger.warning('CRM lead sync failed for booking %s -> %s: %s',
+                                rec.name, target_state, str(exc))
 
     def action_view_lead(self):
         self.ensure_one()
@@ -725,11 +770,11 @@ class BsCarBooking(models.Model):
     def action_expire_stale_bookings(self):
         """Expire unpaid bookings that were abandoned before confirmation."""
         param = self.env['ir.config_parameter'].sudo().get_param(
-            'bs_car_booking.expire_after_hours', '24')
+            'bs_car_booking.expire_after_hours', '72')
         try:
             expire_after_hours = max(int(param), 1)
         except (TypeError, ValueError):
-            expire_after_hours = 24
+            expire_after_hours = 72
         cutoff = fields.Datetime.now() - timedelta(hours=expire_after_hours)
         stale_bookings = self.sudo().search([
             ('state', 'in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending')),

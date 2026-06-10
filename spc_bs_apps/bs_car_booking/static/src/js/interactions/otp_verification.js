@@ -127,7 +127,7 @@ export class OtpVerification extends Interaction {
                 verifyBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Verifying...';
 
                 try {
-                    const r = await fetch("/shop/booking/otp/verify", {
+                    const r = await fetch("/car_booking/booking/otp/verify", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -170,7 +170,7 @@ export class OtpVerification extends Interaction {
                 resendBtn.textContent = "Sending...";
 
                 try {
-                    const r = await fetch("/shop/booking/otp/resend", {
+                    const r = await fetch("/car_booking/booking/otp/resend", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({

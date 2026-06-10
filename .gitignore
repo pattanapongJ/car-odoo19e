@@ -4,3 +4,8 @@ launch.json
 .vscode/
 .DS_Store
 .env
+
+# Temporary local AI onboarding notes
+AGENTS.md
+docs/
+.ai/
