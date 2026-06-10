@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Re-apply is_published=True on every upgrade so state='test' does
+             not hide 2c2p from the website payment form. -->
+        <record id="payment_2c2p.payment_acquirer_2c2p" model="payment.provider">
+            <field name="is_published" eval="True"/>
+        </record>
+    </data>
+</odoo>
