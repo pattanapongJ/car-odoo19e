@@ -992,193 +992,666 @@ html {
 }
 
 /* ── Catalog ─────────────────────────────────────────────────── */
+
+/* Shared section band (used by home-sections snippets too). */
 .car_catalog_band {
     background: var(--car-bg-section);
     padding: 54px 0 72px;
 }
 
-.car_catalog_header {
-    display: flex;
-    gap: 28px;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 26px;
+/* Auto-fill grid for home-section car cards (arrivals, etc.). */
+.car_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 22px;
 }
 
-.brand_filter {
+/* ── Scroll reveal (JS-driven via IntersectionObserver) ────────── */
+/* Elements are visible by default. JS adds .bs-reveal-ready to the
+   section, which sets the hidden start state. Then the observer adds
+   .is-revealed per element to animate them in. No-JS = fully visible. */
+[data-bs-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
+                transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.bs-reveal-ready [data-bs-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+}
+
+.bs-reveal-ready [data-bs-reveal].is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger cards for a cascade feel. */
+.bs-reveal-ready .bs_catalog_card[data-bs-reveal] {
+    transition-delay: calc(var(--bs-reveal-i, 0) * 90ms);
+}
+
+/* ── Sticky filter bar ─────────────────────────────────────────── */
+.bs_filter_sticky {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 14px 0 8px;
+    margin: -14px 0 0;
+    background: linear-gradient(180deg,
+        rgba(244, 241, 236, 0.97) 0%,
+        rgba(244, 241, 236, 0.92) 80%,
+        rgba(244, 241, 236, 0) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: box-shadow 0.3s ease;
+}
+
+.bs_filter_sticky.is-stuck {
+    box-shadow: 0 4px 20px rgba(12, 10, 8, 0.08);
+}
+
+/* Catalog hero (mirrors home brand cover, but fluid height). */
+.bs_catalog_hero {
+    position: relative;
+    display: flex;
+    /* Full-screen on desktop too; svh keeps it exact on tablets/small windows. */
+    min-height: 100vh;
+    min-height: 100svh;
+    align-items: flex-end;
+    overflow: hidden;
+    background: var(--car-primary);
+}
+
+.bs_catalog_hero_img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.bs_catalog_hero_fallback {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2416 100%);
+}
+
+.bs_catalog_hero_scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(7,7,7,0.92) 0%, rgba(7,7,7,0.35) 48%, rgba(7,7,7,0.55) 100%);
+}
+
+.bs_catalog_hero_content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(28px, 4vw, 56px);
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    padding: clamp(40px, 8vw, 100px) 0 clamp(32px, 5vw, 64px);
+}
+
+.bs_catalog_hero_copy {
+    max-width: 620px;
+}
+
+.bs_catalog_hero_copy .car_kicker {
+    display: block;
+    margin-bottom: 12px;
+    color: var(--car-gold);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.bs_catalog_hero_subtitle {
+    max-width: 500px;
+    margin-top: 12px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 1.05rem;
+    line-height: 1.55;
+}
+
+.bs_catalog_hero_metrics {
+    display: flex;
+    flex-shrink: 0;
+    gap: clamp(24px, 5vw, 48px);
+}
+
+.bs_hero_stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 72px;
+    padding: 0 4px;
+    text-align: center;
+}
+
+.bs_hero_stat strong {
+    color: #fff;
+    font-family: var(--car-font-serif);
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.bs_hero_stat strong small {
+    margin-left: 2px;
+    color: rgba(255, 255, 255, 0.55);
+    font-family: var(--car-font-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    vertical-align: baseline;
+}
+
+.bs_hero_stat span {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+/* ── Catalog hero mobile refinements ──────────────────────────── */
+@media (max-width: 767.98px) {
+    .bs_catalog_hero {
+        /* Full-screen hero. svh (small-viewport-height) keeps the bottom CTAs
+           visible above the mobile address bar — plain 100vh would push them
+           off-screen on load. 100vh stays as a fallback for old browsers. */
+        min-height: 100vh;
+        min-height: 100svh;
+        /* On mobile the image is the only hero — no video. Centre the car
+           so it stays composed regardless of crop or phone width. */
+    }
+
+    .bs_catalog_hero_img {
+        object-position: 55% 35%;
+    }
+
+    /* A deeper, more gradual scrim so the white/gold text always has
+       enough contrast over the car body, even on bright-coloured cars. */
+    .bs_catalog_hero_scrim {
+        /* Soft, elegant gradient — dark enough at the very bottom for the
+           headline + CTA, but clearing by mid-hero so the car stays the star. */
+        background: linear-gradient(
+            0deg,
+            rgba(5, 5, 5, 0.9) 0%,
+            rgba(5, 5, 5, 0.7) 26%,
+            rgba(5, 5, 5, 0.36) 46%,
+            rgba(5, 5, 5, 0.08) 68%,
+            rgba(5, 5, 5, 0) 84%,
+            rgba(5, 5, 5, 0.3) 100%
+        );
+    }
+
+    /* Content is grounded at the bottom; nothing floats mid-hero. */
+    .bs_catalog_hero_content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+        padding-top: 0;
+        padding-bottom: clamp(36px, 8vw, 52px);
+    }
+
+    .bs_catalog_hero_copy {
+        max-width: 100%;
+        order: 1;
+        text-shadow: 0 1px 16px rgba(0, 0, 0, 0.45);
+    }
+
+    .bs_catalog_hero_copy .car_kicker {
+        font-size: 0.66rem;
+        letter-spacing: 3px;
+        margin-bottom: 6px;
+    }
+
+    .bs_catalog_hero .car_hero_title {
+        font-size: clamp(2.2rem, 8.5vw, 3.2rem);
+        line-height: 1.06;
+        letter-spacing: -0.4px;
+    }
+
+    .bs_catalog_hero_subtitle {
+        margin-top: 14px;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        max-width: 32ch;
+        color: rgba(255, 255, 255, 0.82);
+    }
+
+    /* CTAs: a filled red primary + an elegant thin-outline secondary — a
+       balanced premium pair (not two heavy blocks, not a bare text link).
+       Generous top gap so the subtitle is never cramped against them. */
+    .car_showroom_actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .car_showroom_actions .car_cta_btn,
+    .car_showroom_actions .car_ghost_btn {
+        flex: 1 1 100%;
+        justify-content: center;
+        padding-top: 0.82rem;
+        padding-bottom: 0.82rem;
+        font-size: 0.92rem;
+        letter-spacing: 0.04em;
+    }
+
+    .car_showroom_actions .car_ghost_btn {
+        background: rgba(0, 0, 0, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        color: #fff;
+        font-weight: 600;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+    }
+
+    /* Stat boxes are dropped on mobile: the "N models available" lineup header
+       directly below the hero already states the count, so the hero stays
+       clean and car-forward. */
+    .bs_catalog_hero_metrics {
+        display: none;
+    }
+}
+
+/* Catalog band — light, generous padding. */
+.bs_catalog_band {
+    background: var(--car-bg-section);
+    padding: clamp(40px, 6vw, 72px) 0 clamp(56px, 8vw, 96px);
+}
+
+/* Header row: title + clear-filters link. */
+.bs_catalog_header {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+
+.bs_filter_clear {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: var(--car-radius);
+    color: var(--car-accent);
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background var(--car-transition);
+}
+
+.bs_filter_clear:hover {
+    background: rgba(178, 31, 45, 0.08);
+    text-decoration: none;
+    color: var(--car-accent-hover);
+}
+
+/* Filter bar — horizontal pill row. */
+.bs_filter_bar {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    justify-content: flex-end;
+    margin-bottom: 12px;
 }
 
-.brand_pill {
+.bs_filter_bar_secondary {
+    margin-bottom: 28px;
+    padding-top: 6px;
+    border-top: 1px solid var(--car-border);
+}
+
+.bs_filter_pill {
     display: inline-flex;
+    gap: 7px;
     align-items: center;
-    min-height: 38px;
-    padding: 7px 16px;
+    min-height: 40px;
+    padding: 7px 18px;
     border: 1px solid var(--car-border);
-    border-radius: var(--car-radius);
+    border-radius: 40px; /* fully rounded pill */
     color: var(--car-text-primary);
     background: rgba(255, 253, 248, 0.7);
-    font-size: 0.9rem;
-    font-weight: 700;
+    font-size: 0.86rem;
+    font-weight: 600;
     text-decoration: none;
-    transition: background var(--car-transition), color var(--car-transition), border-color var(--car-transition);
+    transition: background var(--car-transition), color var(--car-transition), border-color var(--car-transition), box-shadow var(--car-transition);
 }
 
-.brand_pill:hover,
-.brand_pill.active {
+.bs_filter_pill:hover {
+    background: rgba(22, 22, 22, 0.06);
+    border-color: rgba(22, 22, 22, 0.18);
+    text-decoration: none;
+    color: var(--car-text-primary);
+}
+
+.bs_filter_pill.is-active {
     color: #fff;
     background: var(--car-primary);
     border-color: var(--car-primary);
-    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
-.car_grid {
+.bs_filter_pill_body {
+    text-transform: capitalize;
+}
+
+.bs_filter_pill_body i {
+    opacity: 0.6;
+    font-size: 0.8rem;
+}
+
+/* Card grid — two columns on tablet+, one on phone. */
+.bs_catalog_grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-    gap: 20px;
+    grid-template-columns: 1fr;
+    gap: 24px;
 }
 
-.car_card {
+@media (min-width: 768px) {
+    .bs_catalog_grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 28px;
+    }
+}
+
+/* Catalog card — premium, full-bleed image with overlay. */
+.bs_catalog_card {
     display: flex;
-    min-height: 420px;
     flex-direction: column;
     overflow: hidden;
     color: inherit;
     background: var(--car-bg-card);
     border: 1px solid rgba(22, 22, 22, 0.08);
-    border-radius: var(--car-radius);
+    border-radius: var(--car-radius-lg);
     box-shadow: var(--car-shadow);
     text-decoration: none;
     transition: transform var(--car-transition), box-shadow var(--car-transition), border-color var(--car-transition);
 }
 
-.car_card:hover {
+.bs_catalog_card:hover {
     color: inherit;
-    border-color: rgba(178, 31, 45, 0.28);
+    border-color: rgba(178, 31, 45, 0.22);
     box-shadow: var(--car-shadow-lg);
     text-decoration: none;
-    transform: translateY(-5px);
+    transform: translateY(-6px);
 }
 
-.car_card_image {
+/* Card media — large 3:2 image area. */
+.bs_catalog_card_media {
     position: relative;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 3 / 2;
     overflow: hidden;
     background: #d8d2c9;
 }
 
-.car_card_image img {
+.bs_catalog_card_media img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 700ms ease;
 }
 
-.car_card:hover .car_card_image img {
-    transform: scale(1.045);
+.bs_catalog_card:hover .bs_catalog_card_media img {
+    transform: scale(1.05);
 }
 
-.car_card_tag {
+.bs_catalog_card_placeholder {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e8e2d9 0%, #d5cec2 100%);
+    color: rgba(0, 0, 0, 0.12);
+    font-size: 3rem;
+}
+
+.bs_catalog_card_overlay {
     position: absolute;
-    right: 14px;
-    bottom: 14px;
-    padding: 5px 10px;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.38) 0%, transparent 42%);
+    pointer-events: none;
+}
+
+/* Badges — New & body-type tags on the card image. */
+.bs_card_badge {
+    position: absolute;
+    padding: 5px 11px;
     border-radius: var(--car-radius);
     color: #fff;
-    background: rgba(0, 0, 0, 0.66);
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    pointer-events: none;
 }
 
-.car_card_body {
+.bs_card_badge_new {
+    left: 14px;
+    top: 14px;
+    background: var(--car-accent);
+}
+
+.bs_card_badge_type {
+    right: 14px;
+    bottom: 14px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+}
+
+/* Card body — clean typography, generous spacing. */
+.bs_catalog_card_body {
     display: flex;
-    min-height: 0;
     flex: 1;
     flex-direction: column;
-    padding: 20px;
+    padding: clamp(18px, 2vw, 26px);
 }
 
-.car_card_meta,
-.car_card_footer {
+.bs_catalog_card_head {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 4px;
 }
 
-.car_card_brand,
-.car_card_variants {
+.bs_card_brand {
     color: var(--car-text-secondary);
-    font-size: 0.78rem;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.bs_card_title {
+    margin: 0 0 14px;
+    color: var(--car-text-primary);
+    font-family: var(--car-font-serif);
+    font-size: clamp(1.35rem, 2.5vw, 1.7rem);
+    font-weight: 700;
+    line-height: 1.16;
+}
+
+/* Spec strip — three key metrics with icons. */
+.bs_card_specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 19px;
+}
+
+.bs_card_spec {
+    display: inline-flex;
+    gap: 4px;
+    align-items: baseline;
+    padding: 7px 13px;
+    border: 1px solid var(--car-border);
+    border-radius: var(--car-radius);
+    background: rgba(244, 241, 236, 0.64);
+    color: var(--car-text-secondary);
+    font-size: 0.79rem;
+}
+
+.bs_card_spec i {
+    margin-right: 1px;
+    opacity: 0.45;
+    font-size: 0.72rem;
+}
+
+.bs_card_spec strong {
+    color: var(--car-text-primary);
     font-weight: 700;
 }
 
-.car_card_title {
-    margin: 8px 0 14px;
-    color: var(--car-text-primary);
-    font-size: 1.45rem;
-    font-weight: 760;
-    line-height: 1.18;
-}
-
-.car_card_specs {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-    margin-bottom: 18px;
+.bs_card_spec small {
+    margin-left: 2px;
     color: var(--car-text-secondary);
-    font-size: 0.82rem;
+    font-size: 0.7rem;
+    font-weight: 500;
 }
 
-.car_card_specs span {
-    min-width: 0;
-    padding: 8px;
-    border: 1px solid var(--car-border);
-    border-radius: var(--car-radius);
-    background: rgba(244, 241, 236, 0.72);
-    overflow-wrap: anywhere;
-}
-
-.car_card_specs strong {
-    color: var(--car-text-primary);
-}
-
-.car_card_footer {
+/* Card footer — price + CTA. */
+.bs_catalog_card_footer {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    justify-content: space-between;
     margin-top: auto;
-    padding-top: 14px;
+    padding-top: 16px;
     border-top: 1px solid var(--car-border);
 }
 
-.car_card_price span {
-    display: block;
+.bs_card_price {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.bs_card_price_label {
     color: var(--car-text-secondary);
-    font-size: 0.78rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
 }
 
-.car_card_price strong {
+.bs_card_price strong {
     color: var(--car-text-primary);
-    font-size: 1.12rem;
+    font-family: var(--car-font-serif);
+    font-size: 1.18rem;
+    font-weight: 700;
 }
 
-.car_card_arrow {
+.bs_card_cta {
     display: inline-flex;
-    width: 38px;
-    height: 38px;
+    gap: 8px;
     align-items: center;
-    justify-content: center;
+    padding: 9px 18px;
     border-radius: var(--car-radius);
     color: #fff;
     background: var(--car-primary);
+    font-size: 0.84rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background var(--car-transition);
 }
 
-.car_empty_state {
-    max-width: 560px;
-    margin: 42px auto 0;
+.bs_catalog_card:hover .bs_card_cta {
+    background: var(--car-accent);
+}
+
+.bs_card_cta i {
+    font-size: 0.72rem;
+    transition: transform var(--car-transition);
+}
+
+.bs_catalog_card:hover .bs_card_cta i {
+    transform: translateX(3px);
+}
+
+/* Empty state — icon-led, warm. */
+.bs_catalog_empty {
+    max-width: 480px;
+    margin: 56px auto 0;
+    padding: 48px 24px;
+    border: 1px dashed var(--car-border);
+    border-radius: var(--car-radius-lg);
     text-align: center;
     color: var(--car-text-secondary);
+}
+
+.bs_catalog_empty i {
+    display: block;
+    margin-bottom: 14px;
+    color: rgba(22, 22, 22, 0.15);
+    font-size: 2.2rem;
+}
+
+.bs_catalog_empty h3 {
+    margin-bottom: 4px;
+    color: var(--car-text-primary);
+    font-family: var(--car-font-serif);
+    font-size: 1.15rem;
+}
+
+/* ── Catalog premium polish ────────────────────────────────────── */
+
+/* "New" badge — subtle shimmer pulse to draw the eye. */
+@keyframes bsNewPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(178, 31, 45, 0.35); }
+    50%      { box-shadow: 0 0 0 6px rgba(178, 31, 45, 0); }
+}
+
+.bs_card_badge_new {
+    animation: bsNewPulse 2.4s ease-in-out infinite;
+}
+
+/* Card glass lift — on hover, a subtle white glow behind the card. */
+.bs_catalog_card {
+    position: relative;
+}
+
+.bs_catalog_card::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: var(--car-radius-lg);
+    background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.12), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bs_catalog_card:hover::after {
+    opacity: 1;
+}
+
+/* Keep card body above the pseudo glow. */
+.bs_catalog_card_body {
+    position: relative;
+    z-index: 1;
+}
+
+/* Hero image — subtle ken-burns zoom on scroll (CSS-only via background). */
+.bs_catalog_hero_img {
+    will-change: transform;
+    animation: bsHeroDrift 18s ease-in-out infinite alternate;
+}
+
+@keyframes bsHeroDrift {
+    0%   { transform: scale(1.0); }
+    100% { transform: scale(1.06); }
 }
 
 /* ── Detail Page ─────────────────────────────────────────────── */
@@ -2875,12 +3348,21 @@ html {
     z-index: 0;
 }
 @media (max-width: 991.98px) {
-    /* Mobile YouTube/Vimeo ignore controls=0 and block muted autoplay, forcing
-       their play/pause/next chrome over the hero. Drop the embed on mobile and
-       show the clean poster image instead (also lighter to load). */
+    /* Drop the YouTube/Vimeo embed on mobile (it shows player chrome and blocks
+       muted autoplay). Keep it visible only in featured-media galleries where
+       the user intentionally tapped a play button. */
     .bs_hero_embed { display: none !important; }
     .bs_featured_media .bs_hero_embed {
         display: block !important;
+    }
+    /* Catalog hero: keep the poster image as the primary visual. We still hide
+       the YouTube embed on mobile — the poster (car photo) is cleaner and
+       lighter. Desktop keeps the cinematic embed loop. */
+    .bs_catalog_hero .bs_hero_embed {
+        display: none !important;
+    }
+    .bs_catalog_hero .bs_hero_poster {
+        z-index: 1;
     }
 }
 .bs_featured_img {

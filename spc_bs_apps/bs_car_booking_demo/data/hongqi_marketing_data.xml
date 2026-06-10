@@ -47,7 +47,11 @@
         <field name="top_speed">200</field>
         <field name="seats">6</field>
         <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9.jpg"/>
-        <field name="hero_video_url">https://www.youtube.com/watch?v=5TZyCEi9vII</field>
+        <!-- Uploaded hero video so the catalog hero plays on mobile too (a
+             YouTube URL can't autoplay as a mobile background). One landscape
+             clip, cover-cropped on mobile. -->
+        <field name="hero_video_filename">hongqi_hero_desktop.webm</field>
+        <field name="hero_video" type="base64" file="bs_car_booking_demo/static/src/video/hongqi_hero_desktop.webm"/>
         <field name="description"><![CDATA[
             <p>Hongqi E-HS9 is a full-size luxury electric SUV built around presence, silence, and passenger comfort.
             The Thailand launch presentation highlights a 120 kWh battery, flagship dimensions, dual-motor output,

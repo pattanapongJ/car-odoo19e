@@ -8,133 +8,183 @@
     <!-- ── Car Listing Page ─────────────────────────────────────────── -->
     <template id="car_listing_page" name="Car Listing">
         <t t-call="website.layout">
-            <t t-set="title">Explore Our Cars</t>
+            <t t-set="title">Model Lineup</t>
             <t t-set="bs_hero_overlay" t-value="True"/>
-            <t t-set="additional_title" t-value="'Premium Dealer Booking'"/>
             <t t-set="hero_car" t-value="models[:1]"/>
             <t t-set="max_range" t-value="models and max(models.mapped('range_km') or [0]) or 0"/>
+            <t t-set="active_filters" t-value="(active_brand_id and 1 or 0) + (active_body_type and 1 or 0)"/>
 
-            <section class="car_showroom_hero">
-                <t t-if="hero_car and hero_car.image">
-                    <img class="car_showroom_hero_img"
-                         t-att-src="'/web/image/bs.car.model/%s/image' % hero_car.id"
+            <!-- ── Hero ───────────────────────────────────────────── -->
+            <section class="bs_catalog_hero">
+                <!-- Uploaded / direct .mp4/.webm → real looping background video.
+                     Native <video muted autoplay playsinline> DOES autoplay on
+                     mobile (unlike a YouTube/Vimeo iframe), so the hero plays on
+                     every device. A portrait mobile clip is used when supplied. -->
+                <t t-if="hero_car and hero_car.hero_media_type == 'video' and hero_car.hero_video_src">
+                    <video class="bs_catalog_hero_img bs_hero_video"
+                           autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline"
+                           preload="metadata" disablepictureinpicture="disablepictureinpicture"
+                           t-att-poster="hero_car.image and '/web/image/bs.car.model/%s/image/1920x1080' % hero_car.id or None">
+                        <source t-att-src="hero_car.hero_video_src"/>
+                    </video>
+                </t>
+                <!-- YouTube / Vimeo embed: desktop background only; the poster
+                     image takes over on mobile (iframes can't background there). -->
+                <t t-elif="hero_car and hero_car.hero_embed_url">
+                    <div class="bs_hero_embed" aria-hidden="true">
+                        <iframe t-att-src="hero_car.hero_embed_url"
+                                title="Hero video" loading="eager"
+                                allow="autoplay; fullscreen"
+                                referrerpolicy="strict-origin-when-cross-origin"/>
+                    </div>
+                    <img t-if="hero_car.image" class="bs_catalog_hero_img bs_hero_poster"
+                         t-att-src="'/web/image/bs.car.model/%s/image/1920x1080' % hero_car.id"
                          t-att-alt="hero_car.name"/>
                 </t>
-                <div t-else="" class="car_showroom_hero_fallback"/>
-                <div class="car_showroom_scrim"/>
-                <div class="container car_showroom_content" data-bs-car-reveal="hero">
-                    <div class="car_showroom_copy">
-                        <span class="car_kicker">Premium dealer booking</span>
-                        <h1 class="car_hero_title">Reserve the flagship that fits your drive.</h1>
-                        <p class="car_hero_subtitle">
-                            Compare models, configure factory options, choose a dealer, verify by OTP,
-                            and secure the booking deposit in one focused journey.
+                <!-- Plain image hero. -->
+                <t t-elif="hero_car and hero_car.image">
+                    <img class="bs_catalog_hero_img"
+                         t-att-src="'/web/image/bs.car.model/%s/image/1920x1080' % hero_car.id"
+                         t-att-alt="hero_car.name"/>
+                </t>
+                <div t-else="" class="bs_catalog_hero_fallback"/>
+                <div class="bs_catalog_hero_scrim"/>
+                <div class="container bs_catalog_hero_content">
+                    <div class="bs_catalog_hero_copy" data-bs-reveal="">
+                        <span t-if="hero_car" class="car_kicker" t-esc="hero_car.brand_id.name"/>
+                        <span t-else="" class="car_kicker">Model Lineup</span>
+                        <h1 class="car_hero_title">The collection.</h1>
+                        <p class="bs_catalog_hero_subtitle">
+                            Every model. Every specification. One clear view of the range.
                         </p>
                         <div class="car_showroom_actions">
                             <a href="#car_catalog" class="btn btn-primary car_cta_btn">
-                                Explore Models <i class="fa fa-arrow-down"/>
+                                Explore models <i class="fa fa-arrow-down"/>
                             </a>
                             <a t-if="hero_car" t-att-href="'/car/%s' % hero_car.id"
                                class="btn btn-outline-light car_ghost_btn">
-                                View Featured <i class="fa fa-arrow-right"/>
+                                View flagship <i class="fa fa-arrow-right"/>
                             </a>
                         </div>
                     </div>
-                    <div class="car_showroom_metrics">
-                        <div class="hero_metric">
-                            <strong t-att-data-bs-count-to="len(models)" t-esc="len(models)"/>
-                            <span>Published models</span>
+                    <div class="bs_catalog_hero_metrics" data-bs-reveal="">
+                        <div class="bs_hero_stat">
+                            <strong t-esc="len(models)"/>
+                            <span t-esc="len(models) == 1 and 'Model' or 'Models'"/>
                         </div>
-                        <div class="hero_metric" t-if="max_range">
-                            <strong t-att-data-bs-count-to="max_range" t-esc="max_range"/>
-                            <span>Max range km</span>
+                        <div class="bs_hero_stat" t-if="max_range">
+                            <strong><t t-esc="max_range"/><small>km</small></strong>
+                            <span>Max range</span>
                         </div>
-                        <div class="hero_metric">
-                            <strong t-att-data-bs-count-to="len(brands)" t-esc="len(brands)"/>
-                            <span>Active brands</span>
+                        <div class="bs_hero_stat">
+                            <strong t-esc="len(brands)"/>
+                            <span t-esc="len(brands) == 1 and 'Brand' or 'Brands'"/>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="car_catalog" class="car_catalog_band">
+            <!-- ── Catalog ─────────────────────────────────────────── -->
+            <section id="car_catalog" class="bs_catalog_band">
                 <div class="container">
-                    <div class="car_catalog_header" data-bs-car-reveal="up">
+                    <!-- header row -->
+                    <div class="bs_catalog_header" data-bs-reveal="">
                         <div>
                             <span class="car_kicker car_kicker_dark">Model lineup</span>
-                            <h2 class="section_title section_title_left">Choose your next booking.</h2>
+                            <h2 class="section_title section_title_left">
+                                <t t-esc="len(models)"/> model<t t-if="len(models) != 1">s</t> available
+                            </h2>
                         </div>
-                        <div class="brand_filter" aria-label="Filter cars by brand">
+                        <t t-if="active_filters">
+                            <a href="/cars" class="bs_filter_clear">
+                                <i class="fa fa-times"/> Clear filters
+                            </a>
+                        </t>
+                    </div>
+
+                    <!-- sticky filter wrapper -->
+                    <div class="bs_filter_sticky" data-bs-filter-sticky="">
+                        <!-- brand pills -->
+                        <div class="bs_filter_bar" aria-label="Filter cars by brand">
                             <a t-att-href="'/cars'"
-                               t-attf-class="brand_pill {{ not active_brand_id and not active_body_type and 'active' or '' }}">
-                                All Brands
+                               t-attf-class="bs_filter_pill {{ not active_brand_id and not active_body_type and 'is-active' or '' }}">
+                                All
                             </a>
                             <t t-foreach="brands" t-as="brand">
                                 <a t-att-href="'/cars?brand_id=%s' % brand.id"
-                                   t-attf-class="brand_pill {{ active_brand_id == brand.id and 'active' or '' }}">
+                                   t-attf-class="bs_filter_pill {{ active_brand_id == brand.id and 'is-active' or '' }}">
                                     <t t-esc="brand.name"/>
+                                </a>
+                            </t>
+                        </div>
+
+                        <!-- body-type pills -->
+                        <div t-if="body_types" class="bs_filter_bar bs_filter_bar_secondary" aria-label="Filter cars by body type">
+                            <t t-foreach="body_types" t-as="bt">
+                                <a t-att-href="active_body_type == bt[0] and '/cars' or '/cars?body_type=%s' % bt[0]"
+                                   t-attf-class="bs_filter_pill bs_filter_pill_body {{ active_body_type == bt[0] and 'is-active' or '' }}">
+                                    <i t-attf-class="fa fa-{{ {'suv':'truck','sedan':'car','coupe':'car','hatchback':'car','convertible':'car','pickup':'truck','van':'bus'}.get(bt[0], 'car') }}"/>
+                                    <t t-esc="bt[1]"/>
                                 </a>
                             </t>
                         </div>
                     </div>
 
-                    <div t-if="body_types" class="brand_filter brand_filter_secondary" aria-label="Filter cars by body type">
-                        <t t-foreach="body_types" t-as="bt">
-                            <a t-att-href="'/cars?body_type=%s' % bt[0]"
-                               t-attf-class="brand_pill {{ active_body_type == bt[0] and 'active' or '' }}">
-                                <t t-esc="bt[1]"/>
-                            </a>
-                        </t>
-                    </div>
-
-                    <div class="car_grid">
+                    <!-- car grid -->
+                    <div class="bs_catalog_grid">
                         <t t-foreach="models" t-as="car">
-                            <a t-att-href="'/car/%s' % car.id" class="car_card" data-bs-car-reveal="up">
-                                <div class="car_card_image">
+                            <a t-att-href="'/car/%s' % car.id" class="bs_catalog_card" data-bs-reveal="">
+                                <div class="bs_catalog_card_media">
                                     <t t-if="car.image">
-                                        <img t-att-src="'/web/image/bs.car.model/%s/image/600x375' % car.id"
+                                        <img t-att-src="'/web/image/bs.car.model/%s/image/800x534' % car.id"
                                              t-att-alt="car.name" loading="lazy"/>
                                     </t>
                                     <t t-else="">
-                                        <img src="/web/static/img/placeholder.png"
-                                             t-att-alt="car.name" loading="lazy"/>
+                                        <div class="bs_catalog_card_placeholder">
+                                            <i class="fa fa-car"/>
+                                        </div>
                                     </t>
-                                    <span class="car_card_tag" t-if="car.body_type" t-esc="car.body_type.title()"/>
+                                    <span t-if="car.is_new_arrival" class="bs_card_badge bs_card_badge_new">New</span>
+                                    <span t-if="car.body_type" class="bs_card_badge bs_card_badge_type" t-esc="car.body_type.title()"/>
+                                    <div class="bs_catalog_card_overlay"/>
                                 </div>
-                                <div class="car_card_body">
-                                    <div class="car_card_meta">
-                                        <span class="car_card_brand" t-esc="car.brand_id.name"/>
-                                        <span t-if="car.variant_count" class="car_card_variants">
-                                            <t t-esc="car.variant_count"/> trims
+                                <div class="bs_catalog_card_body">
+                                    <div class="bs_catalog_card_head">
+                                        <span class="bs_card_brand" t-esc="car.brand_id.name"/>
+                                    </div>
+                                    <h3 class="bs_card_title" t-esc="car.name"/>
+                                    <div class="bs_card_specs">
+                                        <span t-if="car.range_km" class="bs_card_spec">
+                                            <i class="fa fa-bolt"/>
+                                            <strong t-esc="car.range_km"/><small>km</small>
+                                        </span>
+                                        <span t-if="car.acceleration" class="bs_card_spec">
+                                            <i class="fa fa-tachometer"/>
+                                            <strong t-esc="car.acceleration"/><small>s</small>
+                                        </span>
+                                        <span t-if="car.seats" class="bs_card_spec">
+                                            <i class="fa fa-user"/>
+                                            <strong t-esc="car.seats"/>
                                         </span>
                                     </div>
-                                    <h3 class="car_card_title" t-esc="car.name"/>
-                                    <div class="car_card_specs">
-                                        <span t-if="car.range_km">
-                                            <strong t-esc="car.range_km"/> km range
-                                        </span>
-                                        <span t-if="car.acceleration">
-                                            <strong t-esc="car.acceleration"/>s 0-100
-                                        </span>
-                                        <span t-if="car.seats">
-                                            <strong t-esc="car.seats"/> seats
-                                        </span>
-                                    </div>
-                                    <div class="car_card_footer">
-                                        <div class="car_card_price">
-                                            <span>From</span>
+                                    <div class="bs_catalog_card_footer">
+                                        <div class="bs_card_price">
+                                            <span class="bs_card_price_label">From</span>
                                             <strong t-esc="car.base_price"
                                                     t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
                                         </div>
-                                        <span class="car_card_arrow"><i class="fa fa-arrow-right"/></span>
+                                        <span class="bs_card_cta">
+                                            Discover <i class="fa fa-arrow-right"/>
+                                        </span>
                                     </div>
                                 </div>
                             </a>
                         </t>
                     </div>
 
-                    <div t-if="not models" class="car_empty_state" data-bs-car-reveal="up">
-                        <h3>No cars available yet</h3>
+                    <div t-if="not models" class="bs_catalog_empty">
+                        <i class="fa fa-car"/>
+                        <h3>No models available</h3>
                         <p>Publish a car model in the backend to show it on this page.</p>
                     </div>
                 </div>

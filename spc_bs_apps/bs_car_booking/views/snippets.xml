@@ -26,7 +26,7 @@
             <div t-attf-class="bs_hero_embed {{ hero_class }}">
                 <iframe t-att-src="car.hero_embed_url" frameborder="0" loading="eager" title="Hero video"
                         tabindex="-1" aria-hidden="true"
-                        allow="autoplay; fullscreen; picture-in-picture"/>
+                        allow="autoplay; fullscreen"/>
             </div>
         </t>
         <t t-elif="car.image">
@@ -68,7 +68,7 @@
                     <div class="bs_hero_embed" aria-hidden="true">
                         <iframe t-att-src="section.video_embed_url"
                                 title="Brand video"
-                                allow="autoplay; encrypted-media; picture-in-picture"
+                                allow="autoplay; fullscreen"
                                 referrerpolicy="strict-origin-when-cross-origin"
                                 loading="eager"/>
                     </div>
@@ -240,7 +240,7 @@
                         <div class="bs_hero_embed" aria-hidden="true">
                             <iframe t-att-src="section.video_embed_url"
                                     title="Featured model video"
-                                    allow="autoplay; encrypted-media; picture-in-picture"
+                                    allow="autoplay; fullscreen"
                                     referrerpolicy="strict-origin-when-cross-origin"
                                     loading="eager"/>
                         </div>
@@ -524,25 +524,31 @@
                     <h2 class="section_title">Latest arrivals</h2>
                 </div>
                 <div class="car_grid">
-                    <a t-foreach="arrivals" t-as="car" t-att-href="'/car/%s' % car.id" class="car_card">
-                        <div class="car_card_image">
+                    <a t-foreach="arrivals" t-as="car" t-att-href="'/car/%s' % car.id" class="bs_catalog_card">
+                        <div class="bs_catalog_card_media">
                             <img t-if="car.image" loading="lazy" t-att-alt="car.name"
-                                 t-att-src="'/web/image/bs.car.model/%s/image/600x375' % car.id"/>
-                            <img t-else="" src="/web/static/img/placeholder.png"
-                                 t-att-alt="car.name" loading="lazy"/>
-                            <span t-if="car.is_new_arrival" class="bs_arrival_badge">New</span>
-                            <span class="car_card_tag" t-if="car.body_type" t-esc="car.body_type.title()"/>
+                                 t-att-src="'/web/image/bs.car.model/%s/image/800x534' % car.id"/>
+                            <div t-else="" class="bs_catalog_card_placeholder">
+                                <i class="fa fa-car"/>
+                            </div>
+                            <span t-if="car.is_new_arrival" class="bs_card_badge bs_card_badge_new">New</span>
+                            <span t-if="car.body_type" class="bs_card_badge bs_card_badge_type" t-esc="car.body_type.title()"/>
+                            <div class="bs_catalog_card_overlay"/>
                         </div>
-                        <div class="car_card_body">
-                            <span class="car_card_brand" t-esc="car.brand_id.name"/>
-                            <h3 class="car_card_title" t-esc="car.name"/>
-                            <div class="car_card_footer">
-                                <div class="car_card_price">
-                                    <span>From</span>
+                        <div class="bs_catalog_card_body">
+                            <div class="bs_catalog_card_head">
+                                <span class="bs_card_brand" t-esc="car.brand_id.name"/>
+                            </div>
+                            <h3 class="bs_card_title" t-esc="car.name"/>
+                            <div class="bs_catalog_card_footer">
+                                <div class="bs_card_price">
+                                    <span class="bs_card_price_label">From</span>
                                     <strong t-esc="car.base_price"
                                             t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
                                 </div>
-                                <span class="car_card_arrow"><i class="fa fa-arrow-right"/></span>
+                                <span class="bs_card_cta">
+                                    Discover <i class="fa fa-arrow-right"/>
+                                </span>
                             </div>
                         </div>
                     </a>
@@ -870,7 +876,7 @@
                     <t t-elif="section and section.video_embed_url">
                         <div class="bs_cabin_embed" aria-hidden="true">
                             <iframe t-att-src="section.video_embed_url" title="Cabin video"
-                                    allow="autoplay; encrypted-media; picture-in-picture"
+                                    allow="autoplay; fullscreen"
                                     referrerpolicy="strict-origin-when-cross-origin" loading="lazy"/>
                         </div>
                         <img t-if="section.image" class="bs_cabin_img bs_hero_poster"

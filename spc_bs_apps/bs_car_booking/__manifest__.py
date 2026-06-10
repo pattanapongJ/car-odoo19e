@@ -103,6 +103,7 @@ Website Journey:
             'bs_car_booking/static/src/js/interactions/booking_tracking.js',
             'bs_car_booking/static/src/js/interactions/dealer_locator.js',
             'bs_car_booking/static/src/js/interactions/showroom_motion.js',
+            'bs_car_booking/static/src/js/interactions/catalog_motion.js',
         ],
     },
     'images': [
