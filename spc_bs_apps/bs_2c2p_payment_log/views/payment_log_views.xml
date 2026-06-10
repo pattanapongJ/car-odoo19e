@@ -45,7 +45,8 @@
                         </group>
                     </group>
                     <group string="Raw POST Data">
-                        <field name="raw_data" widget="code" nolabel="1"/>
+                        <field name="raw_data" nolabel="1"
+                               style="min-height:500px; font-family:monospace; font-size:12px; background:#f8f9fa; border-radius:4px; padding:8px;"/>
                     </group>
                 </sheet>
             </form>
