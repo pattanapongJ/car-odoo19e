@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bs_payment_2c2p_log_viewer,bs.payment.2c2p.log viewer,model_bs_payment_2c2p_log,bs_2c2p_payment_log.group_2c2p_log_viewer,1,0,0,0
+access_bs_payment_2c2p_log_manager,bs.payment.2c2p.log manager,model_bs_payment_2c2p_log,bs_2c2p_payment_log.group_2c2p_log_manager,1,1,1,1
