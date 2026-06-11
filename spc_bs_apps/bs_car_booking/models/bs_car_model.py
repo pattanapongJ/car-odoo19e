@@ -133,6 +133,16 @@ class BsCarModel(models.Model):
         current = fields.Date.context_today(self).year
         return [(str(y), str(y)) for y in range(current + 2, 1999, -1)]
 
+    @api.onchange('arrival_date')
+    def _onchange_arrival_date_model_year(self):
+        """Convenience prefill only — NOT a hard link: the manufacturer's
+        model year often runs a year AHEAD of the local arrival (a 2027-MY
+        car arriving Nov 2026), so staff can always override the suggestion."""
+        if self.arrival_date and not self.model_year:
+            year = str(self.arrival_date.year)
+            if year in {k for k, _label in self._model_year_selection()}:
+                self.model_year = year
+
     @api.constrains('model_year')
     def _check_model_year(self):
         # The ORM does NOT validate method-based Selection values on write
