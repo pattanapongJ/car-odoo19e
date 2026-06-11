@@ -140,13 +140,13 @@
         <field name="name">bs.api.testdrive.log.search</field>
         <field name="model">bs.api.testdrive.log</field>
         <field name="arch" type="xml">
-            <search string="Search Logs">
+            <search>
                 <field name="full_name"/>
                 <field name="phone"/>
                 <filter name="success" string="Success" domain="[('state','=','success')]"/>
                 <filter name="error" string="Error" domain="[('state','=','error')]"/>
                 <separator/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
                     <filter name="group_date" string="Date" context="{'group_by': 'create_date:day'}"/>
                 </group>
