@@ -17,6 +17,7 @@
                             <field name="attribute_name" invisible="1"/>
                             <field name="sequence"/>
                             <field name="price_extra"/>
+                            <field name="website_published"/>
                         </group>
                         <group string="Colour Studio">
                             <field name="swatch_color" widget="color"/>
