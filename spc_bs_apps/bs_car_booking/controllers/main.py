@@ -94,32 +94,6 @@ class BsCarBookingWebsite(CustomerPortal):
             'body_types': body_types,
         })
 
-    # ── Compare models ──────────────────────────────────────────────────
-    @http.route('/compare', type='http', auth='public', website=True, sitemap=True)
-    def car_compare(self, **kw):
-        # Accept both repeated (?ids=1&ids=2, from the picker form) and
-        # comma-separated (?ids=1,2,3, shareable) forms; cap at 4 columns.
-        raw = request.httprequest.args.getlist('ids')
-        ids = []
-        for chunk in raw:
-            for part in str(chunk).split(','):
-                if part.strip().isdigit():
-                    n = int(part)
-                    if n not in ids:
-                        ids.append(n)
-        Model = self._scoped_env('bs.car.model')
-        domain = self._public_domain('bs.car.model')
-        selected = Model.browse(ids[:4]).filtered(
-            lambda c: c.exists() and c.website_published and c.active)
-        selected = selected.filtered(lambda c: not c.company_id or c.company_id == request.website.company_id)
-        all_models = Model.search(domain, order='sequence, id')
-        return request.render('bs_car_booking.car_compare_page', {
-            'selected': selected,
-            'all_models': all_models,
-            'compare_rows': selected._get_compare_rows() if len(selected) > 1 else [],
-            'page_title': 'Compare models',
-        })
-
     # ── Editorial stories ──────────────────────────────────────────────
     @http.route('/stories', type='http', auth='public', website=True, sitemap=True)
     def stories_index(self, **kw):

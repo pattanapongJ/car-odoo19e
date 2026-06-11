@@ -236,33 +236,6 @@ class BsCarModel(models.Model):
         return (self.sudo().search([('website_featured', '=', True)] + base, limit=1)
                 or self.sudo().search(base, order='sequence, id', limit=1))
 
-    def _get_compare_rows(self):
-        """Align the spec sheets of ``self`` for a side-by-side comparison.
-
-        Spec labels are free-form per model, so we build the union of labels
-        (in first-seen order) and look up each model's value for every label,
-        filling gaps with an em-dash. ``values[i]`` corresponds to ``self[i]``.
-        Returns a list of {'label', 'values'} dicts.
-        """
-        labels, seen, per_model = [], set(), []
-        for car in self:
-            by_label = {}
-            for sp in car.spec_ids.sorted(lambda s: (s.sequence, s.id)):
-                key = (sp.name or '').strip()
-                if not key:
-                    continue
-                by_label.setdefault(key, sp)
-                if key not in seen:
-                    seen.add(key)
-                    labels.append(key)
-            per_model.append(by_label)
-        rows = []
-        for label in labels:
-            values = [(m.get(label).display_value if m.get(label) else '—')
-                      for m in per_model]
-            rows.append({'label': label, 'values': values})
-        return rows
-
     # === Commerce backbone (native product) ===
     product_tmpl_id = fields.Many2one('product.template', string='Configurable Product',
                                       copy=False, readonly=True,

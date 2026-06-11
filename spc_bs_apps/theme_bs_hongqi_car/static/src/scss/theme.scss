@@ -64,7 +64,6 @@ html {
 .bs_specs_title h2,
 .car_card_title,
 .bs_offer_title,
-.bs_compare_name,
 .payment_value,
 .conf_hero h1 {
     font-family: var(--car-font-serif);
@@ -4205,62 +4204,6 @@ html {
         font-size: 1.15rem;
     }
 }
-
-/* ============================================================
-   COMPARE MODELS
-   ============================================================ */
-.bs_compare_picker {
-    margin: 24px 0 36px;
-    background: var(--car-bg-card);
-    border: 1px solid var(--car-border);
-    border-radius: var(--car-radius-lg);
-    padding: 20px 22px;
-    box-shadow: var(--car-shadow);
-}
-.bs_compare_pick_grid {
-    display: flex; flex-wrap: wrap; gap: 10px 18px;
-    margin-bottom: 16px;
-}
-.bs_compare_pick {
-    display: inline-flex; align-items: center; gap: 8px;
-    margin: 0; font-weight: 600; color: var(--car-text-primary);
-    cursor: pointer;
-}
-.bs_compare_pick input { width: 17px; height: 17px; accent-color: var(--car-accent); }
-.bs_compare_picker_actions { display: flex; align-items: center; gap: 14px; }
-
-.bs_compare_scroll { overflow-x: auto; }
-.bs_compare_table {
-    width: 100%; border-collapse: collapse;
-    background: var(--car-bg-card);
-    border: 1px solid var(--car-border);
-    border-radius: var(--car-radius-lg);
-    overflow: hidden;
-}
-.bs_compare_table th, .bs_compare_table td {
-    padding: 14px 18px; text-align: left; vertical-align: top;
-    border-bottom: 1px solid var(--car-border);
-}
-.bs_compare_corner { width: 220px; background: var(--car-bg-muted); }
-.bs_compare_head { min-width: 220px; text-align: center; background: var(--car-bg-section); }
-.bs_compare_carcell { display: block; text-decoration: none; color: inherit; }
-.bs_compare_carcell img {
-    width: 100%; max-width: 220px; aspect-ratio: 16 / 10;
-    object-fit: cover; border-radius: var(--car-radius); margin: 0 auto 10px; display: block;
-}
-.bs_compare_brand {
-    display: block; font-size: 0.74rem; text-transform: uppercase;
-    letter-spacing: 1px; color: var(--car-text-secondary);
-}
-.bs_compare_name { display: block; font-size: 1.1rem; font-weight: 800; color: var(--car-text-primary); }
-.bs_compare_price { margin: 8px 0 12px; color: var(--car-text-primary); }
-.bs_compare_price strong { font-size: 1.05rem; }
-.bs_compare_rowlabel {
-    font-weight: 700; color: var(--car-text-primary);
-    background: var(--car-bg-muted);
-}
-.bs_compare_table tbody td { text-align: center; color: var(--car-text-secondary); font-weight: 600; }
-.bs_compare_table tr:last-child th, .bs_compare_table tr:last-child td { border-bottom: 0; }
 
 /* ============================================================
    BRAND HERITAGE (cinematic story band)

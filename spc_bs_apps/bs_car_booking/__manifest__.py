@@ -90,7 +90,6 @@ Website Journey:
 
         # Views - Website
         'views/website_templates.xml',
-        'views/website_compare_templates.xml',
         'views/website_booking_templates.xml',
         'views/website_confirmation_templates.xml',
         'views/portal_templates.xml',
