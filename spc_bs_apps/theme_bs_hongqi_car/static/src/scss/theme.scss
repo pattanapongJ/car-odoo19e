@@ -2578,6 +2578,16 @@ html {
     text-align: center;
 }
 
+/* Unpublished options: shown for reference but greyed out and non-clickable. */
+.cfg_swatch.is-unavailable,
+.cfg_pill.is-unavailable,
+.cfg_addon.is-unavailable {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: grayscale(1);
+}
+
 .cfg_swatch_dot {
     display: block;
     width: 54px;
@@ -2731,15 +2741,35 @@ html {
 }
 
 .cfg_summary_media {
-    aspect-ratio: 16 / 10;
     overflow: hidden;
     background: var(--car-bg-muted);
 }
 
-.cfg_summary_media img {
+.cfg_summary_media > img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+}
+
+/* Dynamic exterior/interior stages, stacked (exterior on top). */
+.cfg_summary_stage {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+}
+.cfg_summary_stage + .cfg_summary_stage {
+    border-top: 1px solid var(--car-border);
+}
+
+.cfg_summary_img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: none;
+}
+.cfg_summary_img.is-active {
+    display: block;
 }
 
 .cfg_summary_body {

@@ -46,9 +46,11 @@ export class CarConfigurator extends Interaction {
         }
 
         // Initialise selected styles + price.
+        this._refreshInteriorAvailability();
         this._refreshSelectedStyles();
         this._refreshDealerStyles();
         this._refreshSummary();
+        this._refreshSummaryImage();
         this._updatePrice();
 
         this.el.addEventListener("submit", (e) => this._onSubmit(e));
@@ -98,11 +100,75 @@ export class CarConfigurator extends Interaction {
     }
 
     _onChange() {
+        this._refreshInteriorAvailability();
         this._refreshSelectedStyles();
         this._refreshSummary();
+        this._refreshSummaryImage();
         this._updatePrice();
     }
 
+    /* Restrict the interior options to those allowed by the selected exterior
+       colour (its "Available Interiors"). Disallowed interiors are greyed out
+       and, if the current selection becomes unavailable, the first allowed
+       interior is selected instead. (Unpublished options aren't rendered.) */
+    _refreshInteriorAvailability() {
+        const interiorInputs = Array.from(
+            this.el.querySelectorAll('.cfg_input[data-interior-option="1"]'));
+        if (!interiorInputs.length) {
+            return;
+        }
+        const extInput = this.el.querySelector('.cfg_input[data-exterior-option="1"]:checked');
+        // null = no restriction (exterior offers every interior).
+        let allowed = null;
+        if (extInput && extInput.dataset.interiorValueIds) {
+            allowed = new Set(extInput.dataset.interiorValueIds.split(",").filter(Boolean));
+        }
+        let firstEnabled = null;
+        let droppedSelection = false;
+        for (const input of interiorInputs) {
+            const ok = allowed === null || allowed.has(input.dataset.valueId);
+            input.disabled = !ok;
+            const label = input.closest("label");
+            if (label) {
+                label.classList.toggle("is-unavailable", !ok);
+            }
+            if (ok && !firstEnabled) {
+                firstEnabled = input;
+            }
+            if (!ok && input.checked) {
+                input.checked = false;
+                droppedSelection = true;
+            }
+        }
+        if (droppedSelection && firstEnabled) {
+            firstEnabled.checked = true;
+        }
+    }
+
+    /* Swap the summary exterior/interior images to match the current selection
+       (same approach as the Colour Studio). Each stage shows the image whose
+       data-cfg-value equals a selected option's product-attribute-value id. */
+    _refreshSummaryImage() {
+        const stages = this.el.querySelectorAll(".cfg_summary_stage");
+        if (!stages.length) {
+            return;
+        }
+        const selectedValueIds = new Set();
+        for (const input of this.el.querySelectorAll(".cfg_input")) {
+            if (input.checked && input.dataset.valueId) {
+                selectedValueIds.add(input.dataset.valueId);
+            }
+        }
+        for (const stage of stages) {
+            const imgs = Array.from(stage.querySelectorAll(".cfg_summary_img"));
+            if (!imgs.length) {
+                continue;
+            }
+            const match = imgs.find((im) => selectedValueIds.has(im.dataset.cfgValue)) || imgs[0];
+            imgs.forEach((im) => im.classList.toggle("is-active", im === match));
+        }
+    }
+    
     async _updatePrice() {
         if (!this.priceEl) return;
         this.priceEl.classList.add("is-updating");
