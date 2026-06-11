@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="opt_ehs9_white" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="value_id" ref="val_color_white"/>
+            <field name="price_extra">0</field>
+            <field name="sequence">10</field>
+            <field name="swatch_color">#F3F1EC</field>
+            <field name="image_alt">Hongqi E-HS9 in pearl white exterior finish</field>
+            <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_1.jpg"/>
+        </record>
+        <record id="opt_ehs9_black" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="value_id" ref="val_color_black"/>
+            <field name="price_extra">0</field>
+            <field name="sequence">20</field>
+            <field name="swatch_color">#111111</field>
+            <field name="image_alt">Hongqi E-HS9 in phantom black exterior finish</field>
+            <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9.jpg"/>
+        </record>
+        <record id="opt_ehs9_silver" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="value_id" ref="val_color_silver"/>
+            <field name="price_extra">50000</field>
+            <field name="sequence">30</field>
+            <field name="swatch_color">#B8BABD</field>
+            <field name="image_alt">Hongqi E-HS9 in glacier silver exterior finish</field>
+            <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_gallery_2.jpg"/>
+        </record>
+        <record id="opt_ehs9_int_black" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="value_id" ref="val_int_black"/>
+            <field name="price_extra">0</field>
+            <field name="sequence">40</field>
+            <field name="swatch_color">#171717</field>
+            <field name="image_alt">Hongqi E-HS9 black executive interior</field>
+            <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_interior.jpg"/>
+        </record>
+        <record id="opt_ehs9_int_brown" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="value_id" ref="val_int_brown"/>
+            <field name="price_extra">0</field>
+            <field name="sequence">50</field>
+            <field name="swatch_color">#7A4A2F</field>
+            <field name="image_alt">Hongqi E-HS9 warm brown cabin theme</field>
+            <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_sunroof.jpg"/>
+        </record>
+        <record id="opt_ehs9_int_light" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="value_id" ref="val_int_light"/>
+            <field name="price_extra">65000</field>
+            <field name="sequence">55</field>
+            <field name="swatch_color">#D8D0C1</field>
+            <field name="swatch_color_2">#171717</field>
+            <field name="image_alt">Hongqi E-HS9 light two-tone interior mood</field>
+            <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_interior.jpg"/>
+        </record>
+        <function model="bs.car.model.option" name="write">
+            <value eval="[ref('opt_ehs9_white'), ref('opt_ehs9_black'), ref('opt_ehs9_silver')]"/>
+            <value eval="{'interior_option_ids': [(6, 0, [ref('opt_ehs9_int_black'), ref('opt_ehs9_int_brown'), ref('opt_ehs9_int_light')])]}"/>
+        </function>
+        <record id="opt_ehs9_wheel_21" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="value_id" ref="val_wheel_21"/>
+            <field name="price_extra">0</field>
+            <field name="sequence">60</field>
+        </record>
+        <record id="opt_ehs9_wheel_22" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="value_id" ref="val_wheel_22"/>
+            <field name="price_extra">120000</field>
+            <field name="sequence">70</field>
+        </record>
+
+        <record id="opt_eh7_white" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_eh7"/>
+            <field name="value_id" ref="val_color_white"/>
+            <field name="price_extra">0</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="opt_eh7_black" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_eh7"/>
+            <field name="value_id" ref="val_color_black"/>
+            <field name="price_extra">0</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="opt_eh7_blue" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_eh7"/>
+            <field name="value_id" ref="val_color_blue"/>
+            <field name="price_extra">35000</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="opt_eh7_int_black" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_eh7"/>
+            <field name="value_id" ref="val_int_black"/>
+            <field name="price_extra">0</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="opt_eh7_wheel_20" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_eh7"/>
+            <field name="value_id" ref="val_wheel_20"/>
+            <field name="price_extra">0</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <record id="opt_hs5_white" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_hs5"/>
+            <field name="value_id" ref="val_color_white"/>
+            <field name="price_extra">0</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="opt_hs5_black" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_hs5"/>
+            <field name="value_id" ref="val_color_black"/>
+            <field name="price_extra">0</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="opt_hs5_int_black" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_hs5"/>
+            <field name="value_id" ref="val_int_black"/>
+            <field name="price_extra">0</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="opt_hs5_wheel_20" model="bs.car.model.option">
+            <field name="model_id" ref="model_hongqi_hs5"/>
+            <field name="value_id" ref="val_wheel_20"/>
+            <field name="price_extra">0</field>
+            <field name="sequence">40</field>
+        </record>
+    </data>
+</odoo>

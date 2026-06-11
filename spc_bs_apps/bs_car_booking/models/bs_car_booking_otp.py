@@ -2,12 +2,14 @@
 # Part of Basic Solution Co., Ltd.
 
 import logging
+import hashlib
 import secrets
 import string
 from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import consteq
 
 _logger = logging.getLogger(__name__)
 
@@ -18,7 +20,10 @@ class BsCarBookingOtp(models.Model):
     _order = 'id desc'
 
     phone = fields.Char('Phone Number', required=True, index=True)
-    otp_code = fields.Char('OTP Code', required=True)
+    otp_code = fields.Char('OTP Code', compute='_compute_otp_code',
+                           help='Runtime-only value used while rendering SMS templates.')
+    otp_hash = fields.Char('OTP Hash', copy=False)
+    otp_salt = fields.Char('OTP Salt', copy=False)
     booking_id = fields.Many2one('bs.car.booking', string='Booking', ondelete='cascade')
     # Why purpose_id (not Selection): purpose list is admin-managed in the DB.
     # New flows can be added from Settings > Car Booking > OTP Purposes without code change.
@@ -55,6 +60,27 @@ class BsCarBookingOtp(models.Model):
         return ''.join(secrets.choice(string.digits) for _ in range(length))
 
     @api.model
+    def _hash_otp(self, otp_code, salt):
+        return hashlib.sha256(f'{salt}:{otp_code}'.encode()).hexdigest()
+
+    def _compute_otp_code(self):
+        """Expose the raw OTP only during the SMS rendering call that created it."""
+        plain_codes = self.env.context.get('bs_otp_plain_codes') or {}
+        for otp in self:
+            otp.otp_code = plain_codes.get(otp.id) or ''
+
+    def init(self):
+        """Clear legacy plaintext OTP values left by earlier stored-field versions."""
+        self.env.cr.execute("""
+            SELECT 1
+              FROM information_schema.columns
+             WHERE table_name = %s
+               AND column_name = %s
+        """, [self._table, 'otp_code'])
+        if self.env.cr.fetchone():
+            self.env.cr.execute(f'UPDATE "{self._table}" SET otp_code = NULL WHERE otp_code IS NOT NULL')
+
+    @api.model
     def _get_purpose(self, purpose_code):
         """Resolve and validate purpose by code. Raises UserError if not supported."""
         purpose_rec = self.env['bs.car.booking.otp.purpose'].search(
@@ -88,11 +114,13 @@ class BsCarBookingOtp(models.Model):
         # 2. Prepare OTP
         phone = phone.strip().replace(' ', '')
         otp_code = self._generate_otp()
+        otp_salt = secrets.token_hex(16)
         expire_datetime = fields.Datetime.now() + timedelta(minutes=5)
 
         otp_record = self.create({
             'phone': phone,
-            'otp_code': otp_code,
+            'otp_hash': self._hash_otp(otp_code, otp_salt),
+            'otp_salt': otp_salt,
             'booking_id': booking_id,
             'purpose_id': purpose_rec.id,
             'expire_datetime': expire_datetime,
@@ -101,7 +129,9 @@ class BsCarBookingOtp(models.Model):
         # 3. Resolve SMS body from template or fallback
         template = purpose_rec.sms_template_id
         if template:
-            body = template._render_field('body', [otp_record.id])[otp_record.id]
+            body = template.with_context(
+                bs_otp_plain_codes={otp_record.id: otp_code},
+            )._render_field('body', [otp_record.id])[otp_record.id]
         elif purpose_rec.sms_fallback_body:
             body = purpose_rec.sms_fallback_body % {'otp_code': otp_code}
             _logger.warning(
@@ -149,7 +179,8 @@ class BsCarBookingOtp(models.Model):
             self.state = 'failed'
             return {'success': False, 'error': _('Too many attempts. Please request a new OTP.')}
 
-        if self.otp_code == code.strip():
+        entered_code = (code or '').strip()
+        if self.otp_hash and consteq(self.otp_hash, self._hash_otp(entered_code, self.otp_salt)):
             self.state = 'verified'
             self.verified_datetime = fields.Datetime.now()
             return {'success': True, 'message': _('Phone verified successfully!')}

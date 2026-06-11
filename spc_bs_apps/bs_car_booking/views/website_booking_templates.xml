@@ -38,7 +38,7 @@
                         <span class="cfg_brand" t-esc="car.brand_id.name"/>
                         <h1 class="cfg_title" t-esc="car.name"/>
                         <p>
-                            Build the exact trim, color, interior, wheel, and add-on combination
+                            Build the exact color, interior, wheel, and add-on combination
                             before choosing your preferred dealer.
                         </p>
                     </div>
@@ -52,10 +52,14 @@
             </section>
 
             <section class="container cfg_wrapper pb-6">
+                <div t-if="product_missing" class="alert alert-warning">
+                    This model is not ready for online booking yet. Ask a booking manager to generate the configurable product in the back office.
+                </div>
                 <form id="bs_configurator_form" class="cfg_form"
                       t-att-data-model-id="car.id"
                       t-att-data-deposit="car.deposit_amount"
-                      t-att-data-currency-id="car.currency_id.id">
+                      t-att-data-currency-id="car.currency_id.id"
+                      t-att-data-product-missing="product_missing and '1' or '0'">
 
                     <div class="cfg_grid">
                         <div class="cfg_options">
@@ -68,11 +72,25 @@
                                 </p>
                             </div>
 
+                            <t t-set="config_block_index" t-value="0"/>
                             <t t-foreach="attribute_lines" t-as="line">
-                                <div class="cfg_block" t-att-data-attribute-id="line.attribute_id.id"
+                                <t t-set="is_single_standard_package"
+                                   t-value="standard_package_attr and line.attribute_id == standard_package_attr and len(line.product_template_value_ids) == 1"/>
+                                <t t-if="is_single_standard_package">
+                                    <t t-set="standard_ptav" t-value="line.product_template_value_ids[:1]"/>
+                                    <input type="radio" class="cfg_input d-none"
+                                           t-attf-name="attr_{{ line.attribute_id.id }}"
+                                           t-att-data-ptav-id="standard_ptav.id"
+                                           t-att-data-price-extra="standard_ptav.price_extra"
+                                           t-att-data-summary-label="standard_ptav.name"
+                                           data-summary-hidden="1"
+                                           checked="checked"/>
+                                </t>
+                                <div t-else="" class="cfg_block" t-att-data-attribute-id="line.attribute_id.id"
                                      data-bs-car-reveal="up">
+                                    <t t-set="config_block_index" t-value="config_block_index + 1"/>
                                     <div class="cfg_block_heading">
-                                        <span class="cfg_block_number" t-esc="line_index + 1"/>
+                                        <span class="cfg_block_number" t-esc="config_block_index"/>
                                         <h4 class="cfg_block_title" t-esc="line.attribute_id.name"/>
                                     </div>
 
@@ -198,7 +216,8 @@
                                             <a href="/privacy" target="_blank" rel="noopener">Privacy Policy (PDPA)</a>
                                             and consent to being contacted about this booking.</span>
                                     </label>
-                                    <button type="submit" class="btn btn-primary btn-lg cfg_submit_btn">
+                                    <button type="submit" class="btn btn-primary btn-lg cfg_submit_btn"
+                                            t-att-disabled="product_missing and 'disabled' or None">
                                         <i class="fa fa-shield"/> Continue to Verify
                                     </button>
                                     <div class="cfg_error alert alert-danger mt-3 d-none" id="cfg_error"/>

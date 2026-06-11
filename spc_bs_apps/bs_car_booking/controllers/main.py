@@ -16,6 +16,18 @@ _logger = logging.getLogger(__name__)
 class BsCarBookingWebsite(CustomerPortal):
     """Premium car-dealer funnel: catalog → configure → OTP → info → deposit → done."""
 
+    def _scoped_env(self, model_name):
+        return request.env[model_name].sudo().with_context(website_id=request.website.id)
+
+    def _company_domain(self, model_name):
+        Model = request.env[model_name]
+        if 'company_id' not in Model._fields:
+            return []
+        return [('company_id', 'in', [False, request.website.company_id.id])]
+
+    def _public_domain(self, model_name):
+        return [('website_published', '=', True), ('active', '=', True)] + self._company_domain(model_name)
+
     def _booking_step_url(self, booking, step):
         """Return a tokenized public funnel URL for a booking step."""
         return '/booking/%s/%s?%s' % (
@@ -43,13 +55,15 @@ class BsCarBookingWebsite(CustomerPortal):
         booking = request.env['bs.car.booking'].sudo().browse(booking_id)
         if not booking.exists() or not self._can_access_booking(booking, access_token):
             return False
+        if booking.website_id and booking.website_id != request.website:
+            return False
         return booking
 
     # ── Catalog ─────────────────────────────────────────────────────────
     @http.route('/cars', type='http', auth='public', website=True, sitemap=True)
     def car_listing(self, brand_id=None, body_type=None, price_min=None, price_max=None, **kw):
-        Model = request.env['bs.car.model'].sudo()
-        domain = [('website_published', '=', True), ('active', '=', True)]
+        Model = self._scoped_env('bs.car.model')
+        domain = self._public_domain('bs.car.model')
         if brand_id:
             domain.append(('brand_id', '=', int(brand_id)))
         if body_type:
@@ -63,11 +77,13 @@ class BsCarBookingWebsite(CustomerPortal):
         except (ValueError, TypeError):
             pass
         models = Model.search(domain, order='sequence, id')
-        brands = request.env['bs.car.brand'].sudo().search([
-            ('active', '=', True), ('model_ids.website_published', '=', True),
-        ])
+        brands = self._scoped_env('bs.car.brand').search([
+            ('active', '=', True),
+            ('website_published', '=', True),
+            ('model_ids.website_published', '=', True),
+        ] + self._company_domain('bs.car.brand'))
         # Body-type pills (distinct types across all published models).
-        published = Model.search([('website_published', '=', True), ('active', '=', True)])
+        published = Model.search(self._public_domain('bs.car.model'))
         type_labels = dict(Model._fields['body_type'].selection)
         body_types = [(bt, type_labels.get(bt, bt))
                       for bt in dict.fromkeys(published.mapped('body_type')) if bt]
@@ -91,12 +107,12 @@ class BsCarBookingWebsite(CustomerPortal):
                     n = int(part)
                     if n not in ids:
                         ids.append(n)
-        Model = request.env['bs.car.model'].sudo()
+        Model = self._scoped_env('bs.car.model')
+        domain = self._public_domain('bs.car.model')
         selected = Model.browse(ids[:4]).filtered(
             lambda c: c.exists() and c.website_published and c.active)
-        all_models = Model.search(
-            [('website_published', '=', True), ('active', '=', True)],
-            order='sequence, id')
+        selected = selected.filtered(lambda c: not c.company_id or c.company_id == request.website.company_id)
+        all_models = Model.search(domain, order='sequence, id')
         return request.render('bs_car_booking.car_compare_page', {
             'selected': selected,
             'all_models': all_models,
@@ -107,17 +123,18 @@ class BsCarBookingWebsite(CustomerPortal):
     # ── Editorial stories ──────────────────────────────────────────────
     @http.route('/stories', type='http', auth='public', website=True, sitemap=True)
     def stories_index(self, **kw):
-        stories = request.env['bs.car.story'].sudo()._get_website_stories(limit=24)
+        stories = self._scoped_env('bs.car.story')._get_website_stories(limit=24)
         return request.render('bs_car_booking.story_index_page', {
             'stories': stories,
-            'page_title': 'Stories',
+            'page_title': 'News',
         })
 
     @http.route('/story/<int:story_id>', type='http', auth='public', website=True, sitemap=True)
     def story_detail(self, story_id, **kw):
-        Story = request.env['bs.car.story'].sudo()
+        Story = self._scoped_env('bs.car.story')
         story = Story.browse(story_id)
-        if not story.exists() or not story.active or not story.website_published:
+        if (not story.exists() or not story.active or not story.website_published
+                or (story.company_id and story.company_id != request.website.company_id)):
             return request.not_found()
         stories = Story._get_website_stories(limit=200)
         ordered_ids = list(stories.ids)
@@ -134,13 +151,14 @@ class BsCarBookingWebsite(CustomerPortal):
     # ── Car detail (marketing) ──────────────────────────────────────────
     @http.route('/car/<int:model_id>', type='http', auth='public', website=True, sitemap=True)
     def car_detail(self, model_id, **kw):
-        car = request.env['bs.car.model'].sudo().browse(model_id)
-        if not car.exists() or not car.website_published:
+        car = self._scoped_env('bs.car.model').browse(model_id)
+        if (not car.exists() or not car.website_published
+                or (car.company_id and car.company_id != request.website.company_id)):
             return request.not_found()
-        dealers = request.env['bs.car.dealer'].sudo().search([
+        dealers = self._scoped_env('bs.car.dealer').search([
             ('active', '=', True), ('website_published', '=', True),
             ('brand_ids', 'in', [car.brand_id.id]),
-        ])
+        ] + self._company_domain('bs.car.dealer'))
         variants = car.variant_ids.filtered(lambda v: v.website_published and v.active)
         return request.render('bs_car_booking.car_detail_page', {
             'car': car, 'variants': variants, 'dealers': dealers, 'page_title': car.name,
@@ -151,20 +169,21 @@ class BsCarBookingWebsite(CustomerPortal):
     # ── Configure & start booking ───────────────────────────────────────
     @http.route('/car/<int:model_id>/book', type='http', auth='public', website=True, sitemap=False)
     def booking_form(self, model_id, **kw):
-        car = request.env['bs.car.model'].sudo().browse(model_id)
-        if not car.exists() or not car.website_published:
+        car = self._scoped_env('bs.car.model').browse(model_id)
+        if (not car.exists() or not car.website_published
+                or (car.company_id and car.company_id != request.website.company_id)):
             return request.not_found()
-        if not car.product_tmpl_id:
-            car.sudo().action_generate_product()
-        dealers = request.env['bs.car.dealer'].sudo().search([
+        dealers = self._scoped_env('bs.car.dealer').search([
             ('active', '=', True), ('website_published', '=', True),
             ('brand_ids', 'in', [car.brand_id.id]),
-        ])
+        ] + self._company_domain('bs.car.dealer'))
         tmpl = car.product_tmpl_id.sudo()
         return request.render('bs_car_booking.booking_configurator_page', {
             'car': car,
             'tmpl': tmpl,
-            'attribute_lines': tmpl.valid_product_template_attribute_line_ids,
+            'product_missing': not bool(tmpl),
+            'standard_package_attr': request.env.ref('bs_car_booking.attr_trim', raise_if_not_found=False),
+            'attribute_lines': tmpl.valid_product_template_attribute_line_ids if tmpl else [],
             'dealers': dealers,
             'base_price': car.base_price,
         })
@@ -204,8 +223,11 @@ class BsCarBookingWebsite(CustomerPortal):
         account_partner = user.partner_id if not user._is_public() else False
         # All applicable document types + agreements for both customer types;
         # the form shows/hides each by its `applies_to` as the customer toggles.
-        doc_types = request.env['bs.car.document.type'].sudo().search([])
-        agreements = request.env['bs.car.agreement'].sudo().search([])
+        company_domain = [('company_id', 'in', [False, booking.company_id.id])]
+        doc_types = request.env['bs.car.document.type'].sudo().search(
+            company_domain + [('active', '=', True)])
+        agreements = request.env['bs.car.agreement'].sudo().search(
+            company_domain + [('active', '=', True)])
         ICP = request.env['ir.config_parameter'].sudo()
         try:
             max_doc_mb = max(int(ICP.get_param('bs_car_booking.max_doc_mb', '10')), 1)

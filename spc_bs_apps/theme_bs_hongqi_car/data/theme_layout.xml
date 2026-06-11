@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="brand_fonts" model="theme.ir.ui.view">
+            <field name="name">Hongqi Brand Fonts</field>
+            <field name="key">theme_bs_hongqi_car.brand_fonts</field>
+            <field name="type">qweb</field>
+            <field name="inherit_id" eval="'ir.ui.view,%d' % ref('website.layout')"/>
+            <field name="arch" type="xml">
+                <xpath expr="//head" position="inside">
+                    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
+                    <link rel="stylesheet"
+                          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&amp;family=Jost:wght@300;400;500;600;700&amp;display=swap"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="template_header_hongqi" model="theme.ir.ui.view">
+            <field name="name">Hongqi Brand Header</field>
+            <field name="key">theme_bs_hongqi_car.template_header_hongqi</field>
+            <field name="type">qweb</field>
+            <field name="priority">999</field>
+            <field name="inherit_id" eval="'ir.ui.view,%d' % ref('website.layout')"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@id='wrapwrap']" position="attributes">
+                    <attribute name="t-attf-class" add="#{'o_header_overlay' if bs_hero_overlay else ''}" separator=" "/>
+                </xpath>
+                <xpath expr="//header" position="replace">
+                    <header id="top" data-anchor="true" data-name="Header"
+                            class="o_header_standard bs_brand_header">
+                        <t t-call="website.navbar">
+                            <t t-set="_navbar_classes" t-valuef="d-none d-lg-block"/>
+                            <div id="o_main_nav" t-attf-class="o_main_nav #{header_content_width or 'container'} bs_brand_nav">
+                                <span class="bs_brand_spacer" aria-hidden="true"/>
+                                <div class="bs_brand_center">
+                                    <t t-call="website.placeholder_header_brand" _link_class.f="bs_brand_logo"/>
+                                    <t t-call="website.navbar_nav" _nav_class.f="bs_brand_links">
+                                        <t t-foreach="website.menu_id.child_id" t-as="submenu">
+                                            <t t-call="website.submenu"
+                                               item_class.f="nav-item" link_class.f="nav-link"/>
+                                        </t>
+                                    </t>
+                                </div>
+                                <ul class="navbar-nav bs_brand_account">
+                                    <t t-call="website.placeholder_header_language_selector">
+                                        <t t-set="_btn_class" t-valuef="nav-link"/>
+                                        <t t-set="_dropdown_menu_class" t-valuef="dropdown-menu-end"/>
+                                    </t>
+                                    <t t-call="portal.placeholder_user_sign_in">
+                                        <t t-set="_link_class" t-valuef="nav-link bs_brand_signin"/>
+                                    </t>
+                                    <t t-call="portal.user_dropdown">
+                                        <t t-set="_user_name" t-value="True"/>
+                                        <t t-set="_item_class" t-valuef="dropdown"/>
+                                        <t t-set="_link_class" t-valuef="nav-link"/>
+                                        <t t-set="_dropdown_menu_class" t-valuef="dropdown-menu-end"/>
+                                    </t>
+                                </ul>
+                            </div>
+                        </t>
+                        <t t-call="website.template_header_mobile"/>
+                    </header>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="template_footer_hongqi" model="theme.ir.ui.view">
+            <field name="name">Hongqi Brand Footer</field>
+            <field name="key">theme_bs_hongqi_car.template_footer_hongqi</field>
+            <field name="type">qweb</field>
+            <field name="priority">999</field>
+            <field name="inherit_id" eval="'ir.ui.view,%d' % ref('website.layout')"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@id='footer']" position="replace">
+                    <div id="footer" class="bs_footer_wrap" t-ignore="true" t-if="not no_footer">
+                        <div class="container bs_footer">
+                            <div class="bs_footer_grid">
+                                <div class="bs_footer_brand">
+                                    <img src="/theme_bs_hongqi_car/static/src/img/brand/hongqi_metro_white.png"
+                                         alt="Hongqi Metro Group" loading="lazy"/>
+                                </div>
+                                <div class="bs_footer_addr">
+                                    <h5>HONGQI THAILAND</h5>
+                                    <p>539/2, Gypsum Metropolitan, Floor 24B,<br/>
+                                       Si Ayutthaya, Thanon Phaya Thai,<br/>
+                                       Ratchathewi, Bangkok 10400</p>
+                                </div>
+                                <div class="bs_footer_social">
+                                    <a href="/website/social/facebook" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa fa-facebook"/></a>
+                                    <a href="/website/social/instagram" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa fa-instagram"/></a>
+                                    <a href="/website/social/youtube" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa fa-youtube-play"/></a>
+                                </div>
+                            </div>
+                            <div class="bs_footer_base">
+                                <span class="bs_footer_copy">© 2026 Hongqi Thailand · Metro Group. All rights reserved.</span>
+                                <span class="bs_footer_links">
+                                    <a href="/privacy">Privacy Statement</a>
+                                    <a href="/contactus">Contact Us</a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+                <xpath expr="//div[hasclass('o_footer_copyright')]" position="attributes">
+                    <attribute name="class" add="d-none" separator=" "/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

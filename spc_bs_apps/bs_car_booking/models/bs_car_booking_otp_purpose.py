@@ -25,9 +25,10 @@ class BsCarBookingOtpPurpose(models.Model):
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [
-        ('code_uniq', 'unique(code)', 'Purpose code must be unique.'),
-    ]
+    _code_uniq = models.Constraint(
+        'UNIQUE(code)',
+        'Purpose code must be unique.',
+    )
 
     @api.constrains('sms_fallback_body')
     def _check_fallback_placeholder(self):

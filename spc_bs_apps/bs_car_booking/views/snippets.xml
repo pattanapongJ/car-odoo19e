@@ -26,7 +26,7 @@
             <div t-attf-class="bs_hero_embed {{ hero_class }}">
                 <iframe t-att-src="car.hero_embed_url" frameborder="0" loading="eager" title="Hero video"
                         tabindex="-1" aria-hidden="true"
-                        allow="autoplay; fullscreen; picture-in-picture"/>
+                        allow="autoplay; fullscreen"/>
             </div>
         </t>
         <t t-elif="car.image">
@@ -39,27 +39,243 @@
     </template>
 
     <!-- ================================================================
+         BRAND COVER — generic dealer homepage cover.
+         Data source: bs.car.website.section(section_type='brand_cover').
+         Themes own the visual treatment; this template owns the data contract.
+         ================================================================ -->
+    <template id="brand_cover_content" name="Brand Cover (content)">
+        <t t-set="section" t-value="brand_cover_section or env['bs.car.website.section'].sudo()._get_brand_cover()"/>
+        <t t-if="section">
+            <div t-attf-class="car_showroom_hero bs_brand_cover #{section.theme_variant or ''}">
+                <t t-if="section.video_src">
+                    <video t-attf-class="car_showroom_hero_img bs_hero_video #{section.mobile_video_src and 'bs_hero_video_desktop' or ''}"
+                           autoplay="autoplay" muted="muted" loop="loop"
+                           playsinline="playsinline" preload="metadata"
+                           disablepictureinpicture="disablepictureinpicture"
+                           t-att-poster="section.image and '/web/image/bs.car.website.section/%s/image/1920x1080' % section.id or None">
+                        <source t-att-src="section.video_src"/>
+                    </video>
+                    <video t-if="section.mobile_video_src"
+                           class="car_showroom_hero_img bs_hero_video bs_hero_video_mobile"
+                           autoplay="autoplay" muted="muted" loop="loop"
+                           playsinline="playsinline" preload="metadata"
+                           disablepictureinpicture="disablepictureinpicture"
+                           t-att-poster="section.image and '/web/image/bs.car.website.section/%s/image/1200x1600' % section.id or None">
+                        <source t-att-src="section.mobile_video_src"/>
+                    </video>
+                </t>
+                <t t-elif="section.video_embed_url">
+                    <div class="bs_hero_embed" aria-hidden="true">
+                        <iframe t-att-src="section.video_embed_url"
+                                title="Brand video"
+                                allow="autoplay; fullscreen"
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                loading="eager"/>
+                    </div>
+                </t>
+                <t t-if="not section.video_src and section.image">
+                    <img t-attf-class="#{section.video_embed_url and 'bs_hero_poster' or 'car_showroom_hero_img'}"
+                         t-att-src="'/web/image/bs.car.website.section/%s/image/1920x1080' % section.id"
+                         t-att-alt="section.image_alt or section.title"/>
+                </t>
+                <t t-elif="not section.video_src and section.brand_id and section.brand_id.heritage_image">
+                    <img t-attf-class="#{section.video_embed_url and 'bs_hero_poster' or 'car_showroom_hero_img'}"
+                         t-att-src="'/web/image/bs.car.brand/%s/heritage_image/1920x1080' % section.brand_id.id"
+                         t-att-alt="section.image_alt or section.brand_id.name"/>
+                </t>
+                <t t-elif="not section.video_src and section.model_id and section.model_id.image">
+                    <img t-attf-class="#{section.video_embed_url and 'bs_hero_poster' or 'car_showroom_hero_img'}"
+                         t-att-src="'/web/image/bs.car.model/%s/image/1920x1080' % section.model_id.id"
+                         t-att-alt="section.image_alt or section.model_id.name"/>
+                </t>
+                <div t-if="not section.video_src and not section.video_embed_url and not section.image and not (section.brand_id and section.brand_id.heritage_image) and not (section.model_id and section.model_id.image)"
+                     class="car_showroom_hero_fallback"/>
+                <div class="car_showroom_scrim"/>
+                <div class="container car_showroom_content" data-bs-car-reveal="hero">
+                    <div class="car_showroom_copy">
+                        <span t-if="section.eyebrow or section.brand_id" class="car_kicker">
+                            <t t-esc="section.eyebrow or section.brand_id.name"/>
+                        </span>
+                        <t t-if="section.title_image">
+                            <h1 class="visually-hidden" t-esc="section.title"/>
+                            <img class="car_hero_title_img"
+                                 t-att-src="'/web/image/bs.car.website.section/%s/title_image/1600x440' % section.id"
+                                 t-att-alt="section.title_image_alt or section.title"/>
+                        </t>
+                        <h1 t-else="" class="car_hero_title" t-esc="section.title"/>
+                        <p t-if="section.subtitle" class="car_hero_subtitle" t-esc="section.subtitle"/>
+                        <div t-if="section.body_html" class="car_hero_subtitle" t-out="section.body_html"/>
+                        <div class="car_showroom_actions"
+                             t-if="section.primary_cta_url or section.secondary_cta_url">
+                            <a t-if="section.primary_cta_url"
+                               t-att-href="section.primary_cta_url"
+                               class="btn btn-primary car_cta_btn">
+                                <t t-esc="section.primary_cta_label or 'Explore'"/>
+                                <i class="fa fa-arrow-right"/>
+                            </a>
+                            <a t-if="section.secondary_cta_url"
+                               t-att-href="section.secondary_cta_url"
+                               class="btn btn-outline-light car_ghost_btn">
+                                <t t-esc="section.secondary_cta_label or 'Learn more'"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div t-if="section.theme_variant in ('fullscreen', 'hongqi_heritage')" class="car_showroom_scroll">
+                    <span class="car_showroom_scroll_line"/>
+                    <span class="car_showroom_scroll_text">Scroll</span>
+                </div>
+            </div>
+        </t>
+        <div t-else="" class="bs_featured_empty alert alert-info text-center">
+            Create a published Brand Cover in Website Sections to populate this block.
+        </div>
+    </template>
+
+    <template id="s_bs_brand_cover" name="Brand Cover">
+        <section class="s_bs_brand_cover" data-snippet="s_bs_brand_cover" data-name="Brand Cover">
+            <t t-set="brand_cover_section" t-value="False"/>
+            <t t-call="bs_car_booking.brand_cover_content"/>
+        </section>
+    </template>
+
+    <!-- ================================================================
+         HOME SECTIONS — canonical data-driven home renderer.
+         Data source: bs.car.website.section ordered by sequence.
+         ================================================================ -->
+    <template id="home_sections_content" name="Home Sections (content)">
+        <t t-set="sections" t-value="env['bs.car.website.section'].sudo()._get_home_sections()"/>
+        <t t-foreach="sections" t-as="section">
+            <t t-set="featured_car" t-value="section._section_model()"/>
+
+            <t t-if="section.section_type == 'brand_cover'">
+                <t t-set="brand_cover_section" t-value="section"/>
+                <t t-call="bs_car_booking.brand_cover_content"/>
+            </t>
+
+            <section t-if="section.section_type == 'featured_model'"
+                     class="s_bs_featured_model" data-snippet="s_bs_featured_model" data-name="Featured Car">
+                <t t-set="featured_model_section" t-value="section"/>
+                <t t-call="bs_car_booking.featured_model_content"/>
+            </section>
+            <section t-if="section.section_type == 'model_stage'"
+                     class="s_bs_model_stage" data-snippet="s_bs_model_stage" data-name="Model Stage">
+                <t t-set="model_stage_section" t-value="section"/>
+                <t t-call="bs_car_booking.model_stage_content"/>
+            </section>
+            <section t-if="section.section_type == 'color_studio'"
+                     class="s_bs_color_studio car_catalog_band" data-snippet="s_bs_color_studio" data-name="Colour Studio">
+                <t t-set="color_studio_section" t-value="section"/>
+                <t t-call="bs_car_booking.color_studio_content"/>
+            </section>
+            <section t-if="section.section_type == 'heritage'"
+                     class="s_bs_heritage" data-snippet="s_bs_heritage" data-name="Brand Heritage">
+                <t t-call="bs_car_booking.heritage_content"/>
+            </section>
+            <section t-if="section.section_type == 'model_specs'"
+                     class="s_bs_model_specs o_cc o_cc5 o_colored_level"
+                     data-snippet="s_bs_model_specs" data-name="Model Specifications"
+                     data-oe-shape-data='{"shape":"html_builder/Floats/10","colors":{"c1":"#000000","c2":"#c0392b","c3":"#f1f2f4","c5":"#1d1f25"},"flip":[],"showOnMobile":false,"shapeAnimationSpeed":"0.1"}'>
+                <t t-set="model_specs_section" t-value="section"/>
+                <t t-call="bs_car_booking.model_specs_content"/>
+            </section>
+            <section t-if="section.section_type == 'highlights'"
+                     class="s_bs_highlights car_catalog_band" data-snippet="s_bs_highlights" data-name="Highlights">
+                <t t-set="highlights_section" t-value="section"/>
+                <t t-call="bs_car_booking.highlights_content"/>
+            </section>
+            <section t-if="section.section_type == 'cabin_story'"
+                     class="s_bs_cabin_story" data-snippet="s_bs_cabin_story" data-name="Cabin Story">
+                <t t-set="cabin_story_section" t-value="section"/>
+                <t t-call="bs_car_booking.cabin_story_content"/>
+            </section>
+            <section t-if="section.section_type == 'latest_arrivals'"
+                     class="s_bs_arrivals car_catalog_band" data-snippet="s_bs_arrivals" data-name="Latest Arrivals">
+                <t t-call="bs_car_booking.latest_arrivals_content"/>
+            </section>
+            <section t-if="section.section_type == 'offers'"
+                     class="s_bs_offers car_catalog_band" data-snippet="s_bs_offers" data-name="Offers &amp; Promotions">
+                <t t-call="bs_car_booking.offers_content"/>
+            </section>
+            <section t-if="section.section_type == 'stories'"
+                     class="s_bs_stories car_catalog_band" data-snippet="s_bs_stories" data-name="Latest News">
+                <t t-call="bs_car_booking.stories_content"/>
+            </section>
+            <section t-if="section.section_type == 'dealer_locator'"
+                     class="s_bs_dealers car_catalog_band" data-snippet="s_bs_dealers" data-name="Dealer Locator">
+                <t t-call="bs_car_booking.dealer_locator_content"/>
+            </section>
+        </t>
+    </template>
+
+    <!-- ================================================================
          FEATURED MODEL — data-driven content block.
          Self-fetches the featured car so it stays in sync with the catalog;
          reused by the home page template and the drag-drop snippet.
          ================================================================ -->
     <template id="featured_model_content" name="Featured Model (content)">
-        <t t-set="car" t-value="featured_car or request.env['bs.car.model'].sudo()._get_website_featured()"/>
+        <t t-set="section" t-value="featured_model_section or False"/>
+        <t t-set="car" t-value="featured_car or (section and section._section_model()) or env['bs.car.model'].sudo()._get_website_featured()"/>
         <t t-if="car">
             <div class="bs_featured o_cc o_cc5">
                 <div class="bs_featured_media">
-                    <t t-call="bs_car_booking.hero_media">
-                        <t t-set="hero_class" t-value="'bs_featured_img'"/>
-                        <t t-set="fallback_class" t-value="'bs_featured_fallback'"/>
-                        <t t-set="img_w" t-value="'1600x900'"/>
+                    <t t-if="section and section.video_src">
+                        <video t-attf-class="bs_featured_img bs_hero_video #{section.mobile_video_src and 'bs_hero_video_desktop' or ''}"
+                               autoplay="autoplay" muted="muted" loop="loop"
+                               playsinline="playsinline" preload="metadata"
+                               disablepictureinpicture="disablepictureinpicture"
+                               t-att-poster="section.image and '/web/image/bs.car.website.section/%s/image/1600x900' % section.id or None">
+                            <source t-att-src="section.video_src"/>
+                        </video>
+                        <video t-if="section.mobile_video_src"
+                               class="bs_featured_img bs_hero_video bs_hero_video_mobile"
+                               autoplay="autoplay" muted="muted" loop="loop"
+                               playsinline="playsinline" preload="metadata"
+                               disablepictureinpicture="disablepictureinpicture"
+                               t-att-poster="section.image and '/web/image/bs.car.website.section/%s/image/1200x1600' % section.id or None">
+                            <source t-att-src="section.mobile_video_src"/>
+                        </video>
+                    </t>
+                    <t t-elif="section and section.video_embed_url">
+                        <div class="bs_hero_embed" aria-hidden="true">
+                            <iframe t-att-src="section.video_embed_url"
+                                    title="Featured model video"
+                                    allow="autoplay; fullscreen"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    loading="eager"/>
+                        </div>
+                        <img t-if="section.image"
+                             class="bs_featured_img bs_hero_poster"
+                             t-att-src="'/web/image/bs.car.website.section/%s/image/1600x900' % section.id"
+                             t-att-alt="section.image_alt or section.title or car.name"/>
+                    </t>
+                    <t t-elif="section and section.image">
+                        <img class="bs_featured_img"
+                             t-att-src="'/web/image/bs.car.website.section/%s/image/1600x900' % section.id"
+                             t-att-alt="section.image_alt or section.title or car.name"/>
+                    </t>
+                    <t t-else="">
+                        <t t-call="bs_car_booking.hero_media">
+                            <t t-set="hero_class" t-value="'bs_featured_img'"/>
+                            <t t-set="fallback_class" t-value="'bs_featured_fallback'"/>
+                            <t t-set="img_w" t-value="'1600x900'"/>
+                        </t>
                     </t>
                 </div>
                 <div class="bs_featured_scrim"/>
                 <div class="container bs_featured_copy">
-                    <span class="car_kicker">Featured Model</span>
-                    <h2 class="bs_featured_title">
-                        <t t-esc="car.brand_id.name"/> <t t-esc="car.name"/>
+                    <span class="car_kicker" t-esc="(section and section.eyebrow) or 'Featured Model'"/>
+                    <t t-if="section and section.title_image">
+                        <h2 class="visually-hidden" t-esc="section.title or car.name"/>
+                        <img class="bs_featured_title_img"
+                             t-att-src="'/web/image/bs.car.website.section/%s/title_image/1200x360' % section.id"
+                             t-att-alt="section.title_image_alt or section.title or car.name"/>
+                    </t>
+                    <h2 t-else="" class="bs_featured_title">
+                        <t t-esc="(section and section.title) or '%s %s' % (car.brand_id.name, car.name)"/>
                     </h2>
+                    <p t-if="section and section.subtitle" class="bs_featured_subtitle" t-esc="section.subtitle"/>
+                    <div t-if="section and section.body_html" class="bs_featured_subtitle" t-out="section.body_html"/>
                     <t t-set="hl" t-value="car.spec_ids.filtered('is_highlight')[:4]"/>
                     <div t-if="hl" class="bs_featured_specs">
                         <div class="bs_featured_spec" t-foreach="hl" t-as="sp">
@@ -68,11 +284,15 @@
                         </div>
                     </div>
                     <div class="bs_featured_actions">
-                        <a t-att-href="'/car/%s' % car.id" class="btn btn-primary car_cta_btn">
-                            Discover <i class="fa fa-arrow-right"/>
+                        <a t-att-href="(section and section.primary_cta_url) or '/car/%s' % car.id"
+                           class="btn btn-primary car_cta_btn">
+                            <t t-esc="(section and section.primary_cta_label) or 'Discover'"/>
+                            <i class="fa fa-arrow-right"/>
                         </a>
-                        <a t-att-href="'/car/%s/book' % car.id" class="btn btn-outline-light car_ghost_btn">
-                            Configure
+                        <a t-if="not section or section.secondary_cta_url or section.secondary_cta_label"
+                           t-att-href="(section and section.secondary_cta_url) or '/car/%s/book' % car.id"
+                           class="btn btn-outline-light car_ghost_btn">
+                            <t t-esc="(section and section.secondary_cta_label) or 'Configure'"/>
                         </a>
                     </div>
                 </div>
@@ -88,71 +308,8 @@
     <template id="s_bs_featured_model" name="Featured Car">
         <section class="s_bs_featured_model" data-snippet="s_bs_featured_model" data-name="Featured Car">
             <t t-set="featured_car" t-value="False"/>
+            <t t-set="featured_model_section" t-value="False"/>
             <t t-call="bs_car_booking.featured_model_content"/>
-        </section>
-    </template>
-
-    <!-- ================================================================
-         MODEL GALLERY SLIDER — Bootstrap carousel from the featured model's
-         gallery images (backend-driven; no hardcoded attachment ids).
-         ================================================================ -->
-    <template id="model_gallery_content" name="Model Gallery (content)">
-        <t t-set="car" t-value="featured_car or request.env['bs.car.model'].sudo()._get_website_featured()"/>
-        <t t-if="car and car.gallery_image_ids">
-            <t t-set="gimgs" t-value="car.gallery_image_ids"/>
-            <div class="container bs_gallery">
-                <div class="section_header_center">
-                    <span class="car_kicker car_kicker_dark">Gallery</span>
-                    <h2 class="section_title"><t t-esc="car.name"/> in detail</h2>
-                </div>
-                <div t-attf-id="bsGal{{ car.id }}" class="carousel slide carousel-fade bs_model_slider"
-                     data-bs-ride="carousel" data-bs-interval="5500" data-bs-pause="hover">
-                    <div class="carousel-inner">
-                        <div t-foreach="gimgs" t-as="img"
-                             t-attf-class="carousel-item #{img_index == 0 and 'active' or ''}">
-                            <div class="bs_slide_media">
-                                <img t-att-alt="img.name or car.name"
-                                     t-att-src="'/web/image/bs.car.model.image/%s/image/1920x1080' % img.id"
-                                     t-att-data-bs-full="'/web/image/bs.car.model.image/%s/image/1920x1080' % img.id"/>
-                            </div>
-                            <div class="bs_slide_scrim"/>
-                            <div class="bs_slide_caption">
-                                <span class="bs_slide_count">
-                                    <t t-esc="'%02d' % (img_index + 1)"/><span class="bs_slide_total">&#160;/&#160;<t t-esc="'%02d' % len(gimgs)"/></span>
-                                </span>
-                                <h3 t-if="img.name" class="bs_slide_title" t-esc="img.name"/>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev bs_slide_ctrl" type="button"
-                            t-attf-data-bs-target="#bsGal{{ car.id }}" data-bs-slide="prev" aria-label="Previous">
-                        <i class="fa fa-angle-left"/>
-                    </button>
-                    <button class="carousel-control-next bs_slide_ctrl" type="button"
-                            t-attf-data-bs-target="#bsGal{{ car.id }}" data-bs-slide="next" aria-label="Next">
-                        <i class="fa fa-angle-right"/>
-                    </button>
-                    <div class="carousel-indicators bs_slider_thumbs">
-                        <button t-foreach="gimgs" t-as="img" type="button"
-                                t-attf-data-bs-target="#bsGal{{ car.id }}"
-                                t-att-data-bs-slide-to="str(img_index)"
-                                t-attf-class="#{img_index == 0 and 'active' or ''}"
-                                t-att-aria-label="img.name or car.name">
-                            <img t-att-src="'/web/image/bs.car.model.image/%s/image/220x132' % img.id"
-                                 t-att-alt="img.name or car.name" loading="lazy"/>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </t>
-        <div t-else="" class="bs_featured_empty alert alert-info text-center">
-            Add gallery images to the featured car model to populate this slider.
-        </div>
-    </template>
-    <template id="s_bs_model_gallery" name="Model Gallery">
-        <section class="s_bs_model_gallery" data-snippet="s_bs_model_gallery" data-name="Model Gallery">
-            <t t-set="featured_car" t-value="False"/>
-            <t t-call="bs_car_booking.model_gallery_content"/>
         </section>
     </template>
 
@@ -161,21 +318,27 @@
          "E-HS9 Specifications" block) from the featured model's spec_ids.
          ================================================================ -->
     <template id="model_specs_content" name="Model Specs (content)">
-        <t t-set="car" t-value="featured_car or request.env['bs.car.model'].sudo()._get_website_featured()"/>
+        <t t-set="section" t-value="model_specs_section or False"/>
+        <t t-set="car" t-value="featured_car or (section and section._section_model()) or env['bs.car.model'].sudo()._get_website_featured()"/>
         <t t-if="car and car.spec_ids">
+            <div class="o_we_shape o_html_builder_Floats_10 bs_specs_shape"
+                 style="background-image: url('/html_editor/shape/html_builder%2FFloats%2F10.svg?c1=%23000000&amp;c2=%23c0392b&amp;c3=%23f1f2f4&amp;c5=%231d1f25&amp;shapeAnimationSpeed=0.1');"/>
             <div class="container bs_specs">
                 <div class="bs_specs_title">
                     <span class="bs_specs_line"/>
-                    <h2><t t-esc="car.name"/> Specifications</h2>
+                    <h2>
+                        <t t-esc="(section and section.title) or '%s Specifications' % car.name"/>
+                    </h2>
                     <span class="bs_specs_line"/>
                 </div>
+                <p t-if="section and section.subtitle" class="bs_specs_subtitle" t-esc="section.subtitle"/>
                 <div class="bs_specs_grid">
-                    <div class="bs_spec_cell" t-foreach="car.spec_ids" t-as="sp">
+                    <div class="bs_spec_cell" t-foreach="car.spec_ids.sorted('sequence')" t-as="sp">
                         <div class="bs_spec_lbl">
-                            <t t-esc="sp.name"/><t t-if="sp.unit"> [<t t-esc="sp.unit"/>]</t>
+                            <t t-esc="sp.name"/>
                         </div>
                         <div t-attf-class="bs_spec_val #{sp.is_highlight and 'is-gold' or ''}"
-                             t-esc="sp.value"/>
+                             t-esc="sp.display_value"/>
                     </div>
                 </div>
             </div>
@@ -185,9 +348,11 @@
         </div>
     </template>
     <template id="s_bs_model_specs" name="Model Specifications">
-        <section class="s_bs_model_specs o_cc o_cc5 o_colored_level pt48 pb48"
-                 data-snippet="s_bs_model_specs" data-name="Model Specifications">
+        <section class="s_bs_model_specs o_cc o_cc5 o_colored_level"
+                 data-snippet="s_bs_model_specs" data-name="Model Specifications"
+                 data-oe-shape-data='{"shape":"html_builder/Floats/10","colors":{"c1":"#000000","c2":"#c0392b","c3":"#f1f2f4","c5":"#1d1f25"},"flip":[],"showOnMobile":false,"shapeAnimationSpeed":"0.1"}'>
             <t t-set="featured_car" t-value="False"/>
+            <t t-set="model_specs_section" t-value="False"/>
             <t t-call="bs_car_booking.model_specs_content"/>
         </section>
     </template>
@@ -196,43 +361,61 @@
          DEALER LOCATOR — showrooms from bs.car.dealer (uses lat/long for
          "Get directions"). Plus AutoDealer JSON-LD for SEO.
          ================================================================ -->
+    <!-- Callers may pre-set `dealers` (e.g. the car detail page passes the
+         brand's dealers) and override the heading via locator_kicker/
+         locator_title; the home section self-fetches every published dealer. -->
     <template id="dealer_locator_content" name="Dealer Locator (content)">
-        <t t-set="dealers" t-value="request.env['bs.car.dealer'].sudo().search(
-            [('active', '=', True), ('website_published', '=', True)], order='sequence, id')"/>
+        <t t-set="current_website" t-value="env['website'].get_current_website()"/>
+        <t t-set="dealers" t-value="dealers or env['bs.car.dealer'].sudo().with_context(website_id=current_website.id).search(
+            [('active', '=', True), ('website_published', '=', True), ('company_id', 'in', [False, current_website.company_id.id])], order='sequence, id')"/>
         <t t-if="dealers">
             <div class="container bs_dealers">
                 <div class="section_header_center">
-                    <span class="car_kicker car_kicker_dark">Our showrooms</span>
-                    <h2 class="section_title">Find a dealer near you</h2>
+                    <span class="car_kicker car_kicker_dark" t-esc="locator_kicker or 'Our showrooms'"/>
+                    <h2 class="section_title" t-esc="locator_title or 'Find a dealer near you'"/>
                 </div>
-                <div class="bs_dealer_grid">
-                    <div class="bs_dealer_card" t-foreach="dealers" t-as="d">
-                        <img t-if="d.image" class="bs_dealer_img" t-att-alt="d.name"
-                             t-att-src="'/web/image/bs.car.dealer/%s/image/600x360' % d.id" loading="lazy"/>
-                        <div class="bs_dealer_body">
-                            <h4 t-esc="d.name"/>
+                <div class="bs_dealers_locator">
+                    <div class="bs_dealers_mapwrap">
+                        <iframe t-if="dealers[0].map_embed_url" class="bs_dealers_map"
+                                t-att-src="dealers[0].map_embed_url"
+                                title="Showroom location" loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                allowfullscreen="allowfullscreen"/>
+                        <div class="bs_dealers_map_filter" aria-hidden="true"/>
+                    </div>
+                    <div class="bs_dealers_list" role="list">
+                        <div t-foreach="dealers" t-as="d" role="listitem"
+                             t-attf-class="bs_dealer_card#{d_first and ' is_active' or ''}"
+                             t-att-data-map-src="d.map_embed_url"
+                             tabindex="0" t-att-aria-label="d.name">
+                            <div class="bs_dealer_card_head">
+                                <h4 class="bs_dealer_name" t-esc="d.name"/>
+                                <span t-if="d.city" class="bs_dealer_city" t-esc="d.city"/>
+                            </div>
                             <div class="bs_dealer_meta">
-                                <div t-if="d.street or d.city">
+                                <div t-if="d.street or d.city" class="bs_dealer_line">
                                     <i class="fa fa-map-marker"/>
-                                    <t t-esc="d.street"/><t t-if="d.city">, <t t-esc="d.city"/></t>
+                                    <span><t t-esc="d.street"/><t t-if="d.street and d.city">, </t><t t-esc="d.city"/></span>
                                 </div>
-                                <div t-if="d.phone">
+                                <div t-if="d.phone" class="bs_dealer_line">
                                     <i class="fa fa-phone"/>
                                     <a t-attf-href="tel:{{ d.phone }}" t-esc="d.phone"/>
                                 </div>
-                                <div t-if="d.opening_hours" class="bs_dealer_hours" t-esc="d.opening_hours"/>
+                                <div t-if="d.opening_hours" class="bs_dealer_line bs_dealer_hours">
+                                    <i class="fa fa-clock-o"/>
+                                    <span t-esc="d.opening_hours"/>
+                                </div>
                             </div>
-                            <a t-if="d.maps_query" class="btn btn-outline-secondary btn-sm"
-                               target="_blank" rel="noopener"
-                               t-attf-href="https://www.google.com/maps/search/?api=1&amp;query={{ d.maps_query }}">
-                                <i class="fa fa-location-arrow"/> Get directions
+                            <a t-if="d.directions_url" class="bs_dealer_directions"
+                               target="_blank" rel="noopener" t-att-href="d.directions_url">
+                                <i class="fa fa-location-arrow"/> Directions
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
             <script type="application/ld+json"
-                    t-out="request.env['bs.car.dealer'].sudo()._website_autodealer_jsonld()"/>
+                    t-out="env['bs.car.dealer'].sudo()._website_autodealer_jsonld()"/>
         </t>
         <div t-else="" class="bs_featured_empty alert alert-info text-center">
             Publish a dealer/showroom to populate this section.
@@ -245,73 +428,11 @@
     </template>
 
     <!-- ================================================================
-         FINANCE CALCULATOR — interactive monthly-payment estimate from the
-         model price. APR/term defaults are config params (data-driven).
-         ================================================================ -->
-    <template id="finance_calculator_content" name="Finance Calculator (content)">
-        <t t-set="car" t-value="featured_car or request.env['bs.car.model'].sudo()._get_website_featured()"/>
-        <t t-if="car">
-            <t t-set="ICP" t-value="request.env['ir.config_parameter'].sudo()"/>
-            <t t-set="price" t-value="car.base_price or 0.0"/>
-            <div class="container bs_finance"
-                 t-att-data-apr="ICP.get_param('bs_car_booking.finance_apr', '3.5')"
-                 t-att-data-term="ICP.get_param('bs_car_booking.finance_term', '60')"
-                 t-att-data-currency="car.currency_id.symbol or ''">
-                <div class="section_header_center">
-                    <span class="car_kicker car_kicker_dark">Finance</span>
-                    <h2 class="section_title">Estimate your monthly payment</h2>
-                </div>
-                <div class="bs_finance_card">
-                    <div class="bs_finance_inputs">
-                        <label>Vehicle price
-                            <input type="number" min="0" class="form-control bs_fin_price" t-att-value="price"/>
-                        </label>
-                        <label>Down payment
-                            <input type="number" min="0" class="form-control bs_fin_down"
-                                   t-att-value="car.deposit_amount or round(price * 0.2)"/>
-                        </label>
-                        <label>Term (months)
-                            <select class="form-select bs_fin_term">
-                                <option value="12">12</option>
-                                <option value="24">24</option>
-                                <option value="36">36</option>
-                                <option value="48">48</option>
-                                <option value="60">60</option>
-                                <option value="72">72</option>
-                            </select>
-                        </label>
-                        <label>Interest rate (APR %)
-                            <input type="number" step="0.1" min="0" class="form-control bs_fin_apr"/>
-                        </label>
-                    </div>
-                    <div class="bs_finance_result">
-                        <span class="bs_fin_label">Estimated monthly</span>
-                        <span class="bs_fin_monthly">—</span>
-                        <small class="bs_fin_note">
-                            Indicative only — excludes taxes &amp; fees.
-                            <a t-att-href="'/car/%s/book' % car.id">Reserve this car</a>
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </t>
-        <div t-else="" class="bs_featured_empty alert alert-info text-center">
-            Set a featured car model to show the finance calculator.
-        </div>
-    </template>
-    <template id="s_bs_finance" name="Finance Calculator">
-        <section class="s_bs_finance car_catalog_band" data-snippet="s_bs_finance" data-name="Finance Calculator">
-            <t t-set="featured_car" t-value="False"/>
-            <t t-call="bs_car_booking.finance_calculator_content"/>
-        </section>
-    </template>
-
-    <!-- ================================================================
          OFFERS & PROMOTIONS — time-boxed campaign cards from bs.car.offer.
          Only offers within their validity window are shown (date-driven).
          ================================================================ -->
     <template id="offers_content" name="Offers (content)">
-        <t t-set="offers" t-value="request.env['bs.car.offer'].sudo()._get_active_offers(
+        <t t-set="offers" t-value="env['bs.car.offer'].sudo()._get_active_offers(
             model_id=featured_car and featured_car.id or None)"/>
         <t t-if="offers">
             <div class="container bs_offers">
@@ -361,7 +482,7 @@
          Data-driven from the featured bs.car.brand (heritage_* fields).
          ================================================================ -->
     <template id="heritage_content" name="Brand Heritage (content)">
-        <t t-set="brand" t-value="request.env['bs.car.brand'].sudo()._get_website_featured()"/>
+        <t t-set="brand" t-value="env['bs.car.brand'].sudo()._get_website_featured()"/>
         <t t-if="brand">
             <div class="bs_heritage">
                 <div t-if="brand.heritage_image" class="bs_heritage_media">
@@ -392,90 +513,13 @@
         </section>
     </template>
 
-    <!-- ================================================================
-         BROWSE TILES — entry points into the filtered /cars listing:
-         body-type tiles (data-driven) + price-band chips (config thresholds).
-         ================================================================ -->
-    <template id="browse_tiles_content" name="Browse Tiles (content)">
-        <t t-set="facets" t-value="request.env['bs.car.model'].sudo()._get_browse_facets()"/>
-        <t t-if="facets['body'] or facets['price']">
-            <div class="container bs_browse">
-                <div class="section_header_center">
-                    <span class="car_kicker car_kicker_dark">Find your fit</span>
-                    <h2 class="section_title">Browse the range</h2>
-                </div>
-                <div t-if="facets['body']" class="bs_browse_grid">
-                    <a t-foreach="facets['body']" t-as="f" t-att-href="'/cars?body_type=%s' % f['key']"
-                       class="bs_browse_tile">
-                        <img t-if="f['model_id']" loading="lazy" t-att-alt="f['label']"
-                             t-att-src="'/web/image/bs.car.model/%s/image/600x400' % f['model_id']"/>
-                        <div t-else="" class="bs_browse_tile_fallback"/>
-                        <div class="bs_browse_tile_scrim"/>
-                        <div class="bs_browse_tile_body">
-                            <span class="bs_browse_label" t-esc="f['label']"/>
-                            <span class="bs_browse_count"><t t-esc="f['count']"/> models</span>
-                        </div>
-                    </a>
-                </div>
-                <div t-if="facets['price']" class="bs_browse_chips">
-                    <span class="bs_browse_chips_label">By price</span>
-                    <a t-foreach="facets['price']" t-as="pb" t-att-href="pb['url']" class="bs_browse_chip">
-                        <t t-esc="pb['label']"/>
-                        <span class="bs_browse_chip_count" t-esc="pb['count']"/>
-                    </a>
-                </div>
-            </div>
-        </t>
-        <div t-else="" class="bs_featured_empty alert alert-info text-center">
-            Publish car models with a body type to populate the browse tiles.
-        </div>
-    </template>
-    <template id="s_bs_browse" name="Browse Tiles">
-        <section class="s_bs_browse car_catalog_band" data-snippet="s_bs_browse" data-name="Browse Tiles">
-            <t t-call="bs_car_booking.browse_tiles_content"/>
-        </section>
-    </template>
-
-    <!-- ================================================================
-         STATS STRIP — big-number band. Each stat is manual or computed live
-         (model/dealer/booking counts, max range). The numbers count up via the
-         existing ShowroomMotion interaction (data-bs-count-to), respecting
-         prefers-reduced-motion.
-         ================================================================ -->
-    <template id="stats_strip_content" name="Stats Strip (content)">
-        <t t-set="stats" t-value="request.env['bs.car.stat'].sudo()._get_website_stats()"/>
-        <t t-if="stats">
-            <div class="container bs_stats">
-                <div class="bs_stats_grid">
-                    <div class="bs_stat" t-foreach="stats" t-as="s">
-                        <i t-if="s.icon" t-attf-class="fa #{s.icon} bs_stat_icon" aria-hidden="true"/>
-                        <div class="bs_stat_num">
-                            <span class="bs_stat_value" t-att-data-bs-count-to="s.count_target"
-                                  t-esc="s.count_display"/><span t-if="s.value_suffix"
-                                  class="bs_stat_suffix" t-esc="s.value_suffix"/>
-                            <span t-if="s.unit" class="bs_stat_unit" t-esc="s.unit"/>
-                        </div>
-                        <div class="bs_stat_label" t-esc="s.name"/>
-                    </div>
-                </div>
-            </div>
-        </t>
-        <div t-else="" class="bs_featured_empty alert alert-info text-center">
-            Add showroom stats (Master Data → Stats) to populate this band.
-        </div>
-    </template>
-    <template id="s_bs_stats" name="Stats Strip">
-        <section class="s_bs_stats bs_stats_band" data-snippet="s_bs_stats" data-name="Stats Strip">
-            <t t-call="bs_car_booking.stats_strip_content"/>
-        </section>
-    </template>
 
     <!-- ================================================================
          LATEST ARRIVALS — newest published models (by arrival date) with a
          "New" badge. Backend-driven via bs.car.model.arrival_date.
          ================================================================ -->
     <template id="latest_arrivals_content" name="Latest Arrivals (content)">
-        <t t-set="arrivals" t-value="request.env['bs.car.model'].sudo()._get_latest_arrivals(limit=4)"/>
+        <t t-set="arrivals" t-value="env['bs.car.model'].sudo()._get_latest_arrivals(limit=4)"/>
         <t t-if="arrivals">
             <div class="container bs_arrivals">
                 <div class="section_header_center">
@@ -483,25 +527,31 @@
                     <h2 class="section_title">Latest arrivals</h2>
                 </div>
                 <div class="car_grid">
-                    <a t-foreach="arrivals" t-as="car" t-att-href="'/car/%s' % car.id" class="car_card">
-                        <div class="car_card_image">
+                    <a t-foreach="arrivals" t-as="car" t-att-href="'/car/%s' % car.id" class="bs_catalog_card">
+                        <div class="bs_catalog_card_media">
                             <img t-if="car.image" loading="lazy" t-att-alt="car.name"
-                                 t-att-src="'/web/image/bs.car.model/%s/image/600x375' % car.id"/>
-                            <img t-else="" src="/web/static/img/placeholder.png"
-                                 t-att-alt="car.name" loading="lazy"/>
-                            <span t-if="car.is_new_arrival" class="bs_arrival_badge">New</span>
-                            <span class="car_card_tag" t-if="car.body_type" t-esc="car.body_type.title()"/>
+                                 t-att-src="'/web/image/bs.car.model/%s/image/800x534' % car.id"/>
+                            <div t-else="" class="bs_catalog_card_placeholder">
+                                <i class="fa fa-car"/>
+                            </div>
+                            <span t-if="car.is_new_arrival" class="bs_card_badge bs_card_badge_new">New</span>
+                            <span t-if="car.body_type" class="bs_card_badge bs_card_badge_type" t-esc="car.body_type.title()"/>
+                            <div class="bs_catalog_card_overlay"/>
                         </div>
-                        <div class="car_card_body">
-                            <span class="car_card_brand" t-esc="car.brand_id.name"/>
-                            <h3 class="car_card_title" t-esc="car.name"/>
-                            <div class="car_card_footer">
-                                <div class="car_card_price">
-                                    <span>From</span>
+                        <div class="bs_catalog_card_body">
+                            <div class="bs_catalog_card_head">
+                                <span class="bs_card_brand" t-esc="car.brand_id.name"/>
+                            </div>
+                            <h3 class="bs_card_title" t-esc="car.name"/>
+                            <div class="bs_catalog_card_footer">
+                                <div class="bs_card_price">
+                                    <span class="bs_card_price_label">From</span>
                                     <strong t-esc="car.base_price"
                                             t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
                                 </div>
-                                <span class="car_card_arrow"><i class="fa fa-arrow-right"/></span>
+                                <span class="bs_card_cta">
+                                    Discover <i class="fa fa-arrow-right"/>
+                                </span>
                             </div>
                         </div>
                     </a>
@@ -519,41 +569,83 @@
     </template>
 
     <!-- ================================================================
-         MODEL STAGE — Hongqi-style single-model image stage.
-         Data source: bs.car.showcase.item(item_type='stage').
+         MODEL STAGE — single-model campaign stage.
+         Data source: bs.car.website.section + bs.car.showcase.item(item_type='stage').
          ================================================================ -->
     <template id="model_stage_content" name="Model Stage (content)">
-        <t t-set="car" t-value="featured_car or request.env['bs.car.model'].sudo()._get_website_featured()"/>
+        <t t-set="section" t-value="model_stage_section or False"/>
+        <t t-set="car" t-value="featured_car or (section and section._section_model()) or env['bs.car.model'].sudo()._get_website_featured()"/>
         <t t-if="car">
-            <t t-set="stage_items" t-value="request.env['bs.car.showcase.item'].sudo()._get_website_items(car, 'stage', limit=3)"/>
-            <t t-if="stage_items">
-                <div class="bs_model_stage" data-bs-showcase-stage="1">
-                    <div class="bs_model_stage_slides">
-                        <article t-foreach="stage_items" t-as="item"
-                                 t-attf-class="bs_model_stage_slide #{item_index == 0 and 'is-active' or ''}"
-                                 t-att-data-stage-index="item_index">
-                            <img t-if="item.image"
-                                 t-att-src="'/web/image/bs.car.showcase.item/%s/image/1920x1080' % item.id"
-                                 t-att-alt="item.image_alt or item.name"/>
-                            <div t-else="" class="bs_model_stage_fallback"/>
-                        </article>
-                    </div>
-                    <div class="bs_model_stage_label">
-                        <span class="bs_model_stage_wordmark">HONGQI-<t t-esc="car.name"/></span>
-                        <strong><t t-esc="car.name"/></strong>
-                    </div>
-                    <div class="bs_model_stage_dots">
-                        <button t-foreach="stage_items" t-as="item" type="button"
-                                t-attf-class="bs_stage_dot #{item_index == 0 and 'is-active' or ''}"
-                                t-att-data-stage-dot="item_index"
-                                t-att-aria-label="'Show %s' % item.name"/>
+            <t t-set="stage_items" t-value="env['bs.car.showcase.item'].sudo()._get_website_items(car, 'stage', limit=3)"/>
+            <div class="bs_model_stage" data-bs-showcase-stage="1">
+                <div class="bs_model_stage_slides">
+                    <article t-if="stage_items" t-foreach="stage_items" t-as="item"
+                             t-attf-class="bs_model_stage_slide #{item_index == 0 and 'is-active' or ''}"
+                             t-att-data-stage-index="item_index">
+                        <img t-if="item.image"
+                             t-att-src="'/web/image/bs.car.showcase.item/%s/image/1920x1080' % item.id"
+                             t-att-alt="item.image_alt or item.name"/>
+                        <div t-else="" class="bs_model_stage_fallback"/>
+                    </article>
+                    <article t-elif="section and section.image" class="bs_model_stage_slide is-active" data-stage-index="0">
+                        <img t-att-src="'/web/image/bs.car.website.section/%s/image/1920x1080' % section.id"
+                             t-att-alt="section.image_alt or section.title or car.name"/>
+                    </article>
+                    <article t-elif="car.image" class="bs_model_stage_slide is-active" data-stage-index="0">
+                        <img t-att-src="'/web/image/bs.car.model/%s/image/1920x1080' % car.id"
+                             t-att-alt="car.name"/>
+                    </article>
+                    <article t-else="" class="bs_model_stage_slide is-active" data-stage-index="0">
+                        <div class="bs_model_stage_fallback"/>
+                    </article>
+                </div>
+                <div class="bs_model_stage_label">
+                    <span t-if="(section and section.eyebrow) or car.brand_id" class="bs_model_stage_kicker">
+                        <t t-esc="(section and section.eyebrow) or car.brand_id.name"/>
+                    </span>
+                    <t t-if="section and section.title_image">
+                        <strong class="visually-hidden" t-esc="section.title or car.name"/>
+                        <img class="bs_model_stage_title_img"
+                             t-att-src="'/web/image/bs.car.website.section/%s/title_image/1200x330' % section.id"
+                             t-att-alt="section.title_image_alt or section.title or car.name"/>
+                    </t>
+                    <strong t-else="" class="bs_model_stage_wordmark">
+                        <t t-esc="(section and section.title) or car.name"/>
+                    </strong>
+                    <p t-if="section and section.subtitle" class="bs_model_stage_subtitle" t-esc="section.subtitle"/>
+                    <div t-if="section and section.body_html" class="bs_model_stage_body" t-out="section.body_html"/>
+                    <t t-set="stage_primary_url" t-value="section and (section.primary_cta_url or ('/car/%s' % car.id))"/>
+                    <t t-set="stage_secondary_url" t-value="section and (section.secondary_cta_url or ('/car/%s/book' % car.id))"/>
+                    <div t-if="section and (section.primary_cta_label or section.secondary_cta_label or section.primary_cta_url or section.secondary_cta_url)"
+                         class="bs_model_stage_actions">
+                        <a t-if="section.primary_cta_label or section.primary_cta_url"
+                           t-att-href="stage_primary_url"
+                           class="btn btn-primary car_cta_btn">
+                            <t t-esc="section.primary_cta_label or 'Explore'"/>
+                            <i class="fa fa-arrow-right"/>
+                        </a>
+                        <a t-if="section.secondary_cta_label or section.secondary_cta_url"
+                           t-att-href="stage_secondary_url"
+                           class="btn btn-outline-light car_ghost_btn">
+                            <t t-esc="section.secondary_cta_label or 'Learn more'"/>
+                        </a>
                     </div>
                 </div>
-            </t>
+                <div t-if="len(stage_items) &gt; 1" class="bs_model_stage_dots">
+                    <button t-foreach="stage_items" t-as="item" type="button"
+                            t-attf-class="bs_stage_dot #{item_index == 0 and 'is-active' or ''}"
+                            t-att-data-stage-dot="item_index"
+                            t-att-aria-label="'Show %s' % item.name"/>
+                </div>
+            </div>
         </t>
+        <div t-else="" class="bs_featured_empty alert alert-info text-center">
+            Publish a car model to populate this section.
+        </div>
     </template>
     <template id="s_bs_model_stage" name="Model Stage">
         <section class="s_bs_model_stage" data-snippet="s_bs_model_stage" data-name="Model Stage">
+            <t t-set="model_stage_section" t-value="False"/>
             <t t-set="featured_car" t-value="False"/>
             <t t-call="bs_car_booking.model_stage_content"/>
         </section>
@@ -564,19 +656,24 @@
          Data source: bs.car.showcase.item(item_type='exterior'/'interior').
          ================================================================ -->
     <template id="color_studio_content" name="Colour Studio (content)">
-        <t t-set="car" t-value="featured_car or request.env['bs.car.model'].sudo()._get_website_featured()"/>
+        <t t-set="section" t-value="color_studio_section or False"/>
+        <t t-set="car" t-value="featured_car or (section and section._section_model()) or env['bs.car.model'].sudo()._get_website_featured()"/>
         <t t-if="car">
             <!-- Configurator-option-driven Colour Studio (preferred): swatches +
                  imagery come from the priced options on bs.car.model.option, and
                  the interior set is filtered by the chosen exterior colour. Falls
                  back to the showcase-item studio below when no option imagery
                  has been set up for the model. -->
-            <t t-set="ext_options" t-value="request.env['bs.car.model.option'].sudo()._get_color_options(car, 'bs_car_booking.attr_color')"/>
-            <t t-set="int_options" t-value="request.env['bs.car.model.option'].sudo()._get_color_options(car, 'bs_car_booking.attr_interior')"/>
+            <t t-set="ext_options" t-value="env['bs.car.model.option'].sudo()._get_color_options(car, 'bs_car_booking.attr_color')"/>
+            <t t-set="int_options" t-value="env['bs.car.model.option'].sudo()._get_color_options(car, 'bs_car_booking.attr_interior')"/>
             <t t-if="ext_options.filtered('image') or int_options.filtered('image')">
                 <div class="container bs_color_studio bs_color_studio_linked" data-color-studio-linked="1">
                     <div class="section_header_center">
-                        <h2 class="car_kicker car_kicker_dark">Colour Options</h2>
+                        <span class="car_kicker car_kicker_dark">
+                            <t t-esc="(section and section.eyebrow) or 'Colour Options'"/>
+                        </span>
+                        <h2 t-if="section and section.title" class="section_title" t-esc="section.title"/>
+                        <p t-if="section and section.subtitle" class="section_subtitle" t-esc="section.subtitle"/>
                     </div>
                     <!-- Exterior image: full-bleed body shot of the selected colour. -->
                     <div class="bs_cs_stage bs_cs_stage_ext" data-cs-stage="exterior">
@@ -625,12 +722,16 @@
                 </div>
             </t>
             <t t-else="">
-            <t t-set="exteriors" t-value="request.env['bs.car.showcase.item'].sudo()._get_website_items(car, 'exterior')"/>
-            <t t-set="interiors" t-value="request.env['bs.car.showcase.item'].sudo()._get_website_items(car, 'interior')"/>
+            <t t-set="exteriors" t-value="env['bs.car.showcase.item'].sudo()._get_website_items(car, 'exterior')"/>
+            <t t-set="interiors" t-value="env['bs.car.showcase.item'].sudo()._get_website_items(car, 'interior')"/>
             <t t-if="exteriors or interiors">
                 <div class="container bs_color_studio bs_color_studio_linked" data-color-studio-linked="1">
                     <div class="section_header_center">
-                        <h2 class="car_kicker car_kicker_dark">Colour Options</h2>
+                        <span class="car_kicker car_kicker_dark">
+                            <t t-esc="(section and section.eyebrow) or 'Colour Options'"/>
+                        </span>
+                        <h2 t-if="section and section.title" class="section_title" t-esc="section.title"/>
+                        <p t-if="section and section.subtitle" class="section_subtitle" t-esc="section.subtitle"/>
                     </div>
                     <!-- Shared stage: one large image; exterior bodies and
                          interior cabins swap into the same frame. -->
@@ -679,6 +780,7 @@
     <template id="s_bs_color_studio" name="Colour Studio">
         <section class="s_bs_color_studio car_catalog_band" data-snippet="s_bs_color_studio" data-name="Colour Studio">
             <t t-set="featured_car" t-value="False"/>
+            <t t-set="color_studio_section" t-value="False"/>
             <t t-call="bs_car_booking.color_studio_content"/>
         </section>
     </template>
@@ -688,14 +790,20 @@
          Data source: bs.car.showcase.item(item_type='highlight').
          ================================================================ -->
     <template id="highlights_content" name="Highlights (content)">
-        <t t-set="car" t-value="featured_car or request.env['bs.car.model'].sudo()._get_website_featured()"/>
+        <t t-set="section" t-value="highlights_section or False"/>
+        <t t-set="car" t-value="featured_car or env['bs.car.model'].sudo()._get_website_featured()"/>
         <t t-if="car">
-            <t t-set="items" t-value="request.env['bs.car.showcase.item'].sudo()._get_website_items(car, 'highlight')"/>
+            <t t-set="items" t-value="env['bs.car.showcase.item'].sudo()._get_website_items(car, 'highlight')"/>
             <t t-if="items">
                 <div class="container bs_highlights">
                     <div class="section_header_center">
-                        <span class="car_kicker car_kicker_dark"><t t-esc="car.name"/> Highlights</span>
-                        <h2 class="section_title">Signature details, engineered for arrival</h2>
+                        <span class="car_kicker car_kicker_dark">
+                            <t t-esc="(section and section.eyebrow) or '%s Highlights' % car.name"/>
+                        </span>
+                        <h2 class="section_title">
+                            <t t-esc="(section and section.title) or 'Signature details, engineered for arrival'"/>
+                        </h2>
+                        <p t-if="section and section.subtitle" class="section_lead" t-esc="section.subtitle"/>
                     </div>
                     <div class="bs_highlight_grid">
                         <article t-foreach="items" t-as="item" class="bs_highlight_card"
@@ -703,15 +811,27 @@
                                  t-att-data-hl-img="'/web/image/bs.car.showcase.item/%s/image/1600x1067' % item.id"
                                  t-att-data-hl-kicker="car.brand_id.name + ' ' + car.name"
                                  t-att-data-hl-title="item.name"
-                                 t-att-data-hl-desc="item.description or item.subtitle or ''">
+                                 t-att-data-hl-desc="item.description or item.subtitle or ''"
+                                 t-att-data-hl-gallery="item._highlight_gallery_json()">
+                            <span class="bs_highlight_index">
+                                <t t-esc="'%02d' % (item_index + 1)"/>
+                            </span>
                             <img t-if="item.image"
                                  t-att-src="'/web/image/bs.car.showcase.item/%s/image/900x600' % item.id"
                                  t-att-alt="item.image_alt or item.name" loading="lazy"/>
                             <div t-else="" class="bs_highlight_fallback"/>
                             <span class="bs_highlight_zoom"><i class="fa fa-expand"/></span>
+                            <span t-if="item.highlight_image_ids" class="bs_highlight_gallery_count">
+                                <i class="fa fa-picture-o"/>
+                                <t t-esc="len(item.highlight_image_ids) + (1 if item.image else 0)"/>
+                            </span>
                             <div class="bs_highlight_body">
+                                <span t-if="item.subtitle" class="bs_highlight_kicker" t-esc="item.subtitle"/>
                                 <h3 t-esc="item.name"/>
-                                <p t-if="item.subtitle" t-esc="item.subtitle"/>
+                                <div t-if="item.description" class="bs_highlight_desc" t-out="item.description"/>
+                                <span class="bs_highlight_more">
+                                    View detail <i class="fa fa-arrow-right"/>
+                                </span>
                             </div>
                         </article>
                     </div>
@@ -722,6 +842,7 @@
     <template id="s_bs_highlights" name="Highlights">
         <section class="s_bs_highlights car_catalog_band" data-snippet="s_bs_highlights" data-name="Highlights">
             <t t-set="featured_car" t-value="False"/>
+            <t t-set="highlights_section" t-value="False"/>
             <t t-call="bs_car_booking.highlights_content"/>
         </section>
     </template>
@@ -731,34 +852,67 @@
          Data source: first bs.car.showcase.item(item_type='cabin').
          ================================================================ -->
     <template id="cabin_story_content" name="Cabin Story (content)">
-        <t t-set="car" t-value="featured_car or request.env['bs.car.model'].sudo()._get_website_featured()"/>
-        <t t-if="car">
-            <t t-set="items" t-value="request.env['bs.car.showcase.item'].sudo()._get_website_items(car, 'cabin', limit=1)"/>
-            <t t-if="items">
-                <t t-set="item" t-value="items[:1]"/>
-                <div class="bs_cabin_story">
-                    <div class="bs_cabin_media">
-                        <img t-if="item.image"
-                             t-att-src="'/web/image/bs.car.showcase.item/%s/image/1920x1080' % item.id"
-                             t-att-alt="item.image_alt or item.name" loading="lazy"/>
-                    </div>
-                    <div class="bs_cabin_scrim"/>
-                    <div class="container bs_cabin_copy">
-                        <span class="car_kicker"><t t-esc="item.subtitle or 'Crafted Sanctuary'"/></span>
-                        <h2 class="bs_heritage_title" t-esc="item.name"/>
-                        <div t-if="item.description" class="bs_heritage_text" t-out="item.description"/>
-                        <a t-if="item.cta_url" t-att-href="item.cta_url" class="btn btn-primary car_cta_btn">
-                            <t t-esc="item.cta_label or 'Experience this model'"/>
-                            <i class="fa fa-arrow-right"/>
-                        </a>
-                    </div>
+        <t t-set="section" t-value="cabin_story_section or False"/>
+        <t t-set="car" t-value="featured_car or (section and section._section_model()) or env['bs.car.model'].sudo()._get_website_featured()"/>
+        <!-- Image fallback: the model's 'cabin' showcase item, so the section
+             still renders before a dealer uploads its own cabin media. -->
+        <t t-set="cabin_item" t-value="car and env['bs.car.showcase.item'].sudo()._get_website_items(car, 'cabin', limit=1)[:1]"/>
+        <t t-set="has_section_media" t-value="section and (section.video_src or section.video_embed_url or section.image)"/>
+        <t t-if="(section and (has_section_media or section.title)) or cabin_item">
+            <div class="bs_cabin_story">
+                <div class="bs_cabin_media">
+                    <t t-if="section and section.video_src">
+                        <video t-attf-class="bs_cabin_img bs_hero_video #{section.mobile_video_src and 'bs_hero_video_desktop' or ''}"
+                               autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline"
+                               preload="metadata" disablepictureinpicture="disablepictureinpicture"
+                               t-att-poster="section.image and '/web/image/bs.car.website.section/%s/image/1920x1080' % section.id or None">
+                            <source t-att-src="section.video_src"/>
+                        </video>
+                        <video t-if="section.mobile_video_src"
+                               class="bs_cabin_img bs_hero_video bs_hero_video_mobile"
+                               autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline"
+                               preload="metadata" disablepictureinpicture="disablepictureinpicture"
+                               t-att-poster="section.image and '/web/image/bs.car.website.section/%s/image/1200x1600' % section.id or None">
+                            <source t-att-src="section.mobile_video_src"/>
+                        </video>
+                    </t>
+                    <t t-elif="section and section.video_embed_url">
+                        <div class="bs_cabin_embed" aria-hidden="true">
+                            <iframe t-att-src="section.video_embed_url" title="Cabin video"
+                                    allow="autoplay; fullscreen"
+                                    referrerpolicy="strict-origin-when-cross-origin" loading="lazy"/>
+                        </div>
+                        <img t-if="section.image" class="bs_cabin_img bs_hero_poster"
+                             t-att-src="'/web/image/bs.car.website.section/%s/image/1920x1080' % section.id"
+                             t-att-alt="section.image_alt or section.title"/>
+                    </t>
+                    <img t-elif="section and section.image" class="bs_cabin_img"
+                         t-att-src="'/web/image/bs.car.website.section/%s/image/1920x1080' % section.id"
+                         t-att-alt="section.image_alt or section.title" loading="lazy"/>
+                    <img t-elif="cabin_item and cabin_item.image" class="bs_cabin_img"
+                         t-att-src="'/web/image/bs.car.showcase.item/%s/image/1920x1080' % cabin_item.id"
+                         t-att-alt="cabin_item.image_alt or cabin_item.name" loading="lazy"/>
                 </div>
-            </t>
+                <div class="bs_cabin_scrim"/>
+                <div class="container bs_cabin_copy">
+                    <span class="car_kicker"><t t-esc="(section and section.eyebrow) or (cabin_item and cabin_item.subtitle) or 'Crafted Sanctuary'"/></span>
+                    <h2 class="bs_heritage_title" t-esc="(section and section.title) or (cabin_item and cabin_item.name) or 'A cabin composed in silence'"/>
+                    <div t-if="section and section.subtitle" class="bs_heritage_text"><t t-esc="section.subtitle"/></div>
+                    <div t-elif="cabin_item and cabin_item.description" class="bs_heritage_text" t-out="cabin_item.description"/>
+                    <a t-if="section and section.primary_cta_url" t-att-href="section.primary_cta_url" class="btn btn-primary car_cta_btn">
+                        <t t-esc="section.primary_cta_label or 'Experience this model'"/> <i class="fa fa-arrow-right"/>
+                    </a>
+                    <a t-elif="cabin_item and cabin_item.cta_url" t-att-href="cabin_item.cta_url" class="btn btn-primary car_cta_btn">
+                        <t t-esc="cabin_item.cta_label or 'Experience this model'"/> <i class="fa fa-arrow-right"/>
+                    </a>
+                </div>
+            </div>
         </t>
     </template>
     <template id="s_bs_cabin_story" name="Cabin Story">
         <section class="s_bs_cabin_story" data-snippet="s_bs_cabin_story" data-name="Cabin Story">
             <t t-set="featured_car" t-value="False"/>
+            <t t-set="cabin_story_section" t-value="False"/>
             <t t-call="bs_car_booking.cabin_story_content"/>
         </section>
     </template>
@@ -767,13 +921,13 @@
          LATEST STORIES — brand/editorial story cards.
          Data source: bs.car.story.
          ================================================================ -->
-    <template id="stories_content" name="Stories (content)">
+    <template id="stories_content" name="News (content)">
         <t t-set="story_model" t-value="featured_car if featured_car else False"/>
-        <t t-set="stories" t-value="request.env['bs.car.story'].sudo()._get_website_stories(model_id=story_model.id if story_model else False, limit=3)"/>
+        <t t-set="stories" t-value="env['bs.car.story'].sudo()._get_website_stories(model_id=story_model.id if story_model else False, limit=3)"/>
         <t t-if="stories">
             <div class="container bs_stories">
                 <div class="section_header_center">
-                    <span class="car_kicker car_kicker_dark">Latest Stories</span>
+                    <span class="car_kicker car_kicker_dark">News</span>
                     <h2 class="section_title">The journey behind the red flag</h2>
                 </div>
                 <div class="bs_story_grid">
@@ -786,7 +940,7 @@
                             <h3 t-esc="story.name"/>
                             <p t-if="story.excerpt" t-esc="story.excerpt"/>
                             <span class="bs_story_link">
-                                <t t-esc="story.cta_label or 'Read story'"/> <i class="fa fa-arrow-right"/>
+                                <t t-esc="story.cta_label or 'Read more'"/> <i class="fa fa-arrow-right"/>
                             </span>
                         </div>
                     </a>
@@ -794,8 +948,8 @@
             </div>
         </t>
     </template>
-    <template id="s_bs_stories" name="Latest Stories">
-        <section class="s_bs_stories car_catalog_band" data-snippet="s_bs_stories" data-name="Latest Stories">
+    <template id="s_bs_stories" name="Latest News">
+        <section class="s_bs_stories car_catalog_band" data-snippet="s_bs_stories" data-name="Latest News">
             <t t-call="bs_car_booking.stories_content"/>
         </section>
     </template>
@@ -803,20 +957,17 @@
     <!-- Register the snippets in the website builder blocks panel. -->
     <template id="bs_car_booking_snippets" inherit_id="website.snippets" name="BS Car Booking Snippets">
         <xpath expr="//t[@t-snippet='website.s_cover']" position="after">
+            <t t-snippet="bs_car_booking.s_bs_brand_cover" string="Brand Cover" group="intro"/>
             <t t-snippet="bs_car_booking.s_bs_featured_model" string="Featured Car" group="intro"/>
             <t t-snippet="bs_car_booking.s_bs_model_stage" string="Model Stage" group="intro"/>
             <t t-snippet="bs_car_booking.s_bs_color_studio" string="Colour Studio" group="intro"/>
             <t t-snippet="bs_car_booking.s_bs_heritage" string="Brand Heritage" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_model_gallery" string="Model Gallery" group="intro"/>
             <t t-snippet="bs_car_booking.s_bs_model_specs" string="Model Specs" group="intro"/>
             <t t-snippet="bs_car_booking.s_bs_highlights" string="Highlights" group="intro"/>
             <t t-snippet="bs_car_booking.s_bs_cabin_story" string="Cabin Story" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_browse" string="Browse Tiles" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_stats" string="Stats Strip" group="intro"/>
             <t t-snippet="bs_car_booking.s_bs_arrivals" string="Latest Arrivals" group="intro"/>
             <t t-snippet="bs_car_booking.s_bs_offers" string="Offers &amp; Promotions" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_stories" string="Latest Stories" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_finance" string="Finance Calculator" group="intro"/>
+            <t t-snippet="bs_car_booking.s_bs_stories" string="Latest News" group="intro"/>
             <t t-snippet="bs_car_booking.s_bs_dealers" string="Dealer Locator" group="intro"/>
         </xpath>
     </template>

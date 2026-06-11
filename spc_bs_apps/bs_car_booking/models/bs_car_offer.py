@@ -10,7 +10,9 @@ class BsCarOffer(models.Model):
     on its own — the back office curates the whole thing (no builder editing)."""
     _name = 'bs.car.offer'
     _description = 'Promotional Offer'
+    _inherit = ['website.published.multi.mixin', 'bs.car.website.scope.mixin']
     _order = 'sequence, id'
+    _bs_clear_website_cache_on_write = True
 
     name = fields.Char('Headline', required=True, translate=True,
                        help='Main promo line, e.g. "0% APR for 36 months".')
@@ -21,7 +23,12 @@ class BsCarOffer(models.Model):
     image = fields.Image('Image', max_width=1920, max_height=1080)
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
-    website_published = fields.Boolean('Published on Website', default=True)
+    company_id = fields.Many2one(
+        'res.company', string='Company', default=lambda self: self.env.company,
+        index=True, help='Leave empty to share this offer across companies.')
+
+    def _default_is_published(self):
+        return True
 
     date_start = fields.Date('Starts On',
                              help='Leave empty to start immediately.')
@@ -73,4 +80,4 @@ class BsCarOffer(models.Model):
         ]
         if model_id:
             domain += ['|', ('model_id', '=', int(model_id)), ('model_id', '=', False)]
-        return self.sudo().search(domain, order='sequence, id')
+        return self.sudo().search(domain + self._public_scope_domain(), order='sequence, id')

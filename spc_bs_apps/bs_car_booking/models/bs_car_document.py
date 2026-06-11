@@ -12,6 +12,9 @@ class BsCarDocumentType(models.Model):
     _order = 'sequence, id'
 
     name = fields.Char('Document', required=True, translate=True)
+    company_id = fields.Many2one(
+        'res.company', string='Company', default=lambda self: self.env.company,
+        index=True, help='Leave empty to share this document type across companies.')
     code = fields.Char('Code')
     applies_to = fields.Selection([
         ('individual', 'Individual'),
@@ -41,7 +44,7 @@ class BsCarBookingDocument(models.Model):
                                  required=True, ondelete='cascade', index=True)
     document_type_id = fields.Many2one('bs.car.document.type', string='Document Type',
                                        required=True, ondelete='restrict')
-    name = fields.Char(related='document_type_id.name', store=True, string='Document')
+    name = fields.Char(related='document_type_id.name', string='Document')
     sequence = fields.Integer(related='document_type_id.sequence', store=True)
     # attachment=True keeps the binary in ir.attachment (private, access-controlled).
     attachment = fields.Binary('File', attachment=True, required=True)

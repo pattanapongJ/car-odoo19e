@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <function model="ir.module.module" name="action_cleanup_bs_car_booking_legacy_home_blocks">
+            <value model="ir.module.module" search="[('name', '=', 'bs_car_booking')]"/>
+        </function>
+    </data>
+</odoo>

@@ -7,9 +7,11 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
             <div name="button_box" position="inside">
-                <field name="bs_car_booking_id" invisible="1"/>
+                <field name="bs_car_booking_id" invisible="1"
+                       groups="bs_car_booking.group_bs_car_booking_manager"/>
                 <button name="action_view_car_booking" type="object" class="oe_stat_button"
-                        icon="fa-car" invisible="not bs_car_booking_id">
+                        icon="fa-car" invisible="not bs_car_booking_id"
+                        groups="bs_car_booking.group_bs_car_booking_manager">
                     <div class="o_stat_info"><span class="o_stat_text">Car Booking</span></div>
                 </button>
             </div>

@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 # Part of Basic Solution Co., Ltd.
 
+from . import website_scope
 from . import bs_car_brand
 from . import bs_car_model
 from . import bs_car_model_option
 from . import bs_car_model_spec
 from . import bs_car_showcase
-from . import bs_car_home_block
+from . import bs_car_website_section
+from . import legacy_cleanup
 from . import bs_car_offer
-from . import bs_car_stat
 from . import bs_car_variant
 from . import bs_car_dealer
 from . import bs_car_document

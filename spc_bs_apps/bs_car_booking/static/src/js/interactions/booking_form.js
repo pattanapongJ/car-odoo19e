@@ -22,6 +22,7 @@ export class CarConfigurator extends Interaction {
 
     setup() {
         this.modelId = parseInt(this.el.dataset.modelId || "0");
+        this.productMissing = this.el.dataset.productMissing === "1";
         this.priceEl = document.getElementById("cfg_price");
         this.errorEl = document.getElementById("cfg_error");
         this.selectedListEl = document.getElementById("cfg_selected_list");
@@ -39,7 +40,7 @@ export class CarConfigurator extends Interaction {
         this.pdpaEl = document.getElementById("cfg_pdpa");
         this.submitBtn = this.el.querySelector(".cfg_submit_btn");
         if (this.pdpaEl && this.submitBtn) {
-            const sync = () => { this.submitBtn.disabled = !this.pdpaEl.checked; };
+            const sync = () => { this.submitBtn.disabled = this.productMissing || !this.pdpaEl.checked; };
             this.pdpaEl.addEventListener("change", sync);
             sync();
         }
@@ -80,6 +81,7 @@ export class CarConfigurator extends Interaction {
     _refreshSummary() {
         if (!this.selectedListEl) return;
         const selected = Array.from(this.el.querySelectorAll(".cfg_input:checked"))
+            .filter((input) => input.dataset.summaryHidden !== "1")
             .map((input) => input.dataset.summaryLabel)
             .filter(Boolean);
         this.selectedListEl.innerHTML = "";
@@ -105,7 +107,7 @@ export class CarConfigurator extends Interaction {
         if (!this.priceEl) return;
         this.priceEl.classList.add("is-updating");
         try {
-            const res = await jsonrpc("/shop/car/price", {
+            const res = await jsonrpc("/car_booking/car/price", {
                 model_id: this.modelId,
                 ptav_ids: this._selectedPtavIds(),
             });
@@ -129,6 +131,10 @@ export class CarConfigurator extends Interaction {
 
     async _onSubmit(e) {
         e.preventDefault();
+        if (this.productMissing) {
+            this._showError("This model is not ready for online booking yet.");
+            return;
+        }
         const phoneEl = document.getElementById("cfg_phone");
         const phone = (phoneEl && phoneEl.value || "").trim();
         const dealer = this.el.querySelector('input[name="dealer_id"]:checked');
@@ -154,7 +160,7 @@ export class CarConfigurator extends Interaction {
         btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Creating...';
 
         try {
-            const res = await jsonrpc("/shop/car/book", {
+            const res = await jsonrpc("/car_booking/car/book", {
                 model_id: this.modelId,
                 ptav_ids: this._selectedPtavIds(),
                 dealer_id: dealer ? dealer.value : null,

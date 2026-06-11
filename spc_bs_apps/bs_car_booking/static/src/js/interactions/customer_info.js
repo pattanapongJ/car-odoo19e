@@ -227,7 +227,7 @@ export class CustomerInfoForm extends Interaction {
         try {
             const documents = await this._collectDocuments(type);
             const agreements = this._collectAgreements(type);
-            const resp = await fetch("/shop/booking/info", {
+            const resp = await fetch("/car_booking/booking/info", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
