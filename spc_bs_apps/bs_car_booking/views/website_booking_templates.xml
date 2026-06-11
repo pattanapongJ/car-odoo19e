@@ -66,18 +66,19 @@
                             <div class="cfg_intro" data-bs-car-reveal="up">
                                 <span class="car_kicker car_kicker_dark">Configuration</span>
                                 <h2>Make it yours.</h2>
-                                <p>
-                                    Pricing updates live from the generated Odoo product variant and
-                                    no-variant option values.
-                                </p>
                             </div>
 
                             <t t-set="config_block_index" t-value="0"/>
                             <t t-foreach="attribute_lines" t-as="line">
+                                <t t-set="product_attribute_values" t-value="line.product_template_value_ids.filtered(lambda l: l.ptav_active)"/>
+                                <!-- Values whose car-model option is unpublished stay visible but
+                                     disabled; the default selection is the first available one. -->
+                                <t t-set="avail_ptavs" t-value="product_attribute_values.filtered(lambda p: p.product_attribute_value_id.id not in unpublished_value_ids)"/>
+                                <t t-set="default_ptav" t-value="(avail_ptavs or product_attribute_values)[:1]"/>
                                 <t t-set="is_single_standard_package"
-                                   t-value="standard_package_attr and line.attribute_id == standard_package_attr and len(line.product_template_value_ids) == 1"/>
+                                   t-value="standard_package_attr and line.attribute_id == standard_package_attr and len(product_attribute_values) == 1"/>
                                 <t t-if="is_single_standard_package">
-                                    <t t-set="standard_ptav" t-value="line.product_template_value_ids[:1]"/>
+                                    <t t-set="standard_ptav" t-value="product_attribute_values[:1]"/>
                                     <input type="radio" class="cfg_input d-none"
                                            t-attf-name="attr_{{ line.attribute_id.id }}"
                                            t-att-data-ptav-id="standard_ptav.id"
@@ -96,14 +97,22 @@
 
                                     <t t-if="line.attribute_id.display_type == 'color'">
                                         <div class="cfg_swatches">
-                                            <t t-foreach="line.product_template_value_ids" t-as="ptav">
-                                                <label class="cfg_swatch" t-att-title="ptav.name">
+                                            <t t-foreach="product_attribute_values" t-as="ptav">
+                                                <t t-set="opt_disabled" t-value="ptav.product_attribute_value_id.id in unpublished_value_ids"/>
+                                                <t t-set="avail_int_ids" t-value="exterior_interiors.get(ptav.product_attribute_value_id.id)"/>
+                                                <label t-attf-class="cfg_swatch #{opt_disabled and 'is-unavailable' or ''}"
+                                                       t-attf-title="#{ptav.name}#{opt_disabled and ' — unavailable' or ''}">
                                                     <input type="radio" class="cfg_input d-none"
                                                            t-attf-name="attr_{{ line.attribute_id.id }}"
                                                            t-att-data-ptav-id="ptav.id"
+                                                           t-att-data-value-id="ptav.product_attribute_value_id.id"
+                                                           data-exterior-option="1"
+                                                           t-att-data-interior-value-ids="avail_int_ids and ','.join([str(i) for i in avail_int_ids]) or None"
                                                            t-att-data-price-extra="ptav.price_extra"
                                                            t-att-data-summary-label="ptav.name"
-                                                           t-att-checked="ptav_first and 'checked' or None"/>
+                                                           t-att-data-unavailable="opt_disabled and '1' or None"
+                                                           t-att-disabled="opt_disabled and 'disabled' or None"
+                                                           t-att-checked="(ptav == default_ptav) and 'checked' or None"/>
                                                     <span class="cfg_swatch_dot"
                                                           t-attf-style="background-color: {{ ptav.product_attribute_value_id.html_color or '#888' }}"/>
                                                     <span class="cfg_swatch_name" t-esc="ptav.name"/>
@@ -114,12 +123,14 @@
 
                                     <t t-elif="line.attribute_id.display_type == 'multi'">
                                         <div class="cfg_addons">
-                                            <t t-foreach="line.product_template_value_ids" t-as="ptav">
-                                                <label class="cfg_addon">
+                                            <t t-foreach="product_attribute_values" t-as="ptav">
+                                                <t t-set="opt_disabled" t-value="ptav.product_attribute_value_id.id in unpublished_value_ids"/>
+                                                <label t-attf-class="cfg_addon #{opt_disabled and 'is-unavailable' or ''}">
                                                     <input type="checkbox" class="cfg_input"
                                                            t-att-data-ptav-id="ptav.id"
                                                            t-att-data-price-extra="ptav.price_extra"
-                                                           t-att-data-summary-label="ptav.name"/>
+                                                           t-att-data-summary-label="ptav.name"
+                                                           t-att-disabled="opt_disabled and 'disabled' or None"/>
                                                     <span class="cfg_addon_name" t-esc="ptav.name"/>
                                                     <span class="cfg_addon_price"
                                                           t-if="ptav.price_extra"
@@ -131,15 +142,21 @@
                                     </t>
 
                                     <t t-else="">
+                                        <t t-set="is_interior_attr" t-value="interior_attr and line.attribute_id == interior_attr"/>
                                         <div class="cfg_pills">
-                                            <t t-foreach="line.product_template_value_ids" t-as="ptav">
-                                                <label class="cfg_pill">
+                                            <t t-foreach="product_attribute_values" t-as="ptav">
+                                                <t t-set="opt_disabled" t-value="ptav.product_attribute_value_id.id in unpublished_value_ids"/>
+                                                <label t-attf-class="cfg_pill #{opt_disabled and 'is-unavailable' or ''}">
                                                     <input type="radio" class="cfg_input d-none"
                                                            t-attf-name="attr_{{ line.attribute_id.id }}"
                                                            t-att-data-ptav-id="ptav.id"
+                                                           t-att-data-value-id="ptav.product_attribute_value_id.id"
+                                                           t-att-data-interior-option="is_interior_attr and '1' or None"
                                                            t-att-data-price-extra="ptav.price_extra"
                                                            t-att-data-summary-label="ptav.name"
-                                                           t-att-checked="ptav_first and 'checked' or None"/>
+                                                           t-att-data-unavailable="opt_disabled and '1' or None"
+                                                           t-att-disabled="opt_disabled and 'disabled' or None"
+                                                           t-att-checked="(ptav == default_ptav) and 'checked' or None"/>
                                                     <span class="cfg_pill_name" t-esc="ptav.name"/>
                                                     <span class="cfg_pill_price"
                                                           t-if="ptav.price_extra"
@@ -192,10 +209,31 @@
                         <aside class="cfg_summary">
                             <div class="cfg_summary_card" data-bs-car-reveal="up">
                                 <div class="cfg_summary_media">
-                                    <t t-if="car.image">
+                                    <!-- Exterior + interior images from the car-model options,
+                                         swapped live as the buyer changes the configuration
+                                         (keyed by product attribute value id). -->
+                                    <t t-set="sum_ext" t-value="request.env['bs.car.model.option'].sudo()._get_color_options(car, 'bs_car_booking.attr_color').filtered('image')"/>
+                                    <t t-set="sum_int" t-value="request.env['bs.car.model.option'].sudo()._get_color_options(car, 'bs_car_booking.attr_interior').filtered('image')"/>
+                                    <t t-if="sum_ext">
+                                        <div class="cfg_summary_stage cfg_summary_stage_ext">
+                                            <img t-foreach="sum_ext" t-as="opt"
+                                                 t-attf-class="cfg_summary_img #{opt_index == 0 and 'is-active' or ''}"
+                                                 t-att-data-cfg-value="opt.value_id.id"
+                                                 t-att-src="'/web/image/bs.car.model.option/%s/image/480x300' % opt.id"
+                                                 t-att-alt="opt.image_alt or opt.display_name"/>
+                                        </div>
+                                    </t>
+                                    <t t-elif="car.image">
                                         <img t-att-src="'/web/image/bs.car.model/%s/image/480x300' % car.id"
                                              t-att-alt="car.name"/>
                                     </t>
+                                    <div t-if="sum_int" class="cfg_summary_stage cfg_summary_stage_int">
+                                        <img t-foreach="sum_int" t-as="opt"
+                                             t-attf-class="cfg_summary_img #{opt_index == 0 and 'is-active' or ''}"
+                                             t-att-data-cfg-value="opt.value_id.id"
+                                             t-att-src="'/web/image/bs.car.model.option/%s/image/480x300' % opt.id"
+                                             t-att-alt="opt.image_alt or opt.display_name"/>
+                                    </div>
                                 </div>
                                 <div class="cfg_summary_body">
                                     <span class="car_kicker car_kicker_dark" t-esc="car.brand_id.name"/>

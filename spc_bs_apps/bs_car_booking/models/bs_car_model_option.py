@@ -54,6 +54,10 @@ class BsCarModelOption(models.Model):
         string='Available Interiors',
         help='Interior options offered with this exterior colour. '
              'Leave empty to offer every interior configured on the model.')
+    
+    website_published = fields.Boolean(
+        'Published on Website', default=True,
+        help='Whether to show this option on the website. Unpublish to hide it without deleting.')
 
     _model_value_uniq = models.Constraint(
         'UNIQUE(model_id, value_id)',
