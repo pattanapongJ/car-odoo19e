@@ -90,6 +90,17 @@
                                 </div>
                             </t>
                         </div>
+                        <!-- Answer "when do I get my car" right on the timeline. -->
+                        <div t-if="booking.state == 'delivered' and booking.actual_delivery_date"
+                             class="bs_delivery_eta text-center mt-3">
+                            <i class="fa fa-check-circle me-1"/>
+                            Delivered on <strong t-field="booking.actual_delivery_date"/>
+                        </div>
+                        <div t-elif="booking.estimated_delivery_date and booking.state in ('confirmed', 'in_production', 'ready_delivery')"
+                             class="bs_delivery_eta text-center mt-3">
+                            <i class="fa fa-calendar me-1"/>
+                            Estimated delivery: <strong t-field="booking.estimated_delivery_date"/>
+                        </div>
                     </div>
                 </div>
 

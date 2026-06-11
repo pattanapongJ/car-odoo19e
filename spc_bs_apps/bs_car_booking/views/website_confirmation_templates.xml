@@ -141,8 +141,12 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Company Name *</label>
+                                        <!-- Thai tax invoices need the branch designation next to the
+                                             registered name (Head Office / branch no.) — the example
+                                             nudges customers to include it. -->
                                         <input type="text" name="company_name" class="form-control form-control-lg"
-                                               t-att-value="booking.company_name or ''" placeholder="Registered company name"/>
+                                               t-att-value="booking.company_name or ''"
+                                               placeholder="e.g. Test Co., Ltd. (Head Office)"/>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Tax ID *</label>
@@ -173,7 +177,13 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Address</label>
+                                <!-- Shared field, per-type label: individuals must give the
+                                     address as printed on the ID card (matches the uploaded
+                                     National ID document); companies their business address. -->
+                                <label class="form-label">
+                                    <span data-type-group="individual">Address on National ID Card</span>
+                                    <span data-type-group="company" class="d-none">Address</span>
+                                </label>
                                 <textarea name="customer_address" class="form-control" rows="2"
                                           placeholder="(optional)"><t t-esc="booking.customer_address or ''"/></textarea>
                             </div>
