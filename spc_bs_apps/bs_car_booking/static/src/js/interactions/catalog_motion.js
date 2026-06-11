@@ -134,3 +134,31 @@ export class HeroMotion extends Interaction {
 }
 
 registry.category("public.interactions").add("bs_hero_motion", HeroMotion);
+
+/* ── Detail page motion ───────────────────────────────────────────
+   Reuses the catalog reveal (sticky init is a no-op: no filter bar on
+   the detail page) and opens the full-spec <details> accordion when a
+   #full_specs anchor is followed, so the jump never lands on a
+   collapsed sheet. */
+export class DetailMotion extends CatalogMotion {
+    static selector = ".bs_detail_page";
+
+    start() {
+        super.start();
+        this._initSpecsAnchor();
+    }
+
+    _initSpecsAnchor() {
+        const details = this.el.querySelector("#full_specs details");
+        if (!details) return;
+        this.el.querySelectorAll('a[href="#full_specs"]').forEach((a) => {
+            const onClick = () => {
+                details.open = true;
+            };
+            a.addEventListener("click", onClick);
+            this.registerCleanup(() => a.removeEventListener("click", onClick));
+        });
+    }
+}
+
+registry.category("public.interactions").add("bs_detail_motion", DetailMotion);

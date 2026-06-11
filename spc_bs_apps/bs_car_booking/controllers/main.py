@@ -126,7 +126,7 @@ class BsCarBookingWebsite(CustomerPortal):
         stories = self._scoped_env('bs.car.story')._get_website_stories(limit=24)
         return request.render('bs_car_booking.story_index_page', {
             'stories': stories,
-            'page_title': 'Stories',
+            'page_title': 'News',
         })
 
     @http.route('/story/<int:story_id>', type='http', auth='public', website=True, sitemap=True)

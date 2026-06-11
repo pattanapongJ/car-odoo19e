@@ -77,10 +77,10 @@
         </record>
 
         <record id="home_section_stories" model="bs.car.website.section">
-            <field name="name">Hongqi Stories</field>
+            <field name="name">Hongqi News</field>
             <field name="sequence">70</field>
             <field name="section_type">stories</field>
-            <field name="title">Latest stories</field>
+            <field name="title">Latest news</field>
         </record>
 
         <record id="home_section_dealers" model="bs.car.website.section">

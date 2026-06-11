@@ -168,12 +168,12 @@
     </record>
 
     <record id="action_bs_car_story" model="ir.actions.act_window">
-        <field name="name">Stories</field>
+        <field name="name">News</field>
         <field name="res_model">bs.car.story</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Add brand stories</p>
-            <p>Stories appear on the showroom home page and can link to a model or an external story page.</p>
+            <p class="o_view_nocontent_smiling_face">Add news articles</p>
+            <p>News articles appear on the showroom home page and can link to a model or an external page.</p>
         </field>
     </record>
 
@@ -184,7 +184,7 @@
               sequence="20"/>
 
     <menuitem id="menu_bs_car_story"
-              name="Stories"
+              name="News"
               parent="menu_bs_car_website_content"
               action="action_bs_car_story"
               sequence="30"/>

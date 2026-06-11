@@ -326,10 +326,10 @@
                                     </form>
                             </field>
                         </page>
-                        <page string="Stories">
+                        <page string="News">
                             <p class="text-muted">
-                                News / editorial cards for the home "Latest Stories" section. Leave a story's
-                                model empty to make it brand-wide; set it here to tie the story to this model.
+                                News / editorial cards for the home "News" section. Leave an article's
+                                model empty to make it brand-wide; set it here to tie the article to this model.
                             </p>
                             <field name="story_ids" context="{'default_model_id': id}">
                                 <list editable="bottom">

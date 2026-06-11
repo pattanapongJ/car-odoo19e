@@ -366,7 +366,7 @@
             <field name="sequence">20</field>
         </record>
         <record id="menu_website_stories" model="theme.website.menu">
-            <field name="name">Stories</field>
+            <field name="name">News</field>
             <field name="url">/stories</field>
             <field name="sequence">30</field>
         </record>

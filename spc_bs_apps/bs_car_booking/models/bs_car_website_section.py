@@ -38,7 +38,7 @@ class BsCarWebsiteSection(models.Model):
         ('cabin_story', 'Cabin Story'),
         ('latest_arrivals', 'Latest Arrivals'),
         ('offers', 'Offers'),
-        ('stories', 'Stories'),
+        ('stories', 'News'),
         ('dealer_locator', 'Dealer Locator'),
     ], required=True, default='brand_cover', index=True)
     theme_variant = fields.Selection([

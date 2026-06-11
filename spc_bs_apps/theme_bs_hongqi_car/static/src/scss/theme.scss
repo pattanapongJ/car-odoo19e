@@ -1655,9 +1655,16 @@ html {
 }
 
 /* ── Detail Page ─────────────────────────────────────────────── */
+/* Anchored sections land below the sticky in-page nav. */
+.bs_detail_page section[id] {
+    scroll-margin-top: 76px;
+}
+
 .car_detail_hero {
     position: relative;
-    min-height: 78vh;
+    /* Full-screen cinematic hero (svh keeps it exact on mobile chrome). */
+    min-height: 100vh;
+    min-height: 100svh;
     overflow: hidden;
     background: var(--car-bg-dark);
 }
@@ -1672,38 +1679,67 @@ html {
 }
 
 .car_detail_hero_fallback {
-    background: var(--car-bg-dark);
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2416 100%);
 }
 
 .car_detail_hero_overlay {
     position: absolute;
     inset: 0;
+    /* Above the YouTube/Vimeo embed layer (.bs_hero_embed is z-index: 1). */
+    z-index: 2;
     display: flex;
     align-items: flex-end;
     color: #fff;
     background:
         linear-gradient(90deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.26) 58%, rgba(0, 0, 0, 0.08)),
-        linear-gradient(0deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.04) 48%);
+        linear-gradient(0deg, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.04) 48%);
 }
 
 .car_detail_hero_content {
     padding-top: 110px;
-    padding-bottom: 62px;
+    /* Clears the quick-spec strip that overlaps the hero bottom. */
+    padding-bottom: 96px;
 }
 
 .car_detail_brand {
-    color: rgba(255, 255, 255, 0.78);
-    font-size: 0.82rem;
-    font-weight: 700;
+    margin-bottom: 14px;
+    font-size: 0.8rem;
 }
 
 .car_detail_title {
-    max-width: 780px;
-    margin: 10px 0;
+    max-width: 820px;
+    margin: 0 0 14px;
     color: #fff;
-    font-size: 3.2rem;
-    font-weight: 760;
-    line-height: 1.05;
+    font-size: clamp(2.6rem, 5vw, 4.2rem);
+    font-weight: 700;
+    line-height: 1.02;
+}
+
+.car_detail_meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.car_detail_chip {
+    padding: 6px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.car_detail_chip_new {
+    border-color: transparent;
+    background: var(--car-accent);
+    color: #fff;
 }
 
 .car_detail_price {
@@ -1712,59 +1748,238 @@ html {
 }
 
 .car_detail_price strong {
+    margin-left: 6px;
     color: #fff;
-    font-size: 1.85rem;
+    font-family: var(--car-font-serif);
+    font-size: 2rem;
+    letter-spacing: 0.4px;
 }
 
 .car_detail_actions {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    margin-top: 26px;
+    margin-top: 28px;
 }
 
+/* ── Detail hero mobile ──────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    .car_detail_hero_img {
+        object-position: 55% 35%;
+    }
+
+    .car_detail_hero_overlay {
+        background:
+            linear-gradient(0deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.48) 40%, rgba(0, 0, 0, 0.18) 100%);
+    }
+
+    .car_detail_hero_content {
+        padding-top: 0;
+        padding-bottom: clamp(56px, 13vw, 72px);
+    }
+
+    .car_detail_title {
+        font-size: clamp(2.1rem, 9vw, 3rem);
+    }
+
+    .car_detail_price strong {
+        font-size: 1.55rem;
+    }
+
+    .car_detail_actions {
+        flex-direction: column;
+    }
+
+    .car_detail_actions .car_cta_btn,
+    .car_detail_actions .car_ghost_btn {
+        justify-content: center;
+    }
+
+    .car_detail_actions .car_ghost_btn {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.9);
+    }
+}
+
+/* ── Hero highlight specs — elevated cards overlapping hero ───── */
 .car_quick_specs {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 1px;
-    overflow: hidden;
-    margin-top: -42px;
+    margin-top: -36px;
     margin-bottom: 48px;
     position: relative;
     z-index: 2;
     border-radius: var(--car-radius);
+    overflow: hidden;
     background: var(--car-border);
-    box-shadow: var(--car-shadow-lg);
+    box-shadow: 0 8px 32px rgba(12, 10, 8, 0.12);
 }
 
 .spec_item {
-    min-height: 126px;
-    padding: 26px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 130px;
+    padding: 28px 18px;
     text-align: center;
-    background: var(--car-bg-card);
+    background: #fff;
+    transition: background var(--car-transition);
+}
+
+.spec_item:hover {
+    background: #fefdfa;
 }
 
 .spec_value {
-    display: block;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
     color: var(--car-primary);
-    font-size: 2rem;
-    font-weight: 760;
+    font-family: var(--car-font-serif);
+    font-size: clamp(1.9rem, 3vw, 2.3rem);
+    font-weight: 700;
     line-height: 1;
 }
 
-.spec_label {
-    display: block;
-    margin-top: 10px;
+.spec_unit {
     color: var(--car-text-secondary);
+    font-family: var(--car-font-sans);
     font-size: 0.8rem;
+    font-weight: 500;
+    opacity: 0.7;
+}
+
+.spec_label {
+    margin-top: 8px;
+    color: var(--car-text-secondary);
+    font-size: 0.66rem;
     font-weight: 700;
+    letter-spacing: 1px;
     text-transform: uppercase;
 }
 
-/* ── Data-driven specification sheet ──────────────────────────── */
-.car_spec_sheet_band {
-    padding: 24px 12px 64px;
+/* Cascade the spec cards in as they enter the viewport. */
+@for $i from 1 through 6 {
+    .bs-reveal-ready .car_quick_specs .spec_item[data-bs-reveal]:nth-child(#{$i}) {
+        transition-delay: #{($i - 1) * 80}ms;
+    }
 }
+
+@media (max-width: 767.98px) {
+    .car_quick_specs {
+        grid-template-columns: repeat(2, 1fr);
+        margin-top: -28px;
+        margin-bottom: 36px;
+        border-radius: 0;
+    }
+
+    .spec_item {
+        min-height: 106px;
+        padding: 20px 14px;
+    }
+
+    .spec_value {
+        font-size: clamp(1.5rem, 7vw, 1.9rem);
+    }
+}
+
+/* ── Expandable specification accordion (sits below the gallery) ─ */
+.car_specs_accordion {
+    padding: 56px 12px 64px;
+}
+
+.bs_specs_details {
+    max-width: 760px;
+    margin: 0 auto;
+    border: 1px solid var(--car-border);
+    border-radius: var(--car-radius);
+    overflow: hidden;
+}
+
+.bs_specs_summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: background var(--car-transition);
+}
+
+.bs_specs_summary::-webkit-details-marker {
+    display: none;
+}
+
+.bs_specs_summary:hover {
+    background: var(--car-bg-section);
+}
+
+.bs_specs_summary .section_title {
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+.bs_specs_toggle {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 1px solid var(--car-border);
+    background: var(--car-bg-card);
+    transition: transform 0.3s ease;
+}
+
+.bs_specs_toggle::before,
+.bs_specs_toggle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: var(--car-text-primary);
+    transition: transform 0.3s ease;
+}
+
+.bs_specs_toggle::before {
+    width: 10px;
+    height: 2px;
+    margin: -1px 0 0 -5px;
+}
+
+.bs_specs_toggle::after {
+    width: 2px;
+    height: 10px;
+    margin: -5px 0 0 -1px;
+}
+
+.bs_specs_details[open] .bs_specs_toggle::after {
+    transform: rotate(90deg);
+}
+
+.bs_specs_details .car_spec_sheet {
+    border-top: 1px solid var(--car-border);
+    border-radius: 0;
+}
+
+@media (max-width: 767.98px) {
+    .car_specs_accordion {
+        padding: 40px 0 48px;
+    }
+
+    .bs_specs_summary {
+        padding: 16px 18px;
+    }
+
+    .bs_specs_summary .section_title {
+        font-size: 0.95rem;
+    }
+}
+
+/* Shared spec table (used inside accordion). */
 .car_spec_sheet {
     max-width: 760px;
     margin: 0 auto;
@@ -1772,6 +1987,7 @@ html {
     border-radius: var(--car-radius);
     overflow: hidden;
 }
+
 .car_spec_row {
     display: flex;
     justify-content: space-between;
@@ -1780,8 +1996,10 @@ html {
     padding: 14px 20px;
     border-bottom: 1px solid var(--car-border);
 }
+
 .car_spec_row:last-child { border-bottom: 0; }
 .car_spec_row:nth-child(odd) { background: var(--car-bg-section); }
+
 .car_spec_k {
     color: var(--car-text-secondary);
     font-size: 0.82rem;
@@ -1789,11 +2007,13 @@ html {
     text-transform: uppercase;
     letter-spacing: 0.4px;
 }
+
 .car_spec_v {
     color: var(--car-text-primary);
     font-weight: 700;
     text-align: right;
 }
+
 .car_spec_u {
     color: var(--car-text-secondary);
     font-weight: 600;
@@ -1801,14 +2021,16 @@ html {
     margin-left: 2px;
 }
 
+/* ── Sticky in-page nav ───────────────────────────────────────── */
 .car_detail_nav {
     position: sticky;
     top: 0;
     z-index: 10;
     border-top: 1px solid rgba(0, 0, 0, 0.06);
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    background: rgba(255, 253, 248, 0.9);
+    background: rgba(255, 253, 248, 0.92);
     backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .car_detail_nav_inner {
@@ -1816,105 +2038,266 @@ html {
     min-height: 58px;
     gap: 18px;
     align-items: center;
-    justify-content: space-between;
 }
 
-.car_detail_nav_inner > span {
-    font-weight: 760;
-}
-
-.car_detail_nav_inner div {
+.car_detail_nav_brand {
     display: flex;
-    gap: 18px;
+    flex-shrink: 0;
+    gap: 10px;
     align-items: center;
 }
 
-.car_detail_nav_inner a:not(.btn) {
-    color: var(--car-text-secondary);
-    font-size: 0.9rem;
-    font-weight: 700;
+.car_detail_nav_back {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--car-border);
+    border-radius: 50%;
+    color: var(--car-text-primary);
+    font-size: 1rem;
     text-decoration: none;
+    transition: border-color var(--car-transition), color var(--car-transition);
 }
 
-.car_detail_nav_inner a:hover {
+.car_detail_nav_back:hover {
+    border-color: var(--car-accent);
     color: var(--car-accent);
 }
 
-.car_story_band {
-    background: var(--car-bg-section);
-    padding: 60px 0;
+.car_detail_nav_name {
+    font-family: var(--car-font-serif);
+    font-size: 1.02rem;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
+.car_detail_nav_links {
+    display: flex;
+    flex: 1 1 auto;
+    gap: 22px;
+    align-items: center;
+    justify-content: flex-end;
+    /* Anchors scroll horizontally on narrow screens instead of wrapping. */
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.car_detail_nav_links::-webkit-scrollbar {
+    display: none;
+}
+
+.car_detail_nav_links a {
+    flex-shrink: 0;
+    color: var(--car-text-secondary);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color var(--car-transition);
+}
+
+.car_detail_nav_links a:hover {
+    color: var(--car-accent);
+}
+
+.car_detail_nav_btn {
+    flex-shrink: 0;
+}
+
+@media (max-width: 767.98px) {
+    .car_detail_nav_name {
+        display: none;
+    }
+
+    .car_detail_nav_inner {
+        gap: 12px;
+    }
+
+    .car_detail_nav_links {
+        gap: 18px;
+        justify-content: flex-start;
+        /* Soft fade hints that more anchors are scrollable. */
+        mask-image: linear-gradient(90deg, #000 92%, transparent);
+        -webkit-mask-image: linear-gradient(90deg, #000 92%, transparent);
+    }
+
+    .car_detail_nav_links a {
+        font-size: 0.76rem;
+    }
+}
+
+/* ── Description + features — editorial two-column band ──────── */
+.car_story_band {
+    background: var(--car-bg-section);
+    padding: clamp(56px, 8vw, 96px) 0;
+}
+
+/* Two columns when both overview and features exist. */
 .car_story_grid {
     display: grid;
-    grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
-    gap: 36px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(40px, 6vw, 90px);
     align-items: start;
 }
 
 .car_description {
+    max-width: 780px;
+    margin: 0 auto;
     color: var(--car-text-primary);
-    font-size: 1.06rem;
-    line-height: 1.8;
+    font-size: 1.12rem;
+    line-height: 1.9;
 }
 
-.car_features {
-    padding: 28px;
+.car_description .car_kicker {
+    margin-bottom: 18px;
+}
+
+/* In the two-column band, the overview reads top-aligned and stays in
+   view while a long feature list scrolls past. */
+.car_story_grid .car_description {
+    max-width: none;
+    margin: 0;
+    position: sticky;
+    top: 96px;
+}
+
+/* Elevated key-features card with a gold-numbered hairline list. */
+.bs_features_card {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: clamp(28px, 4vw, 44px);
     border: 1px solid var(--car-border);
-    border-radius: var(--car-radius);
+    border-radius: var(--car-radius-lg);
     background: var(--car-bg-card);
-    box-shadow: var(--car-shadow);
+    box-shadow: var(--car-shadow-lg);
 }
 
-.feature_list {
-    display: grid;
-    gap: 10px;
+.car_story_grid .bs_features_card {
+    max-width: none;
+    margin: 0;
 }
 
-.feature_item {
+.bs_features_card .section_title {
+    margin-bottom: 14px;
+}
+
+.bs_features_list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.bs_features_list li {
     display: flex;
-    gap: 12px;
-    align-items: flex-start;
+    gap: 18px;
+    align-items: baseline;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--car-border);
+}
+
+.bs_features_list li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.bs_feature_num {
+    flex-shrink: 0;
+    min-width: 32px;
+    color: var(--car-gold);
+    font-family: var(--car-font-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.bs_feature_text {
     color: var(--car-text-primary);
     font-size: 0.98rem;
+    line-height: 1.6;
 }
 
-.feature_item i {
-    margin-top: 4px;
-    color: var(--car-accent);
+@media (max-width: 991.98px) {
+    .car_story_grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+    }
+
+    .car_story_grid .car_description {
+        position: static;
+    }
 }
 
+@media (max-width: 767.98px) {
+    .car_story_band {
+        padding: 44px 0;
+    }
+
+    .car_description {
+        font-size: 1rem;
+        line-height: 1.8;
+    }
+
+    .bs_features_card {
+        padding: 24px 20px;
+    }
+
+    .bs_features_list li {
+        gap: 14px;
+        padding: 13px 0;
+    }
+
+    .bs_feature_text {
+        font-size: 0.92rem;
+    }
+}
+
+/* ── Variants ─────────────────────────────────────────────────── */
 .variant_grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 16px;
 }
 
 .variant_card {
-    padding: 22px;
+    padding: 24px;
     border: 1px solid var(--car-border);
     border-radius: var(--car-radius);
     background: var(--car-bg-card);
     box-shadow: var(--car-shadow);
+    transition: box-shadow var(--car-transition), transform var(--car-transition);
 }
 
-.variant_color {
-    width: 56px;
-    height: 56px;
-    margin-bottom: 16px;
+.variant_card:hover {
+    box-shadow: var(--car-shadow-lg);
+    transform: translateY(-3px);
+}
+
+.variant_swatch {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 14px;
     border: 1px solid rgba(0, 0, 0, 0.16);
     border-radius: 50%;
     box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.75);
 }
 
 .variant_card h4 {
-    margin: 0 0 8px;
+    margin: 0 0 4px;
     color: var(--car-text-primary);
     font-size: 1.1rem;
     font-weight: 760;
 }
 
-.variant_details,
+.variant_color_name {
+    color: var(--car-text-secondary);
+    font-size: 0.84rem;
+    margin-bottom: 12px;
+}
+
 .variant_specs {
     display: flex;
     flex-wrap: wrap;
@@ -1923,16 +2306,22 @@ html {
     font-size: 0.84rem;
 }
 
-.variant_details span,
 .variant_specs span {
-    padding: 4px 8px;
+    padding: 5px 10px;
     border-radius: var(--car-radius);
     background: var(--car-bg-section);
+}
+
+.variant_specs span i {
+    margin-right: 3px;
+    opacity: 0.5;
+    font-size: 0.72rem;
 }
 
 .variant_price {
     margin: 18px 0 6px;
     color: var(--car-text-primary);
+    font-family: var(--car-font-serif);
     font-size: 1.35rem;
     font-weight: 760;
 }
@@ -1942,6 +2331,11 @@ html {
     font-size: 0.84rem;
 }
 
+.variant_delivery strong {
+    color: var(--car-text-primary);
+}
+
+/* ── Gallery ──────────────────────────────────────────────────── */
 .car_gallery_band {
     padding: 64px 0;
     background: var(--car-primary);
@@ -1961,6 +2355,7 @@ html {
     overflow: hidden;
     border-radius: var(--car-radius);
     background: #1b1b1b;
+    cursor: pointer;
 }
 
 .gallery_item:first-child {
@@ -1993,42 +2388,21 @@ html {
     overflow-wrap: anywhere;
 }
 
-.dealer_grid,
-.dealer_select_grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
+@media (max-width: 767.98px) {
+    .gallery_grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .gallery_item,
+    .gallery_item:first-child {
+        grid-column: span 2;
+        grid-row: span 1;
+        min-height: 200px;
+    }
 }
 
-.dealer_card {
-    overflow: hidden;
-    border: 1px solid var(--car-border);
-    border-radius: var(--car-radius);
-    background: var(--car-bg-card);
-    box-shadow: var(--car-shadow);
-}
-
-.dealer_card img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-}
-
-.dealer_card_body {
-    padding: 16px;
-}
-
-.dealer_card h4 {
-    margin: 0 0 8px;
-    font-size: 1rem;
-    font-weight: 760;
-}
-
-.dealer_info {
-    color: var(--car-text-secondary);
-    font-size: 0.88rem;
-}
-
+/* ── Booking CTA ──────────────────────────────────────────────── */
 .car_cta_section {
     background: var(--car-primary);
     color: #fff;
@@ -2049,11 +2423,32 @@ html {
     color: #fff;
     font-size: 2.25rem;
     line-height: 1.12;
+    font-family: var(--car-font-serif);
 }
 
 .car_cta_inner p {
     margin: 0;
     color: rgba(255, 255, 255, 0.76);
+}
+
+@media (max-width: 767.98px) {
+    .car_cta_inner {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        min-height: 0;
+        padding-top: 36px;
+        padding-bottom: 36px;
+        gap: 20px;
+    }
+
+    .car_cta_inner h2 {
+        font-size: 1.65rem;
+    }
+
+    .car_cta_inner .btn {
+        justify-content: center;
+    }
 }
 
 /* ── Configurator ────────────────────────────────────────────── */
@@ -2823,8 +3218,7 @@ html {
 /* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 1199px) {
     .car_showroom_content,
-    .cfg_grid,
-    .car_story_grid {
+    .cfg_grid {
         grid-template-columns: 1fr;
     }
 
@@ -2838,8 +3232,7 @@ html {
 }
 
 @media (max-width: 992px) {
-    .car_hero_title,
-    .car_detail_title {
+    .car_hero_title {
         font-size: 2.45rem;
     }
 
@@ -2848,8 +3241,7 @@ html {
     }
 
     .car_catalog_header,
-    .car_cta_inner,
-    .car_detail_nav_inner {
+    .car_cta_inner {
         align-items: flex-start;
         flex-direction: column;
     }
@@ -2874,8 +3266,7 @@ html {
 }
 
 @media (max-width: 768px) {
-    .car_showroom_hero,
-    .car_detail_hero {
+    .car_showroom_hero {
         min-height: 72vh;
     }
 
@@ -2909,7 +3300,6 @@ html {
     }
 
     .car_showroom_content,
-    .car_detail_hero_content,
     .cfg_hero_content {
         padding-top: 84px;
         padding-bottom: 38px;
@@ -2929,8 +3319,7 @@ html {
         text-align: center;
     }
 
-    .car_hero_title,
-    .car_detail_title {
+    .car_hero_title {
         font-size: 2rem;
     }
 
@@ -3013,28 +3402,12 @@ html {
         grid-template-columns: 1fr;
     }
 
-    .car_quick_specs {
-        margin-top: 0;
-        grid-template-columns: 1fr 1fr;
-        border-radius: 0;
-    }
-
-    .spec_item {
-        min-height: 112px;
-        padding: 22px 12px;
-    }
-
-    .spec_value {
-        font-size: 1.55rem;
-    }
-
     .car_story_band,
     .car_gallery_band,
     .car_catalog_band {
         padding: 42px 0;
     }
 
-    .car_features,
     .otp_card,
     .payment_card,
     .confirmation_card,
@@ -3074,8 +3447,7 @@ html {
         min-width: 0;
     }
 
-    .dealer_select_grid,
-    .dealer_grid {
+    .dealer_select_grid {
         grid-template-columns: 1fr;
     }
 

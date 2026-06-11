@@ -202,6 +202,10 @@
             <!-- SEO: Schema.org Vehicle structured data (rich results) -->
             <script type="application/ld+json" t-out="car.sudo()._website_jsonld()"/>
 
+            <!-- Wrapper drives the scroll-reveal interaction (DetailMotion). -->
+            <div class="bs_detail_page">
+
+            <!-- ── Cinematic full-screen hero ───────────────────────── -->
             <section class="car_detail_hero">
                 <t t-call="bs_car_booking.hero_media">
                     <t t-set="hero_class" t-value="'car_detail_hero_img'"/>
@@ -209,128 +213,129 @@
                     <t t-set="img_w" t-value="'1920x1080'"/>
                 </t>
                 <div class="car_detail_hero_overlay">
-                    <div class="container car_detail_hero_content" data-bs-car-reveal="hero">
-                        <span class="car_detail_brand" t-esc="car.brand_id.name"/>
+                    <div class="container car_detail_hero_content" data-bs-reveal="">
+                        <span class="car_kicker car_detail_brand" t-esc="car.brand_id.name"/>
                         <h1 class="car_detail_title" t-esc="car.name"/>
-                        <div class="car_detail_price">
+                        <div class="car_detail_meta">
+                            <span t-if="car.is_new_arrival" class="car_detail_chip car_detail_chip_new">New Arrival</span>
+                            <span t-if="car.body_type" class="car_detail_chip"
+                                  t-esc="{'suv': 'SUV'}.get(car.body_type, car.body_type.title())"/>
+                        </div>
+                        <div class="car_detail_price" t-if="car.base_price">
                             From
                             <strong t-esc="car.base_price"
                                     t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
                         </div>
                         <div class="car_detail_actions">
                             <a t-att-href="'/car/%s/book' % car.id" class="btn btn-primary car_cta_btn">
-                                Configure <i class="fa fa-sliders"/>
+                                Reserve Now <i class="fa fa-arrow-right"/>
                             </a>
                             <a href="#model_specs" class="btn btn-outline-light car_ghost_btn">
-                                View Specs <i class="fa fa-arrow-down"/>
+                                Explore <i class="fa fa-arrow-down"/>
                             </a>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="model_specs" class="container car_quick_specs" data-bs-car-reveal="up">
-                <t t-set="hl_specs" t-value="car.spec_ids.filtered('is_highlight')"/>
+            <!-- ── Hero highlight specs — elevated cards overlapping hero ─ -->
+            <section id="model_specs" class="container car_quick_specs">
+                <t t-set="hl_specs" t-value="car.spec_ids.filtered('is_highlight')[:4]"/>
                 <t t-if="hl_specs">
-                    <!-- Data-driven hero highlights from the spec sheet -->
-                    <div class="spec_item" t-foreach="hl_specs" t-as="sp">
-                        <span class="spec_value" t-esc="sp.value"/>
-                        <span class="spec_label"><t t-esc="sp.unit"/> <t t-esc="sp.name"/></span>
+                    <div class="spec_item" t-foreach="hl_specs" t-as="sp" data-bs-reveal="">
+                        <span class="spec_value"><t t-esc="sp.value"/><small t-if="sp.unit" class="spec_unit" t-esc="sp.unit"/></span>
+                        <span class="spec_label" t-esc="sp.name"/>
                     </div>
                 </t>
                 <t t-else="">
-                    <!-- Fallback to model fields when no spec sheet is configured -->
-                    <div class="spec_item" t-if="car.range_km">
-                        <span class="spec_value" t-att-data-bs-count-to="car.range_km" t-esc="car.range_km"/>
-                        <span class="spec_label">km Range</span>
+                    <div class="spec_item" t-if="car.range_km" data-bs-reveal="">
+                        <span class="spec_value"><t t-esc="car.range_km"/><small class="spec_unit">km</small></span>
+                        <span class="spec_label">Range</span>
                     </div>
-                    <div class="spec_item" t-if="car.acceleration">
-                        <span class="spec_value" t-esc="car.acceleration"/>
-                        <span class="spec_label">s 0-100 km/h</span>
+                    <div class="spec_item" t-if="car.acceleration" data-bs-reveal="">
+                        <span class="spec_value"><t t-esc="car.acceleration"/><small class="spec_unit">s</small></span>
+                        <span class="spec_label">0–100 km/h</span>
                     </div>
-                    <div class="spec_item" t-if="car.top_speed">
-                        <span class="spec_value" t-att-data-bs-count-to="car.top_speed" t-esc="car.top_speed"/>
-                        <span class="spec_label">km/h Top Speed</span>
+                    <div class="spec_item" t-if="car.top_speed" data-bs-reveal="">
+                        <span class="spec_value"><t t-esc="car.top_speed"/><small class="spec_unit">km/h</small></span>
+                        <span class="spec_label">Top Speed</span>
                     </div>
-                    <div class="spec_item" t-if="car.seats">
-                        <span class="spec_value" t-att-data-bs-count-to="car.seats" t-esc="car.seats"/>
+                    <div class="spec_item" t-if="car.seats" data-bs-reveal="">
+                        <span class="spec_value" t-esc="car.seats"/>
                         <span class="spec_label">Seats</span>
                     </div>
                 </t>
             </section>
 
-            <!-- Full data-driven specification sheet -->
-            <section t-if="car.spec_ids" id="full_specs" class="container car_spec_sheet_band" data-bs-car-reveal="up">
-                <div class="section_header_center">
-                    <span class="car_kicker car_kicker_dark">Specifications</span>
-                    <h2 class="section_title"><t t-esc="car.name"/> spec sheet</h2>
-                </div>
-                <div class="car_spec_sheet">
-                    <div class="car_spec_row" t-foreach="car.spec_ids" t-as="sp">
-                        <span class="car_spec_k" t-esc="sp.name"/>
-                        <span class="car_spec_v">
-                            <t t-esc="sp.value"/>
-                            <span class="car_spec_u" t-if="sp.unit" t-esc="sp.unit"/>
-                        </span>
-                    </div>
-                </div>
-            </section>
-
+            <!-- ── Sticky in-page navigation ────────────────────────── -->
             <section class="car_detail_nav">
                 <div class="container car_detail_nav_inner">
-                    <span><t t-esc="car.brand_id.name"/> <t t-esc="car.name"/></span>
-                    <div>
+                    <div class="car_detail_nav_brand">
+                        <a href="/cars" class="car_detail_nav_back" aria-label="All models">
+                            <i class="fa fa-angle-left"/>
+                        </a>
+                        <span class="car_detail_nav_name">
+                            <t t-esc="car.brand_id.name"/> <t t-esc="car.name"/>
+                        </span>
+                    </div>
+                    <nav class="car_detail_nav_links" aria-label="Page sections">
+                        <a href="#overview" t-if="car.description or car.highlight_features">Overview</a>
                         <a href="#variants" t-if="variants">Package</a>
                         <a href="#gallery" t-if="car.gallery_image_ids">Gallery</a>
+                        <a href="#full_specs" t-if="car.spec_ids">Specs</a>
                         <a href="#dealers" t-if="dealers">Dealers</a>
-                        <a t-att-href="'/car/%s/book' % car.id" class="btn btn-primary btn-sm">
-                            Reserve
-                        </a>
-                    </div>
+                    </nav>
+                    <a t-att-href="'/car/%s/book' % car.id" class="btn btn-primary btn-sm car_detail_nav_btn">
+                        Reserve
+                    </a>
                 </div>
             </section>
 
-            <section t-if="car.description or car.highlight_features" class="car_story_band">
-                <div class="container car_story_grid">
-                    <div t-if="car.description" class="car_description" data-bs-car-reveal="up">
+            <!-- ── Overview + key features — editorial two-column band ── -->
+            <section id="overview" t-if="car.description or car.highlight_features" class="car_story_band">
+                <div t-attf-class="container #{car.description and car.highlight_features and 'car_story_grid' or ''}">
+                    <div t-if="car.description" class="car_description" data-bs-reveal="">
                         <span class="car_kicker car_kicker_dark">Overview</span>
                         <t t-out="car.description"/>
                     </div>
-                    <div t-if="car.highlight_features" class="car_features" data-bs-car-reveal="up">
+                    <div t-if="car.highlight_features" class="bs_features_card" data-bs-reveal="">
                         <h2 class="section_title section_title_left">Key features</h2>
-                        <div class="feature_list">
-                            <t t-foreach="car.highlight_features.strip().split('\n')" t-as="feature">
-                                <div class="feature_item" t-if="feature.strip()">
-                                    <i class="fa fa-check-circle"/>
-                                    <span t-esc="feature.strip()"/>
-                                </div>
-                            </t>
-                        </div>
+                        <ol class="bs_features_list">
+                            <li t-foreach="[f.strip() for f in car.highlight_features.split('\n') if f.strip()]" t-as="feature">
+                                <span class="bs_feature_num" t-esc="'%02d' % (feature_index + 1)"/>
+                                <span class="bs_feature_text" t-esc="feature"/>
+                            </li>
+                        </ol>
                     </div>
                 </div>
             </section>
 
             <section id="variants" t-if="variants" class="container car_variants py-5">
-                <div class="section_header_center" data-bs-car-reveal="up">
+                <div class="section_header_center" data-bs-reveal="">
                     <span class="car_kicker car_kicker_dark">Standard Package</span>
                     <h2 class="section_title">Included booking package</h2>
                 </div>
                 <div class="variant_grid">
                     <t t-foreach="variants" t-as="variant">
-                        <div class="variant_card" data-bs-car-reveal="up">
+                        <div class="variant_card" data-bs-reveal="">
+                            <div t-if="variant.exterior_color_code" class="variant_swatch"
+                                 t-att-style="'background:%s' % variant.exterior_color_code"/>
                             <h4 t-esc="variant.name"/>
+                            <div t-if="variant.exterior_color" class="variant_color_name">
+                                <t t-esc="variant.exterior_color"/>
+                            </div>
                             <div class="variant_specs">
                                 <span t-if="variant.range_km or car.range_km">
-                                    <strong t-esc="variant.range_km or car.range_km"/> km
+                                    <i class="fa fa-bolt"/> <strong t-esc="variant.range_km or car.range_km"/> km
                                 </span>
                                 <span t-if="variant.acceleration or car.acceleration">
-                                    <strong t-esc="variant.acceleration or car.acceleration"/>s
+                                    <i class="fa fa-tachometer"/> <strong t-esc="variant.acceleration or car.acceleration"/>s
                                 </span>
                             </div>
                             <div class="variant_price" t-esc="variant.price"
                                  t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
                             <div class="variant_delivery">
-                                Est. delivery: <t t-esc="variant.estimated_delivery_days"/> days
+                                Est. delivery: <strong t-esc="variant.estimated_delivery_days"/> days
                             </div>
                         </div>
                     </t>
@@ -339,13 +344,13 @@
 
             <section id="gallery" t-if="car.gallery_image_ids" class="car_gallery_band">
                 <div class="container">
-                    <div class="section_header_center" data-bs-car-reveal="up">
+                    <div class="section_header_center" data-bs-reveal="">
                         <span class="car_kicker">Gallery</span>
                         <h2 class="section_title section_title_light">Design in detail</h2>
                     </div>
                     <div class="gallery_grid bs_gallery">
                         <t t-foreach="car.gallery_image_ids" t-as="img">
-                            <figure class="gallery_item" data-bs-car-reveal="up">
+                            <figure class="gallery_item" data-bs-reveal="">
                                 <img t-att-src="'/web/image/bs.car.model.image/%s/image/900x600' % img.id"
                                      t-att-data-bs-full="'/web/image/bs.car.model.image/%s/image' % img.id"
                                      t-att-alt="img.name or car.name" loading="lazy"/>
@@ -356,32 +361,32 @@
                 </div>
             </section>
 
-            <section id="dealers" t-if="dealers" class="container car_dealers py-5">
-                <div class="section_header_center" data-bs-car-reveal="up">
-                    <span class="car_kicker car_kicker_dark">Dealer network</span>
-                    <h2 class="section_title">Choose where to continue.</h2>
-                </div>
-                <div class="dealer_grid">
-                    <t t-foreach="dealers" t-as="dealer">
-                        <div class="dealer_card" data-bs-car-reveal="up">
-                            <t t-if="dealer.image">
-                                <img t-att-src="'/web/image/bs.car.dealer/%s/image/600x400' % dealer.id"
-                                     t-att-alt="dealer.name" loading="lazy"/>
-                            </t>
-                            <div class="dealer_card_body">
-                                <h4 t-esc="dealer.name"/>
-                                <div class="dealer_info">
-                                    <div t-if="dealer.city">
-                                        <i class="fa fa-map-marker"/> <t t-esc="dealer.city"/>
-                                    </div>
-                                    <div t-if="dealer.phone">
-                                        <i class="fa fa-phone"/> <t t-esc="dealer.phone"/>
-                                    </div>
-                                </div>
-                            </div>
+            <!-- ── Expandable full specification sheet ──────────────── -->
+            <section t-if="car.spec_ids" id="full_specs" class="container car_specs_accordion">
+                <details class="bs_specs_details" data-bs-reveal="">
+                    <summary class="bs_specs_summary">
+                        <span class="section_title section_title_left">Full specifications</span>
+                        <span class="bs_specs_toggle" aria-hidden="true"/>
+                    </summary>
+                    <div class="car_spec_sheet">
+                        <div class="car_spec_row" t-foreach="car.spec_ids" t-as="sp">
+                            <span class="car_spec_k" t-esc="sp.name"/>
+                            <span class="car_spec_v">
+                                <t t-esc="sp.value"/>
+                                <span class="car_spec_u" t-if="sp.unit" t-esc="sp.unit"/>
+                            </span>
                         </div>
-                    </t>
-                </div>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Map + showroom list, reusing the home dealer-locator pattern
+                 but scoped to this brand's dealers (from the controller). -->
+            <section id="dealers" t-if="dealers" class="car_catalog_band" data-bs-reveal="">
+                <t t-call="bs_car_booking.dealer_locator_content">
+                    <t t-set="locator_kicker">Dealer network</t>
+                    <t t-set="locator_title">Choose where to continue.</t>
+                </t>
             </section>
 
             <!-- Active offers for this model (plus global offers) -->
@@ -392,14 +397,17 @@
             </section>
 
             <section class="car_cta_section">
-                <div class="container car_cta_inner" data-bs-car-reveal="up">
+                <div class="container car_cta_inner" data-bs-reveal="">
                     <div>
                         <span class="car_kicker">Booking deposit</span>
                         <h2>Reserve your <t t-esc="car.name"/>.</h2>
-                        <p>
+                        <p t-if="car.deposit_amount">
                             Secure the booking with a deposit of
                             <strong t-esc="car.deposit_amount"
                                     t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>.
+                        </p>
+                        <p t-else="">
+                            Complete your reservation online in a few minutes.
                         </p>
                     </div>
                     <a t-att-href="'/car/%s/book' % car.id" class="btn btn-primary btn-lg car_cta_btn">
@@ -407,6 +415,8 @@
                     </a>
                 </div>
             </section>
+
+            </div>
         </t>
     </template>
 </odoo>
