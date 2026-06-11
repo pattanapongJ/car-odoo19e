@@ -130,7 +130,7 @@ class BsCarModel(models.Model):
     
     # Media
     image = fields.Image('Main Image', max_width=1920, max_height=1080)
-    gallery_image_ids = fields.One2many('bs.car.model.image', 'model_id', string='Gallery')
+    gallery_image_ids = fields.One2many('bs.car.model.image', 'model_id', string='Gallery', copy=True)
     # Optional looping background video for the hero (mp4/webm). Stored as a
     # generic attachment (NOT an Image field), so video files are accepted.
     hero_video = fields.Binary('Hero Video', attachment=True,
@@ -203,7 +203,7 @@ class BsCarModel(models.Model):
     seats = fields.Integer('Seats', default=5)
     
     # Variants
-    variant_ids = fields.One2many('bs.car.variant', 'model_id', string='Variants')
+    variant_ids = fields.One2many('bs.car.variant', 'model_id', string='Variants', copy=True)
     variant_count = fields.Integer(compute='_compute_variant_count')
     
     # Website
@@ -247,15 +247,15 @@ class BsCarModel(models.Model):
     product_tmpl_id = fields.Many2one('product.template', string='Configurable Product',
                                       copy=False, readonly=True,
                                       help='Generated product that powers pricing & ordering.')
-    option_ids = fields.One2many('bs.car.model.option', 'model_id', string='Options',
+    option_ids = fields.One2many('bs.car.model.option', 'model_id', string='Options', copy=True,
                                  help='Selectable priced options (color, interior, wheels, add-ons).')
-    spec_ids = fields.One2many('bs.car.model.spec', 'model_id', string='Specifications',
+    spec_ids = fields.One2many('bs.car.model.spec', 'model_id', string='Specifications', copy=True,
                                help='Technical spec sheet shown on the website (data-driven).')
 
     # --- Home "showcase" content, split per type so each maps to one
     #     home section. All point to bs.car.showcase.item via model_id; the
     #     domains are mutually exclusive (no record appears in two fields). ---
-    showcase_item_ids = fields.One2many('bs.car.showcase.item', 'model_id', string='Showcase Items')
+    showcase_item_ids = fields.One2many('bs.car.showcase.item', 'model_id', string='Showcase Items', copy=True)
     stage_item_ids = fields.One2many(
         'bs.car.showcase.item', 'model_id', string='Model Stage Slides',
         domain=[('item_type', '=', 'stage')], context={'default_item_type': 'stage'})
@@ -271,6 +271,8 @@ class BsCarModel(models.Model):
     cabin_item_ids = fields.One2many(
         'bs.car.showcase.item', 'model_id', string='Cabin Story',
         domain=[('item_type', '=', 'cabin')], context={'default_item_type': 'cabin'})
+    # copy=False (default) kept on purpose: news articles are time-bound
+    # editorial — duplicating a model for a new year must not clone them.
     story_ids = fields.One2many('bs.car.story', 'model_id', string='Stories')
     showcase_count = fields.Integer(compute='_compute_showcase_count')
 
