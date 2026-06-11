@@ -53,6 +53,7 @@
                                     <field name="website_id"/>
                                     <field name="company_id"/>
                                     <field name="body_type"/>
+                                    <field name="model_year"/>
                                     <field name="seats"/>
                                     <field name="website_published"/>
                                     <field name="website_featured"/>

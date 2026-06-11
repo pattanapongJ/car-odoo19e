@@ -116,7 +116,14 @@ class BsCarModel(models.Model):
         ('pickup', 'Pickup'),
         ('van', 'Van'),
     ], string='Body Type')
-    
+    # Document-only (FC requirement): Thai sales paperwork — invoices,
+    # registration, insurance/finance quotes — carries the รุ่นปี (model year).
+    # It flows into the generated product's name, hence every SO/invoice line.
+    # NOT shown on the website; marketing display is a "Model Year" spec line.
+    model_year = fields.Char('Model Year', size=4,
+                             help='Manufacturer model year (e.g. 2026). Appended to the '
+                                  'generated product name so sales documents carry it.')
+
     description = fields.Html('Description', translate=True)
     highlight_features = fields.Text('Highlight Features', translate=True,
                                      help='Key features displayed on website, one per line')
@@ -318,6 +325,26 @@ class BsCarModel(models.Model):
                 return tax
         return self.env.company.account_sale_tax_id
 
+    def _product_display_name(self):
+        """Name of the generated product, hence of every SO/invoice line:
+        "Brand Model (Year)" — the year is a Thai sales-paperwork requirement."""
+        self.ensure_one()
+        name = f'{self.brand_id.name} {self.name}'.strip()
+        if self.model_year:
+            name = f'{name} ({self.model_year})'
+        return name
+
+    def write(self, vals):
+        res = super().write(vals)
+        # Keep the generated product's name (→ new sales documents) in sync.
+        # Already-confirmed order lines keep their historical description.
+        if {'name', 'brand_id', 'model_year'} & set(vals):
+            for model in self.filtered('product_tmpl_id'):
+                new_name = model._product_display_name()
+                if model.product_tmpl_id.name != new_name:
+                    model.product_tmpl_id.name = new_name
+        return res
+
     def action_generate_product(self):
         """Create/refresh the product.template + attribute lines for each model."""
         Line = self.env['product.template.attribute.line']
@@ -335,7 +362,7 @@ class BsCarModel(models.Model):
                 managed_attr_ids.add(attr.id)
         for model in self:
             vals = {
-                'name': f'{model.brand_id.name} {model.name}'.strip(),
+                'name': model._product_display_name(),
                 'type': 'consu',
                 'list_price': model.base_price or 0.0,
                 'bs_car_model_id': model.id,
