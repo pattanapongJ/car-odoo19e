@@ -28,7 +28,7 @@ Website Journey:
 6. Receive booking confirmation via SMS
 """,
     'category': 'Website/Booking',
-    'version': '19.0.9.0.1',
+    'version': '19.0.9.0.3',
     'author': 'Basic Solution Co., Ltd.',
     'maintainer': 'Basic Solution Co., Ltd.',
     'website': 'https://basicsolution.com/',
@@ -51,7 +51,8 @@ Website Journey:
         'sms',
         'mail',
         'contacts',
-        'html_builder'
+        'html_builder',
+        'bs_api_testdrive_config',
     ],
     'data': [
         # Security

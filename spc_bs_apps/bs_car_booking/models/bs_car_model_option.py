@@ -54,6 +54,10 @@ class BsCarModelOption(models.Model):
         string='Available Interiors',
         help='Interior options offered with this exterior colour. '
              'Leave empty to offer every interior configured on the model.')
+    
+    website_published = fields.Boolean(
+        'Published on Website', default=True,
+        help='Whether to show this option on the website. Unpublish to hide it without deleting.')
 
     _model_value_uniq = models.Constraint(
         'UNIQUE(model_id, value_id)',
@@ -69,9 +73,10 @@ class BsCarModelOption(models.Model):
 
     @api.model
     def _get_color_options(self, model, attribute_ref):
-        """Option lines of ``model`` for the given attribute (by xmlid), in
-        display order. Used by the Colour Studio to source exterior/interior
-        swatches from the priced configurator options."""
+        """Published option lines of ``model`` for the given attribute (by
+        xmlid), in display order. Used by the Colour Studio to source
+        exterior/interior swatches from the priced configurator options.
+        Unpublished options are excluded so they stay hidden on the website."""
         attr = self.env.ref(attribute_ref, raise_if_not_found=False)
         if not attr:
             return self.browse()
@@ -79,6 +84,7 @@ class BsCarModelOption(models.Model):
         return self.sudo().search([
             ('model_id', '=', model_id),
             ('attribute_id', '=', attr.id),
+            ('website_published', '=', True),
         ], order='sequence, id')
 
     def _studio_swatch(self):

@@ -349,6 +349,17 @@ class BsCarModel(models.Model):
         """Create/refresh the product.template + attribute lines for each model."""
         Line = self.env['product.template.attribute.line']
         tax = self._get_sale_tax()
+        # Attributes this routine owns: trim (from variants) + the option-sourced
+        # ones. Used to drop stale attribute lines when a model's options for an
+        # attribute are all removed (otherwise old values linger on the product).
+        managed_attr_ids = set()
+        trim_attr = self.env.ref('bs_car_booking.attr_trim', raise_if_not_found=False)
+        if trim_attr:
+            managed_attr_ids.add(trim_attr.id)
+        for ref in OPTION_ATTRIBUTE_REFS:
+            attr = self.env.ref(ref, raise_if_not_found=False)
+            if attr:
+                managed_attr_ids.add(attr.id)
         for model in self:
             vals = {
                 'name': f'{model.brand_id.name} {model.name}'.strip(),
@@ -374,6 +385,14 @@ class BsCarModel(models.Model):
                 model.product_tmpl_id = tmpl
 
             config = model._build_attribute_config()
+            # Drop owned attribute lines whose options were all removed from the
+            # model, so the product no longer keeps stale attribute values.
+            config_attr_ids = {attr.id for attr in config}
+            stale_lines = tmpl.attribute_line_ids.filtered(
+                lambda l: l.attribute_id.id in managed_attr_ids
+                and l.attribute_id.id not in config_attr_ids)
+            if stale_lines:
+                stale_lines.unlink()
             for attr, pairs in config.items():
                 value_ids = [p[0].id for p in pairs]
                 line = tmpl.attribute_line_ids.filtered(lambda l: l.attribute_id == attr)

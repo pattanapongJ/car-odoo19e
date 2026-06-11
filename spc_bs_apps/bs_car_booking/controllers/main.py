@@ -178,16 +178,31 @@ class BsCarBookingWebsite(CustomerPortal):
             ('brand_ids', 'in', [car.brand_id.id]),
         ] + self._company_domain('bs.car.dealer'))
         tmpl = car.product_tmpl_id.sudo()
+        options = request.env['bs.car.model.option'].sudo().search([('model_id', '=', car.id)])
+        # Attribute values whose car-model option is unpublished: still shown in
+        # the configurator, but rendered disabled (not selectable).
+        unpublished_value_ids = options.filtered(
+            lambda o: not o.website_published).value_id.ids
+        # Per-exterior availability: {exterior value id: [interior value id, ...]}.
+        # Only exterior options that restrict their interiors appear here; an
+        # exterior absent from the map offers every interior.
+        exterior_interiors = {
+            o.value_id.id: o.interior_option_ids.value_id.ids
+            for o in options if o.interior_option_ids
+        }
         return request.render('bs_car_booking.booking_configurator_page', {
             'car': car,
             'tmpl': tmpl,
             'product_missing': not bool(tmpl),
             'standard_package_attr': request.env.ref('bs_car_booking.attr_trim', raise_if_not_found=False),
+            'interior_attr': request.env.ref('bs_car_booking.attr_interior', raise_if_not_found=False),
             'attribute_lines': tmpl.valid_product_template_attribute_line_ids if tmpl else [],
             'dealers': dealers,
             'base_price': car.base_price,
             # 'sms' or 'email' — decides whether the form must collect an email.
             'otp_channel': request.env['bs.car.booking.otp'].sudo()._get_otp_channel(),
+            'unpublished_value_ids': unpublished_value_ids,
+            'exterior_interiors': exterior_interiors,
         })
 
     # ── OTP verification ────────────────────────────────────────────────
