@@ -2716,6 +2716,84 @@ html {
     margin-top: 8px;
 }
 
+/* ── OTP channel toggle (styled pills, matching cfg_pill pattern) ── */
+.cfg_otp_channel {
+    max-width: 440px;
+}
+
+.cfg_otp_options {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.cfg_otp_opt {
+    display: flex;
+    flex: 1;
+    gap: 12px;
+    align-items: center;
+    margin: 0;
+    padding: 14px 16px;
+    border: 1px solid var(--car-border);
+    border-radius: var(--car-radius);
+    background: var(--car-bg-card);
+    cursor: pointer;
+    transition: border-color var(--car-transition),
+                box-shadow var(--car-transition),
+                background var(--car-transition);
+}
+
+.cfg_otp_opt:hover {
+    border-color: var(--car-accent);
+}
+
+.cfg_otp_opt:has(input:checked) {
+    border-color: var(--car-accent);
+    background: rgba(178, 31, 45, 0.04);
+    box-shadow: 0 0 0 3px rgba(178, 31, 45, 0.10);
+}
+
+.cfg_otp_opt_icon {
+    display: flex;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--car-bg-section);
+    color: var(--car-text-secondary);
+    font-size: 1rem;
+    transition: background var(--car-transition), color var(--car-transition);
+}
+
+.cfg_otp_opt:has(input:checked) .cfg_otp_opt_icon {
+    background: var(--car-accent);
+    color: #fff;
+}
+
+.cfg_otp_opt_body {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.cfg_otp_opt_body strong {
+    font-size: 0.92rem;
+    color: var(--car-text-primary);
+}
+
+.cfg_otp_opt_body small {
+    font-size: 0.76rem;
+    color: var(--car-text-secondary);
+}
+
+@media (max-width: 767.98px) {
+    .cfg_otp_options {
+        flex-direction: column;
+    }
+}
+
 .cfg_summary {
     position: relative;
 }
@@ -2952,11 +3030,35 @@ html {
     font-size: 0.9rem;
 }
 
+.otp_timer {
+    margin-bottom: 24px;
+}
+
 .otp_actions {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
+}
+
+.otp_spam_hint {
+    margin: -6px 0 14px;
+    font-size: 0.82rem;
+}
+
+/* Channel switch: quieter than Resend, gold accent on hover. */
+.otp_switch_btn {
+    color: var(--car-text-secondary);
+    font-size: 0.84rem;
+    text-decoration: none;
+}
+
+.otp_switch_btn:hover {
+    color: var(--car-gold);
+}
+
+.otp_switch_btn i {
+    margin-right: 4px;
 }
 
 .payment_card {
@@ -5455,7 +5557,79 @@ html {
     padding-left: 0.6em;
 }
 .bs_track_otp_hint { color: var(--car-text-secondary, #666); margin-bottom: 14px; }
-.bs_track_resend { color: var(--car-text-secondary, #666); text-decoration: none; }
+
+/* ── Timer row: countdown + resend in one clean strip ──────────── */
+.bs_track_timer_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 12px 16px;
+    border: 1px solid var(--car-border);
+    border-radius: var(--car-radius);
+    background: var(--car-bg-card);
+}
+
+.bs_track_countdown {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--car-text-secondary);
+    font-size: 0.88rem;
+}
+
+.bs_track_countdown i {
+    color: var(--car-accent);
+    font-size: 1rem;
+}
+
+.bs_track_countdown strong {
+    color: var(--car-text-primary);
+    font-family: var(--car-font-serif);
+    font-size: 1.12rem;
+    font-weight: 700;
+    min-width: 52px;
+}
+
+.bs_track_resend_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border: 1px solid var(--car-border);
+    border-radius: var(--car-radius);
+    background: var(--car-bg-card);
+    color: var(--car-text-secondary);
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--car-transition), color var(--car-transition);
+    white-space: nowrap;
+}
+
+.bs_track_resend_btn:hover:not(:disabled) {
+    background: var(--car-bg-section);
+    color: var(--car-text-primary);
+}
+
+.bs_track_resend_btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.bs_track_resend_btn i {
+    font-size: 0.78rem;
+}
+
+@media (max-width: 575.98px) {
+    .bs_track_timer_row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+}
+
 .bs_track_msg {
     margin-top: 16px;
     padding: 12px 14px;

@@ -81,10 +81,10 @@ class BsCarBookingAPI(http.Controller):
     @http.route(['/car_booking/car/book', '/shop/car/book'], type='jsonrpc',
                 auth='public', website=True, methods=['POST'])
     def car_book(self, model_id, ptav_ids=None, dealer_id=None, phone=None,
-                 pdpa_consent=False, **kw):
+                 email=None, otp_channel=None, pdpa_consent=False, **kw):
         """Create a draft booking from the configurator and send the OTP.
 
-        PDPA consent is captured here (before the OTP SMS is sent), so we never
+        PDPA consent is captured here (before the OTP is sent), so we never
         contact a customer who has not consented."""
         try:
             model = self._scoped_env('bs.car.model').browse(int(model_id))
@@ -96,8 +96,20 @@ class BsCarBookingAPI(http.Controller):
                     'success': False,
                     'error': 'This model is not ready for online booking yet.',
                 }
-            if not phone or len(phone.strip()) < 7:
-                return {'success': False, 'error': 'Please enter a valid phone number.'}
+            if not request.env['bs.car.booking']._is_valid_phone(phone):
+                return {'success': False,
+                        'error': 'Please enter a valid phone number (7–15 digits).'}
+            email = (email or '').strip()
+            # Website mode: 'sms'/'email' fix the channel (clamping whatever
+            # the client sent); 'both' honours the customer's pick (SMS default).
+            website_channel = request.env['bs.car.booking.otp'].sudo()._get_otp_channel()
+            otp_channel = (otp_channel or '').strip().lower()
+            if website_channel in ('sms', 'email'):
+                otp_channel = website_channel
+            elif otp_channel not in ('sms', 'email'):
+                otp_channel = 'sms'
+            if otp_channel == 'email' and ('@' not in email or '.' not in email.rsplit('@', 1)[-1]):
+                return {'success': False, 'error': 'Please enter a valid email address.'}
             if not pdpa_consent:
                 return {'success': False,
                         'error': 'Please accept the privacy policy (PDPA) to continue.'}
@@ -119,6 +131,8 @@ class BsCarBookingAPI(http.Controller):
                 'pdpa_consent': True,
                 'pdpa_consent_date': fields.Datetime.now(),
             }
+            if email:
+                vals['customer_email'] = email
             # Reuse the session's in-progress draft for the same model instead of
             # creating a duplicate when the customer goes Back and re-submits the
             # configurator. Only pre-verification bookings are reused.
@@ -131,14 +145,14 @@ class BsCarBookingAPI(http.Controller):
                 booking.write(vals)
                 booking._apply_configuration([int(p) for p in (ptav_ids or [])])
                 try:
-                    booking.action_send_otp()   # resend; existing code stays valid if throttled
+                    booking.action_send_otp(channel=otp_channel)
                 except ValidationError:
                     pass
             else:
                 booking = Booking.create(vals)
                 request.session['bs_funnel_booking'] = booking.id
                 booking._apply_configuration([int(p) for p in (ptav_ids or [])])
-                booking.action_send_otp()
+                booking.action_send_otp(channel=otp_channel)
             token = booking._portal_ensure_token()
             return {
                 'success': True,
@@ -267,7 +281,13 @@ class BsCarBookingAPI(http.Controller):
     # ── OTP: send / verify / resend ─────────────────────────────────────
     @http.route(['/car_booking/booking/otp/send', '/shop/booking/otp/send'], type='jsonrpc',
                 auth='public', website=True, methods=['POST'])
-    def otp_send(self, booking_id, access_token=None, **kw):
+    def otp_send(self, booking_id, access_token=None, channel=None, **kw):
+        """Send/resend the verification OTP.
+
+        *channel* is only a switch FLAG ('sms'/'email') for 'both'-mode
+        websites — the destination always comes from the booking record, so
+        a tampered request can never redirect codes to an attacker-supplied
+        address. Server-side throttling applies regardless."""
         try:
             booking = request.env['bs.car.booking'].sudo().browse(int(booking_id))
             if not booking.exists():
@@ -278,9 +298,18 @@ class BsCarBookingAPI(http.Controller):
                 return {'success': False, 'error': 'This booking link is no longer valid.'}
             if booking.state not in ('draft', 'otp_pending') or booking.phone_verified:
                 return {'success': False, 'error': 'OTP cannot be resent for this booking.'}
-            booking.action_send_otp()
-            return {'success': True, 'message': f'OTP sent to {booking.customer_phone}',
-                    'expires_in': 300}
+            channel = channel if channel in ('sms', 'email') else None
+            booking.action_send_otp(channel=channel)
+            sent = booking.otp_ids.sorted('id', reverse=True)[:1]
+            destination = sent.email if sent.channel == 'email' else booking.customer_phone
+            Otp = request.env['bs.car.booking.otp'].sudo()
+            website = booking.website_id
+            return {'success': True, 'message': f'OTP sent to {destination}',
+                    'channel': sent.channel, 'destination': destination,
+                    'expires_in': Otp._get_validity_minutes(website) * 60,
+                    'resend_in': max(website.bs_otp_resend_seconds, 0) if website else 30}
+        except ValidationError as e:
+            return {'success': False, 'error': str(e)}
         except Exception as e:  # noqa: BLE001
             _logger.exception('Failed to send OTP')
             return {'success': False, 'error': str(e)}

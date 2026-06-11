@@ -371,7 +371,7 @@
             <field name="sequence">30</field>
         </record>
         <record id="menu_website_track" model="theme.website.menu">
-            <field name="name">Track Booking</field>
+            <field name="name">My Booking</field>
             <field name="url">/track</field>
             <field name="sequence">40</field>
         </record>

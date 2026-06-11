@@ -6,6 +6,7 @@
 
 import { Interaction } from "@web/public/interaction";
 import { registry } from "@web/core/registry";
+import { isValidPhone } from "@bs_car_booking/js/phone_utils";
 
 async function jsonrpc(route, params) {
     const resp = await fetch(route, {
@@ -50,6 +51,7 @@ export class CarConfigurator extends Interaction {
         this._refreshDealerStyles();
         this._refreshSummary();
         this._updatePrice();
+        this._setupOtpToggle();
 
         this.el.addEventListener("submit", (e) => this._onSubmit(e));
     }
@@ -129,6 +131,32 @@ export class CarConfigurator extends Interaction {
         this.errorEl?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
+    _setupOtpToggle() {
+        const toggle = document.getElementById("cfg_otp_channel_toggle");
+        if (!toggle) return;
+        const emailRow = document.getElementById("cfg_email_row");
+        const emailInput = document.getElementById("cfg_email");
+        const phoneHint = document.getElementById("cfg_phone_hint");
+        const radios = toggle.querySelectorAll('input[name="otp_channel"]');
+
+        const update = (value) => {
+            const isEmail = value === 'email';
+            if (emailRow) emailRow.classList.toggle('d-none', !isEmail);
+            if (emailInput) emailInput.required = isEmail;
+            if (phoneHint) {
+                phoneHint.textContent = isEmail
+                    ? 'Our team will use this number to contact you.'
+                    : 'We\'ll send a verification code to this number.';
+            }
+        };
+
+        // Initial state from checked radio.
+        const checked = toggle.querySelector('input[name="otp_channel"]:checked');
+        if (checked) update(checked.value);
+
+        radios.forEach(r => r.addEventListener('change', () => update(r.value)));
+    }
+
     async _onSubmit(e) {
         e.preventDefault();
         if (this.productMissing) {
@@ -137,11 +165,24 @@ export class CarConfigurator extends Interaction {
         }
         const phoneEl = document.getElementById("cfg_phone");
         const phone = (phoneEl && phoneEl.value || "").trim();
+        // Customer's channel pick. No toggle rendered (email-only website
+        // mode) → send null and let the server resolve the channel.
+        const channelRadio = document.querySelector('input[name="otp_channel"]:checked');
+        const otpChannel = channelRadio ? channelRadio.value : null;
+        const emailEl = document.getElementById("cfg_email");
+        const email = (emailEl && emailEl.value || "").trim();
         const dealer = this.el.querySelector('input[name="dealer_id"]:checked');
         const dealerOptions = this.el.querySelectorAll('input[name="dealer_id"]');
 
-        if (phone.length < 7) {
-            this._showError("Please enter a valid mobile number.");
+        if (!isValidPhone(phone)) {
+            this._showError("Please enter a valid mobile number (7–15 digits, e.g. +66 8 1234 5678).");
+            return;
+        }
+        // Email is mandatory whenever it is the delivery channel — either
+        // picked on the toggle or forced by the email-only website mode.
+        const emailRequired = otpChannel === 'email' || (emailEl && emailEl.required);
+        if (emailRequired && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            this._showError("Please enter a valid email address.");
             return;
         }
         if (dealerOptions.length && !dealer) {
@@ -165,6 +206,8 @@ export class CarConfigurator extends Interaction {
                 ptav_ids: this._selectedPtavIds(),
                 dealer_id: dealer ? dealer.value : null,
                 phone: phone,
+                email: email || null,
+                otp_channel: otpChannel,
                 pdpa_consent: !!(pdpaEl && pdpaEl.checked),
             });
             if (res.success) {

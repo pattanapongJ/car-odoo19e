@@ -5,7 +5,7 @@ import logging
 
 from werkzeug.urls import url_encode
 
-from odoo import http
+from odoo import fields, http
 from odoo.http import request
 from odoo.addons.sale.controllers.portal import CustomerPortal
 from odoo.tools import consteq
@@ -186,6 +186,8 @@ class BsCarBookingWebsite(CustomerPortal):
             'attribute_lines': tmpl.valid_product_template_attribute_line_ids if tmpl else [],
             'dealers': dealers,
             'base_price': car.base_price,
+            # 'sms' or 'email' — decides whether the form must collect an email.
+            'otp_channel': request.env['bs.car.booking.otp'].sudo()._get_otp_channel(),
         })
 
     # ── OTP verification ────────────────────────────────────────────────
@@ -198,9 +200,37 @@ class BsCarBookingWebsite(CustomerPortal):
             return request.redirect(self._booking_step_url(booking, 'confirmation'))
         if booking.phone_verified:
             return request.redirect(self._booking_step_url(booking, 'info'))
+        # Reflect what was actually sent: the latest OTP's channel/destination.
+        Otp = request.env['bs.car.booking.otp'].sudo()
+        last_otp = booking.otp_ids.sorted('id', reverse=True)[:1]
+        website_mode = Otp._get_otp_channel()
+        otp_channel = last_otp.channel if last_otp else \
+            ('email' if website_mode == 'email' else 'sms')
+        # Countdown shows the REAL remaining lifetime (the page may be
+        # reopened later), capped to the configured validity.
+        expires_in = Otp._get_validity_minutes(booking.website_id) * 60
+        if last_otp and last_otp.expire_datetime:
+            remaining = (last_otp.expire_datetime - fields.Datetime.now()).total_seconds()
+            expires_in = max(0, min(int(remaining), expires_in))
+        # 'both'-mode websites may switch the delivery channel from the verify
+        # page; switching TO email needs an address already on the booking
+        # (the switch is a flag only — never an attacker-supplied address).
+        switch_channel = False
+        if website_mode == 'both':
+            if otp_channel == 'email':
+                switch_channel = 'sms'
+            elif booking.customer_email:
+                switch_channel = 'email'
         return request.render('bs_car_booking.otp_verification_page', {
             'booking': booking,
             'access_token': booking._portal_ensure_token(),
+            'otp_channel': otp_channel,
+            'otp_destination': (last_otp.email or booking.customer_email
+                                if otp_channel == 'email' else booking.customer_phone),
+            'otp_switch_channel': switch_channel,
+            'otp_expires_in': expires_in,
+            'otp_resend_in': (max(booking.website_id.bs_otp_resend_seconds, 0)
+                              if booking.website_id else 30),
         })
 
     # ── Customer info ───────────────────────────────────────────────────

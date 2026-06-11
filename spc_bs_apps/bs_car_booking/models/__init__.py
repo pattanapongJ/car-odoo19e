@@ -2,6 +2,8 @@
 # Part of Basic Solution Co., Ltd.
 
 from . import website_scope
+from . import res_config_settings
+from . import website
 from . import bs_car_brand
 from . import bs_car_model
 from . import bs_car_model_option

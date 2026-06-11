@@ -2,18 +2,26 @@
 <odoo>
     <!-- Public "Track my booking" page: reference + phone -> one-time code ->
          hand off to the token-gated status view. No login required. -->
-    <template id="tracking_page" name="Track Booking">
+    <template id="tracking_page" name="My Booking">
         <t t-call="website.layout">
-            <t t-set="title">Track your booking</t>
+            <t t-set="title">My booking</t>
             <t t-set="bs_hero_overlay" t-value="True"/>
             <div id="wrap" class="bs_track_shell">
                 <section class="bs_track_hero">
                     <div class="container">
                         <span class="car_kicker">Booking Status</span>
-                        <h1 class="bs_track_title">Track your booking</h1>
+                        <h1 class="bs_track_title">My booking</h1>
                         <p class="bs_track_sub">
                             Enter your booking reference and the phone number you used.
-                            We will send a one-time code to confirm it is you.
+                            <t t-if="otp_mode == 'email'">
+                                We will email you a one-time code to confirm it is you.
+                            </t>
+                            <t t-elif="otp_mode == 'sms'">
+                                We will text you a one-time code to confirm it is you.
+                            </t>
+                            <t t-else="">
+                                We will send a one-time code to confirm it is you.
+                            </t>
                         </p>
                     </div>
                 </section>
@@ -31,8 +39,12 @@
                                 <div class="mb-3">
                                     <label class="bs_track_label">Phone number</label>
                                     <input type="tel" class="form-control bs_track_input"
-                                           data-track-phone="1" placeholder="Phone on the booking"
+                                           data-track-phone="1" placeholder="+66 8 1234 5678"
+                                           pattern="^\+?[0-9\s\-]{7,15}$"
                                            autocomplete="off"/>
+                                    <small class="text-muted">
+                                        Use the same number you entered when booking.
+                                    </small>
                                 </div>
                                 <button type="button" class="btn btn-primary car_cta_btn w-100"
                                         data-track-send="1">
@@ -41,18 +53,47 @@
                             </div>
                             <!-- Step 2: OTP -->
                             <div class="bs_track_step d-none" data-track-step="otp">
+                                <!-- The hint follows the WEBSITE delivery mode (same for
+                                     every visitor), so it names the channel without
+                                     leaking anything about a specific booking. -->
                                 <p class="bs_track_otp_hint">
-                                    Enter the 6-digit code we sent to your phone.
+                                    <t t-if="otp_mode == 'email'">
+                                        Enter the 6-digit code from your email.
+                                        Check your inbox and spam folder.
+                                    </t>
+                                    <t t-elif="otp_mode == 'sms'">
+                                        Enter the 6-digit code we sent to your phone by SMS.
+                                    </t>
+                                    <t t-else="">
+                                        Enter the 6-digit code we just sent you.
+                                        Check your SMS and email inbox (including spam).
+                                    </t>
                                 </p>
-                                <input type="text" inputmode="numeric" maxlength="6"
-                                       class="form-control bs_track_input bs_track_otp"
-                                       data-track-code="1" placeholder="------" autocomplete="one-time-code"/>
+                                <!-- Same 6-box code entry as the funnel verify page. -->
+                                <div class="otp_input_group bs_track_digits">
+                                    <t t-foreach="range(6)" t-as="i">
+                                        <input type="text" class="otp_digit" maxlength="1"
+                                               t-att-data-index="i" inputmode="numeric" pattern="[0-9]"
+                                               t-att-autocomplete="i == 0 and 'one-time-code' or 'off'"/>
+                                    </t>
+                                </div>
+                                <!-- Timer row: code expiry countdown + resend. -->
+                                <div class="bs_track_timer_row d-none" data-track-timer-row="">
+                                    <div class="bs_track_countdown">
+                                        <i class="fa fa-clock-o"/>
+                                        <span>Code expires in </span>
+                                        <strong data-track-countdown="1"/>
+                                    </div>
+                                    <button type="button" class="bs_track_resend_btn"
+                                            data-track-resend="1" disabled="">
+                                        <i class="fa fa-refresh"/>
+                                        <span data-track-resend-label="">Resend code</span>
+                                    </button>
+                                </div>
                                 <button type="button" class="btn btn-primary car_cta_btn w-100 mt-3"
                                         data-track-verify="1">
                                     View my booking <i class="fa fa-arrow-right"/>
                                 </button>
-                                <button type="button" class="btn btn-link w-100 mt-2 bs_track_resend"
-                                        data-track-resend="1">Resend code</button>
                             </div>
                             <!-- Feedback -->
                             <div class="bs_track_msg d-none" data-track-msg="1" role="status"/>

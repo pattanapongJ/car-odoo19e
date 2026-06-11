@@ -94,6 +94,7 @@
                                 <group>
                                     <field name="customer_address"/>
                                     <field name="phone_verified" widget="boolean_toggle" readonly="1"/>
+                                    <field name="otp_verified_channel" invisible="not otp_verified_channel"/>
                                     <field name="pdpa_consent" widget="boolean_toggle" readonly="1"/>
                                     <field name="pdpa_consent_date" readonly="1"/>
                                 </group>
@@ -251,6 +252,8 @@
         <field name="arch" type="xml">
             <list create="false" edit="false">
                 <field name="phone"/>
+                <field name="channel"/>
+                <field name="email" optional="show"/>
                 <field name="state"/>
                 <field name="attempts"/>
                 <field name="max_attempts" optional="hide"/>
@@ -270,6 +273,8 @@
                     <group>
                         <field name="booking_id"/>
                         <field name="phone"/>
+                        <field name="channel"/>
+                        <field name="email" invisible="channel != 'email'"/>
                         <field name="state"/>
                         <field name="attempts"/>
                         <field name="max_attempts"/>

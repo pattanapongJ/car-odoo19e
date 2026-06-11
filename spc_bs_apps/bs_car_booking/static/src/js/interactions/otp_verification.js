@@ -6,12 +6,13 @@
 
 import { Interaction } from "@web/public/interaction";
 import { registry } from "@web/core/registry";
+import { initOtpDigits } from "@bs_car_booking/js/otp_digits";
 
 export class OtpVerification extends Interaction {
     static selector = ".otp_form";
 
     setup() {
-        this.countdownSecs = 300; // 5 minutes
+        this.countdownSecs = 300; // fallback; the card carries the real value
         this.countdownInterval = null;
         this.resendCooldown = 0;
         this.resendTimer = null;
@@ -19,26 +20,36 @@ export class OtpVerification extends Interaction {
 
     start() {
         // Find booking ID from parent .otp_card element
-        const bookingId = parseInt(
-            this.el.closest("[data-booking-id]")?.dataset?.bookingId || "0"
-        );
+        const card = this.el.closest("[data-booking-id]");
+        const bookingId = parseInt(card?.dataset?.bookingId || "0");
         const accessToken = this.el.closest("[data-access-token]")?.dataset?.accessToken || "";
         if (!bookingId) return;
+        // Real remaining lifetime rendered by the server (configurable expiry).
+        const expiry = parseInt(card?.dataset?.otpExpiry || "0");
+        if (expiry > 0) this.countdownSecs = expiry;
+        this.fullExpiry = parseInt(card?.dataset?.otpExpiry || "0") || this.countdownSecs;
+        // Resend cooldown follows the website setting (0 = no cooldown).
+        this.resendSecs = parseInt(card?.dataset?.otpResend ?? "30");
+        if (Number.isNaN(this.resendSecs) || this.resendSecs < 0) this.resendSecs = 30;
 
         const getEl = (id) => document.getElementById(id);
         const digitInputs = this.el.querySelectorAll(".otp_digit");
         const verifyBtn = getEl("otp_verify_btn");
         const resendBtn = getEl("otp_resend_btn");
+        const resendLabel = getEl("otp_resend_label") || resendBtn;
         const countdownEl = getEl("otp_countdown");
         const errorMsgEl = getEl("otp_error_msg");
         const successMsgEl = getEl("otp_success_msg");
 
         // ── Helpers ────────────────────────────────────────
-        const getOtpCode = () => {
-            let code = "";
-            digitInputs.forEach((inp) => (code += inp.value));
-            return code;
+        const otpDigits = initOtpDigits(digitInputs);
+        const getOtpCode = () => otpDigits.getCode();
+        // Enable verify button only when all 6 digits are filled.
+        if (verifyBtn) verifyBtn.disabled = true;
+        const syncVerifyBtn = () => {
+            if (verifyBtn) verifyBtn.disabled = getOtpCode().length !== 6;
         };
+        digitInputs.forEach((inp) => inp.addEventListener("input", syncVerifyBtn));
         const showError = (msg) => {
             if (errorMsgEl) {
                 errorMsgEl.textContent = msg;
@@ -53,29 +64,6 @@ export class OtpVerification extends Interaction {
             }
             if (errorMsgEl) errorMsgEl.parentElement.classList.add("d-none");
         };
-
-        // ── OTP Digit Inputs ───────────────────────────────
-        digitInputs.forEach((input, idx) => {
-            input.addEventListener("input", () => {
-                const val = input.value.replace(/[^0-9]/g, "");
-                input.value = val.slice(0, 1);
-                if (val && idx < 5) digitInputs[idx + 1].focus();
-            });
-            input.addEventListener("keydown", (e) => {
-                if (e.key === "Backspace" && !input.value && idx > 0) {
-                    digitInputs[idx - 1].focus();
-                }
-            });
-        });
-        digitInputs[0]?.addEventListener("paste", (e) => {
-            e.preventDefault();
-            const paste = (
-                (e.clipboardData || window.clipboardData).getData("text") || ""
-            ).replace(/[^0-9]/g, "");
-            paste.split("").slice(0, 6).forEach((ch, i) => {
-                if (digitInputs[i]) digitInputs[i].value = ch;
-            });
-        });
 
         // ── Countdown Timer ────────────────────────────────
         const updateCountdown = () => {
@@ -95,21 +83,26 @@ export class OtpVerification extends Interaction {
         };
         this.countdownInterval = setInterval(updateCountdown, 1000);
 
-        // ── Resend Cooldown ────────────────────────────────
-        const startResendCooldown = () => {
-            if (resendBtn) resendBtn.disabled = true;
-            this.resendCooldown = 30;
-            if (resendBtn) resendBtn.textContent = "Resend in 30s";
+        // ── Resend Cooldown (duration from the website setting) ──
+        const startResendCooldown = (secs = this.resendSecs) => {
+            if (!resendBtn) return;
+            if (!secs) {
+                resendBtn.disabled = false;
+                resendLabel.textContent = "Resend Code";
+                return;
+            }
+            if (this.resendTimer) clearInterval(this.resendTimer);
+            resendBtn.disabled = true;
+            this.resendCooldown = secs;
+            resendLabel.textContent = "Resend in " + secs + "s";
             this.resendTimer = setInterval(() => {
                 this.resendCooldown--;
                 if (this.resendCooldown <= 0) {
                     clearInterval(this.resendTimer);
-                    if (resendBtn) {
-                        resendBtn.textContent = "Resend Code";
-                        resendBtn.disabled = false;
-                    }
-                } else if (resendBtn) {
-                    resendBtn.textContent = "Resend in " + this.resendCooldown + "s";
+                    resendLabel.textContent = "Resend Code";
+                    resendBtn.disabled = false;
+                } else {
+                    resendLabel.textContent = "Resend in " + this.resendCooldown + "s";
                 }
             }, 1000);
         };
@@ -163,6 +156,24 @@ export class OtpVerification extends Interaction {
         }
 
         // ── Resend OTP ─────────────────────────────────────
+        const resendOtp = async (channel) => {
+            const r = await fetch("/car_booking/booking/otp/resend", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    jsonrpc: "2.0",
+                    method: "call",
+                    params: {
+                        booking_id: bookingId,
+                        access_token: accessToken,
+                        channel: channel || null,
+                    },
+                }),
+            });
+            const data = await r.json();
+            return data.result || {};
+        };
+
         if (resendBtn) {
             resendBtn.addEventListener("click", async () => {
                 if (this.resendCooldown > 0) return;
@@ -170,29 +181,23 @@ export class OtpVerification extends Interaction {
                 resendBtn.textContent = "Sending...";
 
                 try {
-                    const r = await fetch("/car_booking/booking/otp/resend", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            jsonrpc: "2.0",
-                            method: "call",
-                            params: {
-                                booking_id: bookingId,
-                                access_token: accessToken,
-                            },
-                        }),
-                    });
-                    const data = await r.json();
-                    if (data.result?.success) {
-                        this.countdownSecs = 300;
-                        if (countdownEl) countdownEl.textContent = "05:00";
+                    const result = await resendOtp(null);
+                    if (result.success) {
+                        this.countdownSecs = result.expires_in || this.fullExpiry;
+                        if (countdownEl) {
+                            const m = Math.floor(this.countdownSecs / 60);
+                            const s = this.countdownSecs % 60;
+                            countdownEl.textContent =
+                                String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+                        }
                         if (verifyBtn) verifyBtn.disabled = false;
-                        startResendCooldown();
+                        startResendCooldown(result.resend_in ?? this.resendSecs);
                         showSuccess("New code sent!");
                         digitInputs.forEach((inp) => (inp.value = ""));
                         digitInputs[0]?.focus();
+                        syncVerifyBtn();
                     } else {
-                        showError("Failed to resend. Please try again.");
+                        showError(result.error || "Failed to resend. Please try again.");
                         if (this.resendCooldown <= 0) {
                             resendBtn.disabled = false;
                             resendBtn.textContent = "Resend Code";
@@ -204,6 +209,33 @@ export class OtpVerification extends Interaction {
                         resendBtn.disabled = false;
                         resendBtn.textContent = "Resend Code";
                     }
+                }
+            });
+        }
+
+        // ── Switch delivery channel (customer-choice websites) ──
+        const switchBtn = getEl("otp_switch_btn");
+        if (switchBtn) {
+            switchBtn.addEventListener("click", async () => {
+                const channel = switchBtn.dataset.channel;
+                if (!channel) return;
+                switchBtn.disabled = true;
+                switchBtn.textContent = "Sending...";
+                try {
+                    const result = await resendOtp(channel);
+                    if (result.success) {
+                        // Reload so the page copy reflects the new channel
+                        // (icon, title, destination, switch direction).
+                        window.location.reload();
+                    } else {
+                        showError(result.error || "Could not switch. Please try again.");
+                        switchBtn.disabled = false;
+                        switchBtn.textContent = channel === "email"
+                            ? "Send to my email instead" : "Send by SMS instead";
+                    }
+                } catch {
+                    showError("Network error. Please try again.");
+                    switchBtn.disabled = false;
                 }
             });
         }

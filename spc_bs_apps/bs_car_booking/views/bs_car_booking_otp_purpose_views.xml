@@ -11,6 +11,7 @@
                 <field name="name"/>
                 <field name="code"/>
                 <field name="sms_template_id"/>
+                <field name="mail_template_id"/>
                 <field name="active" column_invisible="True"/>
             </list>
         </field>
@@ -30,14 +31,22 @@
                             <field name="sequence"/>
                             <field name="active"/>
                         </group>
-                        <group string="SMS Configuration">
+                        <group string="Delivery Templates">
                             <field name="sms_template_id"/>
+                            <field name="mail_template_id"/>
                         </group>
                     </group>
-                    <group string="Fallback Message">
-                        <field name="sms_fallback_body"
-                               nolabel="1"
-                               placeholder="e.g. Your verification code is: {otp_code}. Valid for 5 minutes."/>
+                    <group>
+                        <group string="SMS Fallback Message">
+                            <field name="sms_fallback_body"
+                                   nolabel="1"
+                                   placeholder="e.g. Your verification code is: %%(otp_code)s. Valid for 5 minutes."/>
+                        </group>
+                        <group string="Email Fallback Message">
+                            <field name="mail_fallback_body"
+                                   nolabel="1"
+                                   placeholder="e.g. Your verification code is: %%(otp_code)s. Valid for 5 minutes."/>
+                        </group>
                     </group>
                 </sheet>
             </form>

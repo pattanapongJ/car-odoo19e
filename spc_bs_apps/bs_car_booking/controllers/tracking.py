@@ -27,11 +27,6 @@ from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 
-# Identical reply for match and no-match (anti-enumeration).
-_GENERIC_LOOKUP_MSG = (
-    "If a booking matches those details, a verification code has been sent to "
-    "the phone number on file."
-)
 _SESSION_BOOKING_KEY = 'bs_track_booking_id'
 _SESSION_ATTEMPTS_KEY = 'bs_track_attempts'
 _MAX_LOOKUPS_PER_SESSION = 12
@@ -39,10 +34,40 @@ _MAX_LOOKUPS_PER_SESSION = 12
 
 class BsCarBookingTracking(http.Controller):
 
+    def _lookup_message(self):
+        """Identical reply for match and no-match (anti-enumeration), but
+        channel-SPECIFIC so the customer knows where to look: the delivery
+        channel is a property of the WEBSITE setting, not of the booking, so
+        naming it reveals nothing about whether a booking matched."""
+        mode = request.env['bs.car.booking.otp'].sudo()._get_otp_channel()
+        if mode == 'email':
+            return ("If a booking matches those details, a verification code "
+                    "has been sent to the email address on the booking "
+                    "(or by SMS if the booking has no email).")
+        if mode == 'sms':
+            return ("If a booking matches those details, a verification code "
+                    "has been sent by SMS to the phone number on the booking.")
+        return ("If a booking matches those details, a verification code has "
+                "been sent to the phone number or email address on the booking.")
+
+    def _lookup_reply(self):
+        """Uniform lookup/resend payload. expires_in/resend_in are website-
+        setting based (identical for every visitor), so the countdowns leak
+        nothing about whether a booking matched."""
+        website = request.env['website'].get_current_website()
+        validity = request.env['bs.car.booking.otp'].sudo()._get_validity_minutes(website)
+        return {'ok': True, 'message': self._lookup_message(),
+                'expires_in': validity * 60,
+                'resend_in': max(website.bs_otp_resend_seconds, 0)}
+
     @http.route('/track', type='http', auth='public', website=True, sitemap=True)
     def track_page(self, **kw):
         """Public 'Track my booking' landing page (reference + phone form)."""
-        return request.render('bs_car_booking.tracking_page', {})
+        return request.render('bs_car_booking.tracking_page', {
+            # Channel hint for the static copy — website-mode-based, so it is
+            # the same for every visitor (no per-booking information).
+            'otp_mode': request.env['bs.car.booking.otp'].sudo()._get_otp_channel(),
+        })
 
     @http.route('/track/lookup', type='jsonrpc', auth='public', website=True)
     def track_lookup(self, reference=None, phone=None, **kw):
@@ -53,7 +78,7 @@ class BsCarBookingTracking(http.Controller):
         attempts = request.session.get(_SESSION_ATTEMPTS_KEY, 0) + 1
         request.session[_SESSION_ATTEMPTS_KEY] = attempts
         if attempts > _MAX_LOOKUPS_PER_SESSION:
-            return {'ok': True, 'message': _GENERIC_LOOKUP_MSG}
+            return self._lookup_reply()
 
         booking = request.env['bs.car.booking'].sudo()._match_for_tracking(
             reference, phone)
@@ -69,7 +94,7 @@ class BsCarBookingTracking(http.Controller):
                 pass
             except Exception as e:  # noqa: BLE001 - SMS gateway optional in dev
                 _logger.warning('Tracking OTP send failed: %s', str(e))
-        return {'ok': True, 'message': _GENERIC_LOOKUP_MSG}
+        return self._lookup_reply()
 
     @http.route('/track/verify', type='jsonrpc', auth='public', website=True)
     def track_verify(self, code=None, **kw):
@@ -105,4 +130,4 @@ class BsCarBookingTracking(http.Controller):
                     return {'ok': False, 'message': str(e)}
                 except Exception as e:  # noqa: BLE001
                     _logger.warning('Tracking OTP resend failed: %s', str(e))
-        return {'ok': True, 'message': _GENERIC_LOOKUP_MSG}
+        return self._lookup_reply()

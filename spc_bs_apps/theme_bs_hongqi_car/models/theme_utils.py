@@ -41,7 +41,7 @@ class ThemeUtils(models.AbstractModel):
             'theme_bs_hongqi_car.menu_website_cars': ('Models', '/cars', 10),
             'theme_bs_hongqi_car.menu_website_compare': ('Compare', '/compare', 20),
             'theme_bs_hongqi_car.menu_website_stories': ('News', '/stories', 30),
-            'theme_bs_hongqi_car.menu_website_track': ('Track Booking', '/track', 40),
+            'theme_bs_hongqi_car.menu_website_track': ('My Booking', '/track', 40),
             'theme_bs_hongqi_car.menu_website_about': ('About Us', '/about-us', 50),
             'theme_bs_hongqi_car.menu_website_contact': ('Contact Us', '/contactus', 60),
         }
@@ -134,7 +134,7 @@ class ThemeUtils(models.AbstractModel):
             '/cars': ('Models', 10),
             '/compare': ('Compare', 20),
             '/stories': ('News', 30),
-            '/track': ('Track Booking', 40),
+            '/track': ('My Booking', 40),
             '/about-us': ('About Us', 50),
             '/contactus': ('Contact Us', 60),
         }
