@@ -9,6 +9,7 @@
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="brand_id"/>
+                <field name="model_year" optional="hide"/>
                 <field name="website_id" optional="hide"/>
                 <field name="company_id" optional="hide"/>
                 <field name="body_type"/>
@@ -53,6 +54,7 @@
                                     <field name="website_id"/>
                                     <field name="company_id"/>
                                     <field name="body_type"/>
+                                    <field name="model_year"/>
                                     <field name="seats"/>
                                     <field name="website_published"/>
                                     <field name="website_featured"/>
@@ -376,6 +378,7 @@
         <field name="arch" type="xml">
             <kanban>
                 <field name="currency_id"/>
+                <field name="model_year"/>
                 <field name="website_published"/>
                 <field name="website_featured"/>
                 <field name="has_hero_video"/>
@@ -385,7 +388,10 @@
                             <img t-attf-src="/web/image/bs.car.model/#{record.id.raw_value}/image/480x300"
                                  style="width:100%;height:100%;object-fit:cover;border-radius:4px;" alt="model"/>
                         </div>
-                        <field name="name" class="fw-bold fs-6"/>
+                        <div class="fw-bold fs-6">
+                            <field name="name"/>
+                            <span t-if="record.model_year.raw_value" class="text-muted">(<field name="model_year"/>)</span>
+                        </div>
                         <field name="brand_id" class="text-muted"/>
                         <div class="mt-1"><field name="base_price" widget="monetary"/></div>
                         <div class="mt-1">

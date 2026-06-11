@@ -8,7 +8,8 @@ from datetime import date, datetime, timedelta
 
 from markupsafe import Markup
 
-from odoo import api, fields, models, tools
+from odoo import _, api, fields, models, tools
+from odoo.exceptions import ValidationError
 from odoo.addons.website.models import ir_http
 from odoo.http import request
 
@@ -116,14 +117,48 @@ class BsCarModel(models.Model):
         ('pickup', 'Pickup'),
         ('van', 'Van'),
     ], string='Body Type')
-    
+    # Document-only (FC requirement): Thai sales paperwork — invoices,
+    # registration, insurance/finance quotes — carries the รุ่นปี (model year).
+    # It flows into the generated product's name, hence every SO/invoice line.
+    # NOT shown on the website; marketing display is a "Model Year" spec line.
+    # A dynamic Selection (not free text, not a master-data model): the
+    # dropdown makes typos impossible and new years appear by themselves.
+    model_year = fields.Selection(
+        selection='_model_year_selection', string='Model Year',
+        help='Manufacturer model year. Appended to the generated product '
+             'name so sales documents carry it.')
+
+    @api.model
+    def _model_year_selection(self):
+        current = fields.Date.context_today(self).year
+        return [(str(y), str(y)) for y in range(current + 2, 1999, -1)]
+
+    @api.onchange('arrival_date')
+    def _onchange_arrival_date_model_year(self):
+        """Convenience prefill only — NOT a hard link: the manufacturer's
+        model year often runs a year AHEAD of the local arrival (a 2027-MY
+        car arriving Nov 2026), so staff can always override the suggestion."""
+        if self.arrival_date and not self.model_year:
+            year = str(self.arrival_date.year)
+            if year in {k for k, _label in self._model_year_selection()}:
+                self.model_year = year
+
+    @api.constrains('model_year')
+    def _check_model_year(self):
+        # The ORM does NOT validate method-based Selection values on write
+        # (verified: RPC/imports can store junk) — enforce it ourselves.
+        valid = {key for key, _label in self._model_year_selection()}
+        for rec in self:
+            if rec.model_year and rec.model_year not in valid:
+                raise ValidationError(_('"%s" is not a valid model year.') % rec.model_year)
+
     description = fields.Html('Description', translate=True)
     highlight_features = fields.Text('Highlight Features', translate=True,
                                      help='Key features displayed on website, one per line')
     
     # Media
     image = fields.Image('Main Image', max_width=1920, max_height=1080)
-    gallery_image_ids = fields.One2many('bs.car.model.image', 'model_id', string='Gallery')
+    gallery_image_ids = fields.One2many('bs.car.model.image', 'model_id', string='Gallery', copy=True)
     # Optional looping background video for the hero (mp4/webm). Stored as a
     # generic attachment (NOT an Image field), so video files are accepted.
     hero_video = fields.Binary('Hero Video', attachment=True,
@@ -196,7 +231,7 @@ class BsCarModel(models.Model):
     seats = fields.Integer('Seats', default=5)
     
     # Variants
-    variant_ids = fields.One2many('bs.car.variant', 'model_id', string='Variants')
+    variant_ids = fields.One2many('bs.car.variant', 'model_id', string='Variants', copy=True)
     variant_count = fields.Integer(compute='_compute_variant_count')
     
     # Website
@@ -236,46 +271,19 @@ class BsCarModel(models.Model):
         return (self.sudo().search([('website_featured', '=', True)] + base, limit=1)
                 or self.sudo().search(base, order='sequence, id', limit=1))
 
-    def _get_compare_rows(self):
-        """Align the spec sheets of ``self`` for a side-by-side comparison.
-
-        Spec labels are free-form per model, so we build the union of labels
-        (in first-seen order) and look up each model's value for every label,
-        filling gaps with an em-dash. ``values[i]`` corresponds to ``self[i]``.
-        Returns a list of {'label', 'values'} dicts.
-        """
-        labels, seen, per_model = [], set(), []
-        for car in self:
-            by_label = {}
-            for sp in car.spec_ids.sorted(lambda s: (s.sequence, s.id)):
-                key = (sp.name or '').strip()
-                if not key:
-                    continue
-                by_label.setdefault(key, sp)
-                if key not in seen:
-                    seen.add(key)
-                    labels.append(key)
-            per_model.append(by_label)
-        rows = []
-        for label in labels:
-            values = [(m.get(label).display_value if m.get(label) else '—')
-                      for m in per_model]
-            rows.append({'label': label, 'values': values})
-        return rows
-
     # === Commerce backbone (native product) ===
     product_tmpl_id = fields.Many2one('product.template', string='Configurable Product',
                                       copy=False, readonly=True,
                                       help='Generated product that powers pricing & ordering.')
-    option_ids = fields.One2many('bs.car.model.option', 'model_id', string='Options',
+    option_ids = fields.One2many('bs.car.model.option', 'model_id', string='Options', copy=True,
                                  help='Selectable priced options (color, interior, wheels, add-ons).')
-    spec_ids = fields.One2many('bs.car.model.spec', 'model_id', string='Specifications',
+    spec_ids = fields.One2many('bs.car.model.spec', 'model_id', string='Specifications', copy=True,
                                help='Technical spec sheet shown on the website (data-driven).')
 
     # --- Home "showcase" content, split per type so each maps to one
     #     home section. All point to bs.car.showcase.item via model_id; the
     #     domains are mutually exclusive (no record appears in two fields). ---
-    showcase_item_ids = fields.One2many('bs.car.showcase.item', 'model_id', string='Showcase Items')
+    showcase_item_ids = fields.One2many('bs.car.showcase.item', 'model_id', string='Showcase Items', copy=True)
     stage_item_ids = fields.One2many(
         'bs.car.showcase.item', 'model_id', string='Model Stage Slides',
         domain=[('item_type', '=', 'stage')], context={'default_item_type': 'stage'})
@@ -291,6 +299,8 @@ class BsCarModel(models.Model):
     cabin_item_ids = fields.One2many(
         'bs.car.showcase.item', 'model_id', string='Cabin Story',
         domain=[('item_type', '=', 'cabin')], context={'default_item_type': 'cabin'})
+    # copy=False (default) kept on purpose: news articles are time-bound
+    # editorial — duplicating a model for a new year must not clone them.
     story_ids = fields.One2many('bs.car.story', 'model_id', string='Stories')
     showcase_count = fields.Integer(compute='_compute_showcase_count')
 
@@ -345,6 +355,26 @@ class BsCarModel(models.Model):
                 return tax
         return self.env.company.account_sale_tax_id
 
+    def _product_display_name(self):
+        """Name of the generated product, hence of every SO/invoice line:
+        "Brand Model (Year)" — the year is a Thai sales-paperwork requirement."""
+        self.ensure_one()
+        name = f'{self.brand_id.name} {self.name}'.strip()
+        if self.model_year:
+            name = f'{name} ({self.model_year})'
+        return name
+
+    def write(self, vals):
+        res = super().write(vals)
+        # Keep the generated product's name (→ new sales documents) in sync.
+        # Already-confirmed order lines keep their historical description.
+        if {'name', 'brand_id', 'model_year'} & set(vals):
+            for model in self.filtered('product_tmpl_id'):
+                new_name = model._product_display_name()
+                if model.product_tmpl_id.name != new_name:
+                    model.product_tmpl_id.name = new_name
+        return res
+
     def action_generate_product(self):
         """Create/refresh the product.template + attribute lines for each model."""
         Line = self.env['product.template.attribute.line']
@@ -362,7 +392,7 @@ class BsCarModel(models.Model):
                 managed_attr_ids.add(attr.id)
         for model in self:
             vals = {
-                'name': f'{model.brand_id.name} {model.name}'.strip(),
+                'name': model._product_display_name(),
                 'type': 'consu',
                 'list_price': model.base_price or 0.0,
                 'bs_car_model_id': model.id,

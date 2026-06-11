@@ -90,6 +90,17 @@
                                 </div>
                             </t>
                         </div>
+                        <!-- Answer "when do I get my car" right on the timeline. -->
+                        <div t-if="booking.state == 'delivered' and booking.actual_delivery_date"
+                             class="bs_delivery_eta text-center mt-3">
+                            <i class="fa fa-check-circle me-1"/>
+                            Delivered on <strong t-field="booking.actual_delivery_date"/>
+                        </div>
+                        <div t-elif="booking.estimated_delivery_date and booking.state in ('confirmed', 'in_production', 'ready_delivery')"
+                             class="bs_delivery_eta text-center mt-3">
+                            <i class="fa fa-calendar me-1"/>
+                            Estimated delivery: <strong t-field="booking.estimated_delivery_date"/>
+                        </div>
                     </div>
                 </div>
 
@@ -189,4 +200,39 @@
             </div>
         </t>
     </template>
+
+    <!-- ================================================================
+         PAYMENT STATUS — override for car booking context
+         ================================================================ -->
+
+    <!-- 1/2: Hide the "Skip" link for car-booking deposits.
+         The skip link lets users jump to the landing route before
+         post-processing completes (invoice creation, booking state sync).
+         For car bookings we block this entirely — the JS poll must finish. -->
+    <template id="payment_state_header_bs_car" name="Payment State Header : No Skip for Car Booking"
+              inherit_id="payment.state_header">
+        <xpath expr="//a[hasclass('alert-link') and hasclass('ms-auto')]" position="attributes">
+            <attribute name="t-if">is_processing and not tx.booking_id</attribute>
+        </xpath>
+    </template>
+
+    <!-- 2/2: Replace "Reference" (e.g. S00064) with booking name. -->
+    <template id="payment_status_bs_car" name="Payment Status : Car Booking"
+              inherit_id="payment.payment_status">
+        <xpath expr="//t[@t-call='payment.summary_item'][2]" position="replace">
+            <t t-if="tx.booking_id" t-call="payment.summary_item">
+                <t t-set="name" t-value="'booking'"/>
+                <t t-set="label">Booking</t>
+                <t t-set="value" t-value="tx.booking_id.name"/>
+                <t t-set="include_separator" t-value="True"/>
+            </t>
+            <t t-else="" t-call="payment.summary_item">
+                <t t-set="name" t-value="'reference'"/>
+                <t t-set="label">Reference</t>
+                <t t-set="value" t-value="tx.reference"/>
+                <t t-set="include_separator" t-value="True"/>
+            </t>
+        </xpath>
+    </template>
+
 </odoo>

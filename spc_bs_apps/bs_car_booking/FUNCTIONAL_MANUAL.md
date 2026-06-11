@@ -190,7 +190,7 @@ Most content is **Published** by default, so new cars, showrooms, offers, etc. a
 
 | Step | Page | What happens |
 |---|---|---|
-| Browse | Cars / car detail / Compare / News | Customer explores models, compares up to 4, reads the news. |
+| Browse | Cars / car detail / News | Customer explores models and reads the news. |
 | 1. Configure | “Book” page | Chooses trim, colour, interior, wheels, add‑ons (price updates live), picks a showroom, enters their phone, and **ticks the privacy consent (PDPA)**. |
 | 2. Verify | Verify page | Enters the **6‑digit code** sent to their phone by SMS (valid 5 minutes). |
 | 3. Details | Details page | Enters name (required), email, ID/NRC, address. |

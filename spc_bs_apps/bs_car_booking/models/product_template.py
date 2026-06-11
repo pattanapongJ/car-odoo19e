@@ -14,3 +14,8 @@ class ProductTemplate(models.Model):
         'bs.car.model', string='Car Model (Catalog)',
         ondelete='set null', index=True, copy=False,
         help='Marketing/catalog record this configurable car product belongs to.')
+    # Stored related: searchable/groupable on product lists, and visible on
+    # the product form so back-office staff see the year next to the price.
+    bs_model_year = fields.Selection(
+        related='bs_car_model_id.model_year', string='Model Year',
+        store=True, readonly=True)

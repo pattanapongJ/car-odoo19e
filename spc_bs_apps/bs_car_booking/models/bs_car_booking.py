@@ -267,7 +267,11 @@ class BsCarBooking(models.Model):
                         'current': labels.get(rec.state, rec.state),
                         'target': labels.get(target, target),
                     })
-        return super().write(vals)
+        res = super().write(vals)
+        # Backend edits to the promised date follow through to the sale order.
+        if 'estimated_delivery_date' in vals:
+            self._sync_delivery_commitment()
+        return res
 
     @api.onchange('model_id')
     def _onchange_model_id(self):
@@ -707,6 +711,7 @@ class BsCarBooking(models.Model):
                          self.name, self.state)
             return False
         self._transition_to('confirmed')
+        self._set_estimated_delivery()
         self._update_crm_lead()
         self._notify_confirmed()
         return True
@@ -729,6 +734,45 @@ class BsCarBooking(models.Model):
             except Exception as e:  # noqa: BLE001 - SMS gateway optional in dev
                 _logger.warning('Failed to send confirmation SMS: %s', str(e))
 
+    # === Delivery estimate ===
+    def _get_package_variant(self):
+        """The bs.car.variant (standard package) behind this booking, found by
+        the configured product's Trim attribute value; falls back to the
+        model's first active package."""
+        self.ensure_one()
+        trim_attr = self.env.ref('bs_car_booking.attr_trim', raise_if_not_found=False)
+        variants = self.model_id.variant_ids.filtered('active')
+        if self.product_id and trim_attr:
+            ptav = self.product_id.product_template_attribute_value_ids.filtered(
+                lambda v: v.attribute_id == trim_attr)[:1]
+            if ptav:
+                match = variants.filtered(lambda v: v.name == ptav.name)[:1]
+                if match:
+                    return match
+        return variants[:1]
+
+    def _set_estimated_delivery(self):
+        """On confirmation: default the promised date from the package's
+        ``estimated_delivery_days`` (kept when staff already set one) and
+        mirror it on the sale order."""
+        for booking in self:
+            if not booking.estimated_delivery_date:
+                variant = booking._get_package_variant()
+                days = variant.estimated_delivery_days or 30
+                booking.estimated_delivery_date = (
+                    fields.Date.context_today(booking) + timedelta(days=days))
+        self._sync_delivery_commitment()
+
+    def _sync_delivery_commitment(self):
+        """Mirror the booking's promised date onto the sale order's
+        ``commitment_date`` — the native "Delivery Date" the rest of Odoo
+        (SO form, reports, stock scheduling when installed) understands."""
+        for booking in self:
+            so = booking.sale_order_id
+            if so and booking.estimated_delivery_date:
+                so.commitment_date = fields.Datetime.to_datetime(
+                    booking.estimated_delivery_date)
+
     def action_confirm_booking(self):
         """Confirm a booking whose required deposit has already been received."""
         self.ensure_one()
@@ -745,6 +789,7 @@ class BsCarBooking(models.Model):
         if self.sale_order_id and self.sale_order_id.state in ('draft', 'sent'):
             self.sale_order_id.with_context(send_email=False).action_confirm()
         self._transition_to('confirmed')
+        self._set_estimated_delivery()
         self._notify_confirmed()
         return True
 

@@ -237,7 +237,7 @@ Panoramic roof</field>
     </record>
 
     <!-- ============================================================== -->
-    <!-- SPECIFICATIONS  (aligned labels for the Compare page)          -->
+    <!-- SPECIFICATIONS  (aligned labels across models)                 -->
     <!-- ============================================================== -->
     <record id="spec_ehs9_range" model="bs.car.model.spec">
         <field name="model_id" ref="model_hongqi_ehs9"/><field name="sequence">10</field>
