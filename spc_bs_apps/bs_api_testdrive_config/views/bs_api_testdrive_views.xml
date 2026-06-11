@@ -161,14 +161,13 @@
     </record>
 
     <!-- ═══════════════════════════════════════════════════════════════════
-         MENUS — standalone under Car Booking root (bs_car_booking provides root)
-         Use ir.ui.menu noupdate so the menu stays after upgrade
+         MENUS — under Settings, after Translations (sequence=2)
     ═══════════════════════════════════════════════════════════════════════ -->
 
     <menuitem id="menu_bs_api_testdrive_root"
               name="Test Drive"
-              web_icon="bs_api_testdrive_config,static/description/icon.png"
-              sequence="82"
+              parent="base.menu_administration"
+              sequence="5"
               groups="bs_api_testdrive_config.group_bs_api_testdrive_manager"/>
 
     <menuitem id="menu_bs_api_testdrive_config"

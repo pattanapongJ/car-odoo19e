@@ -6,7 +6,7 @@ from urllib.parse import parse_qs, urlencode, urlparse
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
-DIRECT_VIDEO_EXTENSIONS = ('.mp4', '.webm', '.mov', '.m4v')
+DIRECT_VIDEO_EXTENSIONS = ('.mp4', '.mov', '.m4v')
 
 
 class BsCarWebsiteSection(models.Model):
@@ -77,6 +77,8 @@ class BsCarWebsiteSection(models.Model):
     has_mobile_video_file = fields.Boolean(compute='_compute_has_video_file', store=True)
     video_src = fields.Char(compute='_compute_video_media')
     mobile_video_src = fields.Char(compute='_compute_video_media')
+    video_content_type = fields.Char(compute='_compute_video_media')
+    mobile_video_content_type = fields.Char(compute='_compute_video_media')
     video_url = fields.Char(
         'External Video URL',
         help='Optional YouTube/Vimeo URL or direct .mp4/.webm URL. Uploaded video takes priority.')
@@ -123,7 +125,10 @@ class BsCarWebsiteSection(models.Model):
             section.has_video_file = bool(section.video_file)
             section.has_mobile_video_file = bool(section.mobile_video_file)
 
-    @api.depends('has_video_file', 'has_mobile_video_file', 'video_url')
+    def _mime_from_filename(self, filename):
+        return 'video/mp4'
+
+    @api.depends('has_video_file', 'has_mobile_video_file', 'video_url', 'video_filename', 'mobile_video_filename')
     def _compute_video_media(self):
         for section in self:
             video_url = (section.video_url or '').strip()
@@ -132,6 +137,8 @@ class BsCarWebsiteSection(models.Model):
                 '/web/content/bs.car.website.section/%s/mobile_video_file' % section.id
                 if section.has_mobile_video_file else False
             )
+            section.video_content_type = section._mime_from_filename(section.video_filename)
+            section.mobile_video_content_type = section._mime_from_filename(section.mobile_video_filename)
             if section.has_video_file:
                 section.video_media_type = 'upload'
                 section.video_src = '/web/content/bs.car.website.section/%s/video_file' % section.id
@@ -217,7 +224,7 @@ class BsCarWebsiteSection(models.Model):
             ]
             if any(filename and not filename.endswith(DIRECT_VIDEO_EXTENSIONS) for filename in filenames):
                 raise ValidationError(
-                    'Video Upload only supports MP4/WebM/MOV/M4V files.')
+                    'Video Upload only supports MP4/MOV/M4V files. WebM is not supported on iOS Safari.')
 
             video_url = (section.video_url or '').strip().lower()
             if video_url and not section._normalize_video_embed_url(video_url):

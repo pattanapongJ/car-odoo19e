@@ -380,7 +380,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>เบอร์โทรศัพท์ <span class="en-label">/ Phone Number</span><span class="required">*</span></label>
-                                                <input type="tel" id="td_phone" placeholder="08X-XXX-XXXX / +66" required="required"/>
+                                                <input type="tel" id="td_phone" placeholder="08X-XXX-XXXX / +66" required="required" inputmode="numeric" pattern="[0-9+\-\s]{7,15}"/>
                                             </div>
                                         </div>
 
@@ -435,57 +435,6 @@
                                 </div>
                             </div>
 
-                            <script type="text/javascript">
-                                (function () {
-                                    document.getElementById('testDriveForm').addEventListener('submit', async function (e) {
-                                        e.preventDefault();
-
-                                        const consent = document.getElementById('td_consent');
-                                        if (!consent.checked) {
-                                            alert('กรุณากดยอมรับเงื่อนไขนโยบายความเป็นส่วนตัว / Please accept the Privacy Policy before submitting.');
-                                            return;
-                                        }
-
-                                        const btn = document.getElementById('td_submitBtn');
-                                        btn.textContent = 'Sending...';
-                                        btn.disabled = true;
-
-                                        const payload = {
-                                            jsonrpc: '2.0',
-                                            method: 'call',
-                                            params: {
-                                                full_name: document.getElementById('td_fullName').value.trim(),
-                                                phone: document.getElementById('td_phone').value.trim(),
-                                                line_id: document.getElementById('td_lineId').value.trim(),
-                                                email: document.getElementById('td_email').value.trim(),
-                                                test_drive_date: document.getElementById('td_date').value,
-                                                test_drive_time: document.querySelector('input[name="preferredTime"]:checked').value,
-                                                location: document.getElementById('td_location').value.trim(),
-                                            }
-                                        };
-
-                                        try {
-                                            const res = await fetch('/test-drive/submit', {
-                                                method: 'POST',
-                                                headers: { 'Content-Type': 'application/json' },
-                                                body: JSON.stringify(payload),
-                                            });
-                                            const data = await res.json();
-                                            if (data.result &amp;&amp; data.result.success) {
-                                                alert('ข้อมูลถูกส่งเรียบร้อยแล้ว เจ้าหน้าที่จะติดต่อกลับโดยเร็วที่สุด / Your request has been submitted. We will contact you shortly.');
-                                                document.getElementById('testDriveForm').reset();
-                                            } else {
-                                                alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง / An error occurred. Please try again.');
-                                            }
-                                        } catch (err) {
-                                            alert('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ / Unable to connect. Please try again.');
-                                        } finally {
-                                            btn.textContent = 'ยืนยันการนัดหมาย / Submit Request';
-                                            btn.disabled = false;
-                                        }
-                                    });
-                                })();
-                            </script>
                         </div>
                     </t>
                 </t>
