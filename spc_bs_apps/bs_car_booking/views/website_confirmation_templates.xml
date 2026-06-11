@@ -361,6 +361,10 @@
                                 <span class="conf_value" t-esc="booking.amount_total"
                                       t-options="{'widget': 'monetary', 'display_currency': booking.currency_id}"/>
                             </div>
+                            <div class="conf_row" t-if="booking.estimated_delivery_date">
+                                <span class="conf_label">Est. Delivery</span>
+                                <span class="conf_value" t-field="booking.estimated_delivery_date"/>
+                            </div>
                             <div class="conf_row">
                                 <span class="conf_label">Deposit Paid</span>
                                 <span class="conf_value" t-esc="booking.deposit_paid"

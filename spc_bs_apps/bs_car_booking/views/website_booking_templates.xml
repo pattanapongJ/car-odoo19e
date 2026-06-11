@@ -283,6 +283,10 @@
                                         <strong t-esc="car.deposit_amount"
                                                 t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
                                     </div>
+                                    <t t-set="first_variant" t-value="car.variant_ids.filtered('active')[:1]"/>
+                                    <div t-if="first_variant" class="cfg_delivery_estimate">
+                                        Est. delivery: <strong t-esc="first_variant.estimated_delivery_days or 30"/> days
+                                    </div>
                                     <label class="cfg_pdpa">
                                         <input type="checkbox" id="cfg_pdpa" class="cfg_pdpa_check"/>
                                         <span>I agree to the
