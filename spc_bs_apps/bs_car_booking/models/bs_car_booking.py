@@ -2,6 +2,7 @@
 # Part of Basic Solution Co., Ltd.
 
 import logging
+import re
 from datetime import timedelta
 
 from odoo import _, api, fields, models
@@ -9,6 +10,11 @@ from odoo.exceptions import ValidationError
 from odoo.tools import float_compare, consteq
 
 _logger = logging.getLogger(__name__)
+
+# Canonical phone shape after normalisation: optional +, then 7-15 digits
+# (E.164 max). The SAME rule is enforced client-side (phone_utils.js) and on
+# the form inputs' pattern attribute — keep the three in sync.
+PHONE_RE = re.compile(r'^\+?\d{7,15}$')
 
 
 class BsCarBooking(models.Model):
@@ -68,6 +74,13 @@ class BsCarBooking(models.Model):
     
     # OTP Verification
     phone_verified = fields.Boolean('Phone Verified', default=False, copy=False)
+    otp_verified_channel = fields.Selection([
+        ('sms', 'SMS'),
+        ('email', 'Email'),
+    ], string='Verified Via', copy=False, readonly=True,
+        help='Channel that delivered the verified OTP. "SMS" proves the phone '
+             'number itself; "Email" means the phone was NOT independently '
+             'verified (email fallback, e.g. while the SMS gateway is pending).')
     otp_ids = fields.One2many('bs.car.booking.otp', 'booking_id', string='OTP Records')
     otp_count = fields.Integer(compute='_compute_otp_count')
 
@@ -206,12 +219,25 @@ class BsCarBooking(models.Model):
             parts += rec.option_value_ids.mapped('name')
             rec.config_summary = ', '.join(p for p in parts if p)
 
+    # === Phone helpers (shared by funnel, tracking and throttle) ===
+    @api.model
+    def _normalize_phone(self, phone):
+        """Strip separators (spaces, dashes, dots, parentheses) so user input
+        like '081-234 5678' compares equal to a stored '0812345678'."""
+        return re.sub(r'[\s\-().]', '', phone or '')
+
+    @api.model
+    def _is_valid_phone(self, phone):
+        return bool(PHONE_RE.match(self._normalize_phone(phone)))
+
     # === Constraints ===
     @api.constrains('customer_phone')
     def _check_phone(self):
         for rec in self:
-            if rec.customer_phone and len(rec.customer_phone.strip()) < 7:
-                raise ValidationError(_('Please enter a valid phone number.'))
+            if rec.customer_phone and not self._is_valid_phone(rec.customer_phone):
+                raise ValidationError(_(
+                    'Please enter a valid phone number (7–15 digits, optional +, '
+                    'spaces and dashes allowed).'))
 
     # === CRUD ===
     @api.model_create_multi
@@ -254,20 +280,27 @@ class BsCarBooking(models.Model):
                 self.deposit_amount = self.model_id.deposit_amount
 
     # === Actions ===
-    def _otp_throttle_or_raise(self, phone):
+    def _otp_throttle_or_raise(self, phone, email=None):
         """Shared OTP rate-limit, raises ValidationError when exceeded:
           * resend cooldown vs the last OTP for THIS booking (server-side; the
             JS countdown is cosmetic only), and
-          * a per-phone hourly cap across ALL bookings/purposes (a per-booking
+          * a per-contact hourly cap across ALL bookings/purposes (a per-booking
             cooldown alone is trivially bypassed by starting a new booking).
+            The cap counts per phone AND, for email delivery, per address —
+            protecting against both SMS-cost abuse and email bombing.
         """
         self.ensure_one()
         ICP = self.env['ir.config_parameter'].sudo()
-        cooldown = ICP.get_param('bs_car_booking.otp_resend_seconds', '30')
-        try:
-            cooldown = max(int(cooldown), 0)
-        except (TypeError, ValueError):
-            cooldown = 30
+        # Per-website limits (Settings → Website → Car Booking); the ICPs stay
+        # as fallback for website-less bookings. 0 disables the given limit.
+        website = self.website_id
+        if website:
+            cooldown = max(website.bs_otp_resend_seconds, 0)
+        else:
+            try:
+                cooldown = max(int(ICP.get_param('bs_car_booking.otp_resend_seconds', '30')), 0)
+            except (TypeError, ValueError):
+                cooldown = 30
         last_otp = self.otp_ids.sorted('create_date', reverse=True)[:1]
         if cooldown and last_otp and last_otp.create_date:
             elapsed = (fields.Datetime.now() - last_otp.create_date).total_seconds()
@@ -276,23 +309,52 @@ class BsCarBooking(models.Model):
                     'Please wait %s seconds before requesting another code.'
                 ) % int(cooldown - elapsed))
 
-        norm_phone = (phone or '').strip().replace(' ', '')
-        max_per_hour = ICP.get_param('bs_car_booking.otp_max_per_hour', '5')
-        try:
-            max_per_hour = max(int(max_per_hour), 0)
-        except (TypeError, ValueError):
-            max_per_hour = 5
-        if max_per_hour and norm_phone:
-            since = fields.Datetime.now() - timedelta(hours=1)
-            recent = self.env['bs.car.booking.otp'].sudo().search_count([
-                ('phone', '=', norm_phone), ('create_date', '>=', since)])
-            if recent >= max_per_hour:
-                raise ValidationError(_(
-                    'Too many verification codes requested for this number. '
-                    'Please try again later.'))
+        if website:
+            max_per_hour = max(website.bs_otp_max_per_hour, 0)
+        else:
+            try:
+                max_per_hour = max(int(ICP.get_param('bs_car_booking.otp_max_per_hour', '5')), 0)
+            except (TypeError, ValueError):
+                max_per_hour = 5
+        if not max_per_hour:
+            return
+        Otp = self.env['bs.car.booking.otp'].sudo()
+        since = fields.Datetime.now() - timedelta(hours=1)
+        norm_phone = self._normalize_phone(phone)
+        norm_email = (email or '').strip().lower()
+        for domain, error in (
+            ([('phone', '=', norm_phone)] if norm_phone else None,
+             _('Too many verification codes requested for this number. Please try again later.')),
+            ([('email', '=ilike', norm_email)] if norm_email else None,
+             _('Too many verification codes requested for this email. Please try again later.')),
+        ):
+            if domain and Otp.search_count(domain + [('create_date', '>=', since)]) >= max_per_hour:
+                raise ValidationError(error)
 
-    def action_send_otp(self):
-        """Send OTP to customer's phone."""
+    def _resolve_otp_channel(self, channel=None):
+        """Final OTP delivery channel for this booking.
+
+        The website mode comes first: 'sms' / 'email' fix the channel
+        regardless of what the client sent ('email' is the no-SMS-gateway
+        mode). In 'both' mode the customer decides: explicit *channel*
+        (their pick on this request) → the last OTP's channel (a resend
+        must keep their earlier choice, not silently flip) → SMS.
+        """
+        self.ensure_one()
+        Otp = self.env['bs.car.booking.otp'].sudo()
+        website_channel = Otp._get_otp_channel(self.website_id)
+        if website_channel in ('sms', 'email'):
+            return website_channel
+        if channel in ('sms', 'email'):
+            return channel
+        # Explicit sort: an in-transaction One2many cache does NOT apply the
+        # comodel's _order, so otp_ids[:1] may be the OLDEST record.
+        last_otp = self.otp_ids.sorted('id', reverse=True)[:1]
+        return last_otp.channel if last_otp else 'sms'
+
+    def action_send_otp(self, channel=None):
+        """Send the verification OTP via the resolved channel (SMS/email).
+        *channel* is the customer's choice from the UI, when given."""
         self.ensure_one()
         if self.state not in ('draft', 'otp_pending'):
             raise ValidationError(_('OTP can only be sent before the phone is verified.'))
@@ -300,26 +362,37 @@ class BsCarBooking(models.Model):
             raise ValidationError(_('This phone number is already verified.'))
         if not self.customer_phone:
             raise ValidationError(_('Customer phone number is required.'))
+        if not self._is_valid_phone(self.customer_phone):
+            raise ValidationError(_('The phone number on this booking is not valid.'))
+        channel = self._resolve_otp_channel(channel)
+        if channel == 'email' and not self.customer_email:
+            raise ValidationError(_('An email address is required to receive the verification code.'))
+        destination = (self.customer_email if channel == 'email'
+                       else self.customer_phone)
 
-        # Rate-limit (resend cooldown + per-phone hourly cap). Shared with the
+        # Rate-limit (resend cooldown + per-contact hourly cap). Shared with the
         # tracking-OTP flow so both funnel verification and tracking re-auth are
         # protected against SMS bombing / cost abuse.
-        self._otp_throttle_or_raise(self.customer_phone)
+        self._otp_throttle_or_raise(self.customer_phone, email=self.customer_email)
 
         otp_record = self.env['bs.car.booking.otp'].sudo().send_otp(
-            self.customer_phone, self.id, purpose='booking'
+            self.customer_phone, self.id, purpose='booking',
+            channel=channel, email=self.customer_email,
         )
         self._transition_to('otp_pending')
 
         if self.env['ir.config_parameter'].sudo().get_param('bs_car_booking.log_otp') == '1':
-            _logger.info('OTP generated for %s (otp_id=%s)', self.customer_phone, otp_record.id)
-        
+            _logger.info('OTP generated for %s (otp_id=%s)', destination, otp_record.id)
+
+        message = (_('Verification code sent to %s. Please check your inbox.')
+                   if channel == 'email'
+                   else _('Verification code sent to %s. Please check your phone.'))
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': _('OTP Sent'),
-                'message': _('Verification code sent to %s. Please check your phone.') % self.customer_phone,
+                'message': message % destination,
                 'type': 'info',
                 'sticky': False,
             }
@@ -335,7 +408,9 @@ class BsCarBooking(models.Model):
             raise ValidationError(_('OTP can only be verified while the booking is waiting for OTP.'))
         if not self.pdpa_consent:
             return {'success': False, 'error': _('Privacy consent (PDPA) is required.')}
-        otp = self.otp_ids.filtered(
+        # Newest pending code only (sorted explicitly — see _resolve_otp_channel):
+        # after a resend the older still-pending codes must not be accepted.
+        otp = self.otp_ids.sorted('id', reverse=True).filtered(
             lambda o: o.state == 'pending' and o.purpose_code == 'booking')
         if not otp:
             raise ValidationError(_('No pending OTP found. Please request a new one.'))
@@ -343,6 +418,7 @@ class BsCarBooking(models.Model):
         result = otp[0].verify_otp(otp_code)
         if result['success']:
             self.phone_verified = True
+            self.otp_verified_channel = otp[0].channel
             self._transition_to('otp_verified')
             self._create_crm_lead()
         return result
@@ -768,21 +844,34 @@ class BsCarBooking(models.Model):
 
     @api.model
     def action_expire_stale_bookings(self):
-        """Expire unpaid bookings that were abandoned before confirmation."""
-        param = self.env['ir.config_parameter'].sudo().get_param(
+        """Expire unpaid bookings that were abandoned before confirmation.
+
+        Each booking's website may set its own expiry window (Settings →
+        Website → Car Booking). Falls back to the global System Parameter
+        ``bs_car_booking.expire_after_hours`` (default 72) when the website
+        has no value configured."""
+        global_default = self.env['ir.config_parameter'].sudo().get_param(
             'bs_car_booking.expire_after_hours', '72')
         try:
-            expire_after_hours = max(int(param), 1)
+            global_default_hours = max(int(global_default), 1)
         except (TypeError, ValueError):
-            expire_after_hours = 72
-        cutoff = fields.Datetime.now() - timedelta(hours=expire_after_hours)
+            global_default_hours = 72
+
         stale_bookings = self.sudo().search([
             ('state', 'in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending')),
-            ('create_date', '<=', cutoff),
             ('deposit_paid', '=', 0.0),
         ])
+        now = fields.Datetime.now()
         expired_count = 0
         for booking in stale_bookings:
+            # In cron context get_current_website() would be arbitrary — only
+            # the booking's own website can override the global default.
+            hours = booking.website_id.bs_booking_expire_hours or global_default_hours
+            if not booking.create_date:
+                continue
+            cutoff = booking.create_date + timedelta(hours=max(hours, 1))
+            if now < cutoff:
+                continue
             if booking._has_successful_payment():
                 continue
             if booking.sale_order_id and booking.sale_order_id.state in ('draft', 'sent'):
@@ -818,37 +907,53 @@ class BsCarBooking(models.Model):
         avoid a timing oracle. The CALLER MUST return an identical generic
         response whether or not this finds a record, so the endpoint cannot be
         used to enumerate references or phone numbers.
+
+        Business rule: only bookings whose owner completed the OTP step once
+        (``phone_verified``) are trackable — that covers confirmed bookings
+        AND the otp_verified/payment_pending ones (so an interrupted customer
+        can come back and finish the deposit), plus cancelled/expired for
+        transparency. Draft/otp_pending records never proved an owner and
+        have nothing to show, so they stay invisible here.
         """
         reference = (reference or '').strip()
-        phone = (phone or '').strip().replace(' ', '')
-        if not reference or len(phone) < 7:
+        phone = self._normalize_phone(phone)
+        if not reference or not self._is_valid_phone(phone):
             return self.browse()
-        booking = self.sudo().search([('name', '=', reference)], limit=1)
+        booking = self.sudo().search([
+            ('name', '=', reference), ('phone_verified', '=', True)], limit=1)
         if not booking:
             return self.browse()
-        stored = (booking.customer_phone or '').strip().replace(' ', '')
+        # Normalise BOTH sides so '081-234 5678' matches a stored '0812345678'.
+        stored = self._normalize_phone(booking.customer_phone)
         if not stored or not consteq(stored, phone):
             return self.browse()
         return booking
 
     def _send_tracking_otp(self):
-        """Send a tracking-access OTP to this booking's phone. Unlike the funnel
-        ``action_send_otp`` it does NOT change booking state or phone_verified;
-        it only re-proves ownership to unlock the (already token-gated) status
-        view. Throttled with the same limits as funnel OTPs."""
+        """Send a tracking-access OTP via the resolved channel. Unlike the
+        funnel ``action_send_otp`` it does NOT change booking state or
+        phone_verified; it only re-proves ownership to unlock the (already
+        token-gated) status view. Throttled with the same limits as funnel OTPs."""
         self.ensure_one()
         if not self.customer_phone:
             raise ValidationError(_('No phone number on this booking.'))
-        self._otp_throttle_or_raise(self.customer_phone)
+        channel = self._resolve_otp_channel()
+        if channel == 'email' and not self.customer_email:
+            # Old bookings may predate email collection — availability beats
+            # strictness here, so re-auth falls back to the phone they used.
+            channel = 'sms'
+        self._otp_throttle_or_raise(self.customer_phone, email=self.customer_email)
         return self.env['bs.car.booking.otp'].sudo().send_otp(
-            self.customer_phone, self.id, purpose='tracking')
+            self.customer_phone, self.id, purpose='tracking',
+            channel=channel, email=self.customer_email)
 
     def _verify_tracking_otp(self, code):
-        """Verify the latest pending tracking OTP. Returns {success, ...}."""
+        """Verify the latest pending tracking OTP. Returns {success, ...}.
+        Sorted by id (total order — create_date can tie) so only the newest
+        code is accepted, like the funnel verify."""
         self.ensure_one()
-        otp = self.otp_ids.sudo().filtered(
-            lambda o: o.state == 'pending' and o.purpose_code == 'tracking'
-        ).sorted('create_date', reverse=True)[:1]
+        otp = self.otp_ids.sudo().sorted('id', reverse=True).filtered(
+            lambda o: o.state == 'pending' and o.purpose_code == 'tracking')[:1]
         if not otp:
             return {'success': False, 'error': _('No active code. Please request a new one.')}
         return otp.verify_otp(code)

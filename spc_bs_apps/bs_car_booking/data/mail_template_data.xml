@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- OTP delivery by email — bilingual TH/EN, fully data-driven:
+             site, validity, call-center phone and signature all come from
+             the booking website / company so the template stays brand-neutral
+             (Hongqi values appear because the Hongqi website provides them).
+             NOTE noupdate=0: backend edits to these two templates are
+             overwritten on module update — edit this file instead. -->
+        <record id="mail_template_otp_booking" model="mail.template">
+            <field name="name">Car Booking OTP - Booking Verification (Email)</field>
+            <field name="model_id" ref="bs_car_booking.model_bs_car_booking_otp"/>
+            <field name="subject">รหัส OTP ยืนยันตัวตน / Your OTP verification code</field>
+            <field name="body_html" type="html">
+<div style="margin:0 auto;max-width:560px;padding:24px;font-family:Arial,Helvetica,sans-serif;color:#161616;font-size:14px;line-height:1.7;">
+    <p style="margin:0 0 12px;">เรียนท่าน <t t-out="object.email"/></p>
+    <p style="margin:0 0 12px;">
+        อีเมลฉบับนี้ถูกส่งมาจาก <t t-out="object._get_sender_site()"/><br/>
+        กรุณาใช้รหัส OTP ด้านล่างนี้ เพื่อยืนยันตัวตน
+    </p>
+    <p style="margin:0 0 4px;">รหัส OTP สำหรับยืนยันการเข้าใช้บริการของท่าน</p>
+    <p style="margin:12px 0;font-size:34px;font-weight:bold;letter-spacing:8px;color:#161616;"><t t-out="object.otp_code"/></p>
+    <p style="margin:0 0 12px;color:#65615b;">(ใช้งานได้ <t t-out="object.validity_minutes"/> นาที)</p>
+    <p t-if="object._get_sender_company().phone" style="margin:0 0 16px;">
+        หากท่านพบปัญหาการใช้งาน ท่านสามารถติดต่อเพื่อแจ้งปัญหาได้ที่เบอร์
+        Call Center <t t-out="object._get_sender_company().phone"/>
+    </p>
+    <p style="margin:0 0 24px;">
+        ด้วยความนับถือ<br/>
+        <t t-out="object._get_sender_company().name"/>
+    </p>
+    <hr style="border:0;border-top:1px solid #ded8cf;margin:0 0 24px;"/>
+    <p style="margin:0 0 12px;">Dear <t t-out="object.email"/>,</p>
+    <p style="margin:0 0 12px;">
+        This email is sent to you from <t t-out="object._get_sender_site()"/>.<br/>
+        Please use the OTP code below to verify your identity:
+    </p>
+    <p style="margin:0 0 12px;">
+        Your OTP for verification is
+        <strong style="letter-spacing:2px;"><t t-out="object.otp_code"/></strong>
+        (Valid for <t t-out="object.validity_minutes"/> minutes)
+    </p>
+    <p t-if="object._get_sender_company().phone" style="margin:0 0 16px;">
+        If you encounter any issues, please feel free to contact our Call Center
+        at <t t-out="object._get_sender_company().phone"/>.
+    </p>
+    <p style="margin:0;">
+        Sincerely,<br/>
+        <t t-out="object._get_sender_company().name"/>
+    </p>
+</div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="mail_template_otp_tracking" model="mail.template">
+            <field name="name">Car Booking OTP - Tracking Access (Email)</field>
+            <field name="model_id" ref="bs_car_booking.model_bs_car_booking_otp"/>
+            <field name="subject">รหัส OTP เข้าดูสถานะการจอง / Your booking tracking code</field>
+            <field name="body_html" type="html">
+<div style="margin:0 auto;max-width:560px;padding:24px;font-family:Arial,Helvetica,sans-serif;color:#161616;font-size:14px;line-height:1.7;">
+    <p style="margin:0 0 12px;">เรียนท่าน <t t-out="object.email"/></p>
+    <p style="margin:0 0 12px;">
+        อีเมลฉบับนี้ถูกส่งมาจาก <t t-out="object._get_sender_site()"/><br/>
+        กรุณาใช้รหัส OTP ด้านล่างนี้ เพื่อเข้าดูสถานะการจองของท่าน
+    </p>
+    <p style="margin:12px 0;font-size:34px;font-weight:bold;letter-spacing:8px;color:#161616;"><t t-out="object.otp_code"/></p>
+    <p style="margin:0 0 12px;color:#65615b;">(ใช้งานได้ <t t-out="object.validity_minutes"/> นาที)</p>
+    <p t-if="object._get_sender_company().phone" style="margin:0 0 16px;">
+        หากท่านพบปัญหาการใช้งาน ท่านสามารถติดต่อเพื่อแจ้งปัญหาได้ที่เบอร์
+        Call Center <t t-out="object._get_sender_company().phone"/>
+    </p>
+    <p style="margin:0 0 24px;">
+        ด้วยความนับถือ<br/>
+        <t t-out="object._get_sender_company().name"/>
+    </p>
+    <hr style="border:0;border-top:1px solid #ded8cf;margin:0 0 24px;"/>
+    <p style="margin:0 0 12px;">Dear <t t-out="object.email"/>,</p>
+    <p style="margin:0 0 12px;">
+        This email is sent to you from <t t-out="object._get_sender_site()"/>.<br/>
+        Please use the OTP code below to view your booking status:
+    </p>
+    <p style="margin:0 0 12px;">
+        Your booking tracking code is
+        <strong style="letter-spacing:2px;"><t t-out="object.otp_code"/></strong>
+        (Valid for <t t-out="object.validity_minutes"/> minutes)
+    </p>
+    <p t-if="object._get_sender_company().phone" style="margin:0 0 16px;">
+        If you encounter any issues, please feel free to contact our Call Center
+        at <t t-out="object._get_sender_company().phone"/>.
+    </p>
+    <p style="margin:0;">
+        Sincerely,<br/>
+        <t t-out="object._get_sender_company().name"/>
+    </p>
+</div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

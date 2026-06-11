@@ -7,6 +7,8 @@
          placeholders, not official Thailand pricing.
          ================================================================ -->
 
+    <data noupdate="1">
+
     <!-- ── Brand (with heritage story) ────────────────────────────── -->
     <record id="brand_hongqi" model="bs.car.brand">
         <field name="name">Hongqi</field>
@@ -855,5 +857,7 @@ Panoramic roof</field>
         <field name="description"><![CDATA[<p>Reserve the E-HS9 and receive a full year of
             scheduled maintenance, courtesy of our flagship ownership programme.</p>]]></field>
     </record>
+
+    </data>
 
 </odoo>

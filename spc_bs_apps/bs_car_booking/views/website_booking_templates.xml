@@ -188,13 +188,55 @@
                             <div class="cfg_block" data-bs-car-reveal="up">
                                 <div class="cfg_block_heading">
                                     <span class="cfg_block_number">V</span>
-                                    <h4 class="cfg_block_title">Mobile Number</h4>
+                                    <h4 class="cfg_block_title">Verification</h4>
                                 </div>
                                 <div class="cfg_phone_row">
+                                    <label class="form-label fw-bold">Phone number</label>
                                     <input type="tel" id="cfg_phone" class="form-control form-control-lg"
                                            placeholder="+66 8 1234 5678" required="required"
                                            pattern="^\+?[0-9\s\-]{7,15}$"/>
-                                    <small class="text-muted">We'll send a verification code to this number.</small>
+                                    <small class="text-muted" id="cfg_phone_hint">
+                                        <t t-if="otp_channel == 'email'">Our team will use this number to contact you.</t>
+                                        <t t-else="">We'll send a verification code to this number.</t>
+                                    </small>
+                                </div>
+
+                                <!-- Channel toggle only when the website lets the customer
+                                     choose (mode = both). 'sms'/'email' modes fix the
+                                     channel, so there is nothing to pick. -->
+                                <div t-if="otp_channel == 'both'" class="cfg_otp_channel" id="cfg_otp_channel_toggle">
+                                    <label class="form-label fw-bold mt-3">Send verification code by</label>
+                                    <div class="cfg_otp_options">
+                                        <label class="cfg_otp_opt">
+                                            <input type="radio" name="otp_channel" value="sms" class="d-none"
+                                                   checked="checked"/>
+                                            <span class="cfg_otp_opt_icon"><i class="fa fa-mobile-phone"/></span>
+                                            <span class="cfg_otp_opt_body">
+                                                <strong>SMS</strong>
+                                                <small>to this number</small>
+                                            </span>
+                                        </label>
+                                        <label class="cfg_otp_opt">
+                                            <input type="radio" name="otp_channel" value="email" class="d-none"/>
+                                            <span class="cfg_otp_opt_icon"><i class="fa fa-envelope"/></span>
+                                            <span class="cfg_otp_opt_body">
+                                                <strong>Email</strong>
+                                                <small>to your inbox</small>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Email row: always for email-only mode; revealed by the
+                                     toggle in 'both' mode; absent in SMS-only mode. -->
+                                <div t-if="otp_channel != 'sms'"
+                                     t-attf-class="cfg_phone_row mt-3 {{ otp_channel == 'both' and 'd-none' or '' }}"
+                                     id="cfg_email_row">
+                                    <label class="form-label fw-bold">Email address</label>
+                                    <input type="email" id="cfg_email" class="form-control form-control-lg"
+                                           placeholder="you@email.com"
+                                           t-att-required="otp_channel == 'email' and 'required' or None"/>
+                                    <small class="text-muted">We'll send a verification code to this email.</small>
                                 </div>
                             </div>
                         </div>

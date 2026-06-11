@@ -4,6 +4,8 @@
 
 import { Interaction } from "@web/public/interaction";
 import { registry } from "@web/core/registry";
+import { initOtpDigits } from "@bs_car_booking/js/otp_digits";
+import { isValidPhone } from "@bs_car_booking/js/phone_utils";
 
 export class BookingTracking extends Interaction {
     static selector = "#bs_track";
@@ -11,20 +13,76 @@ export class BookingTracking extends Interaction {
     setup() {
         this.refEl = this.el.querySelector("[data-track-ref]");
         this.phoneEl = this.el.querySelector("[data-track-phone]");
-        this.codeEl = this.el.querySelector("[data-track-code]");
         this.msgEl = this.el.querySelector("[data-track-msg]");
         this.stepLookup = this.el.querySelector('[data-track-step="lookup"]');
         this.stepOtp = this.el.querySelector('[data-track-step="otp"]');
+        this.timerWrap = this.el.querySelector("[data-track-timer-row]");
+        this.countdownEl = this.el.querySelector("[data-track-countdown]");
+        this.countdownInterval = null;
+        this.resendBtn = this.el.querySelector("[data-track-resend]");
+        this.resendLabel = this.el.querySelector("[data-track-resend-label]");
+        this.resendTimer = null;
+        this.resendLeft = 0;
     }
 
     start() {
+        // Same 6-box entry behaviour as the funnel verify page.
+        this.otpDigits = initOtpDigits(this.el.querySelectorAll(".otp_digit"));
+        // Verify button: enabled only when all 6 digits are filled.
+        this.verifyBtn = this.el.querySelector("[data-track-verify]");
+        this._syncVerifyBtn();
+        this.el.querySelectorAll(".otp_digit").forEach((inp) =>
+            inp.addEventListener("input", () => this._syncVerifyBtn()));
         this._bind("[data-track-send]", () => this._lookup());
         this._bind("[data-track-verify]", () => this._verify());
         this._bind("[data-track-resend]", () => this._resend());
         // Enter key submits the active step.
         this.refEl?.addEventListener("keydown", (e) => e.key === "Enter" && this._lookup());
         this.phoneEl?.addEventListener("keydown", (e) => e.key === "Enter" && this._lookup());
-        this.codeEl?.addEventListener("keydown", (e) => e.key === "Enter" && this._verify());
+        this.el.querySelectorAll(".otp_digit").forEach((d) =>
+            d.addEventListener("keydown", (e) => e.key === "Enter" && this._verify()));
+        this.registerCleanup(() => {
+            if (this.countdownInterval) clearInterval(this.countdownInterval);
+            if (this.resendTimer) clearInterval(this.resendTimer);
+        });
+    }
+
+    /* Mirror of the funnel verify page: the resend link is locked for the
+       server cooldown so customers don't trip the throttle error. */
+    _startResendCooldown(seconds) {
+        if (!this.resendBtn || !seconds) return;
+        if (this.resendTimer) clearInterval(this.resendTimer);
+        this.resendLeft = seconds;
+        this.resendBtn.disabled = true;
+        const labelEl = this.resendLabel || this.resendBtn;
+        const tick = () => {
+            if (this.resendLeft <= 0) {
+                clearInterval(this.resendTimer);
+                this.resendBtn.disabled = false;
+                labelEl.textContent = "Resend code";
+                return;
+            }
+            labelEl.textContent = `Resend in ${this.resendLeft}s`;
+            this.resendLeft--;
+        };
+        tick();
+        this.resendTimer = setInterval(tick, 1000);
+    }
+
+    _startCountdown(seconds) {
+        if (!this.countdownEl || !seconds) return;
+        if (this.countdownInterval) clearInterval(this.countdownInterval);
+        this.timerWrap?.classList.remove("d-none");
+        let left = seconds;
+        const tick = () => {
+            const m = String(Math.floor(left / 60)).padStart(2, "0");
+            const s = String(left % 60).padStart(2, "0");
+            this.countdownEl.textContent = left > 0 ? `${m}:${s}` : "Expired";
+            if (left <= 0) clearInterval(this.countdownInterval);
+            left--;
+        };
+        tick();
+        this.countdownInterval = setInterval(tick, 1000);
     }
 
     _bind(sel, fn) {
@@ -61,8 +119,14 @@ export class BookingTracking extends Interaction {
     async _lookup() {
         const reference = (this.refEl?.value || "").trim();
         const phone = (this.phoneEl?.value || "").trim();
-        if (!reference || phone.length < 7) {
-            this._msg("Please enter your booking reference and phone number.", "error");
+        if (!reference) {
+            this._msg("Please enter your booking reference (e.g. CBK/2026/06/00042).", "error");
+            this.refEl?.focus();
+            return;
+        }
+        if (!isValidPhone(phone)) {
+            this._msg("Please enter a valid phone number — the one used on the booking (7–15 digits).", "error");
+            this.phoneEl?.focus();
             return;
         }
         this._busy(true);
@@ -72,7 +136,9 @@ export class BookingTracking extends Interaction {
             this.stepLookup?.classList.add("d-none");
             this.stepOtp?.classList.remove("d-none");
             this._msg(res.message || "If a booking matches, a code has been sent.", "ok");
-            this.codeEl?.focus();
+            this._startCountdown(res.expires_in);
+            this._startResendCooldown(res.resend_in);
+            this.otpDigits?.focus();
         } catch {
             this._msg("Something went wrong. Please try again.", "error");
         } finally {
@@ -81,9 +147,9 @@ export class BookingTracking extends Interaction {
     }
 
     async _verify() {
-        const code = (this.codeEl?.value || "").trim();
-        if (code.length < 4) {
-            this._msg("Enter the code from your phone.", "error");
+        const code = (this.otpDigits?.getCode() || "").trim();
+        if (code.length !== 6) {
+            this._msg("Enter the 6-digit code you received.", "error");
             return;
         }
         this._busy(true);
@@ -102,16 +168,32 @@ export class BookingTracking extends Interaction {
     }
 
     async _resend() {
+        if (this.resendLeft > 0) return;
         this._busy(true);
         try {
             const res = await this._call("/track/resend", {});
             this._msg(res.message || "A new code has been sent.", res.ok === false ? "error" : "ok");
+            if (res.ok !== false) {
+                this.otpDigits?.clear();
+                this.otpDigits?.focus();
+                this._syncVerifyBtn();
+                this._startCountdown(res.expires_in);
+                this._startResendCooldown(res.resend_in);
+            }
         } catch {
             this._msg("Something went wrong. Please try again.", "error");
         } finally {
             this._busy(false);
         }
     }
+
+    _syncVerifyBtn() {
+        if (this.verifyBtn) {
+            this.verifyBtn.disabled = (this.otpDigits?.getCode() || "").length !== 6;
+        }
+    }
 }
 
 registry.category("public.interactions").add("bs_car_booking.booking_tracking", BookingTracking);
+
+

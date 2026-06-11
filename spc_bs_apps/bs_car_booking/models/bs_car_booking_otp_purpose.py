@@ -19,8 +19,18 @@ class BsCarBookingOtpPurpose(models.Model):
         help='SMS template used when sending OTP for this purpose.',
     )
     sms_fallback_body = fields.Text(
-        string='Fallback Message',
+        string='SMS Fallback Message',
         help='Used when SMS template is missing. Use %(otp_code)s as placeholder.',
+    )
+    mail_template_id = fields.Many2one(
+        'mail.template',
+        string='Email Template',
+        domain=[('model', '=', 'bs.car.booking.otp')],
+        help='Email template used when sending OTP by email for this purpose.',
+    )
+    mail_fallback_body = fields.Text(
+        string='Email Fallback Message',
+        help='Used when the email template is missing. Use %(otp_code)s as placeholder.',
     )
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
@@ -30,10 +40,11 @@ class BsCarBookingOtpPurpose(models.Model):
         'Purpose code must be unique.',
     )
 
-    @api.constrains('sms_fallback_body')
+    @api.constrains('sms_fallback_body', 'mail_fallback_body')
     def _check_fallback_placeholder(self):
         for rec in self:
-            if rec.sms_fallback_body and '%(otp_code)s' not in rec.sms_fallback_body:
-                raise ValidationError(
-                    _("Fallback message must contain %(otp_code)s placeholder.")
-                )
+            for body in (rec.sms_fallback_body, rec.mail_fallback_body):
+                if body and '%(otp_code)s' not in body:
+                    raise ValidationError(
+                        _("Fallback message must contain %(otp_code)s placeholder.")
+                    )

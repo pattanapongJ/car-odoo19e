@@ -10,15 +10,23 @@
                 <div class="container">
                     <div class="otp_card"
                          t-att-data-booking-id="booking.id"
-                         t-att-data-access-token="access_token">
+                         t-att-data-access-token="access_token"
+                         t-att-data-otp-expiry="otp_expires_in"
+                         t-att-data-otp-resend="otp_resend_in">
                         <t t-call="bs_car_booking.booking_progress">
                             <t t-set="active_step" t-value="2"/>
                         </t>
-                        <div class="otp_icon"><i class="fa fa-mobile-phone fa-3x"/></div>
-                        <h2 class="otp_title">Verify Your Phone Number</h2>
+                        <t t-set="is_email_otp" t-value="otp_channel == 'email'"/>
+                        <div class="otp_icon">
+                            <i t-attf-class="fa fa-{{ is_email_otp and 'envelope-o' or 'mobile-phone' }} fa-3x"/>
+                        </div>
+                        <h2 class="otp_title" t-esc="is_email_otp and 'Verify Your Email' or 'Verify Your Phone Number'"/>
                         <p class="otp_description">
                             We've sent a 6-digit verification code to
-                            <strong t-esc="booking.customer_phone"/>
+                            <strong t-esc="otp_destination or booking.customer_phone"/>
+                        </p>
+                        <p t-if="is_email_otp" class="otp_spam_hint text-muted">
+                            Didn't receive it? Check your spam folder.
                         </p>
                         <div class="otp_form">
                             <div class="otp_input_group">
@@ -27,15 +35,38 @@
                                            t-att-data-index="i" inputmode="numeric" pattern="[0-9]"/>
                                 </t>
                             </div>
-                            <div class="otp_timer"><span id="otp_countdown">05:00</span></div>
+                            <div class="otp_timer">
+                                <div class="bs_track_timer_row">
+                                    <div class="bs_track_countdown">
+                                        <i class="fa fa-clock-o"/>
+                                        <span>Code expires in </span>
+                                        <strong id="otp_countdown"
+                                                t-esc="'%02d:%02d' % divmod(otp_expires_in or 300, 60)"/>
+                                    </div>
+                                    <button id="otp_resend_btn" class="bs_track_resend_btn" disabled="disabled">
+                                        <i class="fa fa-refresh"/>
+                                        <span id="otp_resend_label">Resend code</span>
+                                    </button>
+                                </div>
+                            </div>
                             <div class="otp_error d-none"><div class="alert alert-danger" id="otp_error_msg"/></div>
                             <div class="otp_success d-none"><div class="alert alert-success" id="otp_success_msg"/></div>
                             <div class="otp_actions">
                                 <button id="otp_verify_btn" class="btn btn-primary btn-lg otp_verify_btn">
                                     <i class="fa fa-check"/> Verify
                                 </button>
-                                <button id="otp_resend_btn" class="btn btn-link otp_resend_btn" disabled="disabled">
-                                    Resend Code
+                                <!-- Customer-choice websites can reroute the code to the
+                                     other channel (flag only; destination stays the
+                                     booking's own phone/email). -->
+                                <button t-if="otp_switch_channel" id="otp_switch_btn"
+                                        class="btn btn-link otp_switch_btn"
+                                        t-att-data-channel="otp_switch_channel">
+                                    <t t-if="otp_switch_channel == 'email'">
+                                        <i class="fa fa-envelope-o"/> Send to my email instead
+                                    </t>
+                                    <t t-else="">
+                                        <i class="fa fa-mobile-phone"/> Send by SMS instead
+                                    </t>
                                 </button>
                             </div>
                         </div>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.bs.car.booking</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="website.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//app[@name='website']" position="inside">
+                    <block title="Car Booking" id="bs_car_booking_settings">
+                        <setting string="OTP Delivery"
+                                 help="How booking verification codes are delivered to customers. Choose &quot;Email only&quot; while no SMS gateway (e.g. Twilio) is active."
+                                 title="Verification Code Delivery Channel">
+                            <field name="bs_otp_channel" widget="radio" options="{'horizontal': true}"/>
+                        </setting>
+                        <setting string="OTP Validity"
+                                 help="Lifetime of verification codes — shown in the SMS/email copy and drives the countdown."
+                                 title="Verification code lifetime (minutes)">
+                            <field name="bs_otp_expiry_minutes"/>
+                        </setting>
+                        <setting string="OTP Resend Cooldown"
+                                 help="Minimum wait between two codes for the same booking. 0 disables."
+                                 title="Resend cooldown (seconds)">
+                            <field name="bs_otp_resend_seconds"/>
+                        </setting>
+                        <setting string="OTP Hourly Cap"
+                                 help="Maximum codes per hour for one phone/email across all bookings (abuse protection). Keep aligned across websites."
+                                 title="Codes per hour per contact">
+                            <field name="bs_otp_max_per_hour"/>
+                        </setting>
+                        <setting string="Booking Expiry"
+                                 help="Unpaid draft bookings older than this many hours are automatically expired."
+                                 title="Auto-expire stale bookings after (hours)">
+                            <field name="bs_booking_expire_hours"/>
+                        </setting>
+                    </block>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
