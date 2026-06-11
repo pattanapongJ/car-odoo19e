@@ -350,6 +350,153 @@
             <field name="is_published">True</field>
         </record>
 
+        <!-- ── Test Drive Page ──────────────────────────────────────── -->
+        <record id="test_drive_view" model="theme.ir.ui.view">
+            <field name="name">Hongqi Test Drive</field>
+            <field name="key">theme_bs_hongqi_car.test_drive</field>
+            <field name="type">qweb</field>
+            <field name="arch" type="xml">
+                <t t-name="theme_bs_hongqi_car.test_drive">
+                    <t t-call="website.layout">
+                        <t t-set="title">Test Drive | Hongqi Thailand</t>
+                        <div id="wrap">
+                            <div class="bs_testdrive_page">
+                                <div class="form-container">
+                                    <div class="header-logos">
+                                        <img src="/theme_bs_hongqi_car/static/src/img/brand/hongqi_metro_white.png" alt="Hongqi Metro Group"/>
+                                    </div>
+
+                                    <h2>นัดหมายทดลองขับ<br/><span style="font-size:20px;color:#b3b3b3;">Book a Test Drive</span></h2>
+                                    <div class="subtitle">
+                                        สัมผัสประสบการณ์แห่งความหรูหราเหนือระดับ กรุณากรอกข้อมูลของท่านด้านล่าง<br/>
+                                        Experience the ultimate luxury. Please fill out your details below.
+                                    </div>
+
+                                    <form id="testDriveForm">
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>ชื่อ-นามสกุล <span class="en-label">/ Full Name</span><span class="required">*</span></label>
+                                                <input type="text" id="td_fullName" placeholder="ชื่อ-นามสกุล / John Doe" required="required"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>เบอร์โทรศัพท์ <span class="en-label">/ Phone Number</span><span class="required">*</span></label>
+                                                <input type="tel" id="td_phone" placeholder="08X-XXX-XXXX / +66" required="required"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>Line ID</label>
+                                                <input type="text" id="td_lineId" placeholder="Line ID (Optional)"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>อีเมล <span class="en-label">/ Email</span></label>
+                                                <input type="email" id="td_email" placeholder="example@email.com (Optional)"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>วันที่สะดวก <span class="en-label">/ Preferred Date</span><span class="required">*</span></label>
+                                                <input type="date" id="td_date" required="required"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>ช่วงเวลาที่สะดวก <span class="en-label">/ Preferred Time</span><span class="required">*</span></label>
+                                                <div class="radio-group">
+                                                    <label class="radio-item">
+                                                        <input type="radio" name="preferredTime" value="Morning" checked="checked"/>
+                                                        <div>ช่วงเช้า / Morning<br/><span style="font-size:12px;color:#888;">(09:00 - 12:00)</span></div>
+                                                    </label>
+                                                    <label class="radio-item">
+                                                        <input type="radio" name="preferredTime" value="Afternoon"/>
+                                                        <div>ช่วงบ่าย / Afternoon<br/><span style="font-size:12px;color:#888;">(13:00 - 17:00)</span></div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>พื้นที่นัดหมาย <span class="en-label">/ Preferred Location</span><span class="required">*</span></label>
+                                                <input type="text" id="td_location" placeholder="เช่น บางนา, สุขุมวิท / e.g., Bangna, Sukhumvit" required="required"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="consent-row">
+                                            <input type="checkbox" id="td_consent" required="required"/>
+                                            <label for="td_consent" class="consent-label">
+                                                ข้าพเจ้ายินยอมให้ <strong>บริษัท เมโทร ออโต้เฮ้าส์ จำกัด บริษัทในเครือ และพันธมิตรทางธุรกิจที่เหมาะสม</strong> เก็บรวบรวมและใช้ข้อมูลส่วนบุคคล เพื่อการติดต่อกลับและนำเสนอข้อมูล ตาม <a href="https://hongqithailand.com/policies/privacy-policy.html" target="_blank">นโยบายความเป็นส่วนตัว</a><span class="required">*</span><br/>
+                                                <span style="color:#888;">I hereby consent to Metro Autohaus Co., Ltd., its affiliates, and business partners collecting and using my personal data for the purposes of contacting me and presenting information, in accordance with the <a href="https://hongqithailand.com/policies/privacy-policy.html" target="_blank">Privacy Policy</a>.</span><span class="required">*</span>
+                                            </label>
+                                        </div>
+
+                                        <button type="submit" class="submit-btn" id="td_submitBtn">ยืนยันการนัดหมาย / Submit Request</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <script type="text/javascript">
+                                (function () {
+                                    document.getElementById('testDriveForm').addEventListener('submit', async function (e) {
+                                        e.preventDefault();
+
+                                        const consent = document.getElementById('td_consent');
+                                        if (!consent.checked) {
+                                            alert('กรุณากดยอมรับเงื่อนไขนโยบายความเป็นส่วนตัว / Please accept the Privacy Policy before submitting.');
+                                            return;
+                                        }
+
+                                        const btn = document.getElementById('td_submitBtn');
+                                        btn.textContent = 'Sending...';
+                                        btn.disabled = true;
+
+                                        const payload = {
+                                            jsonrpc: '2.0',
+                                            method: 'call',
+                                            params: {
+                                                full_name: document.getElementById('td_fullName').value.trim(),
+                                                phone: document.getElementById('td_phone').value.trim(),
+                                                line_id: document.getElementById('td_lineId').value.trim(),
+                                                email: document.getElementById('td_email').value.trim(),
+                                                test_drive_date: document.getElementById('td_date').value,
+                                                test_drive_time: document.querySelector('input[name="preferredTime"]:checked').value,
+                                                location: document.getElementById('td_location').value.trim(),
+                                            }
+                                        };
+
+                                        try {
+                                            const res = await fetch('/test-drive/submit', {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify(payload),
+                                            });
+                                            const data = await res.json();
+                                            if (data.result &amp;&amp; data.result.success) {
+                                                alert('ข้อมูลถูกส่งเรียบร้อยแล้ว เจ้าหน้าที่จะติดต่อกลับโดยเร็วที่สุด / Your request has been submitted. We will contact you shortly.');
+                                                document.getElementById('testDriveForm').reset();
+                                            } else {
+                                                alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง / An error occurred. Please try again.');
+                                            }
+                                        } catch (err) {
+                                            alert('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ / Unable to connect. Please try again.');
+                                        } finally {
+                                            btn.textContent = 'ยืนยันการนัดหมาย / Submit Request';
+                                            btn.disabled = false;
+                                        }
+                                    });
+                                })();
+                            </script>
+                        </div>
+                    </t>
+                </t>
+            </field>
+        </record>
+        <record id="test_drive_page" model="theme.website.page">
+            <field name="url">/test-drive</field>
+            <field name="view_id" ref="test_drive_view"/>
+            <field name="is_published">True</field>
+        </record>
+
         <record id="menu_website_home" model="theme.website.menu">
             <field name="name">Home</field>
             <field name="url">/showroom</field>
@@ -375,10 +522,10 @@
             <field name="url">/track</field>
             <field name="sequence">40</field>
         </record>
-        <record id="menu_website_about" model="theme.website.menu">
-            <field name="name">About Us</field>
-            <field name="url">/about-us</field>
-            <field name="sequence">50</field>
+        <record id="menu_website_testdrive" model="theme.website.menu">
+            <field name="name">Test Drive</field>
+            <field name="url">/test-drive</field>
+            <field name="sequence">55</field>
         </record>
         <record id="menu_website_contact" model="theme.website.menu">
             <field name="name">Contact Us</field>

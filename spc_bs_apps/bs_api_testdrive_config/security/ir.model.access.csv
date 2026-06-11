@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bs_api_testdrive_config_manager,bs.api.testdrive.config.manager,model_bs_api_testdrive_config,bs_api_testdrive_config.group_bs_api_testdrive_manager,1,1,1,1
+access_bs_api_testdrive_log_manager,bs.api.testdrive.log.manager,model_bs_api_testdrive_log,bs_api_testdrive_config.group_bs_api_testdrive_manager,1,1,1,0
