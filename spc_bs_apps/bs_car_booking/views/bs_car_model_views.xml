@@ -140,6 +140,7 @@
                                     <field name="swatch_color" optional="show"/>
                                     <field name="swatch_color_2" optional="hide"/>
                                     <field name="image_alt" optional="show"/>
+                                    <field name="website_published" widget="boolean_toggle" optional="show"/>
                                     <field name="attribute_name" column_invisible="1"/>
                                     <field name="sequence" optional="hide"/>
                                 </list>

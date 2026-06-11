@@ -48,6 +48,23 @@ class BsCarBookingAPI(http.Controller):
         return not getattr(record, 'company_id', False) or record.company_id == request.website.company_id
 
     # ── Live price for a configuration ──────────────────────────────────
+    def _published_ptav_ids(self, model, ptav_ids):
+        """Drop any selected attribute values whose car-model option is
+        unpublished — the website disables them, this enforces it server-side so
+        a crafted request can't book/price a hidden option."""
+        ids = [int(p) for p in (ptav_ids or [])]
+        if not ids:
+            return ids
+        unpublished_value_ids = set(request.env['bs.car.model.option'].sudo().search([
+            ('model_id', '=', model.id),
+            ('website_published', '=', False),
+        ]).value_id.ids)
+        if not unpublished_value_ids:
+            return ids
+        ptavs = request.env['product.template.attribute.value'].sudo().browse(ids).exists()
+        return [p.id for p in ptavs
+                if p.product_attribute_value_id.id not in unpublished_value_ids]
+
     @http.route(['/car_booking/car/price', '/shop/car/price'], type='jsonrpc',
                 auth='public', website=True, methods=['POST'])
     def car_price(self, model_id, ptav_ids=None):
@@ -61,7 +78,7 @@ class BsCarBookingAPI(http.Controller):
         if not tmpl:
             return {'success': True, 'price': model.base_price or 0.0,
                     'currency_id': currency.id}
-        ptav_ids = [int(p) for p in (ptav_ids or [])]
+        ptav_ids = self._published_ptav_ids(model, ptav_ids)
         combo = request.env['product.template.attribute.value'].sudo().browse(ptav_ids)
         combo = combo.exists().filtered(lambda p: p.product_tmpl_id == tmpl)
         # Price = template list price + each selected value's price_extra (set by
@@ -126,10 +143,11 @@ class BsCarBookingAPI(http.Controller):
             prev = Booking.browse(request.session.get('bs_funnel_booking') or 0)
             reuse = (prev.exists() and prev.state in ('draft', 'otp_pending')
                      and not prev.phone_verified and prev.model_id.id == model.id)
+            published_ptav_ids = self._published_ptav_ids(model, ptav_ids)
             if reuse:
                 booking = prev
                 booking.write(vals)
-                booking._apply_configuration([int(p) for p in (ptav_ids or [])])
+                booking._apply_configuration(published_ptav_ids)
                 try:
                     booking.action_send_otp()   # resend; existing code stays valid if throttled
                 except ValidationError:
@@ -137,7 +155,7 @@ class BsCarBookingAPI(http.Controller):
             else:
                 booking = Booking.create(vals)
                 request.session['bs_funnel_booking'] = booking.id
-                booking._apply_configuration([int(p) for p in (ptav_ids or [])])
+                booking._apply_configuration(published_ptav_ids)
                 booking.action_send_otp()
             token = booking._portal_ensure_token()
             return {
