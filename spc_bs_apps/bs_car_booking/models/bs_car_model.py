@@ -8,7 +8,8 @@ from datetime import date, datetime, timedelta
 
 from markupsafe import Markup
 
-from odoo import api, fields, models, tools
+from odoo import _, api, fields, models, tools
+from odoo.exceptions import ValidationError
 from odoo.addons.website.models import ir_http
 from odoo.http import request
 
@@ -120,9 +121,26 @@ class BsCarModel(models.Model):
     # registration, insurance/finance quotes — carries the รุ่นปี (model year).
     # It flows into the generated product's name, hence every SO/invoice line.
     # NOT shown on the website; marketing display is a "Model Year" spec line.
-    model_year = fields.Char('Model Year', size=4,
-                             help='Manufacturer model year (e.g. 2026). Appended to the '
-                                  'generated product name so sales documents carry it.')
+    # A dynamic Selection (not free text, not a master-data model): the
+    # dropdown makes typos impossible and new years appear by themselves.
+    model_year = fields.Selection(
+        selection='_model_year_selection', string='Model Year',
+        help='Manufacturer model year. Appended to the generated product '
+             'name so sales documents carry it.')
+
+    @api.model
+    def _model_year_selection(self):
+        current = fields.Date.context_today(self).year
+        return [(str(y), str(y)) for y in range(current + 2, 1999, -1)]
+
+    @api.constrains('model_year')
+    def _check_model_year(self):
+        # The ORM does NOT validate method-based Selection values on write
+        # (verified: RPC/imports can store junk) — enforce it ourselves.
+        valid = {key for key, _label in self._model_year_selection()}
+        for rec in self:
+            if rec.model_year and rec.model_year not in valid:
+                raise ValidationError(_('"%s" is not a valid model year.') % rec.model_year)
 
     description = fields.Html('Description', translate=True)
     highlight_features = fields.Text('Highlight Features', translate=True,
