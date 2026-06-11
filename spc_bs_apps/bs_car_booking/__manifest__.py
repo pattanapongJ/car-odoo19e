@@ -85,6 +85,8 @@ Website Journey:
         'views/bs_car_model_option_views.xml',
         'views/bs_car_customer_views.xml',
 
+        'views/product_template_views.xml',
+
         # Views - Settings
         'views/res_config_settings_views.xml',
 
