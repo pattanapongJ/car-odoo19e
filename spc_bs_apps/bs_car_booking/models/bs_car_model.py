@@ -375,6 +375,31 @@ class BsCarModel(models.Model):
                     model.product_tmpl_id.name = new_name
         return res
 
+    def unlink(self):
+        """Block deletion of car models linked to active bookings (DB restrict
+        already protects, but a clear error message is better than an SQL crash)."""
+        for model in self:
+            bookings = self.env['bs.car.booking'].sudo().search_count([
+                ('model_id', '=', model.id),
+                ('state', 'not in', ('expired', 'cancelled')),
+            ])
+            if bookings:
+                raise ValidationError(_(
+                    'Cannot delete model "%(model)s" — %(count)s active booking(s) '
+                    'still reference it. Cancel or expire those bookings first.'
+                ) % {'model': model.name, 'count': bookings})
+        return super().unlink()
+
+    def copy(self, default=None):
+        """Duplicate model for a new year/trim — keep the catalog data but reset
+        publication and website flags so the copy starts as a draft."""
+        default = dict(default or {})
+        default.setdefault('name', _('%s (copy)') % (self.name or ''))
+        default.setdefault('website_published', False)
+        default.setdefault('website_featured', False)
+        default.setdefault('product_tmpl_id', False)
+        return super().copy(default)
+
     def action_generate_product(self):
         """Create/refresh the product.template + attribute lines for each model."""
         Line = self.env['product.template.attribute.line']
