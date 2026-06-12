@@ -5,7 +5,7 @@
     'name': 'BS Car Booking Demo Data',
     'summary': 'Marketing-only Hongqi demo data for BS Car Booking',
     'category': 'Website/Booking',
-    'version': '19.0.1.0.1',
+    'version': '19.0.1.0.2',
     'author': 'Basic Solution Co., Ltd.',
     'maintainer': 'Basic Solution Co., Ltd.',
     'website': 'https://basicsolution.com/',

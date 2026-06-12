@@ -23,6 +23,7 @@
             <field name="subtitle">A commanding electric SUV stage, curated from dealer-managed showcase media.</field>
             <field name="primary_cta_label">View Model</field>
             <field name="secondary_cta_label">Book Test Drive</field>
+            <field name="secondary_cta_url">/test-drive</field>
         </record>
 
         <record id="home_section_color_studio" model="bs.car.website.section">

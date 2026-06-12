@@ -53,7 +53,7 @@
                            playsinline="playsinline" preload="metadata"
                            disablepictureinpicture="disablepictureinpicture"
                            t-att-poster="section.image and '/web/image/bs.car.website.section/%s/image/1920x1080' % section.id or None">
-                        <source t-att-src="section.video_src" t-att-type="section.video_content_type"/>
+                        <source t-att-src="section.video_src" type="video/mp4"/>
                     </video>
                     <video t-if="section.mobile_video_src"
                            class="car_showroom_hero_img bs_hero_video bs_hero_video_mobile"
@@ -61,7 +61,7 @@
                            playsinline="playsinline" preload="metadata"
                            disablepictureinpicture="disablepictureinpicture"
                            t-att-poster="section.image and '/web/image/bs.car.website.section/%s/image/1200x1600' % section.id or None">
-                        <source t-att-src="section.mobile_video_src" t-att-type="section.mobile_video_content_type"/>
+                        <source t-att-src="section.mobile_video_src" type="video/mp4"/>
                     </video>
                 </t>
                 <t t-elif="section.video_embed_url">
@@ -225,7 +225,7 @@
                                playsinline="playsinline" preload="metadata"
                                disablepictureinpicture="disablepictureinpicture"
                                t-att-poster="section.image and '/web/image/bs.car.website.section/%s/image/1600x900' % section.id or None">
-                            <source t-att-src="section.video_src" t-att-type="section.video_content_type"/>
+                            <source t-att-src="section.video_src" type="video/mp4"/>
                         </video>
                         <video t-if="section.mobile_video_src"
                                class="bs_featured_img bs_hero_video bs_hero_video_mobile"
@@ -233,7 +233,7 @@
                                playsinline="playsinline" preload="metadata"
                                disablepictureinpicture="disablepictureinpicture"
                                t-att-poster="section.image and '/web/image/bs.car.website.section/%s/image/1200x1600' % section.id or None">
-                            <source t-att-src="section.mobile_video_src" t-att-type="section.mobile_video_content_type"/>
+                            <source t-att-src="section.mobile_video_src" type="video/mp4"/>
                         </video>
                     </t>
                     <t t-elif="section and section.video_embed_url">
@@ -615,7 +615,7 @@
                     <p t-if="section and section.subtitle" class="bs_model_stage_subtitle" t-esc="section.subtitle"/>
                     <div t-if="section and section.body_html" class="bs_model_stage_body" t-out="section.body_html"/>
                     <t t-set="stage_primary_url" t-value="section and (section.primary_cta_url or ('/car/%s' % car.id))"/>
-                    <t t-set="stage_secondary_url" t-value="section and (section.secondary_cta_url or ('/car/%s/book' % car.id))"/>
+                    <t t-set="stage_secondary_url" t-value="section and (section.secondary_cta_url or '/test-drive')"/>
                     <div t-if="section and (section.primary_cta_label or section.secondary_cta_label or section.primary_cta_url or section.secondary_cta_url)"
                          class="bs_model_stage_actions">
                         <a t-if="section.primary_cta_label or section.primary_cta_url"
@@ -866,14 +866,14 @@
                                autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline"
                                preload="metadata" disablepictureinpicture="disablepictureinpicture"
                                t-att-poster="section.image and '/web/image/bs.car.website.section/%s/image/1920x1080' % section.id or None">
-                            <source t-att-src="section.video_src" t-att-type="section.video_content_type"/>
+                            <source t-att-src="section.video_src" type="video/mp4"/>
                         </video>
                         <video t-if="section.mobile_video_src"
                                class="bs_cabin_img bs_hero_video bs_hero_video_mobile"
                                autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline"
                                preload="metadata" disablepictureinpicture="disablepictureinpicture"
                                t-att-poster="section.image and '/web/image/bs.car.website.section/%s/image/1200x1600' % section.id or None">
-                            <source t-att-src="section.mobile_video_src" t-att-type="section.mobile_video_content_type"/>
+                            <source t-att-src="section.mobile_video_src" type="video/mp4"/>
                         </video>
                     </t>
                     <t t-elif="section and section.video_embed_url">
