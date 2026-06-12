@@ -23,6 +23,31 @@ export class CustomerInfoForm extends Interaction {
         this.submitBtn = this.el.querySelector(".info_submit_btn");
         this.hintEl = this.el.querySelector(".info_submit_hint");
         this.el.addEventListener("submit", (e) => this._onSubmit(e));
+        // Thai input filters: strip disallowed characters as the customer types
+        // or pastes ("input" fires after a paste too), keeping the caret in place.
+        // Soft validation only \u2014 the server re-validates everything authoritatively.
+        //  \u2022 .thai-input-only \u2014 Thai letters + spaces (names as on the ID/invoice).
+        //  \u2022 .thai-text-only  \u2014 Thai + digits + address punctuation, no English
+        //                       (addresses & company names that need numbers).
+        const bindThaiFilter = (selector, disallowed) =>
+            this.el.querySelectorAll(selector).forEach((input) =>
+                input.addEventListener("input", () => {
+                    const before = input.value;
+                    const cleaned = before.replace(disallowed, "");
+                    if (cleaned === before) {
+                        return;
+                    }
+                    // Preserve the caret: re-place it after the kept characters.
+                    const caret = input.selectionStart ?? cleaned.length;
+                    const keptBeforeCaret = before.slice(0, caret).replace(disallowed, "").length;
+                    input.value = cleaned;
+                    if (input.setSelectionRange) {
+                        input.setSelectionRange(keptBeforeCaret, keptBeforeCaret);
+                    }
+                })
+            );
+        bindThaiFilter(".thai-input-only", /[^\u0E00-\u0E7F\s]/g);
+        bindThaiFilter(".thai-text-only", /[^\u0E00-\u0E7F0-9\s.,\-/()#]/g);
 
         // Single handler for every change: keep the type groups, the file
         // "remove" buttons and the submit-button gating in sync.

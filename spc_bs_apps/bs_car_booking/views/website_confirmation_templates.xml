@@ -120,7 +120,7 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Full Name *</label>
-                                        <input type="text" name="customer_name" class="form-control form-control-lg"
+                                        <input type="text" name="customer_name" class="form-control form-control-lg thai-input-only"
                                                t-att-value="booking.customer_name or ''" placeholder="Your full name"/>
                                     </div>
                                     <div class="col-md-6 mb-3">
@@ -139,9 +139,9 @@
                                         <!-- Thai tax invoices need the branch designation next to the
                                              registered name (Head Office / branch no.) — the example
                                              nudges customers to include it. -->
-                                        <input type="text" name="company_name" class="form-control form-control-lg"
+                                        <input type="text" name="company_name" class="form-control form-control-lg thai-text-only"
                                                t-att-value="booking.company_name or ''"
-                                               placeholder="e.g. Test Co., Ltd. (Head Office)"/>
+                                               placeholder="เช่น บริษัท ทดสอบ จำกัด (สำนักงานใหญ่)"/>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Tax ID *</label>
@@ -152,7 +152,7 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Contact Person *</label>
-                                        <input type="text" name="contact_person" class="form-control form-control-lg"
+                                        <input type="text" name="contact_person" class="form-control form-control-lg thai-input-only"
                                                t-att-value="booking.contact_person or ''" placeholder="Authorised person"/>
                                     </div>
                                 </div>
@@ -179,7 +179,7 @@
                                     <span data-type-group="individual">Address on National ID Card</span>
                                     <span data-type-group="company" class="d-none">Address</span>
                                 </label>
-                                <textarea name="customer_address" class="form-control" rows="2"
+                                <textarea name="customer_address" class="form-control thai-text-only" rows="2"
                                           placeholder="(optional)"><t t-esc="booking.customer_address or ''"/></textarea>
                             </div>
 
