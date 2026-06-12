@@ -166,7 +166,13 @@
                                                      (crm_lead.website_form_input_filter) — a hidden tag input
                                                      would be trivially tampered with. -->
                                                 <div class="s_website_form_rows row s_col_no_bgcolor">
-                                                    <div class="mb-4 col-12">
+                                                    <!-- MUST be a s_website_form_field: the form framework binds its
+                                                         input listener on that class, and the conditional visibility
+                                                         of the dealer fields re-evaluates only on those events. -->
+                                                    <div data-name="Field"
+                                                         class="s_website_form_field mb-4 col-12 s_website_form_required"
+                                                         data-type="char"
+                                                         data-translated-name="Topic">
                                                         <div class="bs_contact_topics">
                                                             <div class="bs_contact_topic">
                                                                 <input class="s_website_form_input bs_contact_radio"
