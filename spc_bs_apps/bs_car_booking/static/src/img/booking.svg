@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Car Bookings portal-home card icon: pastel sedan in the brand palette,
      drawn to sit alongside Odoo's stock portal icons (bag.svg, bill.svg). -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+<!-- width/height matter: the portal card <img> has no size of its own, and an
+     SVG without intrinsic dimensions collapses to 0 width in the flex row. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
   <!-- body -->
   <path d="M8 40c0-3 2.2-5 5-5h38c2.8 0 5 2 5 5v6c0 1.7-1.3 3-3 3h-2.3a6 6 0 0 1-11.4 0H24.7a6 6 0 0 1-11.4 0H11c-1.7 0-3-1.3-3-3v-6z" fill="#F4D7DA"/>
   <!-- cabin -->
