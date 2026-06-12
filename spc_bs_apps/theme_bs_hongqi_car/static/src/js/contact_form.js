@@ -41,7 +41,7 @@ export class HongqiContactForm extends Interaction {
         const isDealer = topic === "Dealership Application";
         this.dealerFields.forEach((field) => {
             field.classList.toggle("d-none", !isDealer);
-            field.querySelectorAll("input").forEach((input) => {
+            field.querySelectorAll("input, select").forEach((input) => {
                 input.disabled = !isDealer;
                 if (input.id === "proposed_location") input.required = isDealer;
                 if (!isDealer) input.value = "";

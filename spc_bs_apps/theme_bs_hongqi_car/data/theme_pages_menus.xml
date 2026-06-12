@@ -261,12 +261,21 @@
                                                          data-type="char"
                                                          data-translated-name="Proposed Location">
                                                         <label class="form-label" for="proposed_location">พิกัด/พื้นที่ที่ต้องการเปิดโชว์รูม / Proposed Location <span class="text-danger">*</span></label>
-                                                        <input class="form-control s_website_form_input bs_contact_input"
-                                                               type="text"
-                                                               name="Proposed Location"
-                                                               id="proposed_location"
-                                                               disabled="disabled"
-                                                               placeholder="ระบุจังหวัด, เขต หรือแนบ Link Google Maps"/>
+                                                        <!-- This website's published dealer areas (same public scope
+                                                             as the dealer locator: current website + its company). -->
+                                                        <t t-set="bs_contact_dealers"
+                                                           t-value="env['bs.car.dealer'].sudo().with_context(website_id=website.id).search([('active', '=', True), ('website_published', '=', True), ('company_id', 'in', [False, website.company_id.id])], order='sequence, id')"/>
+                                                        <select class="form-select s_website_form_input bs_contact_input"
+                                                                name="Proposed Location"
+                                                                id="proposed_location"
+                                                                disabled="disabled">
+                                                            <option value="">— เลือกพื้นที่ / Select Location —</option>
+                                                            <t t-foreach="bs_contact_dealers" t-as="bs_dealer">
+                                                                <option t-att-value="'%s%s' % (bs_dealer.name, bs_dealer.city and ' (%s)' % bs_dealer.city or '')">
+                                                                    <t t-esc="bs_dealer.name"/><t t-if="bs_dealer.city"> — <t t-esc="bs_dealer.city"/></t>
+                                                                </option>
+                                                            </t>
+                                                        </select>
                                                     </div>
                                                     <div data-name="Field"
                                                          class="s_website_form_field mb-4 col-12 bs_contact_dealer_field d-none"
