@@ -40,7 +40,7 @@
                     <p style="margin:0 0 24px;">
                         ด้วยความนับถือ
                         <br />
-                        <t t-out="object._get_sender_company().name" />
+                        <t t-out="object._get_sender_brand()" />
                     </p>
                     <hr style="border:0;border-top:1px solid #ded8cf;margin:0 0 24px;" />
                     <p style="margin:0 0 12px;">
@@ -73,7 +73,7 @@
                     <p style="margin:0;">
                         Sincerely,
                         <br />
-                        <t t-out="object._get_sender_company().name" />
+                        <t t-out="object._get_sender_brand()" />
                     </p>
                 </div>
             </field>
@@ -125,7 +125,7 @@
                     <p style="margin:0 0 24px;">
                         ด้วยความนับถือ
                         <br />
-                        <t t-out="object.website_id.company_id.name or object.company_id.name" />
+                        <t t-out="object.website_id.name or object.website_id.company_id.name or object.company_id.name" />
                     </p>
                     <hr style="border:0;border-top:1px solid #ded8cf;margin:0 0 24px;" />
                     <p style="margin:0 0 12px;">
@@ -170,7 +170,7 @@
                     <p style="margin:0;">
                         Sincerely,
                         <br />
-                        <t t-out="object.website_id.company_id.name or object.company_id.name" />
+                        <t t-out="object.website_id.name or object.website_id.company_id.name or object.company_id.name" />
                     </p>
                 </div>
             </field>
@@ -214,7 +214,7 @@
                     <p style="margin:0 0 24px;">
                         ด้วยความนับถือ
                         <br />
-                        <t t-out="object.website_id.company_id.name or object.company_id.name" />
+                        <t t-out="object.website_id.name or object.website_id.company_id.name or object.company_id.name" />
                     </p>
                     <hr style="border:0;border-top:1px solid #ded8cf;margin:0 0 24px;" />
                     <p style="margin:0 0 12px;">
@@ -250,7 +250,7 @@
                     <p style="margin:0;">
                         Sincerely,
                         <br />
-                        <t t-out="object.website_id.company_id.name or object.company_id.name" />
+                        <t t-out="object.website_id.name or object.website_id.company_id.name or object.company_id.name" />
                     </p>
                 </div>
             </field>

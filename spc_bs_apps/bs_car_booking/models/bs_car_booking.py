@@ -8,6 +8,7 @@ from datetime import timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import float_compare
+from odoo.tools.mail import formataddr
 
 _logger = logging.getLogger(__name__)
 
@@ -776,11 +777,14 @@ class BsCarBooking(models.Model):
                     company = (self.website_id.company_id
                                or self.company_id
                                or self.env.company).sudo()
-                    email_from = (company.email_formatted
-                                  or company.email
-                                  or self.env['ir.mail_server'].sudo()._get_default_from_address())
-                    if email_from:
-                        vals['email_from'] = email_from
+                    email = (company.email
+                             or self.env['ir.mail_server'].sudo()._get_default_from_address())
+                    if email:
+                        # Display name = brand (website name), not the company
+                        # legal name — that one belongs on tax invoices.
+                        brand = self.website_id.name or company.name
+                        vals['email_from'] = (
+                            formataddr((brand, email)) if brand else email)
                     self.env['mail.mail'].sudo().create(vals).send(raise_exception=False)
             except Exception as e:
                 _logger.warning('Failed to send email [%s]: %s', mail_template_ref, str(e))
