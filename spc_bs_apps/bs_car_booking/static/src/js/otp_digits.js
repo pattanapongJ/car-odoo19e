@@ -1,6 +1,6 @@
 /** @odoo-module **/
 /* Shared 6-digit OTP input behaviour: auto-advance, backspace to previous,
-   paste distribution. Used by the funnel verify page and the tracking page so
+   paste distribution. Used by the funnel verify page so
    both render the same code-entry UI. */
 
 export function initOtpDigits(inputs) {
