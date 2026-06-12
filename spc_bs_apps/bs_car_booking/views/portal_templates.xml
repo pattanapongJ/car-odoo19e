@@ -13,6 +13,7 @@
         </xpath>
         <div id="portal_client_category" position="inside">
             <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/bs_car_booking/static/src/img/booking.svg'"/>
                 <t t-set="title">Car Bookings</t>
                 <t t-set="url" t-value="'/my/bookings'"/>
                 <t t-set="text">Track your reservations &amp; deposits</t>

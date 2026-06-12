@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Car Bookings portal-home card icon: pastel sedan in the brand palette,
+     drawn to sit alongside Odoo's stock portal icons (bag.svg, bill.svg). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- body -->
+  <path d="M8 40c0-3 2.2-5 5-5h38c2.8 0 5 2 5 5v6c0 1.7-1.3 3-3 3h-2.3a6 6 0 0 1-11.4 0H24.7a6 6 0 0 1-11.4 0H11c-1.7 0-3-1.3-3-3v-6z" fill="#F4D7DA"/>
+  <!-- cabin -->
+  <path d="M16 35l4.2-9.4c.8-1.8 2.6-3 4.6-3h14.4c2 0 3.8 1.2 4.6 3L48 35H16z" fill="#FBECEE"/>
+  <!-- windows -->
+  <path d="M20.8 33l2.9-6.6c.4-.9 1.3-1.5 2.3-1.5h5v8.1h-10.2z" fill="#BFD7E8"/>
+  <path d="M33.6 33v-8.1h5c1 0 1.9.6 2.3 1.5l2.9 6.6H33.6z" fill="#BFD7E8"/>
+  <!-- outline -->
+  <path d="M8 40c0-3 2.2-5 5-5h38c2.8 0 5 2 5 5v6c0 1.7-1.3 3-3 3h-2.3M13.3 49H11c-1.7 0-3-1.3-3-3v-6zM16 35l4.2-9.4c.8-1.8 2.6-3 4.6-3h14.4c2 0 3.8 1.2 4.6 3L48 35"
+        stroke="#B21F2D" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- wheels -->
+  <circle cx="19" cy="49" r="5" fill="#43403C" stroke="#B21F2D" stroke-width="2"/>
+  <circle cx="45" cy="49" r="5" fill="#43403C" stroke="#B21F2D" stroke-width="2"/>
+  <circle cx="19" cy="49" r="1.8" fill="#FFFDF8"/>
+  <circle cx="45" cy="49" r="1.8" fill="#FFFDF8"/>
+  <!-- headlight -->
+  <rect x="51.4" y="37.6" width="4.2" height="3.2" rx="1.6" fill="#E3B23C"/>
+</svg>
