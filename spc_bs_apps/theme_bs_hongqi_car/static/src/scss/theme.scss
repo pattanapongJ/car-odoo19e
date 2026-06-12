@@ -5633,13 +5633,21 @@ html {
 .bs_track_timer_row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 12px;
     margin-top: 16px;
     padding: 12px 16px;
-    border: 1px solid var(--car-border);
     border-radius: var(--car-radius);
     background: var(--car-bg-card);
+}
+
+/* OTP page: the countdown now lives inside the resend button, so the row holds
+   only that button — drop the card framing and align it to the right. */
+.otp_timer .bs_track_timer_row {
+    justify-content: flex-end;
+    padding: 0;
+    border: none;
+    background: transparent;
 }
 
 .bs_track_countdown {

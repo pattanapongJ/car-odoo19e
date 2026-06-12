@@ -37,15 +37,10 @@
                             </div>
                             <div class="otp_timer">
                                 <div class="bs_track_timer_row">
-                                    <div class="bs_track_countdown">
-                                        <i class="fa fa-clock-o"/>
-                                        <span>Code expires in </span>
-                                        <strong id="otp_countdown"
-                                                t-esc="'%02d:%02d' % divmod(otp_expires_in or 300, 60)"/>
-                                    </div>
                                     <button id="otp_resend_btn" class="bs_track_resend_btn" disabled="disabled">
                                         <i class="fa fa-refresh"/>
-                                        <span id="otp_resend_label">Resend code</span>
+                                        <span id="otp_resend_label"
+                                              t-esc="(otp_expires_in &gt; 0) and ('Resend in %02d:%02d' % divmod(otp_expires_in, 60)) or 'Resend code'"/>
                                     </button>
                                 </div>
                             </div>

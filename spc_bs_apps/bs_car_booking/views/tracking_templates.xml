@@ -77,13 +77,7 @@
                                                t-att-autocomplete="i == 0 and 'one-time-code' or 'off'"/>
                                     </t>
                                 </div>
-                                <!-- Timer row: code expiry countdown + resend. -->
-                                <div class="bs_track_timer_row d-none" data-track-timer-row="">
-                                    <div class="bs_track_countdown">
-                                        <i class="fa fa-clock-o"/>
-                                        <span>Code expires in </span>
-                                        <strong data-track-countdown="1"/>
-                                    </div>
+                                <div class="bs_track_timer_row" data-track-timer-row="">
                                     <button type="button" class="bs_track_resend_btn"
                                             data-track-resend="1" disabled="">
                                         <i class="fa fa-refresh"/>

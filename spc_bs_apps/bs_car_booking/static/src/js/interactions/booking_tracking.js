@@ -17,12 +17,9 @@ export class BookingTracking extends Interaction {
         this.stepLookup = this.el.querySelector('[data-track-step="lookup"]');
         this.stepOtp = this.el.querySelector('[data-track-step="otp"]');
         this.timerWrap = this.el.querySelector("[data-track-timer-row]");
-        this.countdownEl = this.el.querySelector("[data-track-countdown]");
         this.countdownInterval = null;
         this.resendBtn = this.el.querySelector("[data-track-resend]");
         this.resendLabel = this.el.querySelector("[data-track-resend-label]");
-        this.resendTimer = null;
-        this.resendLeft = 0;
     }
 
     start() {
@@ -31,8 +28,12 @@ export class BookingTracking extends Interaction {
         // Verify button: enabled only when all 6 digits are filled.
         this.verifyBtn = this.el.querySelector("[data-track-verify]");
         this._syncVerifyBtn();
-        this.el.querySelectorAll(".otp_digit").forEach((inp) =>
-            inp.addEventListener("input", () => this._syncVerifyBtn()));
+        this.el.querySelectorAll(".otp_digit").forEach((inp) => {
+            inp.addEventListener("input", () => this._syncVerifyBtn());
+            inp.addEventListener("paste", (e) => {
+                this._syncVerifyBtn();
+            });
+        });
         this._bind("[data-track-send]", () => this._lookup());
         this._bind("[data-track-verify]", () => this._verify());
         this._bind("[data-track-resend]", () => this._resend());
@@ -43,43 +44,31 @@ export class BookingTracking extends Interaction {
             d.addEventListener("keydown", (e) => e.key === "Enter" && this._verify()));
         this.registerCleanup(() => {
             if (this.countdownInterval) clearInterval(this.countdownInterval);
-            if (this.resendTimer) clearInterval(this.resendTimer);
         });
     }
 
-    /* Mirror of the funnel verify page: the resend link is locked for the
-       server cooldown so customers don't trip the throttle error. */
-    _startResendCooldown(seconds) {
+    /* The expiry countdown lives inside the resend button (same design as the
+       funnel verify page): "Resend in mm:ss" while the code is valid (disabled),
+       "Resend code" once it expires (enabled). Driven by expires_in. */
+    _startCountdown(seconds) {
         if (!this.resendBtn || !seconds) return;
-        if (this.resendTimer) clearInterval(this.resendTimer);
-        this.resendLeft = seconds;
-        this.resendBtn.disabled = true;
+        if (this.countdownInterval) clearInterval(this.countdownInterval);
+        this.timerWrap?.classList.remove("d-none");
         const labelEl = this.resendLabel || this.resendBtn;
+        const end = Date.now() + seconds * 1000;
         const tick = () => {
-            if (this.resendLeft <= 0) {
-                clearInterval(this.resendTimer);
+            const left = Math.max(0, Math.round((end - Date.now()) / 1000));
+            if (left <= 0) {
+                clearInterval(this.countdownInterval);
+                this.countdownInterval = null;
                 this.resendBtn.disabled = false;
                 labelEl.textContent = "Resend code";
                 return;
             }
-            labelEl.textContent = `Resend in ${this.resendLeft}s`;
-            this.resendLeft--;
-        };
-        tick();
-        this.resendTimer = setInterval(tick, 1000);
-    }
-
-    _startCountdown(seconds) {
-        if (!this.countdownEl || !seconds) return;
-        if (this.countdownInterval) clearInterval(this.countdownInterval);
-        this.timerWrap?.classList.remove("d-none");
-        let left = seconds;
-        const tick = () => {
+            this.resendBtn.disabled = true;
             const m = String(Math.floor(left / 60)).padStart(2, "0");
             const s = String(left % 60).padStart(2, "0");
-            this.countdownEl.textContent = left > 0 ? `${m}:${s}` : "Expired";
-            if (left <= 0) clearInterval(this.countdownInterval);
-            left--;
+            labelEl.textContent = `Resend in ${m}:${s}`;
         };
         tick();
         this.countdownInterval = setInterval(tick, 1000);
@@ -137,7 +126,6 @@ export class BookingTracking extends Interaction {
             this.stepOtp?.classList.remove("d-none");
             this._msg(res.message || "If a booking matches, a code has been sent.", "ok");
             this._startCountdown(res.expires_in);
-            this._startResendCooldown(res.resend_in);
             this.otpDigits?.focus();
         } catch {
             this._msg("Something went wrong. Please try again.", "error");
@@ -168,7 +156,7 @@ export class BookingTracking extends Interaction {
     }
 
     async _resend() {
-        if (this.resendLeft > 0) return;
+        if (this.resendBtn?.disabled) return;
         this._busy(true);
         try {
             const res = await this._call("/track/resend", {});
@@ -178,7 +166,6 @@ export class BookingTracking extends Interaction {
                 this.otpDigits?.focus();
                 this._syncVerifyBtn();
                 this._startCountdown(res.expires_in);
-                this._startResendCooldown(res.resend_in);
             }
         } catch {
             this._msg("Something went wrong. Please try again.", "error");
