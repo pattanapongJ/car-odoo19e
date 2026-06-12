@@ -260,7 +260,12 @@ class BsCarBooking(models.Model):
     def write(self, vals):
         """Enforce the booking lifecycle at the ORM level: a direct state change
         (RPC, scripts, imports) must follow an allowed transition. Internal
-        transitions go through ``_transition_to`` which sets the bypass flag."""
+        transitions go through ``_transition_to`` which sets the bypass flag.
+
+        Additionally, block edits that would corrupt a confirmed booking:
+        price, deposit, car model, and customer identity are frozen once the
+        deposit is paid.
+        """
         if 'state' in vals and not self.env.context.get('bs_booking_bypass_state_guard'):
             target = vals['state']
             allowed = self._allowed_state_targets()
@@ -274,11 +279,76 @@ class BsCarBooking(models.Model):
                         'current': labels.get(rec.state, rec.state),
                         'target': labels.get(target, target),
                     })
+
+        # --- Frozen fields after confirmation ---
+        FROZEN_FIELDS = {
+            'car_price', 'deposit_amount', 'deposit_paid',
+            'brand_id', 'model_id', 'product_id', 'option_value_ids',
+            'customer_type',
+        }
+        frozen_violations = FROZEN_FIELDS & set(vals)
+        if frozen_violations:
+            for rec in self:
+                if rec.state not in ('draft', 'otp_pending', 'otp_verified',
+                                      'payment_pending', 'expired', 'cancelled'):
+                    raise ValidationError(_(
+                        'Booking %(booking)s is already confirmed. '
+                        'You cannot change: %(fields)s.'
+                    ) % {
+                        'booking': rec.name,
+                        'fields': ', '.join(sorted(frozen_violations)),
+                    })
+
         res = super().write(vals)
         # Backend edits to the promised date follow through to the sale order.
         if 'estimated_delivery_date' in vals:
             self._sync_delivery_commitment()
         return res
+
+    def unlink(self):
+        """Only draft, expired, or cancelled bookings can be deleted.
+        Confirmed/delivered bookings with payments and invoices must not be
+        removable — use cancel first."""
+        for rec in self:
+            if rec.state not in ('draft', 'otp_pending', 'expired', 'cancelled'):
+                raise ValidationError(_(
+                    'Cannot delete booking %(booking)s in state "%(state)s". '
+                    'Cancel the booking first, then delete if needed.'
+                ) % {'booking': rec.name, 'state': rec.state_label})
+            if rec._has_successful_payment():
+                raise ValidationError(_(
+                    'Cannot delete booking %(booking)s — it has a successful payment. '
+                    'Process the refund first, cancel, then delete.'
+                ) % {'booking': rec.name})
+        return super().unlink()
+
+    def copy(self, default=None):
+        """Duplicate a booking for a new customer: reset state to draft, clear
+        payment/invoice/OTP/partner links, keep only car + dealer selection."""
+        self.ensure_one()
+        default = dict(default or {})
+        default.update({
+            'name': '/',
+            'state': 'draft',
+            'phone_verified': False,
+            'otp_verified_channel': False,
+            'pdpa_consent': False,
+            'pdpa_consent_date': False,
+            'deposit_paid': 0.0,
+            'sale_order_id': False,
+            'product_id': False,
+            'option_value_ids': [(5, 0, 0)],
+            'partner_id': False,
+            'lead_id': False,
+            'rating': 0,
+            'rating_comment': False,
+            'rating_date': False,
+            'estimated_delivery_date': False,
+            'actual_delivery_date': False,
+            'notes': False,
+            'internal_notes': False,
+        })
+        return super().copy(default)
 
     @api.onchange('model_id')
     def _onchange_model_id(self):
