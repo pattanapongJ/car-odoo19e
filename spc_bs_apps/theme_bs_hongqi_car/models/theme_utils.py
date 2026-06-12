@@ -40,8 +40,11 @@ class ThemeUtils(models.AbstractModel):
             'theme_bs_hongqi_car.menu_website_home': ('Home', '/showroom', 5),
             'theme_bs_hongqi_car.menu_website_cars': ('Models', '/cars', 10),
             'theme_bs_hongqi_car.menu_website_stories': ('News', '/stories', 30),
-            'theme_bs_hongqi_car.menu_website_track': ('My Booking', '/track', 40),
-            'theme_bs_hongqi_car.menu_website_about': ('About Us', '/about-us', 50),
+            # TEMPORARILY HIDDEN (2026-06-12, business request) — restore by
+            # uncommenting here AND in expected_menus below, then re-run the
+            # theme cleanup (the cleanup recreates missing expected menus).
+            # 'theme_bs_hongqi_car.menu_website_track': ('My Booking', '/track', 40),
+            # 'theme_bs_hongqi_car.menu_website_about': ('About Us', '/about-us', 50),
             'theme_bs_hongqi_car.menu_website_contact': ('Contact Us', '/contactus', 60),
         }
         for xmlid, (name, url, sequence) in menu_updates.items():
@@ -132,8 +135,9 @@ class ThemeUtils(models.AbstractModel):
             '/showroom': ('Home', 5),
             '/cars': ('Models', 10),
             '/stories': ('News', 30),
-            '/track': ('My Booking', 40),
-            '/about-us': ('About Us', 50),
+            # TEMPORARILY HIDDEN (2026-06-12) — see note in menu_updates above.
+            # '/track': ('My Booking', 40),
+            # '/about-us': ('About Us', 50),
             '/contactus': ('Contact Us', 60),
         }
         for url, (name, sequence) in expected_menus.items():
