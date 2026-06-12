@@ -5,7 +5,19 @@
         <record id="sms_template_otp_booking" model="sms.template">
             <field name="name">Car Booking OTP - Booking Verification</field>
             <field name="model_id" ref="bs_car_booking.model_bs_car_booking_otp"/>
-            <field name="body">Your booking verification code is: {{ object.otp_code }}. Valid for {{ object.validity_minutes }} minutes. Do not share this code with anyone.</field>
+            <field name="body">[HONGQI-TH]: Your OTP code is {{ object.otp_code }}. [Ref: {{ object.booking_id.name or '' }}] This code is valid for {{ object.validity_minutes }} minutes.</field>
+        </record>
+
+        <record id="sms_template_booking_confirmed" model="sms.template">
+            <field name="name">Car Booking - Deposit Confirmed</field>
+            <field name="model_id" ref="bs_car_booking.model_bs_car_booking"/>
+            <field name="body">[HONGQI-TH]: We have received your payment for booking {{ object.name }}.</field>
+        </record>
+
+        <record id="sms_template_ready_delivery" model="sms.template">
+            <field name="name">Car Booking - Ready for Delivery</field>
+            <field name="model_id" ref="bs_car_booking.model_bs_car_booking"/>
+            <field name="body">[HONGQI-TH]: Your vehicle is ready for delivery. Please contact your dealer for further details.</field>
         </record>
 
     </data>

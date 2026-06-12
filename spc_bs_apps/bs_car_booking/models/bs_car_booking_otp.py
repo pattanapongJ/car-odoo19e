@@ -10,6 +10,7 @@ from datetime import timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import consteq
+from odoo.tools.mail import formataddr
 
 _logger = logging.getLogger(__name__)
 
@@ -238,6 +239,14 @@ class BsCarBookingOtp(models.Model):
                 or booking.company_id
                 or self.env.company).sudo()
 
+    def _get_sender_brand(self):
+        """Customer-facing brand name for emails (From display name and
+        signature): the website name ("Hongqi Thailand"), NOT the company
+        legal name — that one belongs on tax invoices, not marketing mails."""
+        self.ensure_one()
+        return (self.booking_id.website_id.name
+                or self._get_sender_company().name or '')
+
     def _get_sender_site(self):
         """Human-readable site the message 'comes from' (e.g.
         'hongqithailand.com'): the booking website's domain without the
@@ -258,14 +267,16 @@ class BsCarBookingOtp(models.Model):
         mail.catchall.domain/mail.default.from"."""
         self.ensure_one()
         company = self._get_sender_company()
-        email_from = company.email_formatted or company.email
-        if not email_from:
-            email_from = self.env['ir.mail_server'].sudo()._get_default_from_address()
-        if not email_from:
+        email = (company.email
+                 or self.env['ir.mail_server'].sudo()._get_default_from_address())
+        if not email:
             _logger.warning(
                 'No sender address for OTP mails: set the email of company '
                 '"%s" or the mail.default.from system parameter.', company.name)
-        return email_from
+            return False
+        # Display name = brand (website name), address = company mailbox.
+        brand = self._get_sender_brand()
+        return formataddr((brand, email)) if brand else email
 
     def _send_by_email(self, purpose_rec, otp_code):
         self.ensure_one()
@@ -275,7 +286,7 @@ class BsCarBookingOtp(models.Model):
             subject = ctx_template._render_field('subject', [self.id])[self.id]
             body_html = ctx_template._render_field('body_html', [self.id])[self.id]
         elif purpose_rec.mail_fallback_body:
-            subject = _('%s — your verification code') % (self._get_sender_company().name or 'Verification')
+            subject = _('%s — your verification code') % (self._get_sender_brand() or 'Verification')
             text = purpose_rec.mail_fallback_body % {
                 'otp_code': otp_code, 'validity_minutes': self.validity_minutes}
             body_html = (
