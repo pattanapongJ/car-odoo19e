@@ -252,27 +252,33 @@
                                                                placeholder="example@email.com"/>
                                                     </div>
 
+                                                    <!-- Dealership-only fields: hidden + disabled until the
+                                                         "Dealership Application" topic is picked (contact_form.js).
+                                                         Disabled inputs are excluded from submit and from native
+                                                         required-validation. -->
                                                     <div data-name="Field"
-                                                         class="s_website_form_field mb-4 col-md-6"
+                                                         class="s_website_form_field mb-4 col-12 bs_contact_dealer_field d-none"
                                                          data-type="char"
                                                          data-translated-name="Proposed Location">
-                                                        <label class="form-label" for="proposed_location">ทำเลที่สนใจ / Proposed Location</label>
+                                                        <label class="form-label" for="proposed_location">พิกัด/พื้นที่ที่ต้องการเปิดโชว์รูม / Proposed Location <span class="text-danger">*</span></label>
                                                         <input class="form-control s_website_form_input bs_contact_input"
                                                                type="text"
                                                                name="Proposed Location"
                                                                id="proposed_location"
-                                                               placeholder="Bangkok, Chiang Mai, Phuket..."/>
+                                                               disabled="disabled"
+                                                               placeholder="ระบุจังหวัด, เขต หรือแนบ Link Google Maps"/>
                                                     </div>
                                                     <div data-name="Field"
-                                                         class="s_website_form_field mb-4 col-md-6"
+                                                         class="s_website_form_field mb-4 col-12 bs_contact_dealer_field d-none"
                                                          data-type="binary"
                                                          data-translated-name="Attachment">
-                                                        <label class="form-label" for="contact_attachment">แนบไฟล์ / Attachment</label>
+                                                        <label class="form-label" for="contact_attachment">แนบเอกสารนำเสนอ/โปรไฟล์บริษัท (Company Profile) / Max 5MB (PDF)</label>
                                                         <input class="form-control s_website_form_input bs_contact_input"
                                                                type="file"
                                                                name="Attachment"
                                                                id="contact_attachment"
-                                                               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"/>
+                                                               disabled="disabled"
+                                                               accept=".pdf"/>
                                                     </div>
 
                                                     <div class="mb-5 col-12">

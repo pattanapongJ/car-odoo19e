@@ -15,5 +15,12 @@
             <field name="directive">append</field>
             <field name="path">theme_bs_hongqi_car/static/src/js/test_drive_form.js</field>
         </record>
+        <record id="asset_hongqi_car_contact_form_js" model="theme.ir.asset">
+            <field name="name">Hongqi Car Contact Form JS</field>
+            <field name="key">theme_bs_hongqi_car.asset_hongqi_car_contact_form_js</field>
+            <field name="bundle">web.assets_frontend</field>
+            <field name="directive">append</field>
+            <field name="path">theme_bs_hongqi_car/static/src/js/contact_form.js</field>
+        </record>
     </data>
 </odoo>
