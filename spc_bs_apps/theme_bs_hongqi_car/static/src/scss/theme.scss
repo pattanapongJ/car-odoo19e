@@ -3180,7 +3180,7 @@ html {
 .conf_value {
     max-width: 58%;
     color: var(--car-text-primary);
-    font-weight: 700;
+    // font-weight: 700;
     text-align: right;
     overflow-wrap: anywhere;
 }
@@ -5951,4 +5951,134 @@ html {
             cursor: pointer;
         }
     }
+}
+
+/* ================================================================
+   BOOKING REVIEW CONFIRMATION MODAL (customer info → deposit)
+   ================================================================ */
+.bs_review_overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1080;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 16px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.5);
+}
+.bs_review_overlay.d-none { display: none; }
+.bs_review_modal {
+    margin: auto;
+    width: 100%;
+    max-width: 560px;
+    background: #fff;
+    border: 1px solid var(--car-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+}
+.bs_review_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--car-border);
+}
+.bs_review_header_titles { display: flex; align-items: center; gap: 12px; }
+.bs_review_header_titles > i { font-size: 22px; color: var(--car-gold); }
+.bs_review_title { margin: 0; font-weight: 700; color: var(--car-text-primary); }
+.bs_review_subtitle { margin: 2px 0 0; font-size: 12px; color: var(--car-text-secondary); }
+.bs_review_badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+.bs_review_badge_warn { background: #faeeda; color: #854f0b; }
+.bs_review_badge_ok { background: #eaf3de; color: #3b6d11; }
+.bs_review_body { overflow-y: auto; max-height: 60vh; }
+.bs_review_section { border-bottom: 1px solid var(--car-border); }
+.bs_review_section_head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 22px;
+    cursor: pointer;
+    user-select: none;
+    background: var(--car-bg-section);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--car-text-primary);
+}
+.bs_review_section_head > span > i { color: var(--car-gold); margin-right: 8px; }
+.bs_review_chevron { font-size: 13px; color: var(--car-text-secondary); transition: transform 0.2s; }
+.bs_review_section.is-collapsed .bs_review_chevron { transform: rotate(-90deg); }
+.bs_review_section_body { display: none; padding: 14px 22px; }
+.bs_review_section_body.is-open { display: block; }
+.bs_review_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid #f0ede6;
+    font-size: 14px;
+}
+.bs_review_row:last-child { border-bottom: none; }
+.bs_review_k { color: var(--car-text-secondary); flex-shrink: 0; }
+.bs_review_v { color: var(--car-text-primary); text-align: right; overflow-wrap: anywhere; }
+.bs_review_v_accent { color: var(--car-gold); }
+.bs_review_doc {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    border: 1px solid var(--car-border);
+    border-radius: 8px;
+}
+.bs_review_doc:last-child { margin-bottom: 0; }
+.bs_review_doc_icon {
+    width: 42px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    background: var(--car-bg-section);
+    color: var(--car-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.bs_review_doc_meta { flex: 1; min-width: 0; }
+.bs_review_doc_name { margin: 0; font-size: 13px; font-weight: 600; color: var(--car-text-primary); }
+.bs_review_doc_file { margin: 2px 0 0; font-size: 12px; color: var(--car-text-secondary); overflow-wrap: anywhere; }
+.bs_review_doc_actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.bs_review_check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 0;
+    padding: 14px 22px;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--car-text-secondary);
+}
+.bs_review_check input { margin-top: 3px; flex-shrink: 0; width: 17px; height: 17px; cursor: pointer; }
+.bs_review_footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding: 14px 22px;
+    border-top: 1px solid var(--car-border);
+    background: var(--car-bg-section);
+}
+@media (max-width: 575.98px) {
+    .bs_review_footer { flex-direction: column-reverse; }
+    .bs_review_footer .btn { width: 100%; }
 }

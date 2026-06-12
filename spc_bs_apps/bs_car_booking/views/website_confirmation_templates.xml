@@ -242,12 +242,110 @@
 
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary btn-lg info_submit_btn" disabled="disabled">
-                                    Continue to Deposit <i class="fa fa-arrow-right"/>
+                                    Review &amp; Confirm <i class="fa fa-arrow-right"/>
                                 </button>
                                 <div class="info_submit_hint text-muted small mt-2">
                                     <i class="fa fa-lock me-1"/>Complete the required details, documents and agreements to continue.
                                 </div>
                                 <div class="alert alert-danger mt-3 d-none" id="info_error"/>
+                            </div>
+
+                            <!-- ============================================================
+                                 REVIEW CONFIRMATION MODAL
+                                 Shown after the form validates and before the deposit step.
+                                 Booking details are server-rendered; customer info and the
+                                 attached documents are populated live by customer_info.js.
+                                 ============================================================ -->
+                            <div class="bs_review_overlay d-none" data-review-modal="" role="dialog"
+                                 aria-modal="true" aria-labelledby="bs_review_title">
+                                <div class="bs_review_modal">
+                                    <div class="bs_review_header">
+                                        <div class="bs_review_header_titles">
+                                            <i class="fa fa-clipboard"/>
+                                            <div>
+                                                <p class="bs_review_title" id="bs_review_title">Review your booking</p>
+                                                <p class="bs_review_subtitle">Please check everything is correct before continuing to payment.</p>
+                                            </div>
+                                        </div>
+                                        <span class="bs_review_badge bs_review_badge_warn">Awaiting confirmation</span>
+                                    </div>
+
+                                    <div class="bs_review_body">
+                                        <!-- 1. Booking details (server-rendered) -->
+                                        <div class="bs_review_section">
+                                            <div class="bs_review_section_head" data-review-toggle="">
+                                                <span><i class="fa fa-file-text-o"/>Booking details</span>
+                                                <i class="fa fa-chevron-down bs_review_chevron"/>
+                                            </div>
+                                            <div class="bs_review_section_body is-open">
+                                                <div class="bs_review_row">
+                                                    <span class="bs_review_k">Booking No.</span>
+                                                    <span class="bs_review_v" t-esc="booking.name"/>
+                                                </div>
+                                                <div class="bs_review_row">
+                                                    <span class="bs_review_k">Model</span>
+                                                    <span class="bs_review_v"><t t-esc="booking.model_id.brand_id.name"/> <t t-esc="booking.model_id.name"/></span>
+                                                </div>
+                                                <div t-if="booking.config_summary" class="bs_review_row">
+                                                    <span class="bs_review_k">Configuration</span>
+                                                    <span class="bs_review_v" t-esc="booking.config_summary"/>
+                                                </div>
+                                                <div t-if="booking.dealer_id" class="bs_review_row">
+                                                    <span class="bs_review_k">Dealer</span>
+                                                    <span class="bs_review_v" t-esc="booking.dealer_id.name"/>
+                                                </div>
+                                                <div class="bs_review_row">
+                                                    <span class="bs_review_k">Booking date</span>
+                                                    <span class="bs_review_v"><span t-field="booking.create_date" t-options="{'widget': 'date'}"/></span>
+                                                </div>
+                                                <div class="bs_review_row">
+                                                    <span class="bs_review_k">Deposit</span>
+                                                    <span class="bs_review_v bs_review_v_accent"
+                                                          t-esc="booking.deposit_amount"
+                                                          t-options="{'widget': 'monetary', 'display_currency': booking.currency_id}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 2. Customer information (filled live from the form) -->
+                                        <div class="bs_review_section">
+                                            <div class="bs_review_section_head" data-review-toggle="">
+                                                <span><i class="fa fa-user-o"/>Customer information</span>
+                                                <i class="fa fa-chevron-down bs_review_chevron"/>
+                                            </div>
+                                            <div class="bs_review_section_body is-open" data-review-customer=""/>
+                                        </div>
+
+                                        <!-- 3. Attached documents (built from the selected files) -->
+                                        <div class="bs_review_section">
+                                            <div class="bs_review_section_head" data-review-toggle="">
+                                                <span><i class="fa fa-files-o"/>Attached documents</span>
+                                                <i class="fa fa-chevron-down bs_review_chevron"/>
+                                            </div>
+                                            <div class="bs_review_section_body is-open">
+                                                <div data-review-docs=""/>
+                                                <p class="text-muted small mb-0 d-none" data-review-nodocs="">No documents attached.</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Confirmation -->
+                                        <label class="bs_review_check">
+                                            <input type="checkbox" data-review-confirm=""/>
+                                            <span>I have reviewed the booking details, my information and all attached
+                                                  documents, and confirm they are correct.</span>
+                                        </label>
+                                        <div class="alert alert-danger mx-3 mb-3 d-none" data-review-error=""/>
+                                    </div>
+
+                                    <div class="bs_review_footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-review-edit="">
+                                            <i class="fa fa-arrow-left me-1"/> Edit information
+                                        </button>
+                                        <button type="button" class="btn btn-primary" data-review-proceed="" disabled="disabled">
+                                            <i class="fa fa-credit-card me-1"/> Confirm &amp; proceed to deposit
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>

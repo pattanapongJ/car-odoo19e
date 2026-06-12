@@ -66,6 +66,42 @@ export class CustomerInfoForm extends Interaction {
             });
         }
 
+        // ── Review confirmation modal wiring ──
+        this.reviewModal = this.el.querySelector("[data-review-modal]");
+        this.reviewProceedBtn = this.el.querySelector("[data-review-proceed]");
+        this.reviewConfirmCheck = this.el.querySelector("[data-review-confirm]");
+        this.reviewCustomerEl = this.el.querySelector("[data-review-customer]");
+        this.reviewDocsEl = this.el.querySelector("[data-review-docs]");
+        this.reviewNoDocsEl = this.el.querySelector("[data-review-nodocs]");
+        this.reviewErrorEl = this.el.querySelector("[data-review-error]");
+        this._reviewUrls = [];
+        if (this.reviewModal) {
+            // Collapsible sections.
+            this.el.querySelectorAll("[data-review-toggle]").forEach((h) =>
+                h.addEventListener("click", () => {
+                    const sec = h.closest(".bs_review_section");
+                    sec?.classList.toggle("is-collapsed");
+                    sec?.querySelector(".bs_review_section_body")?.classList.toggle("is-open");
+                }));
+            // Confirm checkbox gates the proceed button.
+            this.reviewConfirmCheck?.addEventListener("change", () => {
+                if (this.reviewProceedBtn) {
+                    this.reviewProceedBtn.disabled = !this.reviewConfirmCheck.checked;
+                }
+            });
+            this.el.querySelector("[data-review-edit]")?.addEventListener("click", () => this._closeReview());
+            this.reviewProceedBtn?.addEventListener("click", () => this._submitToServer());
+            // Backdrop click = edit (return to the form).
+            this.reviewModal.addEventListener("click", (e) => {
+                if (e.target === this.reviewModal) this._closeReview();
+            });
+        }
+
+        this.registerCleanup(() => {
+            this._revokeReviewUrls();
+            document.body.style.overflow = "";
+        });
+
         this._applyType(this._currentType());
         this._refresh();   // start disabled until the form is complete
     }
@@ -202,27 +238,45 @@ export class CustomerInfoForm extends Interaction {
         return ids;
     }
 
-    async _onSubmit(e) {
+    /* Submitting the form opens the review modal instead of saving directly.
+       The actual save/redirect happens only after the customer confirms. */
+    _onSubmit(e) {
         e.preventDefault();
         const type = this._currentType();
-        const fd = new FormData(this.el);
-        const g = (k) => (fd.get(k) || "").trim();
+        const g = (sel) => (this.el.querySelector(sel)?.value || "").trim();
 
         // Light client checks; the server re-validates everything authoritatively.
         if (type === "company") {
-            if (!g("company_name") || !g("tax_id") || !g("contact_person")) {
+            if (!g('[name="company_name"]') || !g('[name="tax_id"]') || !g('[name="contact_person"]')) {
                 this._showError("Company name, Tax ID and contact person are required.");
                 return;
             }
-        } else if (!g("customer_name") || !g("customer_nrc")) {
+        } else if (!g('[name="customer_name"]') || !g('[name="customer_nrc"]')) {
             this._showError("Full name and NRC/ID are required.");
             return;
         }
 
-        const btn = this.el.querySelector(".info_submit_btn");
-        const orig = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Saving...';
+        if (this.reviewModal) {
+            this._openReview();
+        } else {
+            this._submitToServer();   // graceful fallback if the modal is absent
+        }
+    }
+
+    /* Persist the info + documents and move to the deposit step. Triggered by
+       the modal's Confirm button (or directly if there's no modal). */
+    async _submitToServer() {
+        const type = this._currentType();
+        const fd = new FormData(this.el);
+        const g = (k) => (fd.get(k) || "").trim();
+
+        const btn = this.reviewProceedBtn || this.submitBtn;
+        const orig = btn ? btn.innerHTML : "";
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Saving...';
+        }
+        this._reviewError("");
 
         try {
             const documents = await this._collectDocuments(type);
@@ -255,12 +309,147 @@ export class CustomerInfoForm extends Interaction {
                 window.location.href = res.redirect_url;
                 return;
             }
-            this._showError(res.error || "Something went wrong.");
+            this._reviewError(res.error || "Something went wrong.");
         } catch (err) {
-            this._showError(err?.message || "Network error. Please try again.");
+            this._reviewError(err?.message || "Network error. Please try again.");
         }
-        btn.disabled = false;
-        btn.innerHTML = orig;
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = orig;
+        }
+    }
+
+    // ── Review modal helpers ────────────────────────────────────────────
+    _openReview() {
+        this._reviewError("");
+        this._fillReviewCustomer();
+        this._fillReviewDocs();
+        if (this.reviewConfirmCheck) this.reviewConfirmCheck.checked = false;
+        if (this.reviewProceedBtn) this.reviewProceedBtn.disabled = true;
+        this.reviewModal.classList.remove("d-none");
+        document.body.style.overflow = "hidden";
+    }
+
+    _closeReview() {
+        this.reviewModal?.classList.add("d-none");
+        document.body.style.overflow = "";
+        this._revokeReviewUrls();
+    }
+
+    _reviewError(msg) {
+        if (this.reviewErrorEl) {
+            this.reviewErrorEl.textContent = msg || "";
+            this.reviewErrorEl.classList.toggle("d-none", !msg);
+        } else if (msg) {
+            this._showError(msg);
+        }
+    }
+
+    _fillReviewCustomer() {
+        const el = this.reviewCustomerEl;
+        if (!el) return;
+        const type = this._currentType();
+        const v = (sel) => (this.el.querySelector(sel)?.value || "").trim();
+        const phone = (this.el.querySelector('input[type="tel"]')?.value || "").trim();
+        const rows = [["Type", type === "company" ? "Company" : "Individual"]];
+        if (type === "company") {
+            rows.push(["Company name", v('[name="company_name"]')]);
+            rows.push(["Tax ID", v('[name="tax_id"]')]);
+            rows.push(["Contact person", v('[name="contact_person"]')]);
+        } else {
+            rows.push(["Full name", v('[name="customer_name"]')]);
+            rows.push(["NRC / ID", v('[name="customer_nrc"]')]);
+        }
+        if (phone) rows.push(["Phone", phone]);
+        const email = v('[name="customer_email"]');
+        if (email) rows.push(["Email", email]);
+        const addr = v('[name="customer_address"]');
+        if (addr) rows.push([type === "company" ? "Address" : "Address on National ID Card", addr]);
+
+        el.replaceChildren();
+        for (const [k, val] of rows) {
+            const row = document.createElement("div");
+            row.className = "bs_review_row";
+            const ks = document.createElement("span");
+            ks.className = "bs_review_k";
+            ks.textContent = k;
+            const vs = document.createElement("span");
+            vs.className = "bs_review_v";
+            vs.textContent = val || "—";
+            row.append(ks, vs);
+            el.appendChild(row);
+        }
+    }
+
+    _fillReviewDocs() {
+        const wrap = this.reviewDocsEl;
+        if (!wrap) return;
+        this._revokeReviewUrls();
+        wrap.replaceChildren();
+        const type = this._currentType();
+        let count = 0;
+        for (const f of this.el.querySelectorAll(".info_doc_field")) {
+            if (f.classList.contains("d-none") || !this._matches(f, type)) continue;
+            const input = f.querySelector(".info_doc_input");
+            const file = input && input.files && input.files[0];
+            const label = (f.querySelector(".form-label")?.textContent || "Document").replace("*", "").trim();
+            if (file) {
+                wrap.appendChild(this._docCard(label, file.name, this._fmtSize(file.size), file));
+                count++;
+            } else if (f.dataset.uploaded === "1") {
+                wrap.appendChild(this._docCard(label, "Previously uploaded", "", null));
+                count++;
+            }
+        }
+        this.reviewNoDocsEl?.classList.toggle("d-none", count > 0);
+    }
+
+    _docCard(label, filename, size, file) {
+        const card = document.createElement("div");
+        card.className = "bs_review_doc";
+        const icon = document.createElement("div");
+        icon.className = "bs_review_doc_icon";
+        icon.innerHTML = '<i class="fa fa-file-o"/>';
+        const meta = document.createElement("div");
+        meta.className = "bs_review_doc_meta";
+        const n = document.createElement("p");
+        n.className = "bs_review_doc_name";
+        n.textContent = label;
+        const fm = document.createElement("p");
+        fm.className = "bs_review_doc_file";
+        fm.textContent = size ? `${filename} · ${size}` : filename;
+        meta.append(n, fm);
+        const actions = document.createElement("div");
+        actions.className = "bs_review_doc_actions";
+        const badge = document.createElement("span");
+        badge.className = "bs_review_badge bs_review_badge_ok";
+        badge.textContent = "Uploaded";
+        actions.appendChild(badge);
+        if (file) {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "btn btn-sm btn-outline-secondary bs_review_doc_view";
+            btn.innerHTML = '<i class="fa fa-eye"/> View';
+            btn.addEventListener("click", () => {
+                const url = URL.createObjectURL(file);
+                this._reviewUrls.push(url);
+                window.open(url, "_blank", "noopener");
+            });
+            actions.appendChild(btn);
+        }
+        card.append(icon, meta, actions);
+        return card;
+    }
+
+    _fmtSize(b) {
+        if (b >= 1048576) return (b / 1048576).toFixed(1) + " MB";
+        if (b >= 1024) return Math.round(b / 1024) + " KB";
+        return b + " B";
+    }
+
+    _revokeReviewUrls() {
+        (this._reviewUrls || []).forEach((u) => URL.revokeObjectURL(u));
+        this._reviewUrls = [];
     }
 }
 
