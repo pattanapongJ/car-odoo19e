@@ -17,10 +17,11 @@
                 <t t-set="title">Car Bookings</t>
                 <t t-set="url" t-value="'/my/bookings'"/>
                 <t t-set="text">Track your reservations &amp; deposits</t>
-                <!-- No placeholder_count on purpose: counter-driven cards are
-                     hidden while the count is 0, but this is the business's
-                     primary card — new customers must see where their booking
-                     will live (/my/bookings has its own empty state). -->
+                <!-- config_card (like Payment methods/Addresses): cards start
+                     d-none and only a >0 counter OR this flag reveals them —
+                     the business's primary card must show even with no booking
+                     yet (/my/bookings has its own empty state). -->
+                <t t-set="config_card" t-value="True"/>
             </t>
         </div>
     </template>
