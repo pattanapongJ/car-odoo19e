@@ -162,6 +162,13 @@
                                                   data-success-page="/contactus-thank-you"
                                                   data-pre-fill="true">
                                                 <input type="hidden" class="s_website_form_input" name="description" value="Submitted from Hongqi Thailand contact page."/>
+                                                <!-- Topic tag for the lead — contact_form.js swaps the value to
+                                                     match the selected topic radio (ids rendered server-side). -->
+                                                <input type="hidden" class="s_website_form_input" name="tag_ids" id="contact_tag_ids"
+                                                       t-att-data-tag-catalog="(env.ref('theme_bs_hongqi_car.crm_tag_contact_catalog', raise_if_not_found=False) or env['crm.tag']).id or ''"
+                                                       t-att-data-tag-dealer="(env.ref('theme_bs_hongqi_car.crm_tag_contact_dealer', raise_if_not_found=False) or env['crm.tag']).id or ''"
+                                                       t-att-data-tag-job="(env.ref('theme_bs_hongqi_car.crm_tag_contact_job', raise_if_not_found=False) or env['crm.tag']).id or ''"
+                                                       t-att-value="(env.ref('theme_bs_hongqi_car.crm_tag_contact_catalog', raise_if_not_found=False) or env['crm.tag']).id or ''"/>
                                                 <div class="s_website_form_rows row s_col_no_bgcolor">
                                                     <div class="mb-4 col-12">
                                                         <div class="bs_contact_topics">
@@ -252,14 +259,19 @@
                                                                placeholder="example@email.com"/>
                                                     </div>
 
-                                                    <!-- Dealership-only fields: hidden + disabled until the
-                                                         "Dealership Application" topic is picked (contact_form.js).
-                                                         Disabled inputs are excluded from submit and from native
-                                                         required-validation. -->
+                                                    <!-- Dealership-only fields, via the form framework's NATIVE
+                                                         conditional visibility (s_website_form_field_hidden_if +
+                                                         data-visibility-*): the framework reactively strips any
+                                                         hand-managed d-none/disabled on s_website_form_field, so
+                                                         fighting it with custom JS does not work. It also disables
+                                                         hidden inputs (excluded from submit and validation). -->
                                                     <div data-name="Field"
-                                                         class="s_website_form_field mb-4 col-12 bs_contact_dealer_field d-none"
+                                                         class="s_website_form_field mb-4 col-12 s_website_form_required s_website_form_field_hidden_if d-none bs_contact_dealer_field"
                                                          data-type="char"
-                                                         data-translated-name="Proposed Location">
+                                                         data-translated-name="Proposed Location"
+                                                         data-visibility-dependency="name"
+                                                         data-visibility-comparator="equal"
+                                                         data-visibility-condition="Dealership Application">
                                                         <label class="form-label" for="proposed_location">พิกัด/พื้นที่ที่ต้องการเปิดโชว์รูม / Proposed Location <span class="text-danger">*</span></label>
                                                         <!-- This website's published dealer areas (same public scope
                                                              as the dealer locator: current website + its company). -->
@@ -268,7 +280,7 @@
                                                         <select class="form-select s_website_form_input bs_contact_input"
                                                                 name="Proposed Location"
                                                                 id="proposed_location"
-                                                                disabled="disabled">
+                                                                required="1">
                                                             <option value="">— เลือกพื้นที่ / Select Location —</option>
                                                             <t t-foreach="bs_contact_dealers" t-as="bs_dealer">
                                                                 <option t-att-value="'%s%s' % (bs_dealer.name, bs_dealer.city and ' (%s)' % bs_dealer.city or '')">
@@ -278,15 +290,17 @@
                                                         </select>
                                                     </div>
                                                     <div data-name="Field"
-                                                         class="s_website_form_field mb-4 col-12 bs_contact_dealer_field d-none"
+                                                         class="s_website_form_field mb-4 col-12 s_website_form_field_hidden_if d-none bs_contact_dealer_field"
                                                          data-type="binary"
-                                                         data-translated-name="Attachment">
+                                                         data-translated-name="Attachment"
+                                                         data-visibility-dependency="name"
+                                                         data-visibility-comparator="equal"
+                                                         data-visibility-condition="Dealership Application">
                                                         <label class="form-label" for="contact_attachment">แนบเอกสารนำเสนอ/โปรไฟล์บริษัท (Company Profile) / Max 5MB (PDF)</label>
                                                         <input class="form-control s_website_form_input bs_contact_input"
                                                                type="file"
                                                                name="Attachment"
                                                                id="contact_attachment"
-                                                               disabled="disabled"
                                                                accept=".pdf"/>
                                                     </div>
 

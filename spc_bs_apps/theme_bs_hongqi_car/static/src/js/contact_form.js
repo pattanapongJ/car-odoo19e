@@ -1,9 +1,10 @@
 /** @odoo-module **/
-/* Contact page: the Proposed Location + Company Profile fields belong to the
-   "Dealership Application" topic only. They start hidden AND disabled in the
-   template (disabled inputs are skipped by the form submit and by native
-   required-validation); this interaction reveals/enables them when the
-   dealership topic is picked, and enforces the 5MB PDF limit. */
+/* Contact page helpers. Field visibility per topic is handled NATIVELY by the
+   website form framework (s_website_form_field_hidden_if + data-visibility-*
+   on the field containers — the framework reactively overrides hand-managed
+   d-none/disabled, so do not toggle visibility here). This interaction only:
+   - swaps the hidden tag_ids value so the lead is tagged with the topic,
+   - enforces the promised 5MB limit on the company-profile PDF. */
 
 import { Interaction } from "@web/public/interaction";
 import { registry } from "@web/core/registry";
@@ -14,14 +15,21 @@ export class HongqiContactForm extends Interaction {
     static selector = ".bs_contact_form";
 
     start() {
-        this.dealerFields = this.el.querySelectorAll(".bs_contact_dealer_field");
-        if (!this.dealerFields.length) return;
-        const radios = this.el.querySelectorAll('input.bs_contact_radio[name="name"]');
-        radios.forEach((r) =>
-            r.addEventListener("change", () => this._applyTopic(r.value))
-        );
-        const checked = this.el.querySelector('input.bs_contact_radio[name="name"]:checked');
-        this._applyTopic(checked ? checked.value : "");
+        const tagInput = this.el.querySelector("#contact_tag_ids");
+        if (tagInput) {
+            const tagByTopic = {
+                "Request E-Catalog": tagInput.dataset.tagCatalog,
+                "Dealership Application": tagInput.dataset.tagDealer,
+                "Job Application": tagInput.dataset.tagJob,
+            };
+            const applyTopic = (topic) => {
+                tagInput.value = tagByTopic[topic] || "";
+            };
+            const radios = this.el.querySelectorAll('input.bs_contact_radio[name="name"]');
+            radios.forEach((r) => r.addEventListener("change", () => applyTopic(r.value)));
+            const checked = this.el.querySelector('input.bs_contact_radio[name="name"]:checked');
+            if (checked) applyTopic(checked.value);
+        }
 
         // Company-profile size guard (the label promises max 5MB).
         const file = this.el.querySelector("#contact_attachment");
@@ -34,18 +42,6 @@ export class HongqiContactForm extends Interaction {
             } else {
                 file.setCustomValidity("");
             }
-        });
-    }
-
-    _applyTopic(topic) {
-        const isDealer = topic === "Dealership Application";
-        this.dealerFields.forEach((field) => {
-            field.classList.toggle("d-none", !isDealer);
-            field.querySelectorAll("input, select").forEach((input) => {
-                input.disabled = !isDealer;
-                if (input.id === "proposed_location") input.required = isDealer;
-                if (!isDealer) input.value = "";
-            });
         });
     }
 }
