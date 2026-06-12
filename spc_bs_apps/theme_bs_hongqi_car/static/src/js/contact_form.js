@@ -27,18 +27,22 @@ export class HongqiContactForm extends Interaction {
             sync();
         }
 
-        // Company-profile size guard (the label promises max 5MB).
-        const file = this.el.querySelector("#contact_attachment");
-        file?.addEventListener("change", () => {
-            const f = file.files && file.files[0];
-            if (f && f.size > MAX_PROFILE_MB * 1024 * 1024) {
-                file.value = "";
-                file.setCustomValidity(`File too large — max ${MAX_PROFILE_MB}MB.`);
-                file.reportValidity();
-            } else {
-                file.setCustomValidity("");
-            }
-        });
+        // Company-profile + CV size guard (the label promises max 5MB).
+        const guard = (selector) => {
+            const el = this.el.querySelector(selector);
+            el?.addEventListener("change", () => {
+                const f = el.files && el.files[0];
+                if (f && f.size > MAX_PROFILE_MB * 1024 * 1024) {
+                    el.value = "";
+                    el.setCustomValidity(`File too large — max ${MAX_PROFILE_MB}MB.`);
+                    el.reportValidity();
+                } else {
+                    el.setCustomValidity("");
+                }
+            });
+        };
+        guard("#contact_attachment");
+        guard("#contact_cv");
     }
 }
 

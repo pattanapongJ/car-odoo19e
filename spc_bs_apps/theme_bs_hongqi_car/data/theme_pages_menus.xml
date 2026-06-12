@@ -178,22 +178,10 @@
                                                                 <input class="s_website_form_input bs_contact_radio"
                                                                        type="radio"
                                                                        name="name"
-                                                                       id="topic_catalog"
-                                                                       value="Request E-Catalog"
-                                                                       required="1"
-                                                                       checked="checked"/>
-                                                                <label for="topic_catalog">
-                                                                    <strong>รับ E-Catalog / Request E-Catalog</strong>
-                                                                    <span>ระบบจะส่งลิงก์ดาวน์โหลด E-Catalog ไปยังอีเมลของท่านโดยอัตโนมัติ (Automated email)</span>
-                                                                </label>
-                                                            </div>
-                                                            <div class="bs_contact_topic">
-                                                                <input class="s_website_form_input bs_contact_radio"
-                                                                       type="radio"
-                                                                       name="name"
                                                                        id="topic_dealer"
                                                                        value="Dealership Application"
-                                                                       required="1"/>
+                                                                       required="1"
+                                                                       checked="checked"/>
                                                                 <label for="topic_dealer">
                                                                     <strong>สมัครเป็นผู้แทนจำหน่าย / Dealership Application</strong>
                                                                 </label>
@@ -207,6 +195,18 @@
                                                                        required="1"/>
                                                                 <label for="topic_job">
                                                                     <strong>สมัครงาน / Job Application</strong>
+                                                                </label>
+                                                            </div>
+                                                            <div class="bs_contact_topic">
+                                                                <input class="s_website_form_input bs_contact_radio"
+                                                                       type="radio"
+                                                                       name="name"
+                                                                       id="topic_other"
+                                                                       value="Other"
+                                                                       required="1"/>
+                                                                <label for="topic_other">
+                                                                    <strong>อื่น ๆ / Other</strong>
+                                                                    <span>กรุณาระบุรายละเอียด / Please describe your inquiry</span>
                                                                 </label>
                                                             </div>
                                                         </div>
@@ -304,6 +304,41 @@
                                                                name="Attachment"
                                                                id="contact_attachment"
                                                                accept=".pdf"/>
+                                                    </div>
+
+                                                    <!-- Job Application CV upload. -->
+                                                    <div data-name="Field"
+                                                         class="s_website_form_field mb-4 col-12 s_website_form_required s_website_form_field_hidden_if d-none"
+                                                         data-type="binary"
+                                                         data-translated-name="CV Attachment"
+                                                         data-visibility-dependency="name"
+                                                         data-visibility-comparator="equal"
+                                                         data-visibility-condition="Job Application">
+                                                        <label class="form-label" for="contact_cv">แนบ CV/Resume <span class="text-danger">*</span> / Max 5MB (PDF, DOC, DOCX)</label>
+                                                        <input class="form-control s_website_form_input bs_contact_input"
+                                                               type="file"
+                                                               name="Attachment"
+                                                               id="contact_cv"
+                                                               required="1"
+                                                               accept=".pdf,.doc,.docx"/>
+                                                    </div>
+
+                                                    <!-- "Other" topic message: required when the customer
+                                                         selects Other, hidden for all other topics. -->
+                                                    <div data-name="Field"
+                                                         class="s_website_form_field mb-4 col-12 s_website_form_required s_website_form_field_hidden_if d-none"
+                                                         data-type="text"
+                                                         data-translated-name="Message"
+                                                         data-visibility-dependency="name"
+                                                         data-visibility-comparator="equal"
+                                                         data-visibility-condition="Other">
+                                                        <label class="form-label" for="contact_message">รายละเอียด / Message <span class="text-danger">*</span></label>
+                                                        <textarea class="form-control s_website_form_input bs_contact_input"
+                                                                  name="contact_message"
+                                                                  id="contact_message"
+                                                                  required="1"
+                                                                  rows="4"
+                                                                  placeholder="กรุณาระบุรายละเอียดที่ท่านต้องการสอบถาม / Please describe your inquiry..."></textarea>
                                                     </div>
 
                                                     <!-- A s_website_form_field so the framework's required-validation
