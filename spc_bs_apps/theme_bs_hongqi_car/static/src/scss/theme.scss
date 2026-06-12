@@ -204,6 +204,49 @@ html {
     background-color: rgba(255, 255, 255, 0.1) !important;
     color: var(--car-gold) !important;
 }
+/* ── Nav sub-menu dropdown — dark bar matching the header ──────── */
+/* nav-item is the positioning parent; dropdown fills its full width. */
+#wrapwrap > header .bs_brand_links .nav-item.dropdown {
+    position: relative;
+}
+#wrapwrap > header .bs_brand_links .dropdown-menu {
+    background: var(--car-primary) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 2px solid var(--car-gold);
+    border-radius: 0 0 var(--car-radius) var(--car-radius);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+    /* Match the width of the parent "ABOUT US" toggle exactly. */
+    min-width: unset;
+    width: 100%;
+    padding: 8px 0;
+    margin-top: 0;
+}
+#wrapwrap > header .bs_brand_links .dropdown-menu .dropdown-item {
+    color: rgba(255, 255, 255, 0.82) !important;
+    font-family: var(--car-font-sans);
+    /* Match nav-link: same size, weight, spacing, case. */
+    font-size: clamp(0.84rem, 0.82vw, 0.95rem);
+    font-weight: 500;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    padding: 10px 0;
+    transition: color var(--car-transition),
+                background var(--car-transition);
+}
+#wrapwrap > header .bs_brand_links .dropdown-menu .dropdown-item:hover,
+#wrapwrap > header .bs_brand_links .dropdown-menu .dropdown-item:focus {
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: var(--car-gold) !important;
+}
+#wrapwrap > header .bs_brand_links .dropdown-menu .dropdown-item.active {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: var(--car-gold) !important;
+}
+/* Parent nav-link keeps its underline style when dropdown is open. */
+#wrapwrap > header .bs_brand_links .nav-item.show > .nav-link {
+    color: var(--car-gold) !important;
+    border-color: var(--car-gold);
+}
 @media (max-width: 1399px) {
     #wrapwrap > header .bs_brand_nav {
         gap: 10px;
@@ -217,6 +260,11 @@ html {
         gap: clamp(10px, 1.1vw, 18px);
     }
     #wrapwrap > header .bs_brand_links .nav-link {
+        font-size: 0.78rem;
+        letter-spacing: 1.25px;
+    }
+    /* Dropdown items match the shrunk nav-link size at this breakpoint. */
+    #wrapwrap > header .bs_brand_links .dropdown-menu .dropdown-item {
         font-size: 0.78rem;
         letter-spacing: 1.25px;
     }
@@ -326,14 +374,9 @@ html {
 #wrapwrap > header .o_navbar_mobile .nav-link.active {
     color: var(--car-accent) !important;
 }
-/* The off-canvas already has Odoo's original Contact CTA button at the bottom;
-   hide the repeated Contact menu row only on mobile. */
-#wrapwrap > header .o_navbar_mobile li:has(> a[href="/contactus"]),
-#wrapwrap > header .o_navbar_mobile li:has(> a[href="/contactus/"]),
-#wrapwrap > header .o_navbar_mobile a[href="/contactus"].nav-link,
-#wrapwrap > header .o_navbar_mobile a[href="/contactus/"].nav-link {
-    display: none !important;
-}
+/* Contact Us is now a sub-item inside the About Us dropdown — it no longer
+   appears as a top-level nav row on mobile, so no hide rule is needed.
+   The CTA button at the bottom of the off-canvas still links to /contactus. */
 /* Hide cart + search on mobile (no e-commerce clutter, matches desktop). */
 #wrapwrap > header .o_header_mobile_buttons_wrap,
 #wrapwrap > header .o_navbar_mobile .o_searchbar_form,

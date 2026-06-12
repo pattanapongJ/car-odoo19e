@@ -235,29 +235,26 @@
                 <div class="bs_slider_live visually-hidden"
                      aria-live="polite" aria-atomic="true"/>
 
-                <!-- ── Slides: slide 0 pre-activated so content is visible before JS runs ── -->
+                <!-- ── Slides (display:none by default, JS adds .active) ── -->
                 <t t-foreach="slides" t-as="slide">
-                    <div t-attf-class="bs_slide{{ ' active' if slide_index == 0 else '' }}"
+                    <div class="bs_slide"
                          t-att-data-index="slide_index"
                          role="group"
                          t-att-aria-label="'Slide %s of %s' % (slide_index + 1, len(slides))"
                          aria-roledescription="slide"
-                         t-att-aria-hidden="'false' if slide_index == 0 else 'true'">
+                         aria-hidden="true">
 
                         <!-- Background media -->
                         <div class="bs_slide_bg">
                             <t t-if="slide.video_src">
-                                <!-- First slide: preload eagerly. Others: preload=none until activated by JS. -->
                                 <video class="bs_slide_video"
                                        autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline"
-                                       t-att-preload="'auto' if slide_index == 0 else 'none'"
                                        t-att-poster="'/web/image/bs.car.website.slide/%s/image/1920x1080' % slide.id if slide.image else ''">
                                     <source t-att-src="slide.video_src" type="video/mp4"/>
                                 </video>
                                 <video t-if="slide.mobile_video_src"
                                        class="bs_slide_video_mobile"
                                        autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline"
-                                       t-att-preload="'auto' if slide_index == 0 else 'none'"
                                        t-att-poster="'/web/image/bs.car.website.slide/%s/image/1200x1600' % slide.id if slide.image else ''">
                                     <source t-att-src="slide.mobile_video_src" type="video/mp4"/>
                                 </video>
@@ -273,7 +270,7 @@
                                         aria-hidden="true"
                                         style="pointer-events:none;"/>
                             </t>
-                            <!-- First slide: eager + high priority for LCP. Others: lazy. -->
+                            <!-- Expanded srcset: 480w mobile / 768w tablet / 1920w desktop / 2560w 4K -->
                             <img t-if="slide.image and not slide.video_src"
                                  class="bs_slide_img"
                                  t-att-src="'/web/image/bs.car.website.slide/%s/image/1920x1080' % slide.id"
@@ -285,8 +282,7 @@
                                  "
                                  sizes="100vw"
                                  t-att-alt="slide.image_alt or slide.title"
-                                 t-att-loading="'eager' if slide_index == 0 else 'lazy'"
-                                 t-att-fetchpriority="'high' if slide_index == 0 else None"/>
+                                 loading="lazy"/>
                             <div class="bs_slide_overlay" aria-hidden="true"/>
                         </div>
 
@@ -306,7 +302,7 @@
                                     <img class="bs_slide_title_img"
                                          t-att-src="'/web/image/bs.car.website.slide/%s/title_image/1200x360' % slide.id"
                                          t-att-alt="slide.title_image_alt or slide.title"
-                                         t-att-loading="'eager' if slide_index == 0 else 'lazy'"/>
+                                         loading="lazy"/>
                                 </t>
                                 <h2 t-elif="slide.title" class="bs_slide_title" t-esc="slide.title"/>
                                 <p t-if="slide.subtitle" class="bs_slide_subtitle"

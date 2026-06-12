@@ -55,11 +55,6 @@ export class HeroSlider extends Interaction {
             slide.setAttribute("aria-hidden", i !== this._current ? "true" : "false");
 
             if (i === this._current) {
-                // Trigger preload for lazy videos before they become visible
-                slide.querySelectorAll("video[preload='none']").forEach((v) => {
-                    v.preload = "auto";
-                });
-
                 // Reset Ken Burns: remove + re-add animation by forcing reflow
                 if (!this._reducedMotion) {
                     const media = slide.querySelectorAll(".bs_slide_img, .bs_slide_video");
@@ -75,16 +70,6 @@ export class HeroSlider extends Interaction {
                 if (!this._reducedMotion) {
                     slide.classList.add("fade-in");
                 }
-
-                // Play videos on the now-active slide
-                slide.querySelectorAll("video").forEach((v) => {
-                    v.play().catch(() => {});
-                });
-            } else {
-                // Pause videos on hidden slides — saves CPU, battery, and bandwidth
-                slide.querySelectorAll("video").forEach((v) => {
-                    if (!v.paused) v.pause();
-                });
             }
         });
 

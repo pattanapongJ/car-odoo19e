@@ -527,20 +527,29 @@
             <field name="url">/cars</field>
             <field name="sequence">10</field>
         </record>
-        <record id="menu_website_stories" model="theme.website.menu">
-            <field name="name">News</field>
-            <field name="url">/stories</field>
-            <field name="sequence">30</field>
-        </record>
         <record id="menu_website_testdrive" model="theme.website.menu">
             <field name="name">Test Drive</field>
             <field name="url">/test-drive</field>
             <field name="sequence">55</field>
         </record>
+        <record id="menu_website_about_us" model="theme.website.menu">
+            <field name="name">About Us</field>
+            <field name="url">/#</field>
+            <field name="sequence">70</field>
+        </record>
+        <record id="menu_website_stories" model="theme.website.menu">
+            <field name="name">News</field>
+            <field name="url">/stories</field>
+            <field name="sequence">10</field>
+            <field name="parent_id" ref="menu_website_about_us"/>
+            <field name="use_main_menu_as_parent" eval="False"/>
+        </record>
         <record id="menu_website_contact" model="theme.website.menu">
             <field name="name">Contact Us</field>
             <field name="url">/contactus</field>
-            <field name="sequence">60</field>
+            <field name="sequence">20</field>
+            <field name="parent_id" ref="menu_website_about_us"/>
+            <field name="use_main_menu_as_parent" eval="False"/>
         </record>
     </data>
 </odoo>
