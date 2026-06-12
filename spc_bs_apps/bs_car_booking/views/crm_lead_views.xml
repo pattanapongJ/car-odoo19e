@@ -14,7 +14,20 @@
                         groups="bs_car_booking.group_bs_car_booking_manager">
                     <div class="o_stat_info"><span class="o_stat_text">Car Booking</span></div>
                 </button>
+                <button type="object" class="oe_stat_button" icon="fa-star"
+                        invisible="not bs_booking_rating"
+                        groups="bs_car_booking.group_bs_car_booking_manager">
+                    <field name="bs_booking_rating" widget="statinfo" string="Rating"/>
+                </button>
             </div>
+            <field name="bs_booking_rating" position="after" invisible="1"/>
+            <xpath expr="//page[@name='extra']" position="inside">
+                <group string="Booking Rating" invisible="not bs_booking_rating"
+                       groups="bs_car_booking.group_bs_car_booking_manager">
+                    <field name="bs_booking_rating" readonly="1"/>
+                    <field name="bs_booking_rating_comment" readonly="1"/>
+                </group>
+            </xpath>
         </field>
     </record>
 </odoo>

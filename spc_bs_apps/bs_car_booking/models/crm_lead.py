@@ -11,6 +11,10 @@ class CrmLead(models.Model):
     bs_car_booking_id = fields.Many2one('bs.car.booking', string='Car Booking',
                                         readonly=True, copy=False, index=True)
 
+    bs_booking_rating = fields.Integer('Booking Rating (1-5)', default=0, copy=False,
+                                       help='Customer satisfaction rating submitted on the booking confirmation page.')
+    bs_booking_rating_comment = fields.Text('Rating Comment', copy=False)
+
     def action_view_car_booking(self):
         self.ensure_one()
         return {

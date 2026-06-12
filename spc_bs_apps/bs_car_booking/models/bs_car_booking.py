@@ -143,6 +143,12 @@ class BsCarBooking(models.Model):
     estimated_delivery_date = fields.Date('Estimated Delivery Date')
     actual_delivery_date = fields.Date('Actual Delivery Date', readonly=True)
 
+    # === Customer Rating ===
+    rating = fields.Integer('Customer Rating', default=0, copy=False,
+                            help='1-5 stars submitted by the customer on the confirmation page.')
+    rating_comment = fields.Text('Rating Comment', copy=False)
+    rating_date = fields.Datetime('Rating Date', readonly=True, copy=False)
+
     # === Notes ===
     notes = fields.Text('Additional Notes')
     internal_notes = fields.Text('Internal Notes')
@@ -679,6 +685,24 @@ class BsCarBooking(models.Model):
             except Exception as exc:  # noqa: BLE001 - CRM must never block the booking
                 _logger.warning('CRM lead sync failed for booking %s -> %s: %s',
                                 rec.name, target_state, str(exc))
+
+    def action_submit_rating(self, rating, comment=''):
+        """Store customer rating (1-5) and push to the linked CRM lead."""
+        self.ensure_one()
+        if not (1 <= int(rating) <= 5):
+            raise ValidationError(_('Rating must be between 1 and 5.'))
+        if self.state not in ('confirmed', 'in_production', 'ready_delivery', 'delivered'):
+            raise ValidationError(_('Ratings can only be submitted for confirmed bookings.'))
+        self.sudo().write({
+            'rating': int(rating),
+            'rating_comment': (comment or '').strip() or False,
+            'rating_date': fields.Datetime.now(),
+        })
+        if self.lead_id:
+            self.lead_id.sudo().write({
+                'bs_booking_rating': int(rating),
+                'bs_booking_rating_comment': (comment or '').strip() or False,
+            })
 
     def action_view_lead(self):
         self.ensure_one()

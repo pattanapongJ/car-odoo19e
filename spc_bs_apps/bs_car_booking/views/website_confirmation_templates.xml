@@ -397,6 +397,48 @@
                                 <i class="fa fa-user"/> View in My Account
                             </a>
                         </div>
+
+                        <!-- ── Customer Rating ── -->
+                        <t t-if="is_confirmed">
+                            <hr class="conf_divider"/>
+                            <!-- Already rated: show thank-you -->
+                            <div t-if="booking.rating" class="conf_rating_done text-center py-3">
+                                <div class="conf_rating_stars">
+                                    <t t-foreach="range(1, 6)" t-as="i">
+                                        <i t-attf-class="fa fa-star{{ ' conf_star_lit' if i &lt;= booking.rating else '-o' }}"/>
+                                    </t>
+                                </div>
+                                <p class="conf_rating_thanks mt-2">ขอบคุณสำหรับคะแนน!</p>
+                                <p class="text-muted small"><t t-esc="booking.rating"/>/5
+                                    <t t-if="booking.rating_comment"> — <t t-esc="booking.rating_comment"/></t>
+                                </p>
+                            </div>
+                            <!-- Not yet rated: show form -->
+                            <div t-else=""
+                                 class="conf_rating_block"
+                                 t-att-data-booking-id="booking.id"
+                                 t-att-data-access-token="access_token">
+                                <p class="conf_rating_title">ประเมินประสบการณ์การจอง</p>
+                                <p class="text-muted small mb-2">Customer Rating (1–5 Stars)</p>
+                                <div class="conf_stars" id="conf_stars">
+                                    <span class="conf_star" data-value="1">&#9733;</span>
+                                    <span class="conf_star" data-value="2">&#9733;</span>
+                                    <span class="conf_star" data-value="3">&#9733;</span>
+                                    <span class="conf_star" data-value="4">&#9733;</span>
+                                    <span class="conf_star" data-value="5">&#9733;</span>
+                                </div>
+                                <div class="conf_rating_desc" id="conf_rating_desc">กรุณาให้คะแนน</div>
+                                <textarea id="conf_rating_comment" class="form-control form-control-sm conf_rating_comment mt-2"
+                                          rows="2" placeholder="ความคิดเห็นเพิ่มเติม (ไม่บังคับ)"/>
+                                <button id="conf_rating_submit" class="conf_rating_submit_btn btn btn-warning mt-2" disabled="disabled">
+                                    <i class="fa fa-paper-plane"/> ส่งคะแนน
+                                </button>
+                                <button id="conf_rating_skip" class="conf_rating_skip_btn btn btn-link btn-sm mt-1 d-block mx-auto">
+                                    ข้ามไปก่อน
+                                </button>
+                                <div id="conf_rating_error" class="alert alert-danger mt-2 d-none"/>
+                            </div>
+                        </t>
                     </div>
                 </div>
             </section>

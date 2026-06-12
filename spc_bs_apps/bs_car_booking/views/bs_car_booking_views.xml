@@ -153,6 +153,13 @@
                                 <field name="internal_notes"/>
                             </group>
                         </page>
+                        <page string="Customer Feedback" invisible="not rating">
+                            <group>
+                                <field name="rating" readonly="1"/>
+                                <field name="rating_date" readonly="1"/>
+                            </group>
+                            <field name="rating_comment" readonly="1"/>
+                        </page>
                     </notebook>
                 </sheet>
                 <chatter/>
