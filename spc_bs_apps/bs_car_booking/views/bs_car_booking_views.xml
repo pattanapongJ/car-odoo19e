@@ -87,17 +87,17 @@
                             <group>
                                 <group>
                                     <field name="customer_name"
-                                           readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled')"/>
+                                           attrs="{'readonly': [('state', 'not in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled'))]}"/>
                                     <field name="customer_phone"
-                                           readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled')"/>
+                                           attrs="{'readonly': [('state', 'not in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled'))]}"/>
                                     <field name="customer_email"
-                                           readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled')"/>
+                                           attrs="{'readonly': [('state', 'not in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled'))]}"/>
                                     <field name="customer_nrc"
-                                           readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled')"/>
+                                           attrs="{'readonly': [('state', 'not in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled'))]}"/>
                                 </group>
                                 <group>
                                     <field name="customer_address"
-                                           readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled')"/>
+                                           attrs="{'readonly': [('state', 'not in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled'))]}"/>
                                     <field name="phone_verified" widget="boolean_toggle" readonly="1"/>
                                     <field name="otp_verified_channel" invisible="not otp_verified_channel"/>
                                     <field name="pdpa_consent" widget="boolean_toggle" readonly="1"/>
@@ -109,19 +109,19 @@
                             <group>
                                 <group>
                                     <field name="brand_id"
-                                           readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled')"/>
+                                           attrs="{'readonly': [('state', 'not in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled'))]}"/>
                                     <field name="model_id" domain="[('brand_id', '=', brand_id)]"
-                                           readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled')"/>
+                                           attrs="{'readonly': [('state', 'not in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled'))]}"/>
                                     <field name="product_id" readonly="1"/>
                                     <field name="config_summary"/>
                                     <field name="dealer_id" domain="[('brand_ids', 'in', [brand_id])]"
-                                           readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled')"/>
+                                           attrs="{'readonly': [('state', 'not in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled'))]}"/>
                                 </group>
                                 <group>
                                     <field name="car_price" widget="monetary"
-                                           readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled')"/>
+                                           attrs="{'readonly': [('state', 'not in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled'))]}"/>
                                     <field name="deposit_amount" widget="monetary"
-                                           readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled')"/>
+                                           attrs="{'readonly': [('state', 'not in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled'))]}"/>
                                     <field name="currency_id" invisible="1"/>
                                 </group>
                             </group>
@@ -130,7 +130,7 @@
                             <group>
                                 <group string="Order">
                                     <field name="partner_id"
-                                           readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled')"/>
+                                           attrs="{'readonly': [('state', 'not in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending', 'expired', 'cancelled'))]}"/>
                                     <field name="config_summary"/>
                                     <field name="amount_total" widget="monetary"/>
                                     <field name="sale_order_state"/>
