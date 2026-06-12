@@ -1,0 +1,507 @@
+/* =====================================================================
+   Hero Slider — bs_car_website_slide
+   ===================================================================== */
+
+/* ── Container ── */
+.car_hero_slider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* ── Slides: hidden by default, JS adds .active ── */
+.bs_slide {
+    display: none;
+    position: relative;
+    width: 100%;
+    /* Desktop: full viewport height */
+    min-height: 100vh;
+    min-height: 100dvh; /* dynamic viewport height — fixes iOS toolbar */
+}
+
+.bs_slide.active {
+    display: block;
+}
+
+/* Fade animation on slide enter */
+.bs_slide.fade-in {
+    animation: bsSliderFadeIn 0.8s ease-in-out;
+}
+
+@keyframes bsSliderFadeIn {
+    from { opacity: 0.3; }
+    to   { opacity: 1; }
+}
+
+/* ── Ken Burns: active only when data-ken-burns="1" ── */
+.car_hero_slider[data-ken-burns="1"] .bs_slide.active .bs_slide_img,
+.car_hero_slider[data-ken-burns="1"] .bs_slide.active .bs_slide_video {
+    animation: bsKenBurns 6s ease-out forwards;
+    transform-origin: center center;
+}
+
+/* Alternate pan direction every other slide */
+.car_hero_slider[data-ken-burns="1"] .bs_slide:nth-child(even).active .bs_slide_img,
+.car_hero_slider[data-ken-burns="1"] .bs_slide:nth-child(even).active .bs_slide_video {
+    animation-name: bsKenBurnsAlt;
+    transform-origin: 60% 40%;
+}
+
+@keyframes bsKenBurns {
+    from { transform: scale(1.0) translate(0, 0); }
+    to   { transform: scale(1.08) translate(-1%, -1%); }
+}
+
+@keyframes bsKenBurnsAlt {
+    from { transform: scale(1.0) translate(0, 0); }
+    to   { transform: scale(1.07) translate(1%, 1%); }
+}
+
+/* Disable Ken Burns when reduced-motion is requested (overrides data attribute) */
+@media (prefers-reduced-motion: reduce) {
+    .car_hero_slider .bs_slide.active .bs_slide_img,
+    .car_hero_slider .bs_slide.active .bs_slide_video {
+        animation: none;
+        transform: none;
+    }
+}
+
+/* Landscape mobile: limit height so content isn't cut off */
+@media (max-height: 500px) and (orientation: landscape) {
+    .bs_slide,
+    .bs_slide_content {
+        min-height: 100svh;  /* small viewport height */
+        min-height: 480px;   /* absolute fallback */
+    }
+}
+
+/* ── Tablet (768px – 1024px) ── */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .bs_slide_content {
+        padding-left: 3rem;
+        padding-right: 3rem;
+        padding-bottom: 4rem;
+    }
+    .bs_slide_content.bs_align_y_top { padding-top: 6rem; }
+    .bs_slide_title_img {
+        max-height: 64px;
+        max-width: 260px;
+    }
+    .bs_slider_prev { left: 1rem; }
+    .bs_slider_next { right: 1rem; }
+}
+
+/* ── Large desktop (1440px+) ── */
+@media (min-width: 1440px) {
+    .bs_slide_content {
+        padding-left: 6rem;
+        padding-right: 6rem;
+        padding-bottom: 6rem;
+    }
+    .bs_slide_content.bs_align_y_top { padding-top: 8rem; }
+    .bs_slide_text {
+        max-width: 760px;
+    }
+}
+
+/* ── Background media ── */
+.bs_slide_bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.bs_slide_video,
+.bs_slide_img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Hide desktop video on mobile, show mobile video */
+@media (max-width: 767px) {
+    .bs_slide_video { display: none; }
+    .bs_slide_video_mobile { display: block !important; }
+}
+@media (min-width: 768px) {
+    .bs_slide_video_mobile { display: none !important; }
+}
+
+.bs_slide_overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.65) 0%,
+        rgba(0,0,0,0.25) 50%,
+        rgba(0,0,0,0.10) 100%
+    );
+    z-index: 1;
+}
+
+/* ── Content: full-height flex column ──
+   Text + CTA are flex children → they move as one block.
+   justify-content = vertical,  align-items = horizontal.
+── */
+.bs_slide_content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;   /* default: content at bottom */
+    align-items: flex-start;     /* default: content at left */
+    padding: 0 4rem 4rem;
+}
+
+/* ── Vertical alignment ── */
+.bs_slide_content.bs_align_y_top    { justify-content: flex-start; padding-top: 7rem; }
+.bs_slide_content.bs_align_y_middle { justify-content: center; }
+.bs_slide_content.bs_align_y_bottom { justify-content: flex-end; }
+
+/* ── Horizontal alignment ── */
+.bs_slide_content.bs_align_x_left   { align-items: flex-start; }
+.bs_slide_content.bs_align_x_center { align-items: center; }
+.bs_slide_content.bs_align_x_right  { align-items: flex-end; }
+
+/* Text-align !important: Bootstrap/theme overrides h2 text-align */
+.bs_align_x_left   .bs_slide_eyebrow,
+.bs_align_x_left   .bs_slide_title,
+.bs_align_x_left   .bs_slide_subtitle,
+.bs_align_x_left   .bs_slide_body { text-align: left !important; }
+
+.bs_align_x_center .bs_slide_eyebrow,
+.bs_align_x_center .bs_slide_title,
+.bs_align_x_center .bs_slide_subtitle,
+.bs_align_x_center .bs_slide_body { text-align: center !important; }
+
+.bs_align_x_right  .bs_slide_eyebrow,
+.bs_align_x_right  .bs_slide_title,
+.bs_align_x_right  .bs_slide_subtitle,
+.bs_align_x_right  .bs_slide_body { text-align: right !important; }
+
+/* CTA row inherits horizontal alignment */
+.bs_align_x_left   .bs_slide_cta { justify-content: flex-start; }
+.bs_align_x_center .bs_slide_cta { justify-content: center; }
+.bs_align_x_right  .bs_slide_cta { justify-content: flex-end; }
+
+/* Mobile: tighten padding */
+@media (max-width: 767px) {
+    .bs_slide_content { padding: 0 1.5rem 4rem; }
+    .bs_slide_content.bs_align_y_top { padding-top: 5rem; }
+}
+
+/* ── Text color schemes ── */
+.bs_text_light .bs_slide_eyebrow,
+.bs_text_light .bs_slide_title,
+.bs_text_light .bs_slide_subtitle,
+.bs_text_light .bs_slide_body { color: #fff; }
+
+.bs_text_dark .bs_slide_eyebrow,
+.bs_text_dark .bs_slide_title,
+.bs_text_dark .bs_slide_subtitle,
+.bs_text_dark .bs_slide_body  { color: #171a20; }
+
+.bs_text_dark .bs_slide_eyebrow { opacity: 0.6; }
+.bs_text_light .bs_slide_eyebrow { opacity: 0.7; }
+
+/* custom: colors set inline via style attribute */
+
+/* ── Text zone ── */
+.bs_slide_text {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 680px;
+    align-items: flex-start;   /* overridden by alignment classes below */
+    padding-bottom: 1.5rem;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+/* Align text items within the text block */
+.bs_align_x_left   .bs_slide_text { align-items: flex-start; }
+.bs_align_x_center .bs_slide_text { align-items: center; }
+.bs_align_x_right  .bs_slide_text { align-items: flex-end; }
+
+.bs_slide_eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 0.5rem;
+}
+
+.bs_slide_title {
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.4rem;
+    color: #fff;
+}
+
+.bs_slide_subtitle {
+    font-size: clamp(0.85rem, 1.6vw, 1.1rem);
+    opacity: 0.8;
+    margin-bottom: 0;
+    color: #fff;
+    max-width: 520px;
+}
+
+.bs_slide_body {
+    font-size: 0.95rem;
+    opacity: 0.75;
+    color: #fff;
+    max-width: 520px;
+    margin-top: 0.5rem;
+}
+
+.bs_slide_title_img {
+    max-height: 72px;
+    max-width: 300px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 767px) {
+    .bs_slide_title_img {
+        max-height: 52px;
+        max-width: 200px;
+    }
+}
+
+/* CTA buttons row */
+.bs_slide_cta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;  /* overridden per alignment class */
+    gap: 1rem;
+    /* bottom padding lives on .bs_slide_content — no extra padding here */
+}
+
+@media (max-width: 480px) {
+    .bs_slide_cta {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .bs_slide_cta .btn {
+        width: 80vw;
+        max-width: 320px;
+    }
+}
+
+.bs_slide_cta .btn {
+    min-width: 180px;
+    padding: 0.7rem 2rem;
+    font-size: 0.88rem;
+    letter-spacing: 0.04em;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+/* ── Button base — applies to all .bs_cta_btn ── */
+.bs_slide_cta .bs_cta_btn {
+    /* style variants below override these defaults */
+}
+
+/* ── Button style variants ── */
+
+/* solid: opaque bg — color set inline, fallback to white */
+.bs_cta_style_solid {
+    border: none;
+    opacity: 1;
+}
+.bs_cta_style_solid:not([style*="background"]) {
+    background: rgba(255,255,255,0.9);
+    color: #171a20;
+}
+.bs_cta_style_solid:hover { filter: brightness(1.08); }
+
+/* outline: transparent bg, coloured border */
+.bs_cta_style_outline {
+    background: transparent !important;
+    border: 1.5px solid currentColor;
+}
+.bs_cta_style_outline:not([style*="color"]) {
+    color: #fff;
+    border-color: rgba(255,255,255,0.7);
+}
+.bs_cta_style_outline:hover {
+    background: rgba(255,255,255,0.12) !important;
+    border-color: #fff;
+}
+
+/* ghost: frosted glass */
+.bs_cta_style_ghost {
+    background: rgba(255,255,255,0.15) !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.4);
+}
+.bs_cta_style_ghost:not([style*="color"]) { color: #fff; }
+.bs_cta_style_ghost:hover {
+    background: rgba(255,255,255,0.28) !important;
+}
+
+/* text_only: no bg, no border, underline on hover */
+.bs_cta_style_text_only {
+    background: transparent !important;
+    border: none !important;
+    padding-left: 0;
+    padding-right: 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+}
+.bs_cta_style_text_only:not([style*="color"]) { color: #fff; }
+.bs_cta_style_text_only:hover { opacity: 0.75; }
+
+/* ── Prev / Next arrows: hidden, show on hover (Tesla style) ── */
+.bs_slider_prev,
+.bs_slider_next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: transparent;
+    border: none;
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    /* invisible by default — fade in on container hover */
+    opacity: 0;
+    transition: opacity 0.3s, background 0.2s;
+    outline-offset: 3px;
+}
+
+.car_hero_slider:hover .bs_slider_prev,
+.car_hero_slider:hover .bs_slider_next {
+    opacity: 0.7;
+}
+
+.bs_slider_prev:hover,
+.bs_slider_next:hover {
+    opacity: 1 !important;
+    background: rgba(255,255,255,0.15);
+}
+
+.bs_slider_prev:focus-visible,
+.bs_slider_next:focus-visible {
+    opacity: 1;
+    outline: 2px solid #fff;
+}
+
+.bs_slider_prev { left: 1.25rem; }
+.bs_slider_next { right: 1.25rem; }
+
+/* On mobile always show arrows (no hover) */
+@media (max-width: 767px) {
+    .bs_slider_prev,
+    .bs_slider_next {
+        opacity: 0.6;
+        width: 36px;
+        height: 36px;
+    }
+    .bs_slider_prev { left: 0.5rem; }
+    .bs_slider_next { right: 0.5rem; }
+}
+
+/* ── Dot indicators: vertical, right side (Tesla style) ── */
+.bs_slider_dots {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;   /* vertical stack */
+    gap: 0.6rem;
+    align-items: center;
+}
+
+.bs_slider_dot {
+    /* visual: thin pill, active = taller pill */
+    width: 3px;
+    height: 20px;
+    border-radius: 2px;
+    border: none;
+    background: rgba(255,255,255,0.35);
+    cursor: pointer;
+    padding: 0 10px;          /* 3 + 20 = horizontal tap area 23px → pad to 44px */
+    background-clip: content-box;
+    transition: height 0.3s ease, background 0.3s ease;
+    outline-offset: 3px;
+}
+
+.bs_slider_dot:focus-visible {
+    outline: 2px solid #fff;
+}
+
+.bs_slider_dot.active {
+    height: 36px;             /* active dot = taller bar */
+    background: rgba(255,255,255,1);
+    background-clip: content-box;
+}
+
+.bs_slider_dot:hover {
+    background: rgba(255,255,255,0.7);
+    background-clip: content-box;
+}
+
+/* On mobile: dots move to bottom-center, horizontal (space is tight) */
+@media (max-width: 767px) {
+    .bs_slider_dots {
+        flex-direction: row;
+        right: unset;
+        top: unset;
+        bottom: 1.25rem;
+        left: 50%;
+        transform: translateX(-50%);
+        gap: 0.4rem;
+    }
+    .bs_slider_dot {
+        width: 20px;
+        height: 3px;
+        padding: 10px 0;
+        background-clip: content-box;
+    }
+    .bs_slider_dot.active {
+        width: 36px;
+        height: 3px;
+    }
+}
+
+
+/* ── Reduced motion: disable animations and autoplay ── */
+@media (prefers-reduced-motion: reduce) {
+    .bs_slide.fade-in {
+        animation: none;
+    }
+    .bs_slider_dot,
+    .bs_slider_prev,
+    .bs_slider_next {
+        transition: none;
+    }
+}
+
+/* ── iframe video fallback overlay ── */
+.bs_slide_iframe_fallback {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: #111;
+    z-index: 1;
+}

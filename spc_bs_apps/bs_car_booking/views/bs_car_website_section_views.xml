@@ -72,7 +72,8 @@
                         <field name="subtitle" placeholder="Short supporting copy"/>
                         <field name="body_html" widget="html" nolabel="1" colspan="2"/>
                     </group>
-                    <group string="Calls to Action">
+                    <group string="Calls to Action"
+                           invisible="section_type == 'hero_slider'">
                         <group>
                             <field name="primary_cta_label"/>
                             <field name="primary_cta_url"/>
@@ -82,6 +83,151 @@
                             <field name="secondary_cta_url"/>
                         </group>
                     </group>
+
+                    <group string="Slider Settings" invisible="section_type != 'hero_slider'">
+                        <group>
+                            <field name="slide_interval"
+                                   string="Auto-advance (seconds)"
+                                   help="0 = ปิด auto-advance, ค่าแนะนำ 4–8 วินาที"/>
+                        </group>
+                        <group>
+                            <field name="slide_ken_burns"
+                                   string="Ken Burns Effect"
+                                   widget="boolean_toggle"
+                                   help="เปิด = รูป zoom-pan ช้าๆ ขณะ slide แสดง"/>
+                        </group>
+                    </group>
+
+                    <notebook invisible="section_type != 'hero_slider'">
+                        <page string="Slides">
+                            <field name="slide_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="image" widget="image"
+                                           options="{'size': [80, 60], 'preview_image': 'image'}"
+                                           string="Cover"/>
+                                    <field name="name"/>
+                                    <field name="title"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </list>
+                                <form>
+                                    <sheet>
+                                        <field name="image" widget="image" class="oe_avatar"/>
+                                        <div class="oe_title">
+                                            <label for="name"/>
+                                            <h1><field name="name" placeholder="Slide name"/></h1>
+                                        </div>
+                                        <group>
+                                            <group>
+                                                <field name="sequence"/>
+                                                <field name="active" widget="boolean_toggle"/>
+                                                <field name="image_alt"/>
+                                            </group>
+                                            <group>
+                                                <field name="content_align_x" widget="radio" string="Horizontal"/>
+                                                <field name="content_align_y" widget="radio" string="Vertical"/>
+                                            </group>
+                                        </group>
+
+                                        <notebook>
+                                            <!-- ── Tab 1: Media ── -->
+                                            <page string="Media">
+                                                <group string="Cover Image">
+                                                    <field name="image" widget="image" nolabel="1" colspan="2"/>
+                                                    <field name="image_alt" string="Alt Text"/>
+                                                </group>
+                                                <group string="Video">
+                                                    <group>
+                                                        <field name="video_filename" invisible="1"/>
+                                                        <field name="video_file" widget="binary" filename="video_filename" string="Desktop Video"/>
+                                                        <field name="mobile_video_filename" invisible="1"/>
+                                                        <field name="mobile_video_file" widget="binary" filename="mobile_video_filename" string="Mobile Video"/>
+                                                        <field name="video_url" placeholder="YouTube, Vimeo, or direct .mp4 URL" readonly="video_file"/>
+                                                    </group>
+                                                    <group>
+                                                        <field name="video_media_type" readonly="1"/>
+                                                    </group>
+                                                </group>
+                                            </page>
+
+                                            <!-- ── Tab 2: Content ── -->
+                                            <page string="Content">
+                                                <group string="Text">
+                                                    <field name="eyebrow" placeholder="HONGQI"/>
+                                                    <field name="title" placeholder="The collection."/>
+                                                    <field name="title_image" widget="image" string="Title Graphic"/>
+                                                    <field name="title_image_alt"/>
+                                                    <field name="subtitle" placeholder="Every model. Every specification."/>
+                                                    <field name="body_html" widget="html" nolabel="1" colspan="2"/>
+                                                </group>
+                                                <group string="Text Colors">
+                                                    <field name="text_color_scheme" widget="radio"/>
+                                                    <field name="custom_title_color"
+                                                           invisible="text_color_scheme != 'custom'"
+                                                           placeholder="#FFFFFF"
+                                                           string="Title Color (hex)"/>
+                                                    <field name="custom_subtitle_color"
+                                                           invisible="text_color_scheme != 'custom'"
+                                                           placeholder="#CCCCCC"
+                                                           string="Subtitle Color (hex)"/>
+                                                </group>
+                                            </page>
+
+                                            <!-- ── Tab 3: Buttons (unlimited) ── -->
+                                            <page string="Buttons">
+                                                <field name="cta_ids" nolabel="1">
+                                                    <list editable="bottom">
+                                                        <field name="sequence" widget="handle"/>
+                                                        <field name="label" placeholder="View Model"/>
+                                                        <field name="url_type"/>
+                                                        <field name="menu_id"
+                                                               invisible="url_type != 'menu'"/>
+                                                        <field name="url" placeholder="/models/hs9"
+                                                               invisible="url_type != 'custom'"/>
+                                                        <field name="style"/>
+                                                        <field name="bg_color" placeholder="#C8102E" string="BG Color"/>
+                                                        <field name="text_color" placeholder="#FFFFFF" string="Text Color"/>
+                                                        <field name="icon" placeholder="fa-arrow-right" string="Icon"/>
+                                                        <field name="icon_position" string="Icon Pos"/>
+                                                    </list>
+                                                    <form>
+                                                        <group>
+                                                            <group>
+                                                                <field name="sequence"/>
+                                                                <field name="label" placeholder="View Model"/>
+                                                                <field name="url_type" widget="radio"/>
+                                                                <field name="menu_id"
+                                                                       invisible="url_type != 'menu'"/>
+                                                                <field name="url"
+                                                                       invisible="url_type != 'custom'"
+                                                                       placeholder="/models/hs9"/>
+                                                                <field name="style" widget="radio"/>
+                                                            </group>
+                                                            <group>
+                                                                <field name="bg_color"
+                                                                       invisible="style in ('outline','text_only')"
+                                                                       placeholder="#C8102E"
+                                                                       string="Background Color (hex)"/>
+                                                                <field name="text_color"
+                                                                       placeholder="#FFFFFF"
+                                                                       string="Text Color (hex)"/>
+                                                                <field name="icon"
+                                                                       placeholder="fa-arrow-right"
+                                                                       string="Icon (FA class)"/>
+                                                                <field name="icon_position"
+                                                                       invisible="not icon"
+                                                                       string="Icon Position"/>
+                                                            </group>
+                                                        </group>
+                                                    </form>
+                                                </field>
+                                            </page>
+                                        </notebook>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

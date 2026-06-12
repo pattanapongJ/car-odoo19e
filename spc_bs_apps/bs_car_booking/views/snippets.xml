@@ -205,6 +205,179 @@
                      class="s_bs_dealers car_catalog_band" data-snippet="s_bs_dealers" data-name="Dealer Locator">
                 <t t-call="bs_car_booking.dealer_locator_content"/>
             </section>
+            <t t-if="section.section_type == 'hero_slider'">
+                <t t-set="hero_slider_section" t-value="section"/>
+                <t t-call="bs_car_booking.hero_slider_content"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- ================================================================
+         HERO SLIDER — multi-slide hero section.
+         Each slide has independent media, copy, and CTA buttons.
+         JS: hero_slider.js (auto-advance, prev/next, dots, touch swipe)
+         CSS: hero_slider.css
+         ================================================================ -->
+    <template id="hero_slider_content" name="Hero Slider (content)">
+        <t t-set="section" t-value="hero_slider_section or False"/>
+        <t t-set="slides" t-value="section and section.slide_ids.filtered(lambda s: s.active) or []"/>
+        <t t-if="slides">
+            <section class="s_bs_hero_slider car_hero_slider"
+                     data-snippet="s_bs_hero_slider" data-name="Hero Slider"
+                     t-att-data-interval="(section.slide_interval or 0) * 1000"
+                     t-att-data-ken-burns="'1' if section.slide_ken_burns else '0'"
+                     role="region"
+                     aria-label="Hero Slider"
+                     aria-roledescription="carousel"
+                     tabindex="0">
+
+                <!-- ARIA live region: screen readers announce slide changes -->
+                <div class="bs_slider_live visually-hidden"
+                     aria-live="polite" aria-atomic="true"/>
+
+                <!-- ── Slides: slide 0 pre-activated so content is visible before JS runs ── -->
+                <t t-foreach="slides" t-as="slide">
+                    <div t-attf-class="bs_slide{{ ' active' if slide_index == 0 else '' }}"
+                         t-att-data-index="slide_index"
+                         role="group"
+                         t-att-aria-label="'Slide %s of %s' % (slide_index + 1, len(slides))"
+                         aria-roledescription="slide"
+                         t-att-aria-hidden="'false' if slide_index == 0 else 'true'">
+
+                        <!-- Background media -->
+                        <div class="bs_slide_bg">
+                            <t t-if="slide.video_src">
+                                <!-- First slide: preload eagerly. Others: preload=none until activated by JS. -->
+                                <video class="bs_slide_video"
+                                       autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline"
+                                       t-att-preload="'auto' if slide_index == 0 else 'none'"
+                                       t-att-poster="'/web/image/bs.car.website.slide/%s/image/1920x1080' % slide.id if slide.image else ''">
+                                    <source t-att-src="slide.video_src" type="video/mp4"/>
+                                </video>
+                                <video t-if="slide.mobile_video_src"
+                                       class="bs_slide_video_mobile"
+                                       autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline"
+                                       t-att-preload="'auto' if slide_index == 0 else 'none'"
+                                       t-att-poster="'/web/image/bs.car.website.slide/%s/image/1200x1600' % slide.id if slide.image else ''">
+                                    <source t-att-src="slide.mobile_video_src" type="video/mp4"/>
+                                </video>
+                            </t>
+                            <t t-elif="slide.video_embed_url">
+                                <!-- Dark fallback shown if iframe fails to load -->
+                                <div class="bs_slide_iframe_fallback"/>
+                                <iframe class="bs_slide_video"
+                                        t-att-src="slide.video_embed_url"
+                                        frameborder="0"
+                                        allow="autoplay; encrypted-media"
+                                        title="Background video"
+                                        aria-hidden="true"
+                                        style="pointer-events:none;"/>
+                            </t>
+                            <!-- First slide: eager + high priority for LCP. Others: lazy. -->
+                            <img t-if="slide.image and not slide.video_src"
+                                 class="bs_slide_img"
+                                 t-att-src="'/web/image/bs.car.website.slide/%s/image/1920x1080' % slide.id"
+                                 t-att-srcset="
+                                    '/web/image/bs.car.website.slide/%s/image/480x854' % slide.id  + ' 480w, ' +
+                                    '/web/image/bs.car.website.slide/%s/image/1200x1600' % slide.id + ' 768w, ' +
+                                    '/web/image/bs.car.website.slide/%s/image/1920x1080' % slide.id + ' 1920w, ' +
+                                    '/web/image/bs.car.website.slide/%s/image/2560x1440' % slide.id + ' 2560w'
+                                 "
+                                 sizes="100vw"
+                                 t-att-alt="slide.image_alt or slide.title"
+                                 t-att-loading="'eager' if slide_index == 0 else 'lazy'"
+                                 t-att-fetchpriority="'high' if slide_index == 0 else None"/>
+                            <div class="bs_slide_overlay" aria-hidden="true"/>
+                        </div>
+
+                        <!-- Content: position controlled by align_x/align_y classes -->
+                        <t t-set="_cx" t-value="slide.content_align_x or 'center'"/>
+                        <t t-set="_cy" t-value="slide.content_align_y or 'bottom'"/>
+                        <t t-set="_tc" t-value="slide.text_color_scheme or 'light'"/>
+                        <div t-attf-class="bs_slide_content bs_align_x_{{_cx}} bs_align_y_{{_cy}} bs_text_{{_tc}}">
+
+                            <!-- Text zone -->
+                            <div class="bs_slide_text"
+                                 t-att-style="
+                                     ('color:%s;' % slide.custom_title_color if slide.text_color_scheme == 'custom' and slide.custom_title_color else '')
+                                 ">
+                                <span t-if="slide.eyebrow" class="bs_slide_eyebrow" t-esc="slide.eyebrow"/>
+                                <t t-if="slide.title_image">
+                                    <img class="bs_slide_title_img"
+                                         t-att-src="'/web/image/bs.car.website.slide/%s/title_image/1200x360' % slide.id"
+                                         t-att-alt="slide.title_image_alt or slide.title"
+                                         t-att-loading="'eager' if slide_index == 0 else 'lazy'"/>
+                                </t>
+                                <h2 t-elif="slide.title" class="bs_slide_title" t-esc="slide.title"/>
+                                <p t-if="slide.subtitle" class="bs_slide_subtitle"
+                                   t-att-style="'color:%s;' % slide.custom_subtitle_color if slide.text_color_scheme == 'custom' and slide.custom_subtitle_color else ''"
+                                   t-esc="slide.subtitle"/>
+                                <div t-if="slide.body_html" class="bs_slide_body" t-out="slide.body_html"/>
+                            </div>
+
+                            <!-- CTA buttons (loop — unlimited) -->
+                            <div t-if="slide.cta_ids" class="bs_slide_cta">
+                                <t t-foreach="slide.cta_ids" t-as="cta">
+                                    <t t-set="_cs" t-value="cta.style or 'solid'"/>
+                                    <t t-set="_ci" t-value="
+                                        ('background:%s;' % cta.bg_color if cta.bg_color else '') +
+                                        ('color:%s;' % cta.text_color if cta.text_color else '') +
+                                        ('border-color:%s;' % cta.text_color if _cs == 'outline' and cta.text_color else '')
+                                    "/>
+                                    <!-- Resolve URL by type -->
+                                    <t t-set="_car" t-value="slide.section_id.model_id"/>
+                                    <t t-if="cta.url_type == 'menu'">
+                                        <t t-set="_href" t-value="cta.menu_id.url or '#'"/>
+                                    </t>
+                                    <t t-elif="cta.url_type == 'book'">
+                                        <t t-set="_href" t-value="'/car/%s/book' % _car.id if _car else '#'"/>
+                                    </t>
+                                    <t t-elif="cta.url_type == 'view'">
+                                        <t t-set="_href" t-value="'/car/%s' % _car.id if _car else '#'"/>
+                                    </t>
+                                    <t t-elif="cta.url_type == 'test_drive'">
+                                        <t t-set="_href" t-value="'/test-drive'"/>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-set="_href" t-value="cta.url or '#'"/>
+                                    </t>
+                                    <a t-att-href="_href"
+                                       t-attf-class="btn bs_cta_btn bs_cta_style_{{_cs}}"
+                                       t-att-style="_ci or None">
+                                        <i t-if="cta.icon and cta.icon_position == 'left'"
+                                           t-att-class="'fa %s me-2' % cta.icon" aria-hidden="true"/>
+                                        <t t-esc="cta.label"/>
+                                        <i t-if="cta.icon and (not cta.icon_position or cta.icon_position == 'right')"
+                                           t-att-class="'fa %s ms-2' % cta.icon" aria-hidden="true"/>
+                                    </a>
+                                </t>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </t>
+
+                <!-- Navigation arrows -->
+                <button class="bs_slider_prev" aria-label="Previous slide" aria-controls="hero_slider_track">
+                    <i class="fa fa-chevron-left" aria-hidden="true"/>
+                </button>
+                <button class="bs_slider_next" aria-label="Next slide" aria-controls="hero_slider_track">
+                    <i class="fa fa-chevron-right" aria-hidden="true"/>
+                </button>
+
+                <!-- Dot indicators -->
+                <div class="bs_slider_dots" role="tablist" aria-label="Slide indicators">
+                    <t t-foreach="slides" t-as="dot">
+                        <button class="bs_slider_dot"
+                                role="tab"
+                                t-att-data-index="dot_index"
+                                t-att-aria-label="'Go to slide %s' % (dot_index + 1)"
+                                aria-pressed="false"/>
+                    </t>
+                </div>
+
+            </section>
         </t>
     </template>
 

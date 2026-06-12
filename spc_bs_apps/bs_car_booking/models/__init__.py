@@ -10,6 +10,8 @@ from . import bs_car_model_option
 from . import bs_car_model_spec
 from . import bs_car_showcase
 from . import bs_car_website_section
+from . import bs_car_website_slide
+from . import bs_car_website_slide_cta
 from . import legacy_cleanup
 from . import bs_car_offer
 from . import bs_car_variant

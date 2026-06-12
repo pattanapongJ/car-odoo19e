@@ -40,6 +40,7 @@ class BsCarWebsiteSection(models.Model):
         ('offers', 'Offers'),
         ('stories', 'News'),
         ('dealer_locator', 'Dealer Locator'),
+        ('hero_slider', 'Hero Slider'),
     ], required=True, default='brand_cover', index=True)
     theme_variant = fields.Selection([
         ('standard', 'Standard'),
@@ -88,6 +89,16 @@ class BsCarWebsiteSection(models.Model):
         ('vimeo', 'Vimeo'),
         ('none', 'No Video'),
     ], compute='_compute_video_media')
+
+    slide_ids = fields.One2many(
+        'bs.car.website.slide', 'section_id', string='Slides',
+        help='Available when section_type is Hero Slider.')
+    slide_interval = fields.Integer(
+        'Auto-advance Interval (seconds)', default=5,
+        help='Seconds between automatic slide changes. Set 0 to disable auto-advance.')
+    slide_ken_burns = fields.Boolean(
+        'Ken Burns Effect', default=True,
+        help='เปิด/ปิด slow zoom-pan animation บนรูปพื้นหลังแต่ละ slide')
 
     primary_cta_label = fields.Char('Primary Button', translate=True)
     primary_cta_url = fields.Char('Primary Link')

@@ -52,3 +52,9 @@ access_bs_car_booking_document_user,bs.car.booking.document.user,model_bs_car_bo
 access_bs_car_booking_document_manager,bs.car.booking.document.manager,model_bs_car_booking_document,bs_car_booking.group_bs_car_booking_manager,1,1,1,1
 access_bs_car_booking_agreement_user,bs.car.booking.agreement.user,model_bs_car_booking_agreement,base.group_user,0,0,0,0
 access_bs_car_booking_agreement_manager,bs.car.booking.agreement.manager,model_bs_car_booking_agreement,bs_car_booking.group_bs_car_booking_manager,1,1,1,1
+access_bs_car_website_slide_user,bs.car.website.slide.user,model_bs_car_website_slide,base.group_user,1,0,0,0
+access_bs_car_website_slide_manager,bs.car.website.slide.manager,model_bs_car_website_slide,bs_car_booking.group_bs_car_booking_manager,1,1,1,1
+access_bs_car_website_slide_public,bs.car.website.slide.public,model_bs_car_website_slide,base.group_public,1,0,0,0
+access_bs_car_website_slide_cta_user,bs.car.website.slide.cta.user,model_bs_car_website_slide_cta,base.group_user,1,0,0,0
+access_bs_car_website_slide_cta_manager,bs.car.website.slide.cta.manager,model_bs_car_website_slide_cta,bs_car_booking.group_bs_car_booking_manager,1,1,1,1
+access_bs_car_website_slide_cta_public,bs.car.website.slide.cta.public,model_bs_car_website_slide_cta,base.group_public,1,0,0,0
