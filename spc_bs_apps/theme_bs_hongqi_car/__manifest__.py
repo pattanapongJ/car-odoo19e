@@ -21,6 +21,7 @@
         'data/theme_assets.xml',
         'data/theme_layout.xml',
         'data/theme_cleanup.xml',
+        'data/crm_tag_data.xml',
         'data/theme_pages_menus.xml',
     ],
     'images': [
