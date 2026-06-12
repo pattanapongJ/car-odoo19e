@@ -37,7 +37,12 @@ class PaymentTransaction(models.Model):
                 continue
             sale_orders = tx.sale_order_ids or tx.source_transaction_id.sale_order_ids
             if not sale_orders and tx.reference:
-                sale_orders = Order.search([('name', '=', tx.reference)], limit=1)
+                # Company filter: sale sequences restart per company, so two
+                # companies can both own an "S00067" — never cross-match.
+                sale_orders = Order.search([
+                    ('name', '=', tx.reference),
+                    ('company_id', '=', tx.company_id.id),
+                ], limit=1)
             if not sale_orders:
                 continue
             booking = Booking.search([('sale_order_id', 'in', sale_orders.ids)], limit=1)

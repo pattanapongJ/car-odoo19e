@@ -769,7 +769,9 @@ class BsCarBooking(models.Model):
                         'subject': subject,
                         'body_html': body_html,
                         'email_to': self.customer_email,
-                        'auto_delete': True,
+                        # Honour the template flag: OTP mails are auto-deleted,
+                        # confirm/delivery mails are kept as audit trail.
+                        'auto_delete': tmpl.auto_delete,
                     }
                     company = (self.website_id.company_id
                                or self.company_id
