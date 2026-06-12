@@ -740,23 +740,54 @@ class BsCarBooking(models.Model):
         self._notify_confirmed()
         return True
 
-    def _notify_confirmed(self):
+    def _send_booking_notification(self, sms_template_ref, mail_template_ref):
+        """Send both SMS and email using the provided template xmlids.
+        Failures are logged, never raised — notifications must not block."""
         self.ensure_one()
-        if self.customer_phone and self.phone_verified:
+        # --- SMS ---
+        # Only send SMS when the phone was truly verified via SMS OTP.
+        # otp_verified_channel == 'email' means the phone has NOT been
+        # proven to receive SMS (email fallback, e.g. no SMS gateway).
+        if self.customer_phone and self.otp_verified_channel == 'sms' and sms_template_ref:
             try:
-                msg = _(
-                    'Booking %(ref)s confirmed! Your %(model)s is reserved. '
-                    'Track it here: %(url)s'
-                ) % {
-                    'ref': self.name, 'model': self.model_id.name,
-                    'url': f'{self.get_base_url()}/my/booking/{self.id}?access_token={self._portal_ensure_token()}',
-                }
-                sms = self.env['sms.sms'].sudo().create({
-                    'number': self.customer_phone, 'body': msg,
-                })
-                sms.send()
-            except Exception as e:  # noqa: BLE001 - SMS gateway optional in dev
-                _logger.warning('Failed to send confirmation SMS: %s', str(e))
+                tmpl = self.env.ref(sms_template_ref, raise_if_not_found=False)
+                if tmpl:
+                    body = tmpl._render_field('body', [self.id])[self.id]
+                    self.env['sms.sms'].sudo().create({
+                        'number': self.customer_phone, 'body': body,
+                    }).send()
+            except Exception as e:
+                _logger.warning('Failed to send SMS [%s]: %s', sms_template_ref, str(e))
+        # --- Email ---
+        if self.customer_email and mail_template_ref:
+            try:
+                tmpl = self.env.ref(mail_template_ref, raise_if_not_found=False)
+                if tmpl:
+                    subject = tmpl._render_field('subject', [self.id])[self.id]
+                    body_html = tmpl._render_field('body_html', [self.id])[self.id]
+                    vals = {
+                        'subject': subject,
+                        'body_html': body_html,
+                        'email_to': self.customer_email,
+                        'auto_delete': True,
+                    }
+                    company = (self.website_id.company_id
+                               or self.company_id
+                               or self.env.company).sudo()
+                    email_from = (company.email_formatted
+                                  or company.email
+                                  or self.env['ir.mail_server'].sudo()._get_default_from_address())
+                    if email_from:
+                        vals['email_from'] = email_from
+                    self.env['mail.mail'].sudo().create(vals).send(raise_exception=False)
+            except Exception as e:
+                _logger.warning('Failed to send email [%s]: %s', mail_template_ref, str(e))
+
+    def _notify_confirmed(self):
+        self._send_booking_notification(
+            'bs_car_booking.sms_template_booking_confirmed',
+            'bs_car_booking.mail_template_booking_confirmed',
+        )
 
     # === Delivery estimate ===
     def _get_package_variant(self):
@@ -831,7 +862,14 @@ class BsCarBooking(models.Model):
         if self.state not in ('confirmed', 'in_production'):
             raise ValidationError(_('Only confirmed or in-production bookings can be ready for delivery.'))
         self._transition_to('ready_delivery')
+        self._notify_ready_delivery()
         return True
+
+    def _notify_ready_delivery(self):
+        self._send_booking_notification(
+            'bs_car_booking.sms_template_ready_delivery',
+            'bs_car_booking.mail_template_ready_delivery',
+        )
 
     def action_view_sale_order(self):
         self.ensure_one()

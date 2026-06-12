@@ -54,5 +54,106 @@
             <field name="auto_delete" eval="True"/>
         </record>
 
+        <!-- Booking Confirmed — deposit received, booking is now active. -->
+        <record id="mail_template_booking_confirmed" model="mail.template">
+            <field name="name">Car Booking - Deposit Confirmed (Email)</field>
+            <field name="model_id" ref="bs_car_booking.model_bs_car_booking"/>
+            <field name="subject">ยืนยันการจอง / Booking Confirmed — {{ object.name }}</field>
+            <field name="body_html" type="html">
+<div style="margin:0 auto;max-width:560px;padding:24px;font-family:Arial,Helvetica,sans-serif;color:#161616;font-size:14px;line-height:1.7;">
+    <p style="margin:0 0 12px;">เรียนท่าน <t t-out="object.customer_name or ''"/></p>
+    <p style="margin:0 0 12px;">
+        เราได้รับเงินมัดจำสำหรับการจอง <strong><t t-out="object.brand_id.name"/> <t t-out="object.model_id.name"/></strong> แล้ว
+    </p>
+    <div style="margin:16px 0;padding:16px;background:#f5f4f1;border-radius:4px;">
+        <p style="margin:0 0 8px;"><strong>Booking:</strong> <t t-out="object.name"/></p>
+        <p style="margin:0 0 8px;" t-if="object.dealer_id"><strong>Dealer:</strong> <t t-out="object.dealer_id.name"/></p>
+        <p style="margin:0 0 8px;" t-if="object.estimated_delivery_date"><strong>Est. Delivery:</strong> <t t-out="object.estimated_delivery_date"/></p>
+    </div>
+    <p style="margin:0 0 12px;">
+        ท่านสามารถติดตามสถานะการจองได้ที่
+        <a t-att-href="object.get_portal_url()" style="color:#161616;">My Account</a>
+    </p>
+    <p t-if="object.dealer_id and object.dealer_id.phone" style="margin:0 0 16px;">
+        ติดต่อผู้แทนจำหน่าย <t t-out="object.dealer_id.name"/> โทร <t t-out="object.dealer_id.phone"/>
+    </p>
+    <p style="margin:0 0 24px;">
+        ด้วยความนับถือ<br/>
+        Hongqi Thailand
+    </p>
+    <hr style="border:0;border-top:1px solid #ded8cf;margin:0 0 24px;"/>
+    <p style="margin:0 0 12px;">Dear <t t-out="object.customer_name or ''"/>,</p>
+    <p style="margin:0 0 12px;">
+        We have received your deposit for <strong><t t-out="object.brand_id.name"/> <t t-out="object.model_id.name"/></strong>.
+    </p>
+    <div style="margin:16px 0;padding:16px;background:#f5f4f1;border-radius:4px;">
+        <p style="margin:0 0 8px;"><strong>Booking:</strong> <t t-out="object.name"/></p>
+        <p style="margin:0 0 8px;" t-if="object.dealer_id"><strong>Dealer:</strong> <t t-out="object.dealer_id.name"/></p>
+        <p style="margin:0 0 8px;" t-if="object.estimated_delivery_date"><strong>Est. Delivery:</strong> <t t-out="object.estimated_delivery_date"/></p>
+    </div>
+    <p style="margin:0 0 12px;">
+        Track your booking in <a t-att-href="object.get_portal_url()" style="color:#161616;">My Account</a>.
+    </p>
+    <p t-if="object.dealer_id and object.dealer_id.phone" style="margin:0 0 16px;">
+        Contact your dealer <t t-out="object.dealer_id.name"/> at <t t-out="object.dealer_id.phone"/>.
+    </p>
+    <p style="margin:0;">
+        Sincerely,<br/>
+        Hongqi Thailand
+    </p>
+</div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- Ready for Delivery — customer can pick up the vehicle. -->
+        <record id="mail_template_ready_delivery" model="mail.template">
+            <field name="name">Car Booking - Ready for Delivery (Email)</field>
+            <field name="model_id" ref="bs_car_booking.model_bs_car_booking"/>
+            <field name="subject">รถพร้อมส่งมอบ / Your vehicle is ready — {{ object.name }}</field>
+            <field name="body_html" type="html">
+<div style="margin:0 auto;max-width:560px;padding:24px;font-family:Arial,Helvetica,sans-serif;color:#161616;font-size:14px;line-height:1.7;">
+    <p style="margin:0 0 12px;">เรียนท่าน <t t-out="object.customer_name or ''"/></p>
+    <p style="margin:0 0 12px;">
+        <strong><t t-out="object.brand_id.name"/> <t t-out="object.model_id.name"/></strong> ของท่านพร้อมส่งมอบแล้ว
+    </p>
+    <div style="margin:16px 0;padding:16px;background:#f5f4f1;border-radius:4px;">
+        <p style="margin:0 0 8px;"><strong>Booking:</strong> <t t-out="object.name"/></p>
+        <p style="margin:0 0 8px;" t-if="object.dealer_id"><strong>Dealer:</strong> <t t-out="object.dealer_id.name"/></p>
+    </div>
+    <p style="margin:0 0 12px;">
+        กรุณาติดต่อผู้แทนจำหน่ายเพื่อนัดหมายวันรับรถ
+    </p>
+    <p t-if="object.dealer_id and object.dealer_id.phone" style="margin:0 0 16px;font-size:16px;">
+        <strong>โทร <t t-out="object.dealer_id.phone"/></strong>
+    </p>
+    <p style="margin:0 0 24px;">
+        ด้วยความนับถือ<br/>
+        Hongqi Thailand
+    </p>
+    <hr style="border:0;border-top:1px solid #ded8cf;margin:0 0 24px;"/>
+    <p style="margin:0 0 12px;">Dear <t t-out="object.customer_name or ''"/>,</p>
+    <p style="margin:0 0 12px;">
+        Your <strong><t t-out="object.brand_id.name"/> <t t-out="object.model_id.name"/></strong> is ready for delivery.
+    </p>
+    <div style="margin:16px 0;padding:16px;background:#f5f4f1;border-radius:4px;">
+        <p style="margin:0 0 8px;"><strong>Booking:</strong> <t t-out="object.name"/></p>
+        <p style="margin:0 0 8px;" t-if="object.dealer_id"><strong>Dealer:</strong> <t t-out="object.dealer_id.name"/></p>
+    </div>
+    <p style="margin:0 0 12px;">
+        Please contact your dealer to schedule your vehicle handover.
+    </p>
+    <p t-if="object.dealer_id and object.dealer_id.phone" style="margin:0 0 16px;font-size:16px;">
+        <strong>Call <t t-out="object.dealer_id.phone"/></strong>
+    </p>
+    <p style="margin:0;">
+        Sincerely,<br/>
+        Hongqi Thailand
+    </p>
+</div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
     </data>
 </odoo>
