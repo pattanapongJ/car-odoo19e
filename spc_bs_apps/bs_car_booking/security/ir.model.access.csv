@@ -11,7 +11,7 @@ access_bs_car_dealer_user,bs.car.dealer.user,model_bs_car_dealer,base.group_user
 access_bs_car_dealer_manager,bs.car.dealer.manager,model_bs_car_dealer,base.group_system,1,1,1,1
 access_bs_car_booking_user,bs.car.booking.user,model_bs_car_booking,base.group_user,0,0,0,0
 access_bs_car_booking_manager,bs.car.booking.manager,model_bs_car_booking,bs_car_booking.group_bs_car_booking_manager,1,1,1,1
-access_bs_car_booking_portal,bs.car.booking.portal,model_bs_car_booking,base.group_portal,1,0,0,0
+access_bs_car_booking_portal,bs.car.booking.portal,model_bs_car_booking,base.group_portal,1,1,1,0
 access_bs_car_booking_otp_user,bs.car.booking.otp.user,model_bs_car_booking_otp,base.group_user,0,0,0,0
 access_bs_car_booking_otp_manager,bs.car.booking.otp.manager,model_bs_car_booking_otp,bs_car_booking.group_bs_car_booking_manager,1,1,1,1
 access_bs_car_booking_otp_portal,bs.car.booking.otp.portal,model_bs_car_booking_otp,base.group_portal,0,0,0,0

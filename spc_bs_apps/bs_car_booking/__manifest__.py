@@ -59,6 +59,7 @@ Website Journey:
         'security/booking_groups.xml',
         'security/ir.model.access.csv',
         'security/booking_security.xml',
+        'security/ir_rule.xml',
 
         # Data
         'data/booking_sequence_data.xml',
