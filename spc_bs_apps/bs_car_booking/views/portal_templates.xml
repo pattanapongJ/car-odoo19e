@@ -223,4 +223,12 @@
         </xpath>
     </template>
 
+    <!-- Business request (2026-06-12): no public message thread on customer
+         invoices — dealer communication goes through the call center / sales
+         rep, not an unmonitored portal chat. -->
+    <template id="portal_invoice_page_no_chatter" inherit_id="account.portal_invoice_page"
+              name="Invoice Portal: hide communication history">
+        <xpath expr="//div[@id='invoice_communication']" position="replace"/>
+    </template>
+
 </odoo>
