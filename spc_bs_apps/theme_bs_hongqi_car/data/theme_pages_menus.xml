@@ -306,7 +306,12 @@
                                                                accept=".pdf"/>
                                                     </div>
 
-                                                    <div class="mb-5 col-12">
+                                                    <!-- A s_website_form_field so the framework's required-validation
+                                                         actually checks the consent (a plain div is skipped). -->
+                                                    <div data-name="Field"
+                                                         class="s_website_form_field s_website_form_required mb-5 col-12"
+                                                         data-type="char"
+                                                         data-translated-name="Privacy Consent">
                                                         <div class="bs_contact_consent">
                                                             <input class="s_website_form_input"
                                                                    type="checkbox"

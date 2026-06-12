@@ -14,6 +14,19 @@ export class HongqiContactForm extends Interaction {
     static selector = ".bs_contact_form";
 
     start() {
+        // PDPA consent gates the submit button (UX layer — the framework's
+        // required-validation and the server-side filter are the real guards).
+        const consent = this.el.querySelector("#privacy_consent");
+        const submit = this.el.querySelector(".s_website_form_send");
+        if (consent && submit) {
+            const sync = () => {
+                submit.classList.toggle("disabled", !consent.checked);
+                submit.setAttribute("aria-disabled", String(!consent.checked));
+            };
+            consent.addEventListener("change", sync);
+            sync();
+        }
+
         // Company-profile size guard (the label promises max 5MB).
         const file = this.el.querySelector("#contact_attachment");
         file?.addEventListener("change", () => {
