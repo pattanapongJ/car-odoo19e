@@ -7,7 +7,7 @@ from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.tools import float_compare, consteq
+from odoo.tools import float_compare
 
 _logger = logging.getLogger(__name__)
 
@@ -749,7 +749,7 @@ class BsCarBooking(models.Model):
                     'Track it here: %(url)s'
                 ) % {
                     'ref': self.name, 'model': self.model_id.name,
-                    'url': self._get_tracking_url(),
+                    'url': f'{self.get_base_url()}/my/booking/{self.id}?access_token={self._portal_ensure_token()}',
                 }
                 sms = self.env['sms.sms'].sudo().create({
                     'number': self.customer_phone, 'body': msg,
@@ -958,71 +958,4 @@ class BsCarBooking(models.Model):
         for rec in self:
             rec.access_url = f'/my/booking/{rec.id}'
 
-    # === Booking tracking (guest, no login) ===
-    def _get_tracking_url(self):
-        """Absolute, token-gated tracking link for SMS/email (works without a
-        login). The access_token is an unguessable UUID checked with consteq."""
-        self.ensure_one()
-        token = self._portal_ensure_token()
-        return f'{self.get_base_url()}/my/booking/{self.id}?access_token={token}'
-
-    @api.model
-    def _match_for_tracking(self, reference, phone):
-        """Return the booking matching BOTH reference and phone, else empty set.
-
-        Looked up via sudo (public users have no ACL on bookings). We require
-        reference AND a matching phone so a guessable, sequential reference
-        alone can never resolve a booking. Phone is compared with consteq to
-        avoid a timing oracle. The CALLER MUST return an identical generic
-        response whether or not this finds a record, so the endpoint cannot be
-        used to enumerate references or phone numbers.
-
-        Business rule: only bookings whose owner completed the OTP step once
-        (``phone_verified``) are trackable — that covers confirmed bookings
-        AND the otp_verified/payment_pending ones (so an interrupted customer
-        can come back and finish the deposit), plus cancelled/expired for
-        transparency. Draft/otp_pending records never proved an owner and
-        have nothing to show, so they stay invisible here.
-        """
-        reference = (reference or '').strip()
-        phone = self._normalize_phone(phone)
-        if not reference or not self._is_valid_phone(phone):
-            return self.browse()
-        booking = self.sudo().search([
-            ('name', '=', reference), ('phone_verified', '=', True)], limit=1)
-        if not booking:
-            return self.browse()
-        # Normalise BOTH sides so '081-234 5678' matches a stored '0812345678'.
-        stored = self._normalize_phone(booking.customer_phone)
-        if not stored or not consteq(stored, phone):
-            return self.browse()
-        return booking
-
-    def _send_tracking_otp(self):
-        """Send a tracking-access OTP via the resolved channel. Unlike the
-        funnel ``action_send_otp`` it does NOT change booking state or
-        phone_verified; it only re-proves ownership to unlock the (already
-        token-gated) status view. Throttled with the same limits as funnel OTPs."""
-        self.ensure_one()
-        if not self.customer_phone:
-            raise ValidationError(_('No phone number on this booking.'))
-        channel = self._resolve_otp_channel()
-        if channel == 'email' and not self.customer_email:
-            # Old bookings may predate email collection — availability beats
-            # strictness here, so re-auth falls back to the phone they used.
-            channel = 'sms'
-        self._otp_throttle_or_raise(self.customer_phone, email=self.customer_email)
-        return self.env['bs.car.booking.otp'].sudo().send_otp(
-            self.customer_phone, self.id, purpose='tracking',
-            channel=channel, email=self.customer_email)
-
-    def _verify_tracking_otp(self, code):
-        """Verify the latest pending tracking OTP. Returns {success, ...}.
-        Sorted by id (total order — create_date can tie) so only the newest
-        code is accepted, like the funnel verify."""
-        self.ensure_one()
-        otp = self.otp_ids.sudo().sorted('id', reverse=True).filtered(
-            lambda o: o.state == 'pending' and o.purpose_code == 'tracking')[:1]
-        if not otp:
-            return {'success': False, 'error': _('No active code. Please request a new one.')}
-        return otp.verify_otp(code)
+    # === Portal helpers ===

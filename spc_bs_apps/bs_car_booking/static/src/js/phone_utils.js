@@ -1,5 +1,5 @@
 /** @odoo-module **/
-/* Phone validation shared by the configurator and the tracking page.
+/* Phone validation shared by the configurator.
    Mirrors the server rule (bs.car.booking PHONE_RE): after stripping spaces,
    dashes, dots and parentheses → optional +, then 7-15 digits. */
 

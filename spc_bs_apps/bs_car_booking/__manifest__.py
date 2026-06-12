@@ -96,7 +96,6 @@ Website Journey:
         'views/website_confirmation_templates.xml',
         'views/portal_templates.xml',
         'views/story_templates.xml',
-        'views/tracking_templates.xml',
         'views/snippets.xml',
     ],
     'assets': {
@@ -109,7 +108,6 @@ Website Journey:
             'bs_car_booking/static/src/js/interactions/gallery_lightbox.js',
             'bs_car_booking/static/src/js/interactions/home_showcase.js',
             'bs_car_booking/static/src/js/interactions/otp_verification.js',
-            'bs_car_booking/static/src/js/interactions/booking_tracking.js',
             'bs_car_booking/static/src/js/interactions/booking_rating.js',
             'bs_car_booking/static/src/js/interactions/dealer_locator.js',
             'bs_car_booking/static/src/js/interactions/showroom_motion.js',
