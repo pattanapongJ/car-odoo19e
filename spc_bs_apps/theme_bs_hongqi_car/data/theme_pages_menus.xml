@@ -461,11 +461,15 @@
             <field name="url">/stories</field>
             <field name="sequence">30</field>
         </record>
+        <!-- TEMPORARILY HIDDEN (2026-06-12, business request): My Booking menu.
+             Restore: uncomment + uncomment the two theme_utils map entries,
+             then recreate by shell (noupdate data does not reload on -u).
         <record id="menu_website_track" model="theme.website.menu">
             <field name="name">My Booking</field>
             <field name="url">/track</field>
             <field name="sequence">40</field>
         </record>
+        -->
         <record id="menu_website_testdrive" model="theme.website.menu">
             <field name="name">Test Drive</field>
             <field name="url">/test-drive</field>
