@@ -17,7 +17,10 @@
                 <t t-set="title">Car Bookings</t>
                 <t t-set="url" t-value="'/my/bookings'"/>
                 <t t-set="text">Track your reservations &amp; deposits</t>
-                <t t-set="placeholder_count" t-value="'booking_count'"/>
+                <!-- No placeholder_count on purpose: counter-driven cards are
+                     hidden while the count is 0, but this is the business's
+                     primary card — new customers must see where their booking
+                     will live (/my/bookings has its own empty state). -->
             </t>
         </div>
     </template>
