@@ -13,12 +13,8 @@
             <field name="name">Job Application</field>
         </record>
     </data>
-    <data>
-        <!-- tag_ids is form-builder-blacklisted by default; the contact form
-             needs it to stamp the topic tag on the created lead. -->
-        <function model="ir.model.fields" name="formbuilder_whitelist">
-            <value>crm.lead</value>
-            <value eval="['tag_ids']"/>
-        </function>
-    </data>
+    <!-- tag_ids stays form-builder-BLACKLISTED on purpose: the topic tag is
+         stamped server-side (crm_lead.website_form_input_filter), and a
+         whitelisted tag_ids would let any tampered submit attach arbitrary
+         tags to leads. -->
 </odoo>

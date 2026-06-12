@@ -1,10 +1,9 @@
 /** @odoo-module **/
 /* Contact page helpers. Field visibility per topic is handled NATIVELY by the
    website form framework (s_website_form_field_hidden_if + data-visibility-*
-   on the field containers — the framework reactively overrides hand-managed
-   d-none/disabled, so do not toggle visibility here). This interaction only:
-   - swaps the hidden tag_ids value so the lead is tagged with the topic,
-   - enforces the promised 5MB limit on the company-profile PDF. */
+   on the field containers), and the topic tag is stamped SERVER-SIDE
+   (crm_lead.website_form_input_filter) — never from the client. This
+   interaction only enforces the promised 5MB limit on the company-profile PDF. */
 
 import { Interaction } from "@web/public/interaction";
 import { registry } from "@web/core/registry";
@@ -15,22 +14,6 @@ export class HongqiContactForm extends Interaction {
     static selector = ".bs_contact_form";
 
     start() {
-        const tagInput = this.el.querySelector("#contact_tag_ids");
-        if (tagInput) {
-            const tagByTopic = {
-                "Request E-Catalog": tagInput.dataset.tagCatalog,
-                "Dealership Application": tagInput.dataset.tagDealer,
-                "Job Application": tagInput.dataset.tagJob,
-            };
-            const applyTopic = (topic) => {
-                tagInput.value = tagByTopic[topic] || "";
-            };
-            const radios = this.el.querySelectorAll('input.bs_contact_radio[name="name"]');
-            radios.forEach((r) => r.addEventListener("change", () => applyTopic(r.value)));
-            const checked = this.el.querySelector('input.bs_contact_radio[name="name"]:checked');
-            if (checked) applyTopic(checked.value);
-        }
-
         // Company-profile size guard (the label promises max 5MB).
         const file = this.el.querySelector("#contact_attachment");
         file?.addEventListener("change", () => {
