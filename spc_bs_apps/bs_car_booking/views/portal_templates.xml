@@ -247,4 +247,18 @@
         <xpath expr="//div[@id='portal_vendor_category']" position="replace"/>
     </template>
 
+    <!-- The booking page already links its sale order, and the funnel never
+         sends quotations to review — the sale cards were a second, competing
+         path on the portal home. /my/orders itself stays reachable.
+         NOTE: specs of an inherit-of-inherit run on the COMBINED arch, so we
+         must surgically remove sale's entries — replacing the shared
+         #portal_client_category container would break account's later specs. -->
+    <template id="portal_my_home_sale_hidden" inherit_id="sale.portal_my_home_sale"
+              name="Portal Home: hide the quotation/order cards">
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-value=&quot;'/my/quotes'&quot;]]"
+               position="replace"/>
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-value=&quot;'/my/orders'&quot;]]"
+               position="replace"/>
+    </template>
+
 </odoo>
