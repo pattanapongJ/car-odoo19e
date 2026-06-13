@@ -27,7 +27,17 @@ export class HeroSlider extends Interaction {
 
         if (this._slides.length === 0) return;
 
-        this._showSlide(0);
+        // Slide 0 is already .active from server-rendered HTML — just sync state
+        // without triggering the fade-in animation (which would cause a dip from
+        // opacity:0.3 on a slide the user is already seeing).
+        this._slides.forEach((slide, i) => {
+            slide.classList.toggle("active", i === 0);
+            slide.setAttribute("aria-hidden", i === 0 ? "false" : "true");
+        });
+        this._dots.forEach((dot, i) => {
+            dot.classList.toggle("active", i === 0);
+            dot.setAttribute("aria-pressed", i === 0 ? "true" : "false");
+        });
 
         // Auto-advance only when motion is allowed and interval is set
         if (!this._reducedMotion && this._intervalMs > 0) {

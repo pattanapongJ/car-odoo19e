@@ -237,12 +237,12 @@
 
                 <!-- ── Slides (display:none by default, JS adds .active) ── -->
                 <t t-foreach="slides" t-as="slide">
-                    <div class="bs_slide"
+                    <div t-attf-class="bs_slide #{slide_index == 0 and 'active' or ''}"
                          t-att-data-index="slide_index"
                          role="group"
                          t-att-aria-label="'Slide %s of %s' % (slide_index + 1, len(slides))"
                          aria-roledescription="slide"
-                         aria-hidden="true">
+                         t-att-aria-hidden="'false' if slide_index == 0 else 'true'">
 
                         <!-- Background media -->
                         <div class="bs_slide_bg">

@@ -5,6 +5,7 @@ from odoo import fields, models
 class BsCarWebslideCta(models.Model):
     _name = 'bs.car.website.slide.cta'
     _description = 'Slide CTA Button'
+    _rec_name = 'label'
     _order = 'sequence, id'
 
     slide_id = fields.Many2one(
