@@ -204,43 +204,54 @@ html {
     background-color: rgba(255, 255, 255, 0.1) !important;
     color: var(--car-gold) !important;
 }
-/* ── Nav sub-menu dropdown — dark bar matching the header ──────── */
-/* nav-item is the positioning parent; dropdown fills its full width. */
+/* ── Nav sub-menu dropdown — full-width dark panel ─────────────── */
+/* position: static → dropdown anchors to .navbar (full width) */
 #wrapwrap > header .bs_brand_links .nav-item.dropdown {
-    position: relative;
+    position: static;
 }
 #wrapwrap > header .bs_brand_links .dropdown-menu {
-    background: var(--car-primary) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-top: 2px solid var(--car-gold);
-    border-radius: 0 0 var(--car-radius) var(--car-radius);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-    /* Match the width of the parent "ABOUT US" toggle exactly. */
-    min-width: unset;
+    position: absolute;
+    left: 0;
+    right: 0;
     width: 100%;
-    padding: 8px 0;
+    min-width: unset;
     margin-top: 0;
+    padding: 1rem clamp(24px, 3vw, 56px);
+
+    background: var(--car-primary) !important;
+    border: none;
+    border-top: 2px solid var(--car-gold);
+    border-radius: 0;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+/* At top of overlay page: semi-transparent dark (hero shows through) */
+#wrapwrap.o_header_overlay > header:not(.o_header_affixed) .bs_brand_links .dropdown-menu {
+    background: rgba(7, 7, 7, 0.72) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 }
 #wrapwrap > header .bs_brand_links .dropdown-menu .dropdown-item {
     color: rgba(255, 255, 255, 0.82) !important;
     font-family: var(--car-font-sans);
-    /* Match nav-link: same size, weight, spacing, case. */
     font-size: clamp(0.84rem, 0.82vw, 0.95rem);
     font-weight: 500;
     letter-spacing: 1.6px;
     text-transform: uppercase;
-    padding: 10px 0;
-    transition: color var(--car-transition),
-                background var(--car-transition);
+    padding: 0.6rem 0;
+    background: transparent !important;
+    border-bottom: 1px solid transparent;
+    transition: color var(--car-transition), border-color var(--car-transition);
 }
 #wrapwrap > header .bs_brand_links .dropdown-menu .dropdown-item:hover,
 #wrapwrap > header .bs_brand_links .dropdown-menu .dropdown-item:focus {
-    background: rgba(255, 255, 255, 0.06) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
     color: var(--car-gold) !important;
+    border-bottom-color: var(--car-gold);
 }
 #wrapwrap > header .bs_brand_links .dropdown-menu .dropdown-item.active {
-    background: rgba(255, 255, 255, 0.08) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
     color: var(--car-gold) !important;
+    border-bottom-color: var(--car-gold);
 }
 /* Parent nav-link keeps its underline style when dropdown is open. */
 #wrapwrap > header .bs_brand_links .nav-item.show > .nav-link {
@@ -522,6 +533,14 @@ html {
 .car_ghost_btn {
     border-radius: var(--car-radius);
     font-weight: 700;
+    transition: background-color 220ms ease, border-color 220ms ease, color 220ms ease;
+}
+
+.car_ghost_btn:hover,
+.car_ghost_btn:focus {
+    background-color: var(--car-accent);
+    border-color: var(--car-accent);
+    color: #fff;
 }
 
 /* ── Motion Hooks ─────────────────────────────────────────────── */

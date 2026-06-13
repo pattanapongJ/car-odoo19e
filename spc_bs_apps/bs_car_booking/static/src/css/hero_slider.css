@@ -317,12 +317,16 @@
 .bs_cta_style_solid {
     border: none;
     opacity: 1;
+    transition: background-color 220ms ease, color 220ms ease;
 }
 .bs_cta_style_solid:not([style*="background"]) {
     background: rgba(255,255,255,0.9);
     color: #171a20;
 }
-.bs_cta_style_solid:hover { filter: brightness(1.08); }
+.bs_cta_style_solid:hover {
+    background: #b21f2d !important;
+    color: #fff !important;
+}
 
 /* outline: transparent bg, coloured border */
 .bs_cta_style_outline {
