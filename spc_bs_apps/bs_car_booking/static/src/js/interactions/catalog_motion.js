@@ -20,6 +20,7 @@ export class CatalogMotion extends Interaction {
     start() {
         this._initReveal();
         this._initSticky();
+        this._initCardClick();
     }
 
     /* ── Scroll reveal via IntersectionObserver ────────────────────── */
@@ -52,6 +53,19 @@ export class CatalogMotion extends Interaction {
         );
 
         reveals.forEach((el) => this._observer.observe(el));
+    }
+
+    /* ── Card div → detail page navigation ────────────────────────── */
+    _initCardClick() {
+        this.el.querySelectorAll(".bs_catalog_card[data-href]").forEach((card) => {
+            const onClick = (e) => {
+                if (!e.target.closest("a")) {
+                    window.location.href = card.dataset.href;
+                }
+            };
+            card.addEventListener("click", onClick);
+            this.registerCleanup(() => card.removeEventListener("click", onClick));
+        });
     }
 
     /* ── Sticky filter bar state ───────────────────────────────────── */

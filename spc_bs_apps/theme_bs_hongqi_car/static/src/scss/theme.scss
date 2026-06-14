@@ -1435,6 +1435,7 @@ html {
     border: 1px solid rgba(22, 22, 22, 0.08);
     border-radius: var(--car-radius-lg);
     box-shadow: var(--car-shadow);
+    cursor: pointer;
     text-decoration: none;
     transition: transform var(--car-transition), box-shadow var(--car-transition), border-color var(--car-transition);
 }
@@ -1613,6 +1614,34 @@ html {
     font-weight: 700;
 }
 
+.bs_card_actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.bs_card_book_btn {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    padding: 9px 18px;
+    border-radius: var(--car-radius);
+    color: #fff;
+    background: var(--car-primary);
+    font-size: 0.84rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background var(--car-transition);
+}
+
+.bs_catalog_card:hover .bs_card_book_btn {
+    background: var(--car-accent);
+    text-decoration: none;
+    color: #fff;
+}
+
 .bs_card_cta {
     display: inline-flex;
     gap: 8px;
@@ -1624,11 +1653,14 @@ html {
     font-size: 0.84rem;
     font-weight: 600;
     white-space: nowrap;
+    text-decoration: none;
     transition: background var(--car-transition);
 }
 
 .bs_catalog_card:hover .bs_card_cta {
     background: var(--car-accent);
+    text-decoration: none;
+    color: #fff;
 }
 
 .bs_card_cta i {

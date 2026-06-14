@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 
 class BsTestDriveController(http.Controller):
 
-    @http.route('/test-drive/submit', type='json', auth='public', website=True, csrf=False)
+    @http.route('/test-drive/submit', type='jsonrpc', auth='public', website=True, csrf=False)
     def submit_test_drive(self, full_name=None, phone=None, line_id=None, email=None,
                           test_drive_date=None, test_drive_time=None, location=None, **kwargs):
         if not full_name or not phone:
