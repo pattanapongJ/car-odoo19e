@@ -5,7 +5,7 @@
     'name': 'Hongqi Car Website Theme',
     'summary': 'Opt-in Hongqi brand website theme for BS Car Booking',
     'category': 'Theme',
-    'version': '19.0.2.0.4',
+    'version': '19.0.2.0.5',
     'author': 'Basic Solution Co., Ltd.',
     'maintainer': 'Basic Solution Co., Ltd.',
     'website': 'https://basicsolution.com/',

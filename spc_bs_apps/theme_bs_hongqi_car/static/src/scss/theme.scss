@@ -216,11 +216,12 @@ html {
     width: 100%;
     min-width: unset;
     margin-top: 0;
-    padding: 1rem clamp(24px, 3vw, 56px);
+    /* No horizontal padding here — padding lives on each item so
+       the hover background stretches edge-to-edge across the panel. */
+    padding: 0;
 
     background: var(--car-primary) !important;
     border: none;
-    border-top: 2px solid var(--car-gold);
     border-radius: 0;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
 }
@@ -237,21 +238,23 @@ html {
     font-weight: 500;
     letter-spacing: 1.6px;
     text-transform: uppercase;
-    padding: 0.6rem 0;
-    background: transparent !important;
-    border-bottom: 1px solid transparent;
-    transition: color var(--car-transition), border-color var(--car-transition);
+    /* Horizontal padding on the item so text aligns with the nav bar,
+       but the hover background still fills 100% width of the panel. */
+    padding: 0.75rem clamp(24px, 3vw, 56px);
+    border-bottom: 2px solid transparent;
+    transition: color var(--car-transition),
+                background-color var(--car-transition),
+                border-color var(--car-transition);
 }
 #wrapwrap > header .bs_brand_links .dropdown-menu .dropdown-item:hover,
 #wrapwrap > header .bs_brand_links .dropdown-menu .dropdown-item:focus {
-    background: rgba(255, 255, 255, 0.05) !important;
+    background-color: rgba(255, 255, 255, 0.06) !important;
     color: var(--car-gold) !important;
     border-bottom-color: var(--car-gold);
 }
 #wrapwrap > header .bs_brand_links .dropdown-menu .dropdown-item.active {
-    background: rgba(255, 255, 255, 0.06) !important;
+    background-color: rgba(255, 255, 255, 0.08) !important;
     color: var(--car-gold) !important;
-    border-bottom-color: var(--car-gold);
 }
 /* Parent nav-link keeps its underline style when dropdown is open. */
 #wrapwrap > header .bs_brand_links .nav-item.show > .nav-link {
