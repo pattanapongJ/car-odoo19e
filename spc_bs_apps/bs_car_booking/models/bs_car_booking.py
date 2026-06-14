@@ -544,6 +544,12 @@ class BsCarBooking(models.Model):
     def _apply_configuration(self, ptav_ids):
         """Resolve selected template attribute values to a variant + options.
 
+        Split by each attribute's *Variant Creation Mode* rather than by a
+        single hard-coded attribute, so the configurator adapts to however
+        each attribute is set up:
+          * ``always`` / ``dynamic`` values define the product **variant**;
+          * ``no_variant`` values are kept as **options** (priced on the SO line).
+
         :param ptav_ids: list of product.template.attribute.value ids selected
             across all attributes (Standard Package + Color/Interior/Wheels/Add-ons).
         """
@@ -552,24 +558,29 @@ class BsCarBooking(models.Model):
         if not model.product_tmpl_id:
             model.sudo().action_generate_product()
         tmpl = model.product_tmpl_id
-        trim_attr = self.env.ref('bs_car_booking.attr_trim')
 
         selected = tmpl.attribute_line_ids.product_template_value_ids.filtered(
             lambda p: p.id in (ptav_ids or []))
-        trim_ptav = selected.filtered(lambda p: p.attribute_id == trim_attr)[:1]
-        option_ptavs = selected.filtered(lambda p: p.attribute_id != trim_attr)
+        # Whichever attributes create variants ('always'/'dynamic') make up the
+        # combination; only the 'no_variant' ones stay as SO-line options.
+        variant_ptavs = selected.filtered(
+            lambda p: p.attribute_id.create_variant in ('always', 'dynamic'))
+        option_ptavs = selected.filtered(
+            lambda p: p.attribute_id.create_variant == 'no_variant')
 
-        # Only the Standard Package attribute creates variants; resolve/create by package while
-        # ignoring no-variant attributes (so the combination is "possible").
-        variant = tmpl._get_variant_for_combination(trim_ptav) if trim_ptav else tmpl.env['product.product']
-        if not variant and trim_ptav and tmpl.has_dynamic_attributes() \
-                and tmpl._is_combination_possible(trim_ptav, ignore_no_variant=True):
+        # Find the existing variant for the full variant-creating combination,
+        # creating it on the fly when the template has dynamic attributes.
+        variant = tmpl._get_variant_for_combination(variant_ptavs)
+        if not variant and tmpl.has_dynamic_attributes() \
+                and tmpl._is_combination_possible(variant_ptavs, ignore_no_variant=True):
             variant = self.env['product.product'].sudo().create({
                 'product_tmpl_id': tmpl.id,
-                'product_template_attribute_value_ids': [(6, 0, trim_ptav.ids)],
+                'product_template_attribute_value_ids': [(6, 0, variant_ptavs.ids)],
             })
         if not variant:
-            variant = tmpl.product_variant_id  # base variant fallback
+            # Dynamic templates have no pre-created variants, so product_variant_id
+            # can be empty — fall back to the first possible (auto-created) variant.
+            variant = tmpl._get_first_possible_variant() or tmpl.product_variant_id
 
         self.write({
             'product_id': variant.id if variant else False,
