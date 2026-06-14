@@ -306,7 +306,7 @@ class BsCarBookingWebsite(CustomerPortal):
         return request.render('bs_car_booking.deposit_payment_page', values)
 
     # ── Customer Rating ─────────────────────────────────────────────────
-    @http.route('/booking/<int:booking_id>/submit_rating', type='json', auth='public', website=True, methods=['POST'])
+    @http.route('/booking/<int:booking_id>/submit_rating', type='jsonrpc', auth='public', website=True, methods=['POST'])
     def booking_submit_rating(self, booking_id, access_token=None, rating=0, comment='', **kw):
         booking = self._get_booking_or_404(booking_id, access_token)
         if not booking:
