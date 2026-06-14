@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         API CONFIG
+    ═══════════════════════════════════════════════════════════════════════ -->
+
+    <record id="view_bs_api_testdrive_config_form" model="ir.ui.view">
+        <field name="name">bs.api.testdrive.config.form</field>
+        <field name="model">bs.api.testdrive.config</field>
+        <field name="arch" type="xml">
+            <form string="Test Drive API Configuration">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Configuration Name"/>
+                        </h1>
+                    </div>
+                    <group string="ReadyPlanet R-CRM API">
+                        <group>
+                            <field name="api_url"/>
+                            <field name="api_key" widget="password" password="True"/>
+                        </group>
+                        <group>
+                            <field name="business_id"/>
+                            <field name="gate_id"/>
+                        </group>
+                    </group>
+                    <group string="Status">
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bs_api_testdrive_config_list" model="ir.ui.view">
+        <field name="name">bs.api.testdrive.config.list</field>
+        <field name="model">bs.api.testdrive.config</field>
+        <field name="arch" type="xml">
+            <list string="Test Drive Config">
+                <field name="name"/>
+                <field name="api_url"/>
+                <field name="business_id"/>
+                <field name="gate_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bs_api_testdrive_config" model="ir.actions.act_window">
+        <field name="name">API Configuration</field>
+        <field name="res_model">bs.api.testdrive.config</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         SUBMISSION LOG
+    ═══════════════════════════════════════════════════════════════════════ -->
+
+    <record id="view_bs_api_testdrive_log_list" model="ir.ui.view">
+        <field name="name">bs.api.testdrive.log.list</field>
+        <field name="model">bs.api.testdrive.log</field>
+        <field name="arch" type="xml">
+            <list string="Submission Logs"
+                  create="false" edit="false" delete="false"
+                  decoration-success="state == 'success'"
+                  decoration-danger="state == 'error'">
+                <field name="create_date" string="Submitted At"/>
+                <field name="full_name"/>
+                <field name="phone"/>
+                <field name="test_drive_date" string="Date"/>
+                <field name="test_drive_time" string="Time"/>
+                <field name="preferred_location" string="Location"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'success'"
+                       decoration-danger="state == 'error'"/>
+                <field name="http_status" string="HTTP"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bs_api_testdrive_log_form" model="ir.ui.view">
+        <field name="name">bs.api.testdrive.log.form</field>
+        <field name="model">bs.api.testdrive.log</field>
+        <field name="arch" type="xml">
+            <form string="Submission Log" create="false" edit="false">
+                <sheet>
+                    <widget name="web_ribbon"
+                            title="Success"
+                            bg_color="text-bg-success"
+                            invisible="state != 'success'"/>
+                    <widget name="web_ribbon"
+                            title="Error"
+                            bg_color="text-bg-danger"
+                            invisible="state != 'error'"/>
+                    <div class="oe_title">
+                        <h1><field name="full_name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Customer Info">
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="line_id"/>
+                        </group>
+                        <group string="Appointment">
+                            <field name="test_drive_date"/>
+                            <field name="test_drive_time"/>
+                            <field name="preferred_location"/>
+                        </group>
+                    </group>
+                    <group string="API Result">
+                        <group>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'success'"
+                                   decoration-danger="state == 'error'"/>
+                            <field name="http_status"/>
+                            <field name="create_date" string="Submitted At"/>
+                        </group>
+                        <group>
+                            <field name="error_message" invisible="not error_message"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Request Payload">
+                            <field name="request_payload" widget="ace" options="{'mode': 'json'}"/>
+                        </page>
+                        <page string="Response Payload">
+                            <field name="response_payload" widget="ace" options="{'mode': 'json'}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bs_api_testdrive_log_search" model="ir.ui.view">
+        <field name="name">bs.api.testdrive.log.search</field>
+        <field name="model">bs.api.testdrive.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="full_name"/>
+                <field name="phone"/>
+                <filter name="success" string="Success" domain="[('state','=','success')]"/>
+                <filter name="error" string="Error" domain="[('state','=','error')]"/>
+                <separator/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'create_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bs_api_testdrive_log" model="ir.actions.act_window">
+        <field name="name">Submission Logs</field>
+        <field name="res_model">bs.api.testdrive.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         MENUS — under Settings, after Translations (sequence=2)
+    ═══════════════════════════════════════════════════════════════════════ -->
+
+    <menuitem id="menu_bs_api_testdrive_root"
+              name="Test Drive"
+              parent="base.menu_administration"
+              sequence="5"
+              groups="bs_api_testdrive_config.group_bs_api_testdrive_manager"/>
+
+    <menuitem id="menu_bs_api_testdrive_config"
+              name="API Configuration"
+              parent="menu_bs_api_testdrive_root"
+              action="action_bs_api_testdrive_config"
+              sequence="10"
+              groups="bs_api_testdrive_config.group_bs_api_testdrive_manager"/>
+
+    <menuitem id="menu_bs_api_testdrive_log"
+              name="Submission Logs"
+              parent="menu_bs_api_testdrive_root"
+              action="action_bs_api_testdrive_log"
+              sequence="20"
+              groups="bs_api_testdrive_config.group_bs_api_testdrive_manager"/>
+
+</odoo>

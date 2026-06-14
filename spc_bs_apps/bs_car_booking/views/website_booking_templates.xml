@@ -38,7 +38,7 @@
                         <span class="cfg_brand" t-esc="car.brand_id.name"/>
                         <h1 class="cfg_title" t-esc="car.name"/>
                         <p>
-                            Build the exact trim, color, interior, wheel, and add-on combination
+                            Build the exact color, interior, wheel, and add-on combination
                             before choosing your preferred dealer.
                         </p>
                     </div>
@@ -52,40 +52,66 @@
             </section>
 
             <section class="container cfg_wrapper pb-6">
+                <div t-if="product_missing" class="alert alert-warning">
+                    This model is not ready for online booking yet. Ask a booking manager to generate the configurable product in the back office.
+                </div>
                 <form id="bs_configurator_form" class="cfg_form"
                       t-att-data-model-id="car.id"
                       t-att-data-deposit="car.deposit_amount"
-                      t-att-data-currency-id="car.currency_id.id">
+                      t-att-data-currency-id="car.currency_id.id"
+                      t-att-data-product-missing="product_missing and '1' or '0'">
 
                     <div class="cfg_grid">
                         <div class="cfg_options">
                             <div class="cfg_intro" data-bs-car-reveal="up">
                                 <span class="car_kicker car_kicker_dark">Configuration</span>
                                 <h2>Make it yours.</h2>
-                                <p>
-                                    Pricing updates live from the generated Odoo product variant and
-                                    no-variant option values.
-                                </p>
                             </div>
 
+                            <t t-set="config_block_index" t-value="0"/>
                             <t t-foreach="attribute_lines" t-as="line">
-                                <div class="cfg_block" t-att-data-attribute-id="line.attribute_id.id"
+                                <t t-set="product_attribute_values" t-value="line.product_template_value_ids.filtered(lambda l: l.ptav_active)"/>
+                                <!-- Only published values are shown; unpublished options are
+                                     hidden entirely. The whole attribute block is skipped when
+                                     none of its values are published. -->
+                                <t t-set="avail_ptavs" t-value="product_attribute_values.filtered(lambda p: p.product_attribute_value_id.id not in unpublished_value_ids)"/>
+                                <t t-set="avail_ptavs" t-value="avail_ptavs.sorted(key=lambda p: option_sequence.get(p.product_attribute_value_id.id, 999))"/>
+                                <t t-set="default_ptav" t-value="avail_ptavs[:1]"/>
+                                <t t-set="is_single_standard_package"
+                                   t-value="standard_package_attr and line.attribute_id == standard_package_attr and len(product_attribute_values) == 1"/>
+                                <t t-if="is_single_standard_package">
+                                    <t t-set="standard_ptav" t-value="product_attribute_values[:1]"/>
+                                    <input type="radio" class="cfg_input d-none"
+                                           t-attf-name="attr_{{ line.attribute_id.id }}"
+                                           t-att-data-ptav-id="standard_ptav.id"
+                                           t-att-data-price-extra="standard_ptav.price_extra"
+                                           t-att-data-summary-label="standard_ptav.name"
+                                           data-summary-hidden="1"
+                                           checked="checked"/>
+                                </t>
+                                <t t-elif="not avail_ptavs"/>
+                                <div t-else="" class="cfg_block" t-att-data-attribute-id="line.attribute_id.id"
                                      data-bs-car-reveal="up">
+                                    <t t-set="config_block_index" t-value="config_block_index + 1"/>
                                     <div class="cfg_block_heading">
-                                        <span class="cfg_block_number" t-esc="line_index + 1"/>
+                                        <span class="cfg_block_number" t-esc="config_block_index"/>
                                         <h4 class="cfg_block_title" t-esc="line.attribute_id.name"/>
                                     </div>
 
                                     <t t-if="line.attribute_id.display_type == 'color'">
                                         <div class="cfg_swatches">
-                                            <t t-foreach="line.product_template_value_ids" t-as="ptav">
+                                            <t t-foreach="avail_ptavs" t-as="ptav">
+                                                <t t-set="avail_int_ids" t-value="exterior_interiors.get(ptav.product_attribute_value_id.id)"/>
                                                 <label class="cfg_swatch" t-att-title="ptav.name">
                                                     <input type="radio" class="cfg_input d-none"
                                                            t-attf-name="attr_{{ line.attribute_id.id }}"
                                                            t-att-data-ptav-id="ptav.id"
+                                                           t-att-data-value-id="ptav.product_attribute_value_id.id"
+                                                           data-exterior-option="1"
+                                                           t-att-data-interior-value-ids="avail_int_ids and ','.join([str(i) for i in avail_int_ids]) or None"
                                                            t-att-data-price-extra="ptav.price_extra"
                                                            t-att-data-summary-label="ptav.name"
-                                                           t-att-checked="ptav_first and 'checked' or None"/>
+                                                           t-att-checked="(ptav == default_ptav) and 'checked' or None"/>
                                                     <span class="cfg_swatch_dot"
                                                           t-attf-style="background-color: {{ ptav.product_attribute_value_id.html_color or '#888' }}"/>
                                                     <span class="cfg_swatch_name" t-esc="ptav.name"/>
@@ -96,7 +122,7 @@
 
                                     <t t-elif="line.attribute_id.display_type == 'multi'">
                                         <div class="cfg_addons">
-                                            <t t-foreach="line.product_template_value_ids" t-as="ptav">
+                                            <t t-foreach="avail_ptavs" t-as="ptav">
                                                 <label class="cfg_addon">
                                                     <input type="checkbox" class="cfg_input"
                                                            t-att-data-ptav-id="ptav.id"
@@ -113,15 +139,18 @@
                                     </t>
 
                                     <t t-else="">
+                                        <t t-set="is_interior_attr" t-value="interior_attr and line.attribute_id == interior_attr"/>
                                         <div class="cfg_pills">
-                                            <t t-foreach="line.product_template_value_ids" t-as="ptav">
+                                            <t t-foreach="avail_ptavs" t-as="ptav">
                                                 <label class="cfg_pill">
                                                     <input type="radio" class="cfg_input d-none"
                                                            t-attf-name="attr_{{ line.attribute_id.id }}"
                                                            t-att-data-ptav-id="ptav.id"
+                                                           t-att-data-value-id="ptav.product_attribute_value_id.id"
+                                                           t-att-data-interior-option="is_interior_attr and '1' or None"
                                                            t-att-data-price-extra="ptav.price_extra"
                                                            t-att-data-summary-label="ptav.name"
-                                                           t-att-checked="ptav_first and 'checked' or None"/>
+                                                           t-att-checked="(ptav == default_ptav) and 'checked' or None"/>
                                                     <span class="cfg_pill_name" t-esc="ptav.name"/>
                                                     <span class="cfg_pill_price"
                                                           t-if="ptav.price_extra"
@@ -160,13 +189,55 @@
                             <div class="cfg_block" data-bs-car-reveal="up">
                                 <div class="cfg_block_heading">
                                     <span class="cfg_block_number">V</span>
-                                    <h4 class="cfg_block_title">Mobile Number</h4>
+                                    <h4 class="cfg_block_title">Verification</h4>
                                 </div>
                                 <div class="cfg_phone_row">
+                                    <label class="form-label fw-bold">Phone number</label>
                                     <input type="tel" id="cfg_phone" class="form-control form-control-lg"
                                            placeholder="+66 8 1234 5678" required="required"
                                            pattern="^\+?[0-9\s\-]{7,15}$"/>
-                                    <small class="text-muted">We'll send a verification code to this number.</small>
+                                    <small class="text-muted" id="cfg_phone_hint">
+                                        <t t-if="otp_channel == 'email'">Our team will use this number to contact you.</t>
+                                        <t t-else="">We'll send a verification code to this number.</t>
+                                    </small>
+                                </div>
+
+                                <!-- Channel toggle only when the website lets the customer
+                                     choose (mode = both). 'sms'/'email' modes fix the
+                                     channel, so there is nothing to pick. -->
+                                <div t-if="otp_channel == 'both'" class="cfg_otp_channel" id="cfg_otp_channel_toggle">
+                                    <label class="form-label fw-bold mt-3">Send verification code by</label>
+                                    <div class="cfg_otp_options">
+                                        <label class="cfg_otp_opt">
+                                            <input type="radio" name="otp_channel" value="sms" class="d-none"
+                                                   checked="checked"/>
+                                            <span class="cfg_otp_opt_icon"><i class="fa fa-mobile-phone"/></span>
+                                            <span class="cfg_otp_opt_body">
+                                                <strong>SMS</strong>
+                                                <small>to this number</small>
+                                            </span>
+                                        </label>
+                                        <label class="cfg_otp_opt">
+                                            <input type="radio" name="otp_channel" value="email" class="d-none"/>
+                                            <span class="cfg_otp_opt_icon"><i class="fa fa-envelope"/></span>
+                                            <span class="cfg_otp_opt_body">
+                                                <strong>Email</strong>
+                                                <small>to your inbox</small>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Email row: always for email-only mode; revealed by the
+                                     toggle in 'both' mode; absent in SMS-only mode. -->
+                                <div t-if="otp_channel != 'sms'"
+                                     t-attf-class="cfg_phone_row mt-3 {{ otp_channel == 'both' and 'd-none' or '' }}"
+                                     id="cfg_email_row">
+                                    <label class="form-label fw-bold">Email address</label>
+                                    <input type="email" id="cfg_email" class="form-control form-control-lg"
+                                           placeholder="you@email.com"
+                                           t-att-required="otp_channel == 'email' and 'required' or None"/>
+                                    <small class="text-muted">We'll send a verification code to this email.</small>
                                 </div>
                             </div>
                         </div>
@@ -174,16 +245,37 @@
                         <aside class="cfg_summary">
                             <div class="cfg_summary_card" data-bs-car-reveal="up">
                                 <div class="cfg_summary_media">
-                                    <t t-if="car.image">
+                                    <!-- Exterior + interior images from the car-model options,
+                                         swapped live as the buyer changes the configuration
+                                         (keyed by product attribute value id). -->
+                                    <t t-set="sum_ext" t-value="request.env['bs.car.model.option'].sudo()._get_color_options(car, 'bs_car_booking.attr_color').filtered(lambda o: o.website_published and o.image)"/>
+                                    <t t-set="sum_int" t-value="request.env['bs.car.model.option'].sudo()._get_color_options(car, 'bs_car_booking.attr_interior').filtered(lambda o: o.website_published and o.image)"/>
+                                    <t t-if="sum_ext">
+                                        <div class="cfg_summary_stage cfg_summary_stage_ext">
+                                            <img t-foreach="sum_ext" t-as="opt"
+                                                 t-attf-class="cfg_summary_img #{opt_index == 0 and 'is-active' or ''}"
+                                                 t-att-data-cfg-value="opt.value_id.id"
+                                                 t-att-src="'/web/image/bs.car.model.option/%s/image/480x300' % opt.id"
+                                                 t-att-alt="opt.image_alt or opt.display_name"/>
+                                        </div>
+                                    </t>
+                                    <t t-elif="car.image">
                                         <img t-att-src="'/web/image/bs.car.model/%s/image/480x300' % car.id"
                                              t-att-alt="car.name"/>
                                     </t>
+                                    <div t-if="sum_int" class="cfg_summary_stage cfg_summary_stage_int">
+                                        <img t-foreach="sum_int" t-as="opt"
+                                             t-attf-class="cfg_summary_img #{opt_index == 0 and 'is-active' or ''}"
+                                             t-att-data-cfg-value="opt.value_id.id"
+                                             t-att-src="'/web/image/bs.car.model.option/%s/image/480x300' % opt.id"
+                                             t-att-alt="opt.image_alt or opt.display_name"/>
+                                    </div>
                                 </div>
                                 <div class="cfg_summary_body">
                                     <span class="car_kicker car_kicker_dark" t-esc="car.brand_id.name"/>
                                     <h5 t-esc="car.name"/>
                                     <div class="cfg_selected_list" id="cfg_selected_list"/>
-                                    <div class="cfg_price_label">Estimated price</div>
+                                    <div class="cfg_price_label">price</div>
                                     <div class="cfg_price" id="cfg_price"
                                          t-esc="base_price"
                                          t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
@@ -192,13 +284,18 @@
                                         <strong t-esc="car.deposit_amount"
                                                 t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
                                     </div>
+                                    <t t-set="first_variant" t-value="car.variant_ids.filtered('active')[:1]"/>
+                                    <div t-if="first_variant" class="cfg_delivery_estimate">
+                                        Est. delivery: <strong t-esc="first_variant.estimated_delivery_days or 30"/> days
+                                    </div>
                                     <label class="cfg_pdpa">
                                         <input type="checkbox" id="cfg_pdpa" class="cfg_pdpa_check"/>
                                         <span>I agree to the
                                             <a href="/privacy" target="_blank" rel="noopener">Privacy Policy (PDPA)</a>
                                             and consent to being contacted about this booking.</span>
                                     </label>
-                                    <button type="submit" class="btn btn-primary btn-lg cfg_submit_btn">
+                                    <button type="submit" class="btn btn-primary btn-lg cfg_submit_btn"
+                                            t-att-disabled="product_missing and 'disabled' or None">
                                         <i class="fa fa-shield"/> Continue to Verify
                                     </button>
                                     <div class="cfg_error alert alert-danger mt-3 d-none" id="cfg_error"/>

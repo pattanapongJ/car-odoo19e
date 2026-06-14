@@ -9,7 +9,7 @@
 
 This is a premium car‑dealership website. A customer can:
 
-1. **Browse** car models, view photos, specifications, colours and stories.
+1. **Browse** car models, view photos, specifications, colours and news.
 2. **Build their car** — choose a trim, exterior colour, interior, wheels and add‑ons, and see the price update live.
 3. **Choose a showroom (dealer)** and **verify their mobile number** by SMS code.
 4. **Enter their details** and **pay a booking deposit** online.
@@ -25,7 +25,7 @@ Behind the scenes, when a deposit is paid the system automatically creates a **r
 
 - The **Car Booking** application must be installed (your IT team does this).
 - **Decide on starting content.** The site can be installed two ways:
-  - **With sample content** (recommended for demos/training): comes pre‑loaded with example Hongqi cars, showrooms and stories so every page looks complete immediately.
+  - **With sample content** (recommended for demos/training): comes pre‑loaded with example Hongqi cars, showrooms and news articles so every page looks complete immediately.
   - **Empty** (typical for a brand‑new live site): the catalog starts blank and **you create your own cars** using Section 4. *If the catalog is empty, the home page will look empty too* — so either load the sample content or add at least one published car before launch. Ask IT which way your site was installed.
 
 Everything you configure lives under one top menu: **Car Booking** (with sub‑menus **Master Data** and **Bookings**).
@@ -70,30 +70,29 @@ One record per car. You first see image tiles (kanban); open one to edit. The fo
 | Tab | What you set here |
 |---|---|
 | **General** | Display order, **Body Type** (Sedan/SUV/Coupe… — drives the “Browse by type” tiles), Seats, **Published on Website**, **Featured on Home** (show this car in the home hero), **Base Price** (the “from” price), **Deposit Amount** (what the customer pays to book), **Arrival Date** (drives “Latest Arrivals” and a *New* badge), Description, and Highlight Features (one per line). |
-| **Performance** | Range (km), 0–100 km/h time, Top Speed. |
-| **Media** | **Main Image** (used on cards, the hero and the product), an optional **Hero Video** (upload a file *or* paste a YouTube/Vimeo link), and the **Gallery** images. |
-| **Trims** | The versions of this car and their prices (Section 4.4). |
+| **Media Library** | **Main Image** (used on cards, booking, detail fallback/poster, and SEO), an optional detail hero video, and car detail gallery images. |
+| **Standard Package** | The default booking package and its price (Section 4.4). |
 | **Options & Pricing** | The extra price for each colour, interior, wheel and add‑on (Section 4.5). |
 | **Specifications** | The spec sheet — label / value / unit, with a “Hero Highlight” tick for the key ones (Section 4.6). |
 | **Home Showcase** | The rich visual home sections for this car (Section 4.7). |
-| **Stories** | News/editorial pieces tied to this car (Section 4.8). |
+| **News** | News/editorial articles tied to this car (Section 4.8). |
 
 - 🔎 A car appears in the catalog and line‑up only when **Published on Website** is ticked.
 - A **Generate / Update Product** button sits at the top of the form — covered next.
 
-### 4.4 Trims — *inside the car’s “Trims” tab (or Master Data ▸ Car Variants)*
-The versions of a model (e.g. Standard / Long Range / Performance).
+### 4.4 Standard Package — *inside the car’s “Standard Package” tab (or Master Data ▸ Standard Packages)*
+The default package used for booking pricing. If the business does not sell multiple official grades, keep one active line named **Standard**.
 - **Name**, **Price**, **Available Units**, Estimated Delivery (days), **Published**.
-- Exterior/Interior colour names, a colour swatch (hex), wheel type, and optional per‑trim Range / Acceleration / Top Speed (leave blank to use the model’s values).
+- Optional package-level Range / Acceleration / Top Speed can be left blank to use the model’s specification values.
 
 ### 4.5 Options, pricing & “Generate Product” *(turns a car into something sellable)*
 A car becomes orderable only after you generate its product.
 
 1. In the car’s **Options & Pricing** tab, set the **extra price** for each option a buyer can choose — exterior colours, interior, wheels and add‑ons.
-2. Click **Generate / Update Product** at the top of the car form. This creates the sellable product: it carries the car’s name, image, **base price**, **7% VAT**, the trims (from Section 4.4) and the priced options.
-3. **Whenever you change trims, options or prices, click that button again** to refresh the product.
+2. Click **Generate / Update Product** at the top of the car form. This creates the sellable product: it carries the car’s name, image, **base price**, **7% VAT**, the standard package (from Section 4.4) and the priced options.
+3. **Whenever you change package, options or prices, click that button again** to refresh the product.
 
-The buyer’s configurator offers five choices: **Trim, Exterior Colour, Interior, Wheels, and Add‑ons** (add‑ons allow multiple selections). The trim is the main version; the others adjust the price.
+The buyer’s configurator offers the visible choices the customer needs: **Exterior Colour, Interior, Wheels, and Add‑ons**. A single **Standard** package stays hidden behind the scenes; if multiple official packages are added later, the package selector appears automatically.
 
 ### 4.6 Specifications — *the car’s “Specifications” tab*
 The flexible spec sheet shown on the car page and home section.
@@ -110,8 +109,8 @@ This is the campaign‑style visual content for the home page. There are five gr
 | **Highlights** | A grid of feature cards — title, subtitle, image. |
 | **Cabin Story** | A wide interior “story” band — headline, subtitle, image. |
 
-### 4.8 Stories — *the car’s “Stories” tab (or Master Data ▸ Stories)*
-News/editorial articles shown on the home “Latest Stories” section and the Stories page.
+### 4.8 News — *the car’s “News” tab (or Master Data ▸ News)*
+News/editorial articles shown on the home “News” section and the News page.
 - **Headline**, **Subtitle**, **Location** (dateline), optional **Car Model** (leave blank for brand‑wide), **Publish Date**, **Image**, **Excerpt**, **Body**, and a button (label + link).
 
 ### 4.9 Offers & Stats — *Master Data ▸ Offers & Promotions / Stats*
@@ -135,7 +134,6 @@ The home page is assembled from **sections** you can switch on/off and reorder. 
 | Model Stage | Full‑width image slider |
 | Colour Studio | Exterior/interior colour switcher |
 | Brand Heritage | The featured brand’s heritage block |
-| Model Gallery | A photo slider |
 | Model Specifications | The featured car’s key specs |
 | Highlights | Feature cards |
 | Cabin Story | Wide interior band |
@@ -144,7 +142,7 @@ The home page is assembled from **sections** you can switch on/off and reorder. 
 | Stats Strip | The big numbers |
 | Latest Arrivals | Recently arrived cars |
 | Offers & Promotions | Live promotional cards |
-| Latest Stories | Recent news/editorial |
+| Latest News | Recent news/editorial |
 | Finance Calculator | Monthly‑payment estimator |
 | Dealer Locator | Showroom list |
 
@@ -192,7 +190,7 @@ Most content is **Published** by default, so new cars, showrooms, offers, etc. a
 
 | Step | Page | What happens |
 |---|---|---|
-| Browse | Cars / car detail / Compare / Stories | Customer explores models, compares up to 4, reads stories. |
+| Browse | Cars / car detail / News | Customer explores models and reads the news. |
 | 1. Configure | “Book” page | Chooses trim, colour, interior, wheels, add‑ons (price updates live), picks a showroom, enters their phone, and **ticks the privacy consent (PDPA)**. |
 | 2. Verify | Verify page | Enters the **6‑digit code** sent to their phone by SMS (valid 5 minutes). |
 | 3. Details | Details page | Enters name (required), email, ID/NRC, address. |
@@ -248,8 +246,8 @@ Assign the **Car Booking Manager** role to your dealership back‑office users; 
 - [ ] **7% VAT** exists and is the default sales tax *(Section 3)*
 - [ ] Brands added (with Heritage) *(4.1)*
 - [ ] Showrooms added, **Published**, with map coordinates *(4.2)*
-- [ ] Car Models complete — General, Performance, Media, Specs, Showcase, Stories *(4.3, 4.6–4.8)*
-- [ ] Trims and **Options & Pricing** set, then **Generate Product** clicked *(4.4–4.5)*
+- [ ] Car Models complete — General, Media Library, Specs, Showcase, News *(4.3, 4.6–4.8)*
+- [ ] Standard Package and **Options & Pricing** set, then **Generate Product** clicked *(4.4–4.5)*
 - [ ] Generated products show **THB price + 7% VAT** *(Section 3 checkpoint)*
 - [ ] Home Layout sections enabled/ordered; a car marked **Featured on Home** *(Section 5)*
 - [ ] Footer **social links** entered *(6.2)*

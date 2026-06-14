@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="story_index_page" name="Stories">
+    <template id="story_index_page" name="News">
         <t t-call="website.layout">
-            <t t-set="title">Stories</t>
+            <t t-set="title">News</t>
             <t t-set="bs_hero_overlay" t-value="True"/>
             <div id="wrap" class="bs_story_shell">
                 <section class="bs_story_index_hero">
                     <div class="container">
-                        <span class="bs_story_eyebrow">Hongqi Thailand</span>
-                        <h1>Latest Stories</h1>
+                        <span class="bs_story_eyebrow">News</span>
+                        <h1>Latest News</h1>
                     </div>
                 </section>
                 <section class="bs_story_index_body">
@@ -53,7 +53,7 @@
                 <section class="bs_story_article">
                     <div class="container">
                         <div class="bs_story_article_nav">
-                            <a href="/stories"><i class="fa fa-arrow-left"/> Back to Stories</a>
+                            <a href="/stories"><i class="fa fa-arrow-left"/> Back to News</a>
                             <a t-if="next_story" t-att-href="next_story._get_website_url()">
                                 <t t-esc="next_story.name"/> <i class="fa fa-arrow-right"/>
                             </a>
@@ -62,7 +62,7 @@
                             </a>
                         </div>
                         <header class="bs_story_head">
-                            <span class="bs_story_eyebrow">Latest Story</span>
+                            <span class="bs_story_eyebrow">News</span>
                             <div class="bs_story_meta">
                                 <span t-if="story.location" t-esc="story.location"/>
                                 <span t-if="story.location and story.publish_date" class="bs_story_meta_sep">·</span>
@@ -86,7 +86,7 @@
                             <a t-if="prev_story" t-att-href="prev_story._get_website_url()">
                                 <i class="fa fa-arrow-left"/> <t t-esc="prev_story.name"/>
                             </a>
-                            <a href="/stories">All Stories</a>
+                            <a href="/stories">All News</a>
                             <a t-if="next_story" t-att-href="next_story._get_website_url()">
                                 <t t-esc="next_story.name"/> <i class="fa fa-arrow-right"/>
                             </a>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="otp_purpose_booking" model="bs.car.booking.otp.purpose">
+            <field name="name">Booking Verification</field>
+            <field name="code">booking</field>
+            <field name="sequence">1</field>
+            <field name="sms_template_id" ref="sms_template_otp_booking"/>
+            <field name="sms_fallback_body">Your booking verification code is: %(otp_code)s. Valid for %(validity_minutes)s minutes.</field>
+            <field name="mail_template_id" ref="mail_template_otp_booking"/>
+            <field name="mail_fallback_body">Your booking verification code is: %(otp_code)s. Valid for %(validity_minutes)s minutes.</field>
+        </record>
+
+    </data>
+</odoo>

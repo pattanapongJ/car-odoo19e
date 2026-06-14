@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bs_payment_2c2p_log_list" model="ir.ui.view">
+        <field name="name">bs.payment.2c2p.log.list</field>
+        <field name="model">bs.payment.2c2p.log</field>
+        <field name="arch" type="xml">
+            <list string="2C2P Callback Logs"
+                  default_order="create_date desc"
+                  decoration-success="payment_status == '000'"
+                  decoration-warning="payment_status == '001'"
+                  decoration-muted="payment_status == '003'">
+                <field name="create_date" string="Date" optional="show"/>
+                <field name="log_type" string="Type" widget="badge" optional="show"/>
+                <field name="reference" optional="show"/>
+                <field name="payment_status" string="Status Code" optional="show"/>
+                <field name="status_label" string="Status" optional="show"/>
+                <field name="transaction_ref" optional="show"/>
+                <field name="channel_response" optional="show"/>
+                <field name="transaction_id" optional="show"/>
+                <field name="transaction_state" string="Odoo State" widget="badge" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bs_payment_2c2p_log_form" model="ir.ui.view">
+        <field name="name">bs.payment.2c2p.log.form</field>
+        <field name="model">bs.payment.2c2p.log</field>
+        <field name="arch" type="xml">
+            <form string="2C2P Callback Log" create="false">
+                <sheet>
+                    <group>
+                        <group string="Callback Info">
+                            <field name="log_type" widget="badge"/>
+                            <field name="create_date" string="Received At"/>
+                            <field name="reference"/>
+                            <field name="payment_status"/>
+                            <field name="status_label"/>
+                            <field name="transaction_ref"/>
+                            <field name="channel_response"/>
+                        </group>
+                        <group string="Odoo Transaction">
+                            <field name="transaction_id"/>
+                            <field name="transaction_state" widget="badge"/>
+                        </group>
+                    </group>
+                    <group string="Raw POST Data">
+                        <field name="raw_data" nolabel="1"
+                               style="min-height:500px; font-family:monospace; font-size:12px; background:#f8f9fa; border-radius:4px; padding:8px;"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bs_payment_2c2p_log_search" model="ir.ui.view">
+        <field name="name">bs.payment.2c2p.log.search</field>
+        <field name="model">bs.payment.2c2p.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="transaction_ref"/>
+                <filter string="Backend Webhook" name="notify" domain="[('log_type','=','notify')]"/>
+                <filter string="Frontend Return" name="frontend_return" domain="[('log_type','=','return')]"/>
+                <separator/>
+                <filter string="Success" name="success" domain="[('payment_status','=','000')]"/>
+                <filter string="Pending" name="pending" domain="[('payment_status','=','001')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('payment_status','=','003')]"/>
+                <group>
+                    <filter string="Type" name="group_type" context="{'group_by': 'log_type'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'payment_status'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'create_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bs_payment_2c2p_log" model="ir.actions.act_window">
+        <field name="name">2C2P Callback Logs</field>
+        <field name="res_model">bs.payment.2c2p.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_group_date': 1}</field>
+    </record>
+
+    <menuitem
+        id="menu_bs_payment_2c2p_root"
+        name="2C2P Payment"
+        parent="account.menu_finance"
+        sequence="99"
+        groups="bs_2c2p_payment_log.group_2c2p_log_viewer"/>
+
+    <menuitem
+        id="menu_bs_payment_2c2p_log"
+        name="Callback Logs"
+        parent="menu_bs_payment_2c2p_root"
+        action="action_bs_payment_2c2p_log"
+        sequence="10"
+        groups="bs_2c2p_payment_log.group_2c2p_log_viewer"/>
+
+</odoo>

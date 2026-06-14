@@ -3,18 +3,25 @@
     <!-- ================================================================
          MY ACCOUNT — add a "Car Bookings" card to the portal home
          ================================================================ -->
+    <!-- priority 4 (account/sale use 30): applied first, so the business's
+         primary object — the booking — is the FIRST card on /my/home. -->
     <template id="portal_my_home_booking" name="Portal My Home : Car Bookings"
-              inherit_id="portal.portal_my_home" priority="30" customize_show="True">
+              inherit_id="portal.portal_my_home" priority="4" customize_show="True">
         <!-- Enable the client documents category (async counter shows/hides the card). -->
         <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
             <t t-set="portal_client_category_enable" t-value="True"/>
         </xpath>
         <div id="portal_client_category" position="inside">
             <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/bs_car_booking/static/src/img/booking.svg'"/>
                 <t t-set="title">Car Bookings</t>
                 <t t-set="url" t-value="'/my/bookings'"/>
                 <t t-set="text">Track your reservations &amp; deposits</t>
-                <t t-set="placeholder_count" t-value="'booking_count'"/>
+                <!-- config_card (like Payment methods/Addresses): cards start
+                     d-none and only a >0 counter OR this flag reveals them —
+                     the business's primary card must show even with no booking
+                     yet (/my/bookings has its own empty state). -->
+                <t t-set="config_card" t-value="True"/>
             </t>
         </div>
     </template>
@@ -76,22 +83,9 @@
                           t-esc="booking.state_label"/>
                 </div>
 
-                <!-- Status timeline -->
-                <div class="bs_timeline card mb-4">
-                    <div class="card-body">
-                        <t t-set="flow" t-value="['otp_verified','payment_pending','confirmed','in_production','ready_delivery','delivered']"/>
-                        <t t-set="labels" t-value="{'otp_verified':'Verified','payment_pending':'Deposit','confirmed':'Confirmed','in_production':'Production','ready_delivery':'Ready','delivered':'Delivered'}"/>
-                        <t t-set="cur" t-value="booking.state in flow and flow.index(booking.state) or (booking.state in ('cancelled', 'expired') and -1 or 0)"/>
-                        <div class="bs_timeline_row">
-                            <t t-foreach="flow" t-as="st">
-                                <div t-attf-class="bs_tl_step #{flow.index(st) &lt;= cur and 'done' or ''} #{flow.index(st) == cur and 'current' or ''}">
-                                    <span class="bs_tl_dot"/>
-                                    <span class="bs_tl_label" t-esc="labels.get(st)"/>
-                                </div>
-                            </t>
-                        </div>
-                    </div>
-                </div>
+                <!-- Step timeline removed by business request (2026-06-11):
+                     the status pill next to the title already carries the
+                     state; the delivery date moved into the Summary card. -->
 
                 <div class="row">
                     <div class="col-lg-7">
@@ -176,9 +170,21 @@
                                     <span class="text-muted">Sale Order</span>
                                     <a t-att-href="booking.sale_order_id.get_portal_url()" t-field="booking.sale_order_id.name"/>
                                 </div>
+                                <!-- "When do I get my car" — moved here from the
+                                     removed step timeline. -->
+                                <div t-if="booking.state == 'delivered' and booking.actual_delivery_date"
+                                     class="d-flex justify-content-between py-1">
+                                    <span class="text-muted">Delivered On</span>
+                                    <strong t-field="booking.actual_delivery_date"/>
+                                </div>
+                                <div t-elif="booking.estimated_delivery_date and booking.state in ('confirmed', 'in_production', 'ready_delivery')"
+                                     class="d-flex justify-content-between py-1">
+                                    <span class="text-muted">Estimated Delivery</span>
+                                    <strong t-field="booking.estimated_delivery_date"/>
+                                </div>
                                 <hr/>
                                 <a t-if="booking.state not in ('confirmed','in_production','ready_delivery','delivered','cancelled','expired')"
-                                   t-att-href="'/booking/%s/payment' % booking.id"
+                                   t-att-href="'/booking/%s/payment?access_token=%s' % (booking.id, access_token)"
                                    class="btn btn-success w-100">
                                     <i class="fa fa-credit-card"/> Pay Deposit
                                 </a>
@@ -189,4 +195,74 @@
             </div>
         </t>
     </template>
+
+    <!-- ================================================================
+         PAYMENT STATUS — override for car booking context
+         ================================================================ -->
+
+    <!-- 1/2: Hide the "Skip" link for car-booking deposits.
+         The skip link lets users jump to the landing route before
+         post-processing completes (invoice creation, booking state sync).
+         For car bookings we block this entirely — the JS poll must finish. -->
+    <template id="payment_state_header_bs_car" name="Payment State Header : No Skip for Car Booking"
+              inherit_id="payment.state_header">
+        <xpath expr="//a[hasclass('alert-link') and hasclass('ms-auto')]" position="attributes">
+            <attribute name="t-if">is_processing and not tx.booking_id</attribute>
+        </xpath>
+    </template>
+
+    <!-- 2/2: Replace "Reference" (e.g. S00064) with booking name. -->
+    <template id="payment_status_bs_car" name="Payment Status : Car Booking"
+              inherit_id="payment.payment_status">
+        <xpath expr="//t[@t-call='payment.summary_item'][2]" position="replace">
+            <t t-if="tx.booking_id" t-call="payment.summary_item">
+                <t t-set="name" t-value="'booking'"/>
+                <t t-set="label">Booking</t>
+                <t t-set="value" t-value="tx.booking_id.name"/>
+                <t t-set="include_separator" t-value="True"/>
+            </t>
+            <t t-else="" t-call="payment.summary_item">
+                <t t-set="name" t-value="'reference'"/>
+                <t t-set="label">Reference</t>
+                <t t-set="value" t-value="tx.reference"/>
+                <t t-set="include_separator" t-value="True"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Business request (2026-06-12): no public message thread on customer
+         invoices/orders — dealer communication goes through the call center /
+         sales rep, not an unmonitored portal chat. -->
+    <template id="portal_invoice_page_no_chatter" inherit_id="account.portal_invoice_page"
+              name="Invoice Portal: hide communication history">
+        <xpath expr="//div[@id='invoice_communication']" position="replace"/>
+    </template>
+
+    <template id="sale_order_portal_no_chatter" inherit_id="sale.sale_order_portal_template"
+              name="Sale Order Portal: hide communication history">
+        <xpath expr="//div[@id='sale_order_communication']" position="replace"/>
+    </template>
+
+    <!-- Car customers are never the dealer's suppliers: the vendor "Our
+         Invoices" (bills) card only confuses next to "Your Invoices". -->
+    <template id="portal_my_home_invoice_no_bills" inherit_id="account.portal_my_home_invoice"
+              name="Portal Home: hide the vendor bills card">
+        <xpath expr="//t[@t-set='portal_vendor_category_enable']" position="replace"/>
+        <xpath expr="//div[@id='portal_vendor_category']" position="replace"/>
+    </template>
+
+    <!-- The booking page already links its sale order, and the funnel never
+         sends quotations to review — the sale cards were a second, competing
+         path on the portal home. /my/orders itself stays reachable.
+         NOTE: specs of an inherit-of-inherit run on the COMBINED arch, so we
+         must surgically remove sale's entries — replacing the shared
+         #portal_client_category container would break account's later specs. -->
+    <template id="portal_my_home_sale_hidden" inherit_id="sale.portal_my_home_sale"
+              name="Portal Home: hide the quotation/order cards">
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-value=&quot;'/my/quotes'&quot;]]"
+               position="replace"/>
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-value=&quot;'/my/orders'&quot;]]"
+               position="replace"/>
+    </template>
+
 </odoo>

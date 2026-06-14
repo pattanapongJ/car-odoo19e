@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Car catalog link + model year on the product form (General Information). -->
+    <record id="product_template_form_view_bs_car" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.bs.car.booking</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="bs_car_model_id" readonly="1"/>
+                <field name="bs_model_year" invisible="not bs_car_model_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Optional Model Year column on the product list. -->
+    <record id="product_template_tree_view_bs_car" model="ir.ui.view">
+        <field name="name">product.template.list.inherit.bs.car.booking</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="bs_model_year" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

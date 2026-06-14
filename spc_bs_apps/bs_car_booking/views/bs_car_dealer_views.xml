@@ -11,6 +11,8 @@
                 <field name="phone"/>
                 <field name="city"/>
                 <field name="country_id"/>
+                <field name="website_id" optional="hide"/>
+                <field name="company_id" optional="hide"/>
                 <field name="website_published"/>
                 <field name="active"/>
             </list>
@@ -31,6 +33,8 @@
                             <group>
                                 <group>
                                     <field name="sequence"/>
+                                    <field name="website_id"/>
+                                    <field name="company_id"/>
                                     <field name="phone"/>
                                     <field name="email"/>
                                     <field name="website_published"/>

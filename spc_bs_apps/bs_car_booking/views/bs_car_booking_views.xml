@@ -15,6 +15,8 @@
                 <field name="customer_phone"/>
                 <field name="model_id"/>
                 <field name="dealer_id"/>
+                <field name="website_id" optional="hide"/>
+                <field name="company_id" optional="hide"/>
                 <field name="car_price" widget="monetary" optional="show"/>
                 <field name="deposit_amount" widget="monetary"/>
                 <field name="deposit_paid" widget="monetary" optional="show"/>
@@ -76,6 +78,10 @@
                     </div>
                     <field name="sale_order_id" invisible="1"/>
                     <field name="lead_id" invisible="1"/>
+                    <group>
+                        <field name="website_id" readonly="1"/>
+                        <field name="company_id" readonly="1"/>
+                    </group>
                     <notebook>
                         <page string="Customer">
                             <group>
@@ -88,6 +94,7 @@
                                 <group>
                                     <field name="customer_address"/>
                                     <field name="phone_verified" widget="boolean_toggle" readonly="1"/>
+                                    <field name="otp_verified_channel" invisible="not otp_verified_channel"/>
                                     <field name="pdpa_consent" widget="boolean_toggle" readonly="1"/>
                                     <field name="pdpa_consent_date" readonly="1"/>
                                 </group>
@@ -145,6 +152,13 @@
                                 <field name="notes"/>
                                 <field name="internal_notes"/>
                             </group>
+                        </page>
+                        <page string="Customer Feedback" invisible="not rating">
+                            <group>
+                                <field name="rating" readonly="1"/>
+                                <field name="rating_date" readonly="1"/>
+                            </group>
+                            <field name="rating_comment" readonly="1"/>
                         </page>
                     </notebook>
                 </sheet>
@@ -245,6 +259,8 @@
         <field name="arch" type="xml">
             <list create="false" edit="false">
                 <field name="phone"/>
+                <field name="channel"/>
+                <field name="email" optional="show"/>
                 <field name="state"/>
                 <field name="attempts"/>
                 <field name="max_attempts" optional="hide"/>
@@ -264,6 +280,8 @@
                     <group>
                         <field name="booking_id"/>
                         <field name="phone"/>
+                        <field name="channel"/>
+                        <field name="email" invisible="channel != 'email'"/>
                         <field name="state"/>
                         <field name="attempts"/>
                         <field name="max_attempts"/>

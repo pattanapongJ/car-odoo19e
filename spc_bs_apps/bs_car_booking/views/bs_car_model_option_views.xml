@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bs_car_model_option_view_form" model="ir.ui.view">
+        <field name="name">bs.car.model.option.view.form.inherit</field>
+        <field name="model">bs.car.model.option</field>
+        <field name="arch" type="xml">
+            <form string="Car Model Option">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="value_id"/>
+                        <h1><field name="value_id" placeholder="Option value"/></h1>
+                    </div>
+                    <group>
+                        <group string="Pricing">
+                            <field name="model_id"/>
+                            <field name="attribute_name" invisible="1"/>
+                            <field name="sequence"/>
+                            <field name="price_extra"/>
+                            <field name="website_published"/>
+                        </group>
+                        <group string="Colour Studio">
+                            <field name="swatch_color" widget="color"/>
+                            <field name="swatch_color_2" widget="color"
+                                   help="Optional. Set for a two-tone swatch (e.g. two-tone interior)."/>
+                            <field name="image" widget="image" options="{'preview_image': 'image'}"/>
+                            <field name="image_alt"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Available Interiors" invisible="attribute_name != 'Exterior Color'">
+                            <p class="text-muted">
+                                On an exterior colour, choose which interior options are offered with it.
+                                Leave empty to offer every interior configured on this model.
+                            </p>
+                            <field name="interior_option_ids" nolabel="1" widget="many2many_tags"
+                                   domain="[('model_id', '=', model_id), ('attribute_name', '=', 'Interior')]"
+                                   context="{'default_model_id': model_id}"
+                                   placeholder="Leave empty to offer all interiors"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

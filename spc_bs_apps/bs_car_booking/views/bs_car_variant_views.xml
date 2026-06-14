@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Car Variant Form & Tree -->
+    <!-- Standard Package Form & List -->
     <record id="view_bs_car_variant_tree" model="ir.ui.view">
-        <field name="name">bs.car.variant.tree</field>
+        <field name="name">bs.car.variant.list</field>
         <field name="model">bs.car.variant</field>
         <field name="arch" type="xml">
             <list>
@@ -10,7 +10,6 @@
                 <field name="name"/>
                 <field name="model_id"/>
                 <field name="brand_id"/>
-                <field name="exterior_color"/>
                 <field name="price" widget="monetary"/>
                 <field name="available_qty"/>
                 <field name="estimated_delivery_days"/>
@@ -24,16 +23,22 @@
         <field name="name">bs.car.variant.form</field>
         <field name="model">bs.car.variant</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Standard Package">
                 <sheet>
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="Variant Name"/></h1>
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Standard"/></h1>
                         <h3>
                             <field name="model_id" domain="[('brand_id', '=', brand_id)]" context="{'default_brand_id': brand_id}"/>
                         </h3>
                     </div>
                     <notebook>
-                        <page string="General">
+                        <page string="Package">
+                            <p class="text-muted">
+                                The standard package is the base product variant used by booking pricing.
+                                Keep one active line named Standard unless the business later introduces
+                                multiple official packages.
+                            </p>
                             <group>
                                 <group>
                                     <field name="sequence"/>
@@ -41,12 +46,6 @@
                                     <field name="price_over_base" widget="monetary"/>
                                     <field name="website_published"/>
                                     <field name="active"/>
-                                </group>
-                                <group>
-                                    <field name="exterior_color"/>
-                                    <field name="exterior_color_code" widget="color"/>
-                                    <field name="interior_color"/>
-                                    <field name="wheel_type"/>
                                 </group>
                             </group>
                         </page>
@@ -70,7 +69,7 @@
     </record>
 
     <record id="action_bs_car_variant" model="ir.actions.act_window">
-        <field name="name">Car Variants</field>
+        <field name="name">Standard Packages</field>
         <field name="res_model">bs.car.variant</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_bs_car_variant_tree"/>

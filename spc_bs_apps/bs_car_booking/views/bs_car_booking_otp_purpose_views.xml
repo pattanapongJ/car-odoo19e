@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List View -->
+    <record id="view_bs_car_booking_otp_purpose_list" model="ir.ui.view">
+        <field name="name">bs.car.booking.otp.purpose.list</field>
+        <field name="model">bs.car.booking.otp.purpose</field>
+        <field name="arch" type="xml">
+            <list string="OTP Purposes" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="sms_template_id"/>
+                <field name="mail_template_id"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_bs_car_booking_otp_purpose_form" model="ir.ui.view">
+        <field name="name">bs.car.booking.otp.purpose.form</field>
+        <field name="model">bs.car.booking.otp.purpose</field>
+        <field name="arch" type="xml">
+            <form string="OTP Purpose">
+                <sheet>
+                    <group>
+                        <group string="General">
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Delivery Templates">
+                            <field name="sms_template_id"/>
+                            <field name="mail_template_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="SMS Fallback Message">
+                            <field name="sms_fallback_body"
+                                   nolabel="1"
+                                   placeholder="e.g. Your verification code is: %%(otp_code)s. Valid for 5 minutes."/>
+                        </group>
+                        <group string="Email Fallback Message">
+                            <field name="mail_fallback_body"
+                                   nolabel="1"
+                                   placeholder="e.g. Your verification code is: %%(otp_code)s. Valid for 5 minutes."/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_bs_car_booking_otp_purpose" model="ir.actions.act_window">
+        <field name="name">OTP Purposes</field>
+        <field name="res_model">bs.car.booking.otp.purpose</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu — under Configuration -->
+    <menuitem id="menu_bs_car_booking_config"
+              name="Configuration"
+              parent="menu_bs_car_booking_root"
+              sequence="90"/>
+
+    <menuitem id="menu_bs_car_booking_otp_purpose"
+              name="OTP Purposes"
+              parent="menu_bs_car_booking_config"
+              action="action_bs_car_booking_otp_purpose"
+              sequence="10"/>
+
+</odoo>

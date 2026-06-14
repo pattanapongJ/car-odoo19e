@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="home_section_featured_model" model="bs.car.website.section">
+            <field name="name">E-HS9 Featured Model</field>
+            <field name="sequence">10</field>
+            <field name="section_type">featured_model</field>
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="eyebrow">Featured Model</field>
+            <field name="title">Hongqi E-HS9</field>
+            <field name="subtitle">Flagship electric luxury, configured through your official dealer network.</field>
+            <field name="primary_cta_label">Discover E-HS9</field>
+            <field name="secondary_cta_label">Reserve</field>
+        </record>
+
+        <record id="home_section_model_stage" model="bs.car.website.section">
+            <field name="name">E-HS9 Model Stage</field>
+            <field name="sequence">20</field>
+            <field name="section_type">model_stage</field>
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="eyebrow">Flagship Electric SUV</field>
+            <field name="title">E-HS9</field>
+            <field name="subtitle">A commanding electric SUV stage, curated from dealer-managed showcase media.</field>
+            <field name="primary_cta_label">View Model</field>
+            <field name="secondary_cta_label">Book Test Drive</field>
+            <field name="secondary_cta_url">/test-drive</field>
+        </record>
+
+        <record id="home_section_color_studio" model="bs.car.website.section">
+            <field name="name">E-HS9 Colour Studio</field>
+            <field name="sequence">30</field>
+            <field name="section_type">color_studio</field>
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="eyebrow">Personalisation</field>
+            <field name="title">Colour Options</field>
+            <field name="subtitle">Choose an exterior finish, then pair it with the interior theme available for that colour.</field>
+        </record>
+
+        <record id="home_section_specs" model="bs.car.website.section">
+            <field name="name">E-HS9 Specifications</field>
+            <field name="sequence">40</field>
+            <field name="section_type">model_specs</field>
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="title">E-HS9 Specifications</field>
+            <field name="subtitle">Flagship electric performance, comfort, and range at a glance.</field>
+        </record>
+
+        <record id="home_section_highlights" model="bs.car.website.section">
+            <field name="name">E-HS9 Highlights</field>
+            <field name="sequence">50</field>
+            <field name="section_type">highlights</field>
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="eyebrow">E-HS9 Highlights</field>
+            <field name="title">Signature details, curated for a flagship arrival</field>
+            <field name="subtitle">Explore the details that shape the E-HS9 presence, from ceremonial lighting to executive cabin comfort.</field>
+        </record>
+
+        <record id="home_section_cabin_story" model="bs.car.website.section">
+            <field name="name">E-HS9 Cabin Story</field>
+            <field name="sequence">55</field>
+            <field name="section_type">cabin_story</field>
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="eyebrow">Crafted Sanctuary</field>
+            <field name="title">A cabin composed in silence</field>
+            <field name="subtitle">Hand-finished leather, ambient lighting and acoustic glazing — engineered so every journey feels like an arrival.</field>
+            <!-- Looping cabin teaser; the interior still doubles as the video poster. -->
+            <field name="video_filename">ehs9_cabin_teaser.webm</field>
+            <field name="video_file" type="base64" file="bs_car_booking_demo/static/src/video/ehs9_cabin_teaser.webm"/>
+            <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/cars/hongqi/ehs9_interior.jpg"/>
+        </record>
+
+        <record id="home_section_heritage" model="bs.car.website.section">
+            <field name="name">Hongqi Heritage</field>
+            <field name="sequence">60</field>
+            <field name="section_type">heritage</field>
+            <field name="brand_id" ref="brand_hongqi"/>
+            <field name="title">A flagship legacy, electrified</field>
+        </record>
+
+        <record id="home_section_stories" model="bs.car.website.section">
+            <field name="name">Hongqi News</field>
+            <field name="sequence">70</field>
+            <field name="section_type">stories</field>
+            <field name="title">Latest news</field>
+        </record>
+
+        <record id="home_section_dealers" model="bs.car.website.section">
+            <field name="name">Hongqi Dealers</field>
+            <field name="sequence">80</field>
+            <field name="section_type">dealer_locator</field>
+            <field name="title">Find a dealer</field>
+        </record>
+    </data>
+</odoo>

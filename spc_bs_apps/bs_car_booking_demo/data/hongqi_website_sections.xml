@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="section_hongqi_brand_cover" model="bs.car.website.section">
+            <field name="name">Hongqi Thailand Cover</field>
+            <field name="sequence">1</field>
+            <field name="section_type">brand_cover</field>
+            <field name="theme_variant">hongqi_heritage</field>
+            <field name="brand_id" ref="brand_hongqi"/>
+            <field name="model_id" ref="model_hongqi_ehs9"/>
+            <field name="eyebrow">Metro Group Presents</field>
+            <field name="title">HONGQI</field>
+            <field name="title_image" type="base64" file="bs_car_booking_demo/static/src/img/brand/hongqi_white.png"/>
+            <field name="title_image_alt">HONGQI</field>
+            <field name="subtitle">Driven by Heritage&#10;Leading Tomorrow</field>
+            <field name="image" type="base64" file="bs_car_booking_demo/static/src/img/hero/hongqi_hero_poster.png"/>
+            <field name="image_alt">Hongqi E-HS9 flagship SUV</field>
+            <field name="video_filename">hongqi_hero_desktop.webm</field>
+            <field name="video_file" type="base64" file="bs_car_booking_demo/static/src/video/hongqi_hero_desktop.webm"/>
+            <field name="mobile_video_filename">hongqi_hero_mobile.webm</field>
+            <field name="mobile_video_file" type="base64" file="bs_car_booking_demo/static/src/video/hongqi_hero_mobile.webm"/>
+            <field name="primary_cta_label">Explore</field>
+            <field name="primary_cta_url">/cars</field>
+        </record>
+    </data>
+</odoo>

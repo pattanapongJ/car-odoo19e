@@ -6,6 +6,7 @@
 
 import { Interaction } from "@web/public/interaction";
 import { registry } from "@web/core/registry";
+import { isValidPhone } from "@bs_car_booking/js/phone_utils";
 
 async function jsonrpc(route, params) {
     const resp = await fetch(route, {
@@ -22,6 +23,7 @@ export class CarConfigurator extends Interaction {
 
     setup() {
         this.modelId = parseInt(this.el.dataset.modelId || "0");
+        this.productMissing = this.el.dataset.productMissing === "1";
         this.priceEl = document.getElementById("cfg_price");
         this.errorEl = document.getElementById("cfg_error");
         this.selectedListEl = document.getElementById("cfg_selected_list");
@@ -39,16 +41,19 @@ export class CarConfigurator extends Interaction {
         this.pdpaEl = document.getElementById("cfg_pdpa");
         this.submitBtn = this.el.querySelector(".cfg_submit_btn");
         if (this.pdpaEl && this.submitBtn) {
-            const sync = () => { this.submitBtn.disabled = !this.pdpaEl.checked; };
+            const sync = () => { this.submitBtn.disabled = this.productMissing || !this.pdpaEl.checked; };
             this.pdpaEl.addEventListener("change", sync);
             sync();
         }
 
         // Initialise selected styles + price.
+        this._refreshInteriorAvailability();
         this._refreshSelectedStyles();
         this._refreshDealerStyles();
         this._refreshSummary();
+        this._refreshSummaryImage();
         this._updatePrice();
+        this._setupOtpToggle();
 
         this.el.addEventListener("submit", (e) => this._onSubmit(e));
     }
@@ -80,6 +85,7 @@ export class CarConfigurator extends Interaction {
     _refreshSummary() {
         if (!this.selectedListEl) return;
         const selected = Array.from(this.el.querySelectorAll(".cfg_input:checked"))
+            .filter((input) => input.dataset.summaryHidden !== "1")
             .map((input) => input.dataset.summaryLabel)
             .filter(Boolean);
         this.selectedListEl.innerHTML = "";
@@ -96,16 +102,80 @@ export class CarConfigurator extends Interaction {
     }
 
     _onChange() {
+        this._refreshInteriorAvailability();
         this._refreshSelectedStyles();
         this._refreshSummary();
+        this._refreshSummaryImage();
         this._updatePrice();
     }
 
+    /* Restrict the interior options to those allowed by the selected exterior
+       colour (its "Available Interiors"). Disallowed interiors are greyed out
+       and, if the current selection becomes unavailable, the first allowed
+       interior is selected instead. (Unpublished options aren't rendered.) */
+    _refreshInteriorAvailability() {
+        const interiorInputs = Array.from(
+            this.el.querySelectorAll('.cfg_input[data-interior-option="1"]'));
+        if (!interiorInputs.length) {
+            return;
+        }
+        const extInput = this.el.querySelector('.cfg_input[data-exterior-option="1"]:checked');
+        // null = no restriction (exterior offers every interior).
+        let allowed = null;
+        if (extInput && extInput.dataset.interiorValueIds) {
+            allowed = new Set(extInput.dataset.interiorValueIds.split(",").filter(Boolean));
+        }
+        let firstEnabled = null;
+        let droppedSelection = false;
+        for (const input of interiorInputs) {
+            const ok = allowed === null || allowed.has(input.dataset.valueId);
+            input.disabled = !ok;
+            const label = input.closest("label");
+            if (label) {
+                label.classList.toggle("is-unavailable", !ok);
+            }
+            if (ok && !firstEnabled) {
+                firstEnabled = input;
+            }
+            if (!ok && input.checked) {
+                input.checked = false;
+                droppedSelection = true;
+            }
+        }
+        if (droppedSelection && firstEnabled) {
+            firstEnabled.checked = true;
+        }
+    }
+
+    /* Swap the summary exterior/interior images to match the current selection
+       (same approach as the Colour Studio). Each stage shows the image whose
+       data-cfg-value equals a selected option's product-attribute-value id. */
+    _refreshSummaryImage() {
+        const stages = this.el.querySelectorAll(".cfg_summary_stage");
+        if (!stages.length) {
+            return;
+        }
+        const selectedValueIds = new Set();
+        for (const input of this.el.querySelectorAll(".cfg_input")) {
+            if (input.checked && input.dataset.valueId) {
+                selectedValueIds.add(input.dataset.valueId);
+            }
+        }
+        for (const stage of stages) {
+            const imgs = Array.from(stage.querySelectorAll(".cfg_summary_img"));
+            if (!imgs.length) {
+                continue;
+            }
+            const match = imgs.find((im) => selectedValueIds.has(im.dataset.cfgValue)) || imgs[0];
+            imgs.forEach((im) => im.classList.toggle("is-active", im === match));
+        }
+    }
+    
     async _updatePrice() {
         if (!this.priceEl) return;
         this.priceEl.classList.add("is-updating");
         try {
-            const res = await jsonrpc("/shop/car/price", {
+            const res = await jsonrpc("/car_booking/car/price", {
                 model_id: this.modelId,
                 ptav_ids: this._selectedPtavIds(),
             });
@@ -127,15 +197,58 @@ export class CarConfigurator extends Interaction {
         this.errorEl?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
+    _setupOtpToggle() {
+        const toggle = document.getElementById("cfg_otp_channel_toggle");
+        if (!toggle) return;
+        const emailRow = document.getElementById("cfg_email_row");
+        const emailInput = document.getElementById("cfg_email");
+        const phoneHint = document.getElementById("cfg_phone_hint");
+        const radios = toggle.querySelectorAll('input[name="otp_channel"]');
+
+        const update = (value) => {
+            const isEmail = value === 'email';
+            if (emailRow) emailRow.classList.toggle('d-none', !isEmail);
+            if (emailInput) emailInput.required = isEmail;
+            if (phoneHint) {
+                phoneHint.textContent = isEmail
+                    ? 'Our team will use this number to contact you.'
+                    : 'We\'ll send a verification code to this number.';
+            }
+        };
+
+        // Initial state from checked radio.
+        const checked = toggle.querySelector('input[name="otp_channel"]:checked');
+        if (checked) update(checked.value);
+
+        radios.forEach(r => r.addEventListener('change', () => update(r.value)));
+    }
+
     async _onSubmit(e) {
         e.preventDefault();
+        if (this.productMissing) {
+            this._showError("This model is not ready for online booking yet.");
+            return;
+        }
         const phoneEl = document.getElementById("cfg_phone");
         const phone = (phoneEl && phoneEl.value || "").trim();
+        // Customer's channel pick. No toggle rendered (email-only website
+        // mode) → send null and let the server resolve the channel.
+        const channelRadio = document.querySelector('input[name="otp_channel"]:checked');
+        const otpChannel = channelRadio ? channelRadio.value : null;
+        const emailEl = document.getElementById("cfg_email");
+        const email = (emailEl && emailEl.value || "").trim();
         const dealer = this.el.querySelector('input[name="dealer_id"]:checked');
         const dealerOptions = this.el.querySelectorAll('input[name="dealer_id"]');
 
-        if (phone.length < 7) {
-            this._showError("Please enter a valid mobile number.");
+        if (!isValidPhone(phone)) {
+            this._showError("Please enter a valid mobile number (7–15 digits, e.g. +66 8 1234 5678).");
+            return;
+        }
+        // Email is mandatory whenever it is the delivery channel — either
+        // picked on the toggle or forced by the email-only website mode.
+        const emailRequired = otpChannel === 'email' || (emailEl && emailEl.required);
+        if (emailRequired && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            this._showError("Please enter a valid email address.");
             return;
         }
         if (dealerOptions.length && !dealer) {
@@ -154,11 +267,13 @@ export class CarConfigurator extends Interaction {
         btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Creating...';
 
         try {
-            const res = await jsonrpc("/shop/car/book", {
+            const res = await jsonrpc("/car_booking/car/book", {
                 model_id: this.modelId,
                 ptav_ids: this._selectedPtavIds(),
                 dealer_id: dealer ? dealer.value : null,
                 phone: phone,
+                email: email || null,
+                otp_channel: otpChannel,
                 pdpa_consent: !!(pdpaEl && pdpaEl.checked),
             });
             if (res.success) {

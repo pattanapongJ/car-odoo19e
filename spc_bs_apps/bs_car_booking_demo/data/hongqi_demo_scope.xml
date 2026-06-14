@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <function model="bs.car.brand" name="write">
+            <value eval="[ref('brand_hongqi')]"/>
+            <value eval="{'company_id': False, 'is_published': True}"/>
+        </function>
+
+        <function model="bs.car.model" name="write">
+            <value eval="[ref('model_hongqi_ehs9'), ref('model_hongqi_eh7'), ref('model_hongqi_hs5')]"/>
+            <value eval="{'company_id': False, 'is_published': True}"/>
+        </function>
+
+        <function model="bs.car.website.section" name="write">
+            <value eval="[
+                ref('section_hongqi_brand_cover'),
+                ref('home_section_featured_model'),
+                ref('home_section_model_stage'),
+                ref('home_section_color_studio'),
+                ref('home_section_specs'),
+                ref('home_section_highlights'),
+                ref('home_section_cabin_story'),
+                ref('home_section_heritage'),
+                ref('home_section_stories'),
+                ref('home_section_dealers'),
+            ]"/>
+            <value eval="{'company_id': False, 'is_published': True}"/>
+        </function>
+
+        <function model="bs.car.showcase.item" name="write">
+            <value eval="[
+                ref('showcase_ehs9_stage_presence'), ref('showcase_ehs9_stage_rear'), ref('showcase_ehs9_stage_detail'),
+                ref('showcase_ehs9_highlight_light'), ref('showcase_ehs9_highlight_presence'), ref('showcase_ehs9_highlight_colour_body'),
+                ref('showcase_ehs9_highlight_cabin'), ref('showcase_ehs9_highlight_sunroof'), ref('showcase_ehs9_highlight_battery'),
+                ref('showcase_ehs9_cabin_story'),
+            ]"/>
+            <value eval="{'company_id': False, 'is_published': True}"/>
+        </function>
+
+        <function model="bs.car.showcase.item" name="write">
+            <value eval="[
+                ref('showcase_eh7_stage_1'), ref('showcase_eh7_stage_2'), ref('showcase_eh7_stage_3'),
+                ref('showcase_eh7_ext_white'), ref('showcase_eh7_ext_black'), ref('showcase_eh7_ext_blue'),
+                ref('showcase_eh7_hl_range'), ref('showcase_eh7_hl_perf'), ref('showcase_eh7_hl_lounge'),
+                ref('showcase_eh7_cabin'),
+            ]"/>
+            <value eval="{'company_id': False, 'is_published': True}"/>
+        </function>
+
+        <function model="bs.car.showcase.item" name="write">
+            <value eval="[
+                ref('showcase_hs5_stage_1'), ref('showcase_hs5_stage_2'), ref('showcase_hs5_stage_3'),
+                ref('showcase_hs5_ext_white'), ref('showcase_hs5_ext_black'),
+                ref('showcase_hs5_hl_grille'), ref('showcase_hs5_hl_cabin'), ref('showcase_hs5_hl_adas'),
+                ref('showcase_hs5_cabin'),
+            ]"/>
+            <value eval="{'company_id': False, 'is_published': True}"/>
+        </function>
+
+        <function model="bs.car.story" name="write">
+            <value eval="[ref('story_hongqi_thailand_arrival'), ref('story_ehs9_private_viewing'), ref('story_electric_flagship_specs')]"/>
+            <value eval="{'company_id': False, 'is_published': True}"/>
+        </function>
+
+        <function model="bs.car.dealer" name="write">
+            <value eval="[ref('dealer_hongqi_bangkok'), ref('dealer_hongqi_chiangmai'), ref('dealer_hongqi_phuket')]"/>
+            <value eval="{'company_id': False, 'is_published': True}"/>
+        </function>
+
+        <function model="bs.car.offer" name="write">
+            <value eval="[ref('offer_zero_apr'), ref('offer_trade_in'), ref('offer_flagship')]"/>
+            <value eval="{'company_id': False, 'is_published': True}"/>
+        </function>
+    </data>
+</odoo>

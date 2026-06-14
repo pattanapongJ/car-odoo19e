@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- One lead tag per contact-form topic so sales can filter/report by
+             intent (the form posts the matching id through a hidden tag_ids). -->
+        <record id="crm_tag_contact_dealer" model="crm.tag">
+            <field name="name">Dealership Application</field>
+        </record>
+        <record id="crm_tag_contact_job" model="crm.tag">
+            <field name="name">Job Application</field>
+        </record>
+        <record id="crm_tag_contact_other" model="crm.tag">
+            <field name="name">General Inquiry (Other)</field>
+        </record>
+    </data>
+    <!-- tag_ids stays form-builder-BLACKLISTED on purpose: the topic tag is
+         stamped server-side (crm_lead.website_form_input_filter), and a
+         whitelisted tag_ids would let any tampered submit attach arbitrary
+         tags to leads. -->
+</odoo>

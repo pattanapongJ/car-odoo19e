@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <function model="ir.module.module" name="action_reset_theme_bs_hongqi_car_templates">
+            <value model="ir.module.module" search="[('name', '=', 'theme_bs_hongqi_car')]"/>
+        </function>
+        <function model="ir.module.module" name="action_cleanup_theme_bs_hongqi_car">
+            <value model="ir.module.module" search="[('name', '=', 'theme_bs_hongqi_car')]"/>
+        </function>
+    </data>
+</odoo>
