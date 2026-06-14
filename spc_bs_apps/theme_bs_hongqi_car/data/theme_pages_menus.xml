@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
         <record id="hongqi_home_view" model="theme.ir.ui.view">
             <field name="name">Hongqi Car Home</field>
             <field name="key">theme_bs_hongqi_car.hongqi_home</field>
@@ -241,12 +241,13 @@
                                                          class="s_website_form_field mb-4 col-md-6"
                                                          data-type="char"
                                                          data-translated-name="Line ID">
-                                                        <label class="form-label" for="line_id">Line ID</label>
+                                                        <label class="form-label" for="line_id">Line ID <span class="text-danger">*</span></label>
                                                         <input class="form-control s_website_form_input bs_contact_input"
                                                                type="text"
                                                                name="Line ID"
                                                                id="line_id"
-                                                               placeholder="Line ID (Optional)"/>
+                                                               required="1"
+                                                               placeholder="Line ID"/>
                                                     </div>
                                                     <div data-name="Field"
                                                          class="s_website_form_field mb-4 col-md-6 s_website_form_required"
@@ -457,8 +458,8 @@
 
                                         <div class="form-row">
                                             <div class="form-group">
-                                                <label>Line ID</label>
-                                                <input type="text" id="td_lineId" placeholder="Line ID (Optional)"/>
+                                                <label>Line ID <span class="required">*</span></label>
+                                                <input type="text" id="td_lineId" placeholder="Line ID" required="required"/>
                                             </div>
                                             <div class="form-group">
                                                 <label>อีเมล <span class="en-label">/ Email</span></label>
@@ -468,11 +469,11 @@
 
                                         <div class="form-row">
                                             <div class="form-group">
-                                                <label>วันที่สะดวก <span class="en-label">/ Preferred Date</span><span class="required">*</span></label>
-                                                <input type="date" id="td_date" required="required"/>
+                                                <label>วันที่สะดวก <span class="en-label">/ Preferred Date</span></label>
+                                                <input type="date" id="td_date"/>
                                             </div>
                                             <div class="form-group">
-                                                <label>ช่วงเวลาที่สะดวก <span class="en-label">/ Preferred Time</span><span class="required">*</span></label>
+                                                <label>ช่วงเวลาที่สะดวก <span class="en-label">/ Preferred Time</span></label>
                                                 <div class="radio-group">
                                                     <label class="radio-item">
                                                         <input type="radio" name="preferredTime" value="Morning" checked="checked"/>
@@ -488,8 +489,8 @@
 
                                         <div class="form-row">
                                             <div class="form-group">
-                                                <label>พื้นที่นัดหมาย <span class="en-label">/ Preferred Location</span><span class="required">*</span></label>
-                                                <input type="text" id="td_location" placeholder="เช่น บางนา, สุขุมวิท / e.g., Bangna, Sukhumvit" required="required"/>
+                                                <label>พื้นที่นัดหมาย <span class="en-label">/ Preferred Location</span></label>
+                                                <input type="text" id="td_location" placeholder="เช่น บางนา, สุขุมวิท / e.g., Bangna, Sukhumvit"/>
                                             </div>
                                         </div>
 
@@ -517,39 +518,7 @@
             <field name="is_published">True</field>
         </record>
 
-        <record id="menu_website_home" model="theme.website.menu">
-            <field name="name">Home</field>
-            <field name="url">/showroom</field>
-            <field name="sequence">5</field>
-        </record>
-        <record id="menu_website_cars" model="theme.website.menu">
-            <field name="name">Models</field>
-            <field name="url">/cars</field>
-            <field name="sequence">10</field>
-        </record>
-        <record id="menu_website_testdrive" model="theme.website.menu">
-            <field name="name">Test Drive</field>
-            <field name="url">/test-drive</field>
-            <field name="sequence">55</field>
-        </record>
-        <record id="menu_website_about_us" model="theme.website.menu">
-            <field name="name">About Us</field>
-            <field name="url">/#</field>
-            <field name="sequence">70</field>
-        </record>
-        <record id="menu_website_stories" model="theme.website.menu">
-            <field name="name">News</field>
-            <field name="url">/stories</field>
-            <field name="sequence">10</field>
-            <field name="parent_id" ref="menu_website_about_us"/>
-            <field name="use_main_menu_as_parent" eval="False"/>
-        </record>
-        <record id="menu_website_contact" model="theme.website.menu">
-            <field name="name">Contact Us</field>
-            <field name="url">/contactus</field>
-            <field name="sequence">20</field>
-            <field name="parent_id" ref="menu_website_about_us"/>
-            <field name="use_main_menu_as_parent" eval="False"/>
-        </record>
+        <!-- Menu records moved to bs_car_booking/data/website_menus.xml
+             (website.menu model with external IDs — never duplicates on upgrade) -->
     </data>
 </odoo>

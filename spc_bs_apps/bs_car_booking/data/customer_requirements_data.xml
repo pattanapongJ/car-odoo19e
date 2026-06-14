@@ -1,37 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <!-- Default document requirements (admin can edit/add in
-             Master Data ▸ Document Types). -->
-        <record id="doc_type_id_card" model="bs.car.document.type">
-            <field name="name">National ID / NRC</field>
-            <field name="code">id_card</field>
-            <field name="applies_to">individual</field>
-            <field name="required" eval="True"/>
-            <field name="sequence" type="int">10</field>
-            <field name="help_text">A clear photo or scan of your ID card / NRC.</field>
-        </record>
+        <!-- Document types that never change: created once and left to admin. -->
         <record id="doc_type_driver_license" model="bs.car.document.type">
             <field name="name">Driver's License</field>
             <field name="code">driver_license</field>
             <field name="applies_to">individual</field>
             <field name="required" eval="False"/>
             <field name="sequence" type="int">20</field>
-        </record>
-        <record id="doc_type_company_registration" model="bs.car.document.type">
-            <field name="name">Company Registration</field>
-            <field name="code">company_reg</field>
-            <field name="applies_to">company</field>
-            <field name="required" eval="True"/>
-            <field name="sequence" type="int">30</field>
-            <field name="help_text">Company registration / incorporation certificate.</field>
-        </record>
-        <record id="doc_type_vat_certificate" model="bs.car.document.type">
-            <field name="name">VAT / Tax Certificate</field>
-            <field name="code">vat_cert</field>
-            <field name="applies_to">company</field>
-            <field name="required" eval="True"/>
-            <field name="sequence" type="int">40</field>
         </record>
         <record id="doc_type_authorization_letter" model="bs.car.document.type">
             <field name="name">Authorization Letter</field>
@@ -40,11 +16,41 @@
             <field name="required" eval="False"/>
             <field name="sequence" type="int">50</field>
         </record>
+    </data>
 
-        <!-- Default agreements (admin can edit in Master Data ▸ Agreements).
-             page_url links to the editable policy pages. -->
+    <!-- Document types whose required flag is managed in code (noupdate="0"
+         so upgrades keep the DB in sync with these values). -->
+    <data noupdate="0">
+        <record id="doc_type_id_card" model="bs.car.document.type">
+            <field name="name">National ID / NRC</field>
+            <field name="code">id_card</field>
+            <field name="applies_to">individual</field>
+            <field name="required" eval="False"/>
+            <field name="sequence" type="int">10</field>
+            <field name="help_text">A clear photo or scan of your ID card / NRC.</field>
+        </record>
+        <record id="doc_type_company_registration" model="bs.car.document.type">
+            <field name="name">Company Registration</field>
+            <field name="code">company_reg</field>
+            <field name="applies_to">company</field>
+            <field name="required" eval="False"/>
+            <field name="sequence" type="int">30</field>
+            <field name="help_text">Company registration / incorporation certificate.</field>
+        </record>
+        <record id="doc_type_vat_certificate" model="bs.car.document.type">
+            <field name="name">VAT / Tax Certificate</field>
+            <field name="code">vat_cert</field>
+            <field name="applies_to">company</field>
+            <field name="required" eval="False"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+    </data>
+
+    <!-- Agreements use noupdate="0" so name/label changes in code are applied
+         on module upgrade (admins can still edit other fields via the backend). -->
+    <data noupdate="0">
         <record id="agreement_terms" model="bs.car.agreement">
-            <field name="name">Terms &amp; Conditions</field>
+            <field name="name">Sale Terms &amp; Conditions</field>
             <field name="cta_label">I accept the</field>
             <field name="page_url">/terms</field>
             <field name="applies_to">both</field>

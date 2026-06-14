@@ -75,6 +75,7 @@
                                      hidden entirely. The whole attribute block is skipped when
                                      none of its values are published. -->
                                 <t t-set="avail_ptavs" t-value="product_attribute_values.filtered(lambda p: p.product_attribute_value_id.id not in unpublished_value_ids)"/>
+                                <t t-set="avail_ptavs" t-value="avail_ptavs.sorted(key=lambda p: option_sequence.get(p.product_attribute_value_id.id, 999))"/>
                                 <t t-set="default_ptav" t-value="avail_ptavs[:1]"/>
                                 <t t-set="is_single_standard_package"
                                    t-value="standard_package_attr and line.attribute_id == standard_package_attr and len(product_attribute_values) == 1"/>
@@ -274,7 +275,7 @@
                                     <span class="car_kicker car_kicker_dark" t-esc="car.brand_id.name"/>
                                     <h5 t-esc="car.name"/>
                                     <div class="cfg_selected_list" id="cfg_selected_list"/>
-                                    <div class="cfg_price_label">Estimated price</div>
+                                    <div class="cfg_price_label">price</div>
                                     <div class="cfg_price" id="cfg_price"
                                          t-esc="base_price"
                                          t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>

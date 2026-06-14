@@ -164,6 +164,9 @@ class BsCarBookingWebsite(CustomerPortal):
             o.value_id.id: o.interior_option_ids.value_id.ids
             for o in options if o.interior_option_ids
         }
+        # Display order: {product.attribute.value.id: sequence} so the template
+        # can sort ptavs by the drag-ordered sequence on bs.car.model.option.
+        option_sequence = {o.value_id.id: o.sequence for o in options}
         return request.render('bs_car_booking.booking_configurator_page', {
             'car': car,
             'tmpl': tmpl,
@@ -177,6 +180,7 @@ class BsCarBookingWebsite(CustomerPortal):
             'otp_channel': request.env['bs.car.booking.otp'].sudo()._get_otp_channel(),
             'unpublished_value_ids': unpublished_value_ids,
             'exterior_interiors': exterior_interiors,
+            'option_sequence': option_sequence,
         })
 
     # ── OTP verification ────────────────────────────────────────────────

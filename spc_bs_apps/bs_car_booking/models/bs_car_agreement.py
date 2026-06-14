@@ -12,13 +12,13 @@ class BsCarAgreement(models.Model):
     _order = 'sequence, id'
 
     name = fields.Char('Agreement', required=True, translate=True,
-                       help='Internal name, e.g. "Terms & Conditions".')
+                       help='Internal name, e.g. "Sale Terms & Conditions".')
     company_id = fields.Many2one(
         'res.company', string='Company', default=lambda self: self.env.company,
         index=True, help='Leave empty to share this agreement across companies.')
     cta_label = fields.Char('Checkbox Label', required=True, translate=True,
                             help='Text shown next to the checkbox, e.g. '
-                                 '"I accept the Terms & Conditions".')
+                                 '"I accept the Sale Terms & Conditions".')
     page_url = fields.Char('Policy Page URL', help='Website page with the full '
                            'text, e.g. /terms. The label links to it.')
     applies_to = fields.Selection([

@@ -163,7 +163,7 @@
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Email</label>
                                     <input type="email" name="customer_email" class="form-control form-control-lg"
-                                           t-att-value="booking.customer_email or ''" placeholder="you@email.com"/>
+                                           t-att-value="booking.customer_email or ''" disabled="disabled"/>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Phone</label>

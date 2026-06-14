@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Website menus — model="website.menu" with external IDs.
+         noupdate="1" guarantees no duplication on module upgrade.
+         Run AFTER the website exists (post_init / update). -->
+    <data noupdate="1">
+
+        <!-- Top-level items -->
+        <record id="menu_website_home" model="website.menu">
+            <field name="name">Home</field>
+            <field name="url">/showroom</field>
+            <field name="sequence">5</field>
+            <field name="website_id" ref="website.default_website"/>
+        </record>
+        <record id="menu_website_cars" model="website.menu">
+            <field name="name">Models</field>
+            <field name="url">/cars</field>
+            <field name="sequence">10</field>
+            <field name="website_id" ref="website.default_website"/>
+        </record>
+        <record id="menu_website_testdrive" model="website.menu">
+            <field name="name">Test Drive</field>
+            <field name="url">/test-drive</field>
+            <field name="sequence">55</field>
+            <field name="website_id" ref="website.default_website"/>
+        </record>
+        <record id="menu_website_about_us" model="website.menu">
+            <field name="name">About Us</field>
+            <field name="url">/#</field>
+            <field name="sequence">70</field>
+            <field name="website_id" ref="website.default_website"/>
+        </record>
+
+        <!-- Sub-menu items under About Us -->
+        <record id="menu_website_stories" model="website.menu">
+            <field name="name">News</field>
+            <field name="url">/stories</field>
+            <field name="sequence">10</field>
+            <field name="parent_id" ref="menu_website_about_us"/>
+            <field name="website_id" ref="website.default_website"/>
+        </record>
+        <record id="menu_website_contact" model="website.menu">
+            <field name="name">Contact Us</field>
+            <field name="url">/contactus</field>
+            <field name="sequence">20</field>
+            <field name="parent_id" ref="menu_website_about_us"/>
+            <field name="website_id" ref="website.default_website"/>
+        </record>
+
+    </data>
+</odoo>

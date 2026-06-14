@@ -1853,8 +1853,8 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_configurator_page
-msgid "Estimated price"
-msgstr "ราคาประมาณ"
+msgid "price"
+msgstr "ราคา"
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_story__excerpt
@@ -2403,7 +2403,7 @@ msgstr ""
 #. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_agreement__name
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_booking_agreement__name
-msgid "Internal name, e.g. \"Terms & Conditions\"."
+msgid "Internal name, e.g. \"Sale Terms & Conditions\"."
 msgstr ""
 
 #. module: bs_car_booking
@@ -4064,12 +4064,12 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model:bs.car.agreement,name:bs_car_booking.agreement_terms
-msgid "Terms & Conditions"
+msgid "Sale Terms & Conditions"
 msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_agreement__cta_label
-msgid "Text shown next to the checkbox, e.g. \"I accept the Terms & Conditions\"."
+msgid "Text shown next to the checkbox, e.g. \"I accept the Sale Terms & Conditions\"."
 msgstr ""
 
 #. module: bs_car_booking
