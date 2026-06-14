@@ -696,7 +696,7 @@
                     <h2 class="section_title">Latest arrivals</h2>
                 </div>
                 <div class="car_grid">
-                    <a t-foreach="arrivals" t-as="car" t-att-href="'/car/%s' % car.id" class="bs_catalog_card">
+                    <div t-foreach="arrivals" t-as="car" class="bs_catalog_card" t-att-data-href="'/car/%s' % car.id">
                         <div class="bs_catalog_card_media">
                             <img t-if="car.image" loading="lazy" t-att-alt="car.name"
                                  t-att-src="'/web/image/bs.car.model/%s/image/800x534' % car.id"/>
@@ -718,12 +718,17 @@
                                     <strong t-esc="car.base_price"
                                             t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
                                 </div>
-                                <span class="bs_card_cta">
-                                    Discover <i class="fa fa-arrow-right"/>
-                                </span>
+                                <div class="bs_card_actions">
+                                    <a t-att-href="'/car/%s/book' % car.id" class="bs_card_book_btn">
+                                        Book Now
+                                    </a>
+                                    <a t-att-href="'/car/%s' % car.id" class="bs_card_cta">
+                                        Discover <i class="fa fa-arrow-right"/>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
             </div>
         </t>

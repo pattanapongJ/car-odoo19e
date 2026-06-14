@@ -133,7 +133,7 @@
                     <!-- car grid -->
                     <div class="bs_catalog_grid">
                         <t t-foreach="models" t-as="car">
-                            <a t-att-href="'/car/%s' % car.id" class="bs_catalog_card" data-bs-reveal="">
+                            <div class="bs_catalog_card" t-att-data-href="'/car/%s' % car.id" data-bs-reveal="">
                                 <div class="bs_catalog_card_media">
                                     <t t-if="car.image">
                                         <img t-att-src="'/web/image/bs.car.model/%s/image/800x534' % car.id"
@@ -173,12 +173,17 @@
                                             <strong t-esc="car.base_price"
                                                     t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
                                         </div>
-                                        <span class="bs_card_cta">
-                                            Discover <i class="fa fa-arrow-right"/>
-                                        </span>
+                                        <div class="bs_card_actions">
+                                            <a t-att-href="'/car/%s/book' % car.id" class="bs_card_book_btn">
+                                                Book Now
+                                            </a>
+                                            <a t-att-href="'/car/%s' % car.id" class="bs_card_cta">
+                                                Discover <i class="fa fa-arrow-right"/>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            </a>
+                            </div>
                         </t>
                     </div>
 
