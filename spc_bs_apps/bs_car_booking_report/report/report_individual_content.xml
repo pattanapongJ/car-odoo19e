@@ -13,15 +13,15 @@
                     <div class="bc-page">
                         <t t-call="bs_car_booking_report.report_booking_individual_styles"/>
 
-                        <p style="text-align:right;font-size:11pt;margin:0 0 4pt 0;">(ต้นฉบับ)</p>
+                        <p style="text-align:right;font-size:18pt;margin:0 0 4pt 0;">(ต้นฉบับ)</p>
 
                         <table class="table-borderless" style="width:100%;margin-bottom:6pt;">
                             <tr>
                                 <td style="width:4.5cm;vertical-align:middle;">
                                     <img t-attf-src="/bs_car_booking_report/static/src/img/TMK.png" style="width:4.5cm;height:2.0cm;object-fit:contain;"/>
                                 </td>
-                                <td style="text-align:center;vertical-align:middle;">
-                                    <span style="font-size:20px;font-weight:bold;">แบบสัญญามาตรฐานสัญญาจองรถยนต์ (รถใหม่)</span>
+                                <td style="padding-left: 54px; vertical-align:middle;">
+                                    <span style="font-size:20pt;font-weight:bold;">แบบสัญญามาตรฐานสัญญาจองรถยนต์ (รถใหม่)</span>
                                 </td>
                             </tr>
                         </table>
@@ -32,7 +32,7 @@
                         </p>
 
                         <span>ชื่อผู้ประกอบธุรกิจ :</span>
-                        <span style="font-weight:bold;" t-esc="o.dealer_id.name or o.company_id.name or ''"/>
+                        <span style="font-weight:bold;" t-esc="o.dealer_id.with_context(lang='th_TH').name or ''"/>
                         <span>เลขที่ผู้เสียภาษี :</span>
                         <span style="font-weight:bold;" t-esc="o.company_id.vat or ''"/>
                         <span>หมายเลขโทรศัพท์ :</span>
@@ -48,7 +48,7 @@
 
                         <p style="margin:0 0 1pt 0;">
                             <span>สัญญาฉบับนี้ทำขึ้น ณ :</span>
-                            <span style="font-weight:bold;" t-esc="o.dealer_id.name or o.company_id.name or ''"/>
+                            <span style="font-weight:bold;" t-esc="o.dealer_id.with_context(lang='th_TH').name or ''"/>
                         </p>
                         <p style="margin:0 0 1pt 0;">
                             <span>เมื่อวันที่ :</span>
@@ -61,7 +61,7 @@
 
                         <p style="margin:0 0 1pt 0;">
                             <span>ระหว่าง :</span>
-                            <span style="font-weight:bold;" t-esc="o.dealer_id.name or o.company_id.name or ''"/>
+                            <span style="font-weight:bold;" t-esc="o.dealer_id.with_context(lang='th_TH').name or ''"/>
                             <span>ซึ่งต่อไปนี้ในสัญญาเรียกว่า                                <span style="font-weight: bold">"ผู้ประกอบธุรกิจ"</span>
                             </span>
                         </p>
@@ -89,7 +89,7 @@
                             <span>คู่สัญญาทั้งสองฝ่ายตกลงทำสัญญากันโดยมีข้อความดังต่อไปนี้</span>
                         </p>
 
-                        <p class="article-header">
+                        <p class="article-header indent-1">
                             <span>ข้อ 1</span>
                             <span>ข้อตกลงการจองรถยนต์</span>
                         </p>
@@ -102,15 +102,15 @@
                             <span style="font-weight:bold;">ประเภท/ชนิด</span>
                             <span>รถยนต์ไฟฟ้า</span>
                             <span style="font-weight:bold;">ยี่ห้อ</span>
-                            <span style="font-weight:bold;" t-esc="o.brand_id.name or ''"/>
+                            <span style="font-weight:bold;" t-esc="o.brand_id.with_context(lang='th_TH').name or ''"/>
                             <span style="font-weight:bold;">รุ่น</span>
-                            <span style="font-weight:bold;" t-esc="o.model_id.name or ''"/>
+                            <span style="font-weight:bold;" t-esc="o.model_id.with_context(lang='th_TH').name or ''"/>
                             <span style="font-weight:bold;">ปีที่ผลิต</span>
                             <span>2569</span>
                         </p>
                         <p style="margin:0 0 6pt 0;">
                             <span>รูปแบบ</span>
-                            <span style="font-weight:bold;" t-esc="option_values_th(o)"/>
+                            <span style="font-weight:bold;" t-esc="', '.join(o.option_value_ids.with_context(lang='th_TH').mapped('name'))"/>
                             <span>และขนาดหรือกำลังของเครื่องกำเนิดพลังงาน กรณีรถยนต์ไฟฟ้ามีรายละเอียดเกี่ยวกับรถยนต์เพิ่มเติมอย่างน้อย เช่น                                <span style="font-weight:bold;">กำลังมอเตอร์ไฟฟ้า ประเภทของแบตเตอรี่ ขนาดของความจุของแบตเตอรี่กำลังมอเตอร์ไฟฟ้ารวม 362 กิโลวัตต์ ประเภทแบตเตอรี่ ลิเธียมเอ็นเอ็มซี ขนาด 120 กิโลวัตต์ชั่วโมง (แอมแปร์-ชั่วโมง)</span>
                             </span>
                         </p>
@@ -164,7 +164,7 @@
                             <span style="font-weight:bold;">1.3</span>
                             <span style="font-weight:bold;">เงินจองหรือผลประโยชน์อื่นใดในลักษณะทำนองเดียวกับเงินจองที่ไม่ใช่เงินมัดจำ (ถ้ามี)</span>
                         </p>
-                        <table class="table-borderless" style="width:100%;font-size:18px;line-height:1.4;border-collapse:collapse;">
+                        <table class="table-borderless" style="width:100%;font-size:18pt;line-height:1.4;border-collapse:collapse;">
 
                             <!-- เงินสด -->
                             <tr>
@@ -441,7 +441,7 @@
                             <span>บาท</span>(                            <span style="font-weight:bold;" t-esc="amount_to_text_th(o.car_price or 0)"/>
 )</p>
 
-                        <p class="article-header">
+                        <p class="article-header indent-1">
                             <span style="font-weight:bold;">ข้อ 2</span>
                             <span style="font-weight:bold;">กำหนดวัน เดือน ปี และสถานที่ที่ส่งมอบรถยนต์</span>
                         </p>
@@ -460,10 +460,10 @@
                         </p>
                         <p style="margin:0 0 8pt 0;">
                             <span>สถานที่ส่งมอบ :</span>
-                            <span style="font-weight:bold;" t-esc="o.dealer_id.name or o.company_id.name or ''"/>
+                            <span style="font-weight:bold;" t-esc="o.dealer_id.with_context(lang='th_TH').name or ''"/>
                         </p>
 
-                        <p class="article-header">
+                        <p class="article-header indent-1">
                             <span style="font-weight:bold;">ข้อ 3</span>
                             <span style="font-weight:bold;">ผู้บริโภคมีสิทธิบอกเลิกสัญญาเมื่อผู้ประกอบธุรกิจกระทำการอย่างใดอย่างหนึ่ง ดังต่อไปนี้</span>
                         </p>
@@ -478,7 +478,7 @@
                         <p class="indent-1" style="margin:0 0 6pt 0;">3.5<span>ไม่ส่งมอบรถยนต์ที่มีราคาส่วนลด (ถ้ามี) ตามที่กำหนดในสัญญา</span>
                         </p>
 
-                        <p class="article-header">
+                        <p class="article-header indent-1">
                             <span style="font-weight:bold;">ข้อ 4</span>
                             <span style="font-weight:bold;">ผู้ประกอบธุรกิจมีสิทธิบอกเลิกสัญญา</span>
                         </p>
@@ -486,7 +486,7 @@
                             <span>เมื่อผู้บริโภคไม่เข้าไปรับรถยนต์ภายในกำหนดระยะเวลาที่กำหนดไว้ในสัญญาและไม่แจ้งเหตุขัดข้องให้ทราบ ให้ผู้ประกอบธุรกิจมีสิทธิริบเงินจองได้</span>
                         </p>
 
-                        <p class="article-header">
+                        <p class="article-header indent-1">
                             <span style="font-weight:bold;">ข้อ 5</span>
                             <span style="font-weight:bold;">ผู้บริโภคหรือผู้ประกอบธุรกิจฝ่ายหนึ่งฝ่ายใดมีสิทธิบอกเลิกสัญญา</span>
                         </p>
@@ -494,7 +494,7 @@
                             <span>หากมีข้อเท็จจริงที่ผู้ประกอบธุรกิจได้รับทราบว่า ผู้บริโภคต้องขอสินเชื่อเพื่อการซื้อรถยนต์ และผู้บริโภคไม่ได้รับอนุมัติสินเชื่อตามที่ขอภายในกำหนดเวลาส่งมอบรถยนต์</span>
                         </p>
 
-                        <p class="article-header">
+                        <p class="article-header indent-1">
                             <span style="font-weight:bold;">ข้อ 6</span>
                             <span style="font-weight:bold;">ผู้ประกอบธุรกิจคืนเงิน</span>
                         </p>
@@ -506,17 +506,69 @@
                         <p class="indent-1" style="margin:0 0 6pt 0;">6.2<span>กรณีชำระคืนผ่านบัตรเครดิตให้แก่ผู้บริโภคภายในสี่สิบห้าวันนับแต่วันที่มีการบอกเลิกสัญญา และให้ผู้ประกอบธุรกิจมีสิทธิหักค่าธรรมเนียมการใช้บัตรเครดิต (ถ้ามี) ได้</span>
                         </p>
 
-                        <p style="margin:0 0 10pt 0;">
+                        <p class="indent-1" style="margin:0 0 10pt 0;">
                             <span style="font-weight:bold;">ข้อ 7</span>
                             <span>การบอกเลิกสัญญาของผู้ประกอบธุรกิจตามข้อ 4 หรือ ข้อ 5 ให้ทำเป็นหนังสือบอกกล่าวให้ผู้บริโภค ปฏิบัติตามสัญญาภายในระยะเวลาไม่น้อยกว่าเจ็ดวันนับแต่วันที่ผู้บริโภคได้รับหนังสือ และผู้บริโภคละเลยเสีย ไม่ปฏิบัติตามหนังสือบอกกล่าวนั้น ผู้ประกอบธุรกิจมีสิทธิบอกเลิกสัญญา</span>
                         </p>
 
-                        <t t-call="bs_car_booking_report.report_booking_individual_footer"/>
+                        <!-- Closing declaration -->
+                        <p style="margin:0 0 20pt 0;">
+                            <span>สัญญาจองรถยนต์มีข้อความถูกต้องตรงกัน คู่สัญญาได้อ่านและเข้าใจข้อความโดยละเอียดแล้ว
+            จึงได้ลงลายมือชื่อพร้อมทั้งประทับตรา (ถ้ามี) ไว้เป็นสำคัญต่อหน้าพยานและคู่สัญญา
+            และเก็บไว้ฝ่ายละหนึ่งฉบับ</span>
+                        </p>
 
-                    </div>
-                </t>
+                        <!-- Signature table -->
+                        <table class="sig-table table-borderless" style="font-size:18px;font-family:'TH-SarabunPSK',sans-serif;">
+                            <tr>
+                                <td style="width:50%;text-align:center;padding-bottom:8pt;padding-top:24pt;">
+                                    <span>(ลงชื่อ)</span>&#160;&#160;
+                                    <span>.........................................</span>&#160;&#160;
+                                    <span>ผู้บริโภค</span>
+                                </td>
+                                <td style="width:50%;text-align:center;padding-bottom:8pt;padding-top:24pt;">
+                                    <span>(ลงชื่อ)</span>&#160;&#160;
+                                    <span>.........................................</span>&#160;&#160;
+                                    <span>ผู้ประกอบธุรกิจ</span>
+                                </td>
+                            </tr>
+                            <tr style="font-weight:bold;">
+                                <td style="text-align:center;padding-bottom:36pt;">
+                                    <span>(</span>&#160;<span t-esc="o.customer_name or ''"/>
+&#160;<span>)</span>
+                            </td>
+                            <td style="text-align:center;padding-bottom:36pt;">
+                                <span>( นายเอ็ดเวิร์ด ชัชวาลย์ เอเบ็ล&#160;&#160;นางสาวสุธี สมดังเจตน์ )</span>
+                            </td>
+                        </tr>
+                        <!-- !! sales_manager + salesperson: fields TBD — blanks for now !! -->
+                        <tr>
+                            <td style="text-align:center;padding-bottom:8pt;">
+                                <span>(ลงชื่อ)</span>&#160;&#160;
+                                <span>.........................................</span>&#160;&#160;
+                                <span>ผู้จัดการแผนก</span>
+                            </td>
+                            <td style="text-align:center;padding-bottom:8pt;">
+                                <span>(ลงชื่อ)</span>&#160;&#160;
+                                <span>.........................................</span>&#160;&#160;
+                                <span>พนักงานขาย</span>
+                            </td>
+                        </tr>
+                        <tr style="font-weight:bold;">
+                            <td style="text-align:center;">
+                                <span>( นายเดชากร ทัศนกูล )</span>
+                            </td>
+                            <td style="text-align:center;">
+                                <span>( นางสาวดิถา กาญจนาภา )</span>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
             </t>
         </t>
-    </template>
+    </t>
+</template>
+
 
 </odoo>
