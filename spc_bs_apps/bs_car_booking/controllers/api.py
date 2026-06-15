@@ -33,6 +33,11 @@ class BsCarBookingAPI(http.Controller):
         )
 
     def _check_booking_token(self, booking, access_token=None):
+        # Accept a valid, non-expired signed share token (?token=) or the
+        # long-lived portal access_token (constant-time compared).
+        token = request.params.get('token')
+        if token and booking._verify_share_token(token):
+            return True
         return bool(access_token and consteq(booking.access_token or '', access_token))
 
     def _scoped_env(self, model_name):
@@ -302,7 +307,17 @@ class BsCarBookingAPI(http.Controller):
 
             booking._ensure_partner()
             booking._ensure_sale_order()
+            was_pending = booking.state == 'payment_pending'
             booking._transition_to('payment_pending')
+            # First confirm (review modal) → bilingual "booking pending" email +
+            # SMS with a self-expiring resume/payment link. Best-effort: a
+            # notification hiccup must never block the funnel.
+            if not was_pending:
+                try:
+                    booking._notify_payment_pending()
+                except Exception:  # noqa: BLE001
+                    _logger.warning('Payment-pending notification failed for %s',
+                                    booking.name, exc_info=True)
             return {'success': True, 'redirect_url': self._booking_step_url(booking, 'payment')}
         except Exception as e:  # noqa: BLE001
             _logger.exception('Failed to save booking info')

@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_booking_individual_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+
+                <t t-set="_TH_M" t-value="['','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม']"/>
+                <t t-set="_cd" t-value="o.create_date.date()"/>
+                <t t-set="_dd" t-value="o.estimated_delivery_date"/>
+
+                <t t-call="bs_car_booking_report.bc_booking_layout">
+                    <div class="bc-page">
+                        <t t-call="bs_car_booking_report.report_booking_individual_styles"/>
+
+                        <p style="text-align:right;font-size:11pt;margin:0 0 4pt 0;">(ต้นฉบับ)</p>
+
+                        <table class="table-borderless" style="width:100%;margin-bottom:6pt;">
+                            <tr>
+                                <td style="width:4.5cm;vertical-align:middle;">
+                                    <img t-attf-src="/bs_car_booking_report/static/src/img/TMK.png" style="width:4.5cm;height:2.0cm;object-fit:contain;"/>
+                                </td>
+                                <td style="text-align:center;vertical-align:middle;">
+                                    <span style="font-size:20px;font-weight:bold;">แบบสัญญามาตรฐานสัญญาจองรถยนต์ (รถใหม่)</span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p style="text-align:right;margin:0 0 4pt 0;">
+                            <span>เลขที่</span>
+                            <span t-esc="o.name or ''"/>
+                        </p>
+
+                        <span>ชื่อผู้ประกอบธุรกิจ :</span>
+                        <span style="font-weight:bold;" t-esc="o.dealer_id.name or o.company_id.name or ''"/>
+                        <span>เลขที่ผู้เสียภาษี :</span>
+                        <span style="font-weight:bold;" t-esc="o.company_id.vat or ''"/>
+                        <span>หมายเลขโทรศัพท์ :</span>
+                        <span style="font-weight:bold;" t-esc="o.dealer_id.phone or ''"/>
+                        <span>อีเมล :</span>
+                        <span style="font-weight:bold;" t-esc="o.dealer_id.email or ''"/>
+                        <br/>
+                        <span>ผู้จัดการฝ่ายขาย ชื่อ-สกุล :</span>
+                        <span>นาย เดชากร ทัศนกูล</span>
+                        <br/>
+                        <span>พนักงานขาย/พนักงานผู้รับจอง ชื่อ-สกุล :</span>
+                        <span>นางสาว ดิถา กาญจนาภาดี</span>
+
+                        <p style="margin:0 0 1pt 0;">
+                            <span>สัญญาฉบับนี้ทำขึ้น ณ :</span>
+                            <span style="font-weight:bold;" t-esc="o.dealer_id.name or o.company_id.name or ''"/>
+                        </p>
+                        <p style="margin:0 0 1pt 0;">
+                            <span>เมื่อวันที่ :</span>
+                            <span style="font-weight:bold;">
+                                <span t-esc="_cd.day"/>
+                                <span t-esc="_TH_M[_cd.month]"/>
+                                <span t-esc="_cd.year + 543"/>
+                            </span>
+                        </p>
+
+                        <p style="margin:0 0 1pt 0;">
+                            <span>ระหว่าง :</span>
+                            <span style="font-weight:bold;" t-esc="o.dealer_id.name or o.company_id.name or ''"/>
+                            <span>ซึ่งต่อไปนี้ในสัญญาเรียกว่า                                <span style="font-weight: bold">"ผู้ประกอบธุรกิจ"</span>
+                            </span>
+                        </p>
+                        <p style="margin:0 0 1pt 0;">
+                            <span>กับ ชื่อ-สกุล/ชื่อบริษัท :</span>
+                            <span style="font-weight:bold;" t-esc="o.customer_name or ''"/>
+                            <span>เลขที่ผู้เสียภาษี :</span>
+                            <span style="font-weight:bold;" t-esc="o.customer_nrc or o.tax_id or ''"/>
+                        </p>
+                        <p style="margin:0 0 1pt 0;">
+                            <span>หากเป็นในนามบริษัทได้มอบอำนาจกระทำการแทนให้ ชื่อ-สกุล :</span>
+                            <!-- <span style="font-weight:bold;" t-esc="o.contact_person or ''"/> -->
+                        </p>
+                        <p style="margin:0 0 1pt 0;">
+                            <span>ที่อยู่ :</span>
+                            <span style="font-weight:bold;" t-esc="o.customer_address or ''"/>
+                        </p>
+                        <p style="margin:0 0 4pt 0;">
+                            <span>หมายเลขโทรศัพท์ :</span>
+                            <span style="font-weight:bold;" t-esc="o.customer_phone or ''"/>
+                            <span>ซึ่งต่อไปในสัญญานี้เรียกว่า                                <span style="font-weight: bold">"ผู้บริโภค"</span> อีกฝ่ายหนึ่ง
+                            </span>
+                        </p>
+                        <p style="margin:0 0 6pt 0;">
+                            <span>คู่สัญญาทั้งสองฝ่ายตกลงทำสัญญากันโดยมีข้อความดังต่อไปนี้</span>
+                        </p>
+
+                        <p class="article-header">
+                            <span>ข้อ 1</span>
+                            <span>ข้อตกลงการจองรถยนต์</span>
+                        </p>
+                        <p style="margin:0 0 2pt 0;">
+                            <span>ผู้บริโภคตกลงจองและผู้ประกอบธุรกิจให้จองรถยนต์ โดยมีรายละเอียดเกี่ยวกับรถยนต์ดังนี้</span>
+                        </p>
+
+                        <p style="margin:0 0 2pt 0;">
+                            <span style="font-weight:bold;">1.1</span>
+                            <span style="font-weight:bold;">ประเภท/ชนิด</span>
+                            <span>รถยนต์ไฟฟ้า</span>
+                            <span style="font-weight:bold;">ยี่ห้อ</span>
+                            <span style="font-weight:bold;" t-esc="o.brand_id.name or ''"/>
+                            <span style="font-weight:bold;">รุ่น</span>
+                            <span style="font-weight:bold;" t-esc="o.model_id.name or ''"/>
+                            <span style="font-weight:bold;">ปีที่ผลิต</span>
+                            <span>2569</span>
+                        </p>
+                        <p style="margin:0 0 6pt 0;">
+                            <span>รูปแบบ</span>
+                            <span style="font-weight:bold;" t-esc="option_values_th(o)"/>
+                            <span>และขนาดหรือกำลังของเครื่องกำเนิดพลังงาน กรณีรถยนต์ไฟฟ้ามีรายละเอียดเกี่ยวกับรถยนต์เพิ่มเติมอย่างน้อย เช่น                                <span style="font-weight:bold;">กำลังมอเตอร์ไฟฟ้า ประเภทของแบตเตอรี่ ขนาดของความจุของแบตเตอรี่กำลังมอเตอร์ไฟฟ้ารวม 362 กิโลวัตต์ ประเภทแบตเตอรี่ ลิเธียมเอ็นเอ็มซี ขนาด 120 กิโลวัตต์ชั่วโมง (แอมแปร์-ชั่วโมง)</span>
+                            </span>
+                        </p>
+
+                        <p class="article-header">
+                            <span style="font-weight:bold;">1.2</span>
+                            <span style="font-weight:bold;">รายการอุปกรณ์ติดตั้งเพิ่มเติมและของแถม หรือสิทธิประโยชน์ต่าง ๆ หรือส่วนที่เพิ่มจากตัวรถยนต์ โดยแนบรายละเอียดที่ตกลง คือ</span>
+                        </p>
+                        <p class="indent-1" style="margin:0;">
+                            <span>-</span>
+                            <span style="font-weight:bold;">เครื่องชาร์จ Home Wallbox</span>
+                        </p>
+                        <p class="indent-1" style="margin:0;">
+                            <span>-</span>
+                            <span style="font-weight:bold;">สายชาร์จฉุกเฉิน</span>
+                        </p>
+                        <p class="indent-1" style="margin:0;">
+                            <span>-</span>
+                            <span style="font-weight:bold;">เครดิตชาร์จไฟฟรี ตามสถานีสาธารณะ</span>
+                        </p>
+                        <p class="indent-1" style="margin:0;">
+                            <span>-</span>
+                            <span style="font-weight:bold;">ประกันภัยชั้น 1 + พ.ร.บ.</span>
+                        </p>
+                        <p class="indent-1" style="margin:0;">
+                            <span>-</span>
+                            <span style="font-weight:bold;">รับประกันแบตเตอรี่ (8 ปี หรือ 160,000 กม.)</span>
+                        </p>
+                        <p class="indent-1" style="margin:0;">
+                            <span>-</span>
+                            <span style="font-weight:bold;">รับประกันตัวรถ (Warranty) และ ฟรีค่าบำรุงรักษาตามระยะ (5 ปี หรือ 120,000 กม.)</span>
+                        </p>
+                        <p class="indent-1" style="margin:0;">
+                            <span>-</span>
+                            <span style="font-weight:bold;">บริการช่วยเหลือฉุกเฉิน 24 ชั่วโมง</span>
+                        </p>
+                        <p class="indent-1" style="margin:0;">
+                            <span>-</span>
+                            <span style="font-weight:bold;">ฟิล์มกรองแสง</span>
+                        </p>
+                        <p class="indent-1" style="margin:0 0 2pt 0;">
+                            <span>-</span>
+                            <span style="font-weight:bold;">พรม/ผ้ายางปูพื้นรถ  กรอบป้ายทะเบียน / ของที่ระลึก ของแบรนด์</span>
+                        </p>
+                        <t t-if="o.internal_notes">
+                            <p class="indent-1" style="margin:0 0 4pt 0;">
+                                <span t-esc="o.internal_notes"/>
+                            </p>
+                        </t>
+                        <p class="article-header">
+                            <span style="font-weight:bold;">1.3</span>
+                            <span style="font-weight:bold;">เงินจองหรือผลประโยชน์อื่นใดในลักษณะทำนองเดียวกับเงินจองที่ไม่ใช่เงินมัดจำ (ถ้ามี)</span>
+                        </p>
+                        <table class="table-borderless" style="width:100%;font-size:18px;line-height:1.4;border-collapse:collapse;">
+
+                            <!-- เงินสด -->
+                            <tr>
+                                <td style="width:20pt;vertical-align:top;">&#x2610;</td>
+                                <td>
+                                    <table style="width:100%;border-collapse:collapse;">
+                                        <thead style="line-height:0;height:0;visibility:collapse;">
+                                            <tr>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:32%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:10%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <span>เงินสด</span>
+                                                </td>
+                                                <td>
+                                                    <span>เป็นเงิน</span>
+                                                </td>
+                                                <td>
+                                                    <span>บาท</span>
+                                                </td>
+                                                <td>
+                                                    <span>(</span>
+                                                    <span style="display:inline-block;min-width:2cm;"></span>
+                                                    <span>)</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <!-- โอนเข้าบัญชี -->
+                            <tr>
+                                <td style="vertical-align:top;">&#x2611;</td>
+                                <td>
+                                    <table style="width:100%;border-collapse:collapse;">
+                                        <thead style="line-height:0;height:0;visibility:collapse;">
+                                            <tr>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:32%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:10%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <span>โอนเข้าบัญชีชื่อผู้ประกอบธุรกิจ</span>
+                                                </td>
+                                                <td>
+                                                    <span style="font-weight:bold;">บริษัทเมโทร ออโต้เฮ้าส์ จำกัด</span>
+                                                </td>
+                                                <td>
+                                                    <span>เลขที่บัญชี</span>
+                                                </td>
+                                                <td>
+                                                    <span style="font-weight:bold;">8052033274</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span>ธนาคาร</span>
+                                                </td>
+                                                <td>
+                                                    <span style="font-weight:bold;">ไทยพาณิชย์</span>
+                                                </td>
+                                                <td>
+                                                    <span>สาขา</span>
+                                                </td>
+                                                <td>
+                                                    <span style="font-weight:bold;">พระราม 9</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span>เป็นเงิน</span>
+                                                </td>
+                                                <td>
+                                                    <span style="font-weight:bold;" t-esc="'{:,.0f}'.format(o.deposit_amount or 0)"/>
+                                                </td>
+                                                <td>
+                                                    <span>บาท</span>
+                                                </td>
+                                                <td>
+                                                    <span>(</span>
+                                                    <span style="font-weight:bold;" t-esc="amount_to_text_th(o.deposit_amount or 0)"/>
+                                                    <span>)</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <!-- เช็คธนาคาร -->
+                            <tr>
+                                <td style="width:20pt;vertical-align:top;">&#x2610;</td>
+                                <td>
+                                    <table style="width:100%;border-collapse:collapse;">
+                                        <thead style="line-height:0;height:0;visibility:collapse;">
+                                            <tr>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:32%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:10%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <span>เช็คธนาคารเลขที่</span>
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    <span>เล่มที่</span>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span>ธนาคาร</span>
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    <span>สาขา</span>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span>เป็นเงิน</span>
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    <span>บาท</span>
+                                                </td>
+                                                <td>
+                                                    <span>(</span>
+                                                    <span style="display:inline-block;min-width:2cm;"></span>
+                                                    <span>)</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <!-- แคชเชียร์เช็ค -->
+                            <tr>
+                                <td style="width:20pt;vertical-align:top;">&#x2610;</td>
+                                <td>
+                                    <table style="width:100%;border-collapse:collapse;">
+                                        <thead style="line-height:0;height:0;visibility:collapse;">
+                                            <tr>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:32%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:10%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <span>แคชเชียร์เช็คเลขที่</span>
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    <span>เล่มที่</span>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span>ธนาคาร</span>
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    <span>สาขา</span>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span>เป็นเงิน</span>
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    <span>บาท</span>
+                                                </td>
+                                                <td>
+                                                    <span>(</span>
+                                                    <span style="display:inline-block;min-width:2cm;"></span>
+                                                    <span>)</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <!-- บัตรเครดิต/เดบิต -->
+                            <tr>
+                                <td style="vertical-align:top;">&#x2610;</td>
+                                <td>
+                                    <table style="width:100%;border-collapse:collapse;">
+                                        <thead style="line-height:0;height:0;visibility:collapse;">
+                                            <tr>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:32%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:10%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <span>บัตรเครดิต/เดบิต</span>
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    <span>ธนาคาร</span>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span>ประเภทบัตรเครดิต/เดบิต</span>
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span>เป็นเงิน</span>
+                                                </td>
+                                                <td></td>
+                                                <td>
+                                                    <span>บาท</span>
+                                                </td>
+                                                <td>
+                                                    <span>(</span>
+                                                    <span style="display:inline-block;min-width:2cm;"></span>
+                                                    <span>)</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span>หมายเลขบัตร</span>
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                        <p class="article-header" style="margin-top:8pt;">
+                            <span style="font-weight:bold;">1.4</span>
+                            <span style="font-weight:bold;">ราคารถยนต์ใหม่ รวมภาษีมูลค่าเพิ่ม</span>
+                        </p>
+                        <p style="margin:0 0 10pt 0;">
+                            <span>เป็นเงิน</span>
+                            <span style="font-weight:bold;" t-esc="'{:,.0f}'.format(o.car_price or 0)"/>
+                            <span>บาท</span>(                            <span style="font-weight:bold;" t-esc="amount_to_text_th(o.car_price or 0)"/>
+)</p>
+
+                        <p class="article-header">
+                            <span style="font-weight:bold;">ข้อ 2</span>
+                            <span style="font-weight:bold;">กำหนดวัน เดือน ปี และสถานที่ที่ส่งมอบรถยนต์</span>
+                        </p>
+                        <p style="margin:0 0 1pt 0;">
+                            <span>วันกำหนดส่งมอบ :</span>
+                            <t t-if="_dd">
+                                <span style="font-weight:bold;">
+                                    <span t-esc="_dd.day"/>
+                                    <span t-esc="_TH_M[_dd.month]"/>
+                                    <span t-esc="_dd.year + 543"/>
+                                </span>
+                            </t>
+                            <t t-else="">
+                                <span>_______________</span>
+                            </t>
+                        </p>
+                        <p style="margin:0 0 8pt 0;">
+                            <span>สถานที่ส่งมอบ :</span>
+                            <span style="font-weight:bold;" t-esc="o.dealer_id.name or o.company_id.name or ''"/>
+                        </p>
+
+                        <p class="article-header">
+                            <span style="font-weight:bold;">ข้อ 3</span>
+                            <span style="font-weight:bold;">ผู้บริโภคมีสิทธิบอกเลิกสัญญาเมื่อผู้ประกอบธุรกิจกระทำการอย่างใดอย่างหนึ่ง ดังต่อไปนี้</span>
+                        </p>
+                        <p class="indent-1" style="margin:0;">3.1<span>ปรับเปลี่ยนราคารถยนต์สูงขึ้น</span>
+                        </p>
+                        <p class="indent-1" style="margin:0;">3.2<span>ไม่ส่งมอบรถยนต์ให้ผู้บริโภคภายในเวลาที่กำหนด</span>
+                        </p>
+                        <p class="indent-1" style="margin:0;">3.3<span>ไม่ส่งมอบรถยนต์ตามยี่ห้อ รุ่น ปีที่ผลิต สี และขนาดหรือกำลังของเครื่องกำเนิดพลังงาน ที่กำหนดในสัญญา</span>
+                        </p>
+                        <p class="indent-1" style="margin:0;">3.4<span>ไม่ส่งมอบรถยนต์ที่มีรายการอุปกรณ์ติดตั้งเพิ่มเติมและของแถม หรือสิทธิประโยชน์ต่าง ๆ หรือส่วนเพิ่มตัวรถยนต์ตามที่กำหนดในสัญญา</span>
+                        </p>
+                        <p class="indent-1" style="margin:0 0 6pt 0;">3.5<span>ไม่ส่งมอบรถยนต์ที่มีราคาส่วนลด (ถ้ามี) ตามที่กำหนดในสัญญา</span>
+                        </p>
+
+                        <p class="article-header">
+                            <span style="font-weight:bold;">ข้อ 4</span>
+                            <span style="font-weight:bold;">ผู้ประกอบธุรกิจมีสิทธิบอกเลิกสัญญา</span>
+                        </p>
+                        <p style="margin:0 0 6pt 0;">
+                            <span>เมื่อผู้บริโภคไม่เข้าไปรับรถยนต์ภายในกำหนดระยะเวลาที่กำหนดไว้ในสัญญาและไม่แจ้งเหตุขัดข้องให้ทราบ ให้ผู้ประกอบธุรกิจมีสิทธิริบเงินจองได้</span>
+                        </p>
+
+                        <p class="article-header">
+                            <span style="font-weight:bold;">ข้อ 5</span>
+                            <span style="font-weight:bold;">ผู้บริโภคหรือผู้ประกอบธุรกิจฝ่ายหนึ่งฝ่ายใดมีสิทธิบอกเลิกสัญญา</span>
+                        </p>
+                        <p style="margin:0 0 6pt 0;">
+                            <span>หากมีข้อเท็จจริงที่ผู้ประกอบธุรกิจได้รับทราบว่า ผู้บริโภคต้องขอสินเชื่อเพื่อการซื้อรถยนต์ และผู้บริโภคไม่ได้รับอนุมัติสินเชื่อตามที่ขอภายในกำหนดเวลาส่งมอบรถยนต์</span>
+                        </p>
+
+                        <p class="article-header">
+                            <span style="font-weight:bold;">ข้อ 6</span>
+                            <span style="font-weight:bold;">ผู้ประกอบธุรกิจคืนเงิน</span>
+                        </p>
+                        <p style="margin:0 0 1pt 0;">
+                            <span>เมื่อมีการบอกเลิกสัญญาตามข้อ 3 หรือ ข้อ 5 แล้ว ผู้ประกอบธุรกิจต้องคืนเงินจองหรือผลประโยชน์อื่นใด ในลักษณะทำนองเดียวกับเงินจองที่ไม่ใช่เงินมัดจำทั้งหมดให้แก่ผู้บริโภค</span>
+                        </p>
+                        <p class="indent-1" style="margin:0;">6.1<span>กรณีชำระเงินคืนเป็นเงินสดหรือเงินโอน หรือเช็คให้แก่ผู้บริโภคภายในสิบห้าวันนับแต่วันที่มีการบอกเลิกสัญญา</span>
+                        </p>
+                        <p class="indent-1" style="margin:0 0 6pt 0;">6.2<span>กรณีชำระคืนผ่านบัตรเครดิตให้แก่ผู้บริโภคภายในสี่สิบห้าวันนับแต่วันที่มีการบอกเลิกสัญญา และให้ผู้ประกอบธุรกิจมีสิทธิหักค่าธรรมเนียมการใช้บัตรเครดิต (ถ้ามี) ได้</span>
+                        </p>
+
+                        <p style="margin:0 0 10pt 0;">
+                            <span style="font-weight:bold;">ข้อ 7</span>
+                            <span>การบอกเลิกสัญญาของผู้ประกอบธุรกิจตามข้อ 4 หรือ ข้อ 5 ให้ทำเป็นหนังสือบอกกล่าวให้ผู้บริโภค ปฏิบัติตามสัญญาภายในระยะเวลาไม่น้อยกว่าเจ็ดวันนับแต่วันที่ผู้บริโภคได้รับหนังสือ และผู้บริโภคละเลยเสีย ไม่ปฏิบัติตามหนังสือบอกกล่าวนั้น ผู้ประกอบธุรกิจมีสิทธิบอกเลิกสัญญา</span>
+                        </p>
+
+                        <t t-call="bs_car_booking_report.report_booking_individual_footer"/>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

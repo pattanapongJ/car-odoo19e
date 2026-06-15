@@ -3,12 +3,14 @@
 
 import logging
 import re
+import uuid
 from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import float_compare
 from odoo.tools.mail import formataddr
+from odoo.tools.misc import hash_sign, verify_hash_signed
 
 _logger = logging.getLogger(__name__)
 
@@ -196,8 +198,19 @@ class BsCarBooking(models.Model):
                     'target': labels.get(target_state, target_state),
                 })
         self.with_context(bs_booking_bypass_state_guard=True).write({'state': target_state})
+        # Terminal "dead" states: rotate the portal token so any previously
+        # shared/leaked funnel link to this booking stops working. Safe here —
+        # no customer is mid-flow on a cancelled/expired booking (My Account
+        # still resolves the live token via get_portal_url).
+        if target_state in ('expired', 'cancelled'):
+            self._rotate_access_token()
         self._sync_lead_outcome(target_state)
         return True
+
+    def _rotate_access_token(self):
+        """Issue a fresh portal access_token, invalidating any link shared earlier."""
+        for rec in self:
+            rec.sudo().access_token = str(uuid.uuid4())
 
     def _has_successful_payment(self):
         self.ensure_one()
@@ -897,6 +910,15 @@ class BsCarBooking(models.Model):
             'bs_car_booking.mail_template_booking_confirmed',
         )
 
+    def _notify_payment_pending(self):
+        """Bilingual 'booking pending — resume & pay' email + SMS carrying a
+        self-expiring resume link. Sent when the customer confirms their details
+        (review modal) and the booking enters payment_pending without paying."""
+        self._send_booking_notification(
+            'bs_car_booking.sms_template_payment_pending',
+            'bs_car_booking.mail_template_payment_pending',
+        )
+
     # === Delivery estimate ===
     def _get_package_variant(self):
         """The bs.car.variant (standard package) behind this booking, found by
@@ -1057,6 +1079,63 @@ class BsCarBooking(models.Model):
         self.actual_delivery_date = fields.Date.today()
         return True
 
+    # === Expiry window + shareable funnel token ===
+    SHARE_TOKEN_SCOPE = 'bs_car_booking.share'
+
+    @api.model
+    def _global_expire_hours(self):
+        """Global fallback expiry window (hours) for unpaid bookings, also used
+        to bound the lifetime of shared funnel links."""
+        try:
+            return max(int(self.env['ir.config_parameter'].sudo().get_param(
+                'bs_car_booking.expire_after_hours', '72')), 1)
+        except (TypeError, ValueError):
+            return 72
+
+    def _expire_hours(self):
+        """This booking's expiry window: the website override, else the global."""
+        self.ensure_one()
+        return max(self.website_id.bs_booking_expire_hours or self._global_expire_hours(), 1)
+
+    def _get_share_token(self):
+        """A signed, self-expiring token for sharing this booking's funnel link.
+
+        It expires at the SAME moment the booking itself would expire (same
+        per-website window measured from create_date), so a leaked link can
+        never outlive the reservation. Stateless — HMAC over database.secret,
+        no DB column — see odoo.tools.misc.hash_sign."""
+        self.ensure_one()
+        expiration = (self.create_date or fields.Datetime.now()) + timedelta(hours=self._expire_hours())
+        return hash_sign(self.env, self.SHARE_TOKEN_SCOPE, {'booking_id': self.id}, expiration=expiration)
+
+    def _verify_share_token(self, token):
+        """True only if ``token`` is a valid, non-expired share token for THIS
+        booking (signature + expiry verified by verify_hash_signed)."""
+        self.ensure_one()
+        if not token:
+            return False
+        try:
+            data = verify_hash_signed(self.env, self.SHARE_TOKEN_SCOPE, token)
+        except Exception:  # noqa: BLE001 - malformed/garbage token => deny, never 500
+            return False
+        return bool(data and data.get('booking_id') == self.id)
+
+    def _resume_step(self):
+        """The funnel step a customer should land on to resume this booking."""
+        self.ensure_one()
+        return {
+            'draft': 'verify', 'otp_pending': 'verify',
+            'otp_verified': 'info', 'payment_pending': 'payment',
+        }.get(self.state, 'confirmation')
+
+    def _get_share_link(self, step=None):
+        """Absolute, self-expiring funnel link for emails/SMS (carries ?token=).
+        Defaults to the step that resumes the booking from its current state."""
+        self.ensure_one()
+        base = (self.website_id or self).get_base_url()
+        return '%s/booking/%s/%s?token=%s' % (
+            base, self.id, step or self._resume_step(), self._get_share_token())
+
     @api.model
     def action_expire_stale_bookings(self):
         """Expire unpaid bookings that were abandoned before confirmation.
@@ -1065,13 +1144,6 @@ class BsCarBooking(models.Model):
         Website → Car Booking). Falls back to the global System Parameter
         ``bs_car_booking.expire_after_hours`` (default 72) when the website
         has no value configured."""
-        global_default = self.env['ir.config_parameter'].sudo().get_param(
-            'bs_car_booking.expire_after_hours', '72')
-        try:
-            global_default_hours = max(int(global_default), 1)
-        except (TypeError, ValueError):
-            global_default_hours = 72
-
         stale_bookings = self.sudo().search([
             ('state', 'in', ('draft', 'otp_pending', 'otp_verified', 'payment_pending')),
             ('deposit_paid', '=', 0.0),
@@ -1081,10 +1153,9 @@ class BsCarBooking(models.Model):
         for booking in stale_bookings:
             # In cron context get_current_website() would be arbitrary — only
             # the booking's own website can override the global default.
-            hours = booking.website_id.bs_booking_expire_hours or global_default_hours
             if not booking.create_date:
                 continue
-            cutoff = booking.create_date + timedelta(hours=max(hours, 1))
+            cutoff = booking.create_date + timedelta(hours=booking._expire_hours())
             if now < cutoff:
                 continue
             if booking._has_successful_payment():

@@ -20,5 +20,11 @@
             <field name="body">[HONGQI-TH]: Your vehicle is ready for delivery. Please contact your dealer for further details.</field>
         </record>
 
+        <record id="sms_template_payment_pending" model="sms.template">
+            <field name="name">Car Booking - Payment Pending</field>
+            <field name="model_id" ref="bs_car_booking.model_bs_car_booking"/>
+            <field name="body">[HONGQI-TH] การจอง {{ object.name }} รอชำระเงิน / Booking pending payment. ต่อ/Continue: {{ object._get_share_link() }}</field>
+        </record>
+
     </data>
 </odoo>
