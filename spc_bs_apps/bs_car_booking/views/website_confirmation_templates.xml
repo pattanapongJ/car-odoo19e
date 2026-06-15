@@ -115,23 +115,27 @@
                                 </div>
                             </div>
 
-                            <!-- Individual fields -->
-                            <div data-type-group="individual">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Full Name *</label>
-                                        <input type="text" name="customer_name" class="form-control form-control-lg thai-input-only"
-                                               t-att-value="booking.customer_name or ''" placeholder="Your full name"/>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">NRC / ID Number *</label>
-                                        <input type="text" name="customer_nrc" class="form-control form-control-lg"
-                                               t-att-value="booking.customer_nrc or ''" placeholder="ID / NRC"/>
-                                    </div>
+                            <!-- Person name: common to both types. Individuals give their
+                                 own full name; companies give the authorised contact person.
+                                 Stored in customer_name for both (contact_person was merged in). -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <span data-type-group="individual">Full Name *</span>
+                                        <span data-type-group="company" class="d-none">Contact Person *</span>
+                                    </label>
+                                    <input type="text" name="customer_name" class="form-control form-control-lg thai-input-only"
+                                           t-att-value="booking.customer_name or ''" placeholder="Your full name"/>
+                                </div>
+                                <!-- Individual-only: NRC / ID -->
+                                <div class="col-md-6 mb-3" data-type-group="individual">
+                                    <label class="form-label">NRC / ID Number *</label>
+                                    <input type="text" name="customer_nrc" class="form-control form-control-lg"
+                                           t-att-value="booking.customer_nrc or ''" placeholder="ID / NRC"/>
                                 </div>
                             </div>
 
-                            <!-- Company fields -->
+                            <!-- Company-only fields -->
                             <div data-type-group="company" class="d-none">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
@@ -147,13 +151,6 @@
                                         <label class="form-label">Tax ID *</label>
                                         <input type="text" name="tax_id" class="form-control form-control-lg"
                                                t-att-value="booking.tax_id or ''" placeholder="VAT / Tax ID (on invoice)"/>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Contact Person *</label>
-                                        <input type="text" name="contact_person" class="form-control form-control-lg thai-input-only"
-                                               t-att-value="booking.contact_person or ''" placeholder="Authorised person"/>
                                     </div>
                                 </div>
                             </div>

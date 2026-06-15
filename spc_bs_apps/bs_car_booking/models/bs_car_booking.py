@@ -53,7 +53,7 @@ class BsCarBooking(models.Model):
     # === Customer Information ===
     # name is captured at the dedicated "customer info" funnel step (after OTP),
     # so it is not required at creation time.
-    customer_name = fields.Char('Full Name')
+    customer_name = fields.Char('Contact Name')
     customer_phone = fields.Char('Phone Number', required=True)
     customer_email = fields.Char('Email')
     customer_nrc = fields.Char('NRC/ID Number', help='National Registration Card or ID')
@@ -67,7 +67,9 @@ class BsCarBooking(models.Model):
     ], string='Customer Type', default='individual', required=True)
     company_name = fields.Char('Company Name')
     tax_id = fields.Char('Tax ID', help='Company VAT / Tax ID (printed on the invoice).')
-    contact_person = fields.Char('Contact Person', help='Authorised person for a company booking.')
+    # The contact person's name is stored in ``customer_name`` for BOTH types
+    # (individual = the customer; company = the authorised contact person).
+    # ``company_name`` holds the organisation name for company bookings.
 
     # Uploaded documents + accepted agreements (configurable per customer type).
     document_ids = fields.One2many('bs.car.booking.document', 'booking_id', string='Documents')
@@ -459,60 +461,126 @@ class BsCarBooking(models.Model):
 
     # === Partner / configuration / sale-order backbone ===
     def _ensure_partner(self):
-        """Find or create the res.partner for this booking's customer."""
+        """Find or create the res.partner for this booking's customer.
+
+        Type-aware on purpose:
+          * individual -> matched as a *person* by the OTP-verified phone (then
+            a verified email), never against a company or a child contact;
+          * company    -> matched as a *commercial entity* by its VAT (then its
+            legal name), with the contact person kept as a child contact.
+
+        ``partner_id`` is always the billing party. For a company that is the
+        parent company, so the deposit tax invoice carries the company's legal
+        name + Tax ID; the contact person is a child contact for CRM only.
+        Existing partners are enriched (blanks filled) but never overwritten.
+        """
         self.ensure_one()
         if self.partner_id:
             return self.partner_id
         Partner = self.env['res.partner'].sudo()
-        partner = self.env['res.partner']
-        if self.customer_email:
-            partner = Partner.search([('email', '=', self.customer_email)], limit=1)
-        if not partner and self.customer_phone:
-            phone_domain = [('phone', '=', self.customer_phone)]
-            if 'mobile' in Partner._fields:
-                phone_domain = ['|', *phone_domain, ('mobile', '=', self.customer_phone)]
-            partner = Partner.search(phone_domain, limit=1)
-        if not partner:
-            if self.customer_type == 'company':
-                # Company => is_company + VAT so the deposit invoice is a proper
-                # tax invoice carrying the company's Tax ID.
-                partner_vals = {
-                    'name': self.company_name or self.customer_name or _('Company Customer'),
-                    'is_company': True,
-                    'vat': self.tax_id or False,
-                    'email': self.customer_email or False,
-                    'phone': self.customer_phone or False,
-                    'street': self.customer_address or False,
-                }
-                if 'mobile' in Partner._fields:
-                    partner_vals['mobile'] = self.customer_phone or False
-                partner = Partner.create(partner_vals)
-                if self.contact_person:
-                    Partner.create({
-                        'name': self.contact_person,
-                        'parent_id': partner.id,
-                        'type': 'contact',
-                        'email': self.customer_email or False,
-                        'phone': self.customer_phone or False,
-                    })
-            else:
-                partner_vals = {
-                    'name': self.customer_name or _('Website Customer'),
-                    'email': self.customer_email or False,
-                    'phone': self.customer_phone or False,
-                    'street': self.customer_address or False,
-                    'comment': self.customer_nrc and _('NRC/ID: %s') % self.customer_nrc or False,
-                }
-                if 'mobile' in Partner._fields:
-                    partner_vals['mobile'] = self.customer_phone or False
-                partner = Partner.create(partner_vals)
+        if self.customer_type == 'company':
+            partner = self._find_or_create_company_partner(Partner)
+            self._ensure_company_contact(Partner, partner)
         else:
-            # Reuse an existing partner but make sure a company booking stamps
-            # the Tax ID for the invoice.
-            if self.customer_type == 'company' and self.tax_id and not partner.vat:
-                partner.write({'vat': self.tax_id, 'is_company': True})
+            partner = self._find_or_create_individual_partner(Partner)
         self.partner_id = partner
         return partner
+
+    def _fill_partner_blanks(self, partner, vals):
+        """Write only the fields that are empty on the partner — enrich an
+        existing (possibly shared) record without clobbering its data."""
+        to_write = {f: v for f, v in vals.items() if v and not partner[f]}
+        if to_write:
+            partner.write(to_write)
+
+    def _find_or_create_individual_partner(self, Partner):
+        """Match a real person by verified phone (then verified email); create
+        one otherwise. Scoped to people (not companies or child contacts) so a
+        booking can never hijack or mutate a company/contact record."""
+        self.ensure_one()
+        person_domain = [('is_company', '=', False), ('parent_id', '=', False)]
+        partner = Partner.browse()
+        # Phone is OTP-verified, so a phone match is a trustworthy identity.
+        if self.customer_phone:
+            partner = Partner.search(
+                person_domain + [('phone', '=', self.customer_phone)], limit=1)
+        # Email match only when it was the *verified* channel — otherwise a
+        # guessed email could attach the booking to a stranger's partner.
+        if not partner and self.customer_email and self.otp_verified_channel == 'email':
+            partner = Partner.search(
+                person_domain + [('email', '=', self.customer_email)], limit=1)
+        if partner:
+            self._fill_partner_blanks(partner, {
+                'email': self.customer_email,
+                'phone': self.customer_phone,
+                'street': self.customer_address,
+            })
+            return partner
+        return Partner.create({
+            'name': self.customer_name or _('Website Customer'),
+            'email': self.customer_email or False,
+            'phone': self.customer_phone or False,
+            'street': self.customer_address or False,
+            'comment': self.customer_nrc and _('NRC/ID: %s') % self.customer_nrc or False,
+        })
+
+    def _find_or_create_company_partner(self, Partner):
+        """Match a company by VAT (its legal identity), then by exact name;
+        create one otherwise. VAT/legal name drive the deposit tax invoice, so
+        an existing company is only enriched (blanks filled), never renamed."""
+        self.ensure_one()
+        vat = (self.tax_id or '').strip()
+        company = Partner.browse()
+        if vat:
+            company = Partner.search(
+                [('is_company', '=', True), ('vat', '=', vat)], limit=1)
+        if not company and self.company_name:
+            company = Partner.search(
+                [('is_company', '=', True), ('name', '=', self.company_name.strip())], limit=1)
+        # email/phone are the CONTACT PERSON's, not the company's — on the
+        # company they are only a best-effort fallback so a brand-new company is
+        # still reachable for the deposit invoice. They are filled only when
+        # blank (never overwriting a real company email) and the contact person
+        # remains their primary owner (see _ensure_company_contact). vat/street
+        # are the company's own and are likewise enriched without overwriting.
+        if not company:
+            company = Partner.create({
+                'name': self.company_name or self.customer_name or _('Company Customer'),
+                'is_company': True,
+            })
+        # vat/street are the company's own; email/phone are the contact person's
+        # and live on the company only as a fallback. Fill only when blank so a
+        # reused company's real details are never overwritten.
+        self._fill_partner_blanks(company, {
+            'vat': vat,
+            'street': self.customer_address,
+            'email': self.customer_email,
+            'phone': self.customer_phone,
+        })
+        return company
+
+    def _ensure_company_contact(self, Partner, company):
+        """Ensure the authorised contact person exists as a child contact of
+        the company — searched first so repeat bookings don't duplicate it."""
+        self.ensure_one()
+        name = (self.customer_name or '').strip()
+        if not name:
+            return Partner.browse()
+        contact = Partner.search(
+            [('parent_id', '=', company.id), ('name', '=', name)], limit=1)
+        if contact:
+            self._fill_partner_blanks(contact, {
+                'email': self.customer_email,
+                'phone': self.customer_phone,
+            })
+            return contact
+        return Partner.create({
+            'name': name,
+            'parent_id': company.id,
+            'type': 'contact',
+            'email': self.customer_email or False,
+            'phone': self.customer_phone or False,
+        })
 
     # === Customer requirements (configurable, per customer type) ===
     def _applicable_document_types(self, customer_type=None):
@@ -545,7 +613,7 @@ class BsCarBooking(models.Model):
                 errors.append(_('Company name is required.'))
             if not (self.tax_id or '').strip():
                 errors.append(_('Tax ID is required for a company.'))
-            if not (self.contact_person or '').strip():
+            if not (self.customer_name or '').strip():
                 errors.append(_('Contact person is required for a company.'))
         else:
             if not (self.customer_name or '').strip():
