@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================
+         DYNAMIC "Cars" DATA BLOCK
+         Builder-managed multi-record snippet over bs.car.model, following
+         the website_event pattern. The builder controls which filter, which
+         layout template, and how many records (1-16) via data-* attributes;
+         the layout template below is an editable QWeb view.
+         ================================================================ -->
+
+    <!-- Wrapper: wires the base dynamic-snippet machinery + interaction. -->
+    <template id="s_bs_cars" name="Cars">
+        <t t-call="website.s_dynamic_snippet_template">
+            <t t-set="snippet_name" t-value="'s_bs_cars'"/>
+            <t t-set="snippet_classes" t-value="'s_bs_cars_snippet car_catalog_band %s' % (snippet_extra_classes or '')"/>
+            <t t-set="main_page_url" t-value="'/cars'"/>
+            <t t-out="0"/>
+        </t>
+    </template>
+
+    <!-- Panel variant (what appears in the Add-block panel). -->
+    <template id="s_bs_cars_card" name="Cars (Card)">
+        <t t-set="snippet_extra_classes" t-value="'s_bs_cars_card'"/>
+        <t t-call="bs_car_booking.s_bs_cars"/>
+    </template>
+
+    <!-- Editable card layout. Template key MUST contain the model name
+         (bs_car_model) so website.snippet.filter._render accepts it.
+         Respects the same price=0 / is_available rules as the static card. -->
+    <template id="dynamic_filter_template_bs_car_model_card" name="Car Card Layout" priority="10">
+        <div t-foreach="records" t-as="data"
+             class="bs_catalog_card s_bs_cars_item"
+             data-extra-classes="g-4"
+             data-column-classes="col-12 col-md-6 col-lg-4">
+            <t t-set="record" t-value="data['_record']"/>
+            <div class="bs_catalog_card_media">
+                <img t-if="record.image" loading="lazy" t-att-alt="record.name"
+                     t-att-src="'/web/image/bs.car.model/%s/image/800x534' % record.id"/>
+                <div t-else="" class="bs_catalog_card_placeholder">
+                    <i class="fa fa-car"/>
+                </div>
+                <div t-if="is_sample" class="h5 o_ribbon_right bg-primary text-uppercase">Sample</div>
+                <span t-if="record.body_type" class="bs_card_badge bs_card_badge_type" t-esc="record.body_type.title()"/>
+            </div>
+            <div class="bs_catalog_card_body">
+                <div class="bs_catalog_card_head">
+                    <span class="bs_card_brand" t-esc="record.brand_id.name"/>
+                </div>
+                <h3 class="bs_card_title" t-esc="record.name"/>
+                <div class="bs_card_specs">
+                    <span t-if="record.range_km" class="bs_card_spec">
+                        <i class="fa fa-bolt"/> <strong t-esc="record.range_km"/><small>km</small>
+                    </span>
+                    <span t-if="record.acceleration" class="bs_card_spec">
+                        <i class="fa fa-tachometer"/> <strong t-esc="record.acceleration"/><small>s</small>
+                    </span>
+                    <span t-if="record.seats" class="bs_card_spec">
+                        <i class="fa fa-user"/> <strong t-esc="record.seats"/>
+                    </span>
+                </div>
+                <div class="bs_catalog_card_footer">
+                    <div class="bs_card_price" t-if="record.base_price">
+                        <span class="bs_card_price_label">From</span>
+                        <strong t-esc="record.base_price"
+                                t-options="{'widget': 'monetary', 'display_currency': record.currency_id}"/>
+                    </div>
+                    <div class="bs_card_actions">
+                        <a t-if="record.is_available" t-att-href="'/car/%s/book' % record.id" class="bs_card_book_btn">
+                            Book Now
+                        </a>
+                        <a t-att-href="data['call_to_action_url']" class="bs_card_cta">
+                            Discover <i class="fa fa-arrow-right"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Register the dynamic Cars block in the "Hongqi" snippet group. -->
+    <template id="bs_car_booking_dynamic_snippets" inherit_id="website.snippets" name="BS Car Dynamic Snippets">
+        <xpath expr="//t[@t-snippet='bs_car_booking.s_bs_dealers']" position="after">
+            <t t-snippet="bs_car_booking.s_bs_cars_card" string="Cars" group="bs_automotive"/>
+        </xpath>
+    </template>
+</odoo>

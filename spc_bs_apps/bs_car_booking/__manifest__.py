@@ -28,7 +28,7 @@ Website Journey:
 6. Receive booking confirmation via SMS
 """,
     'category': 'Website/Booking',
-    'version': '19.0.9.0.23',
+    'version': '19.0.9.0.24',
     'author': 'Basic Solution Co., Ltd.',
     'maintainer': 'Basic Solution Co., Ltd.',
     'website': 'https://basicsolution.com/',
@@ -69,6 +69,7 @@ Website Journey:
         'data/otp_purpose_data.xml',
         'data/product_attribute_data.xml',
         'data/customer_requirements_data.xml',
+        'data/bs_snippet_filters.xml',
         # website_menus.xml removed: theme_utils._cleanup_website() owns
         # all website.menu creation. Records here had no parent_id so Odoo
         # stored them as orphans (parent_id=False); the cleanup search on
@@ -102,6 +103,7 @@ Website Journey:
         'views/portal_templates.xml',
         'views/story_templates.xml',
         'views/snippets.xml',
+        'views/dynamic_snippets.xml',
     ],
     'assets': {
         'web.assets_frontend': [

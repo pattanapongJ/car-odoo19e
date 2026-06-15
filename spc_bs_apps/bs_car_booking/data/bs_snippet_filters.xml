@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Dynamic "Cars" data block: published car models, newest/ordered.
+             Powers the s_bs_cars dynamic snippet (builder picks filter +
+             layout + count). Mirrors the website_event pattern. -->
+        <record id="ir_filters_bs_car_model_snippet" model="ir.filters">
+            <field name="name">Cars</field>
+            <field name="model_id">bs.car.model</field>
+            <field name="user_ids" eval="False"/>
+            <field name="domain">[('website_published', '=', True), ('active', '=', True)]</field>
+            <field name="sort">["sequence asc", "id desc"]</field>
+        </record>
+        <record id="website_snippet_filter_bs_car_model" model="website.snippet.filter">
+            <field name="filter_id" ref="ir_filters_bs_car_model_snippet"/>
+            <field name="field_names">name,base_price</field>
+            <field name="limit" eval="12"/>
+            <field name="name">Cars</field>
+        </record>
+    </data>
+</odoo>
