@@ -4702,3 +4702,74 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
 msgid "you@email.com"
 msgstr ""
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_confirmation_page
+msgid "Rate your booking experience"
+msgstr "ประเมินประสบการณ์การจอง"
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_confirmation_page
+msgid "Please give a rating"
+msgstr "กรุณาให้คะแนน"
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_confirmation_page
+msgid "Additional comments (optional)"
+msgstr "ความคิดเห็นเพิ่มเติม (ไม่บังคับ)"
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_confirmation_page
+msgid "Submit Rating"
+msgstr "ส่งคะแนน"
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_confirmation_page
+msgid "Skip for now"
+msgstr "ข้ามไปก่อน"
+
+#. module: bs_car_booking
+#: code:addons/bs_car_booking/views/website_confirmation_templates.xml:0
+#: code:addons/bs_car_booking/static/src/js/interactions/booking_rating.js:0
+msgid "Thank you for your rating!"
+msgstr "ขอบคุณสำหรับคะแนน!"
+
+#. module: bs_car_booking
+#: code:addons/bs_car_booking/static/src/js/interactions/booking_rating.js:0
+msgid "Something went wrong. Please try again."
+msgstr "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"
+
+#. module: bs_car_booking
+#: code:addons/bs_car_booking/static/src/js/interactions/booking_rating.js:0
+msgid "Needs improvement"
+msgstr "ต้องปรับปรุง"
+
+#. module: bs_car_booking
+#: code:addons/bs_car_booking/static/src/js/interactions/booking_rating.js:0
+msgid "Fair"
+msgstr "พอใช้"
+
+#. module: bs_car_booking
+#: code:addons/bs_car_booking/static/src/js/interactions/booking_rating.js:0
+msgid "Average"
+msgstr "ปานกลาง"
+
+#. module: bs_car_booking
+#: code:addons/bs_car_booking/static/src/js/interactions/booking_rating.js:0
+msgid "Good"
+msgstr "ดี"
+
+#. module: bs_car_booking
+#: code:addons/bs_car_booking/static/src/js/interactions/booking_rating.js:0
+msgid "Excellent"
+msgstr "ดีมาก"
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_confirmation_page
+msgid "Customer Rating (1–5 Stars)"
+msgstr "ให้คะแนนความพึงพอใจ (1–5 ดาว)"
+
+#. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_info_page
+msgid "e.g. Test Company Co., Ltd. (Head Office)"
+msgstr "เช่น บริษัท ทดสอบ จำกัด (สำนักงานใหญ่)"

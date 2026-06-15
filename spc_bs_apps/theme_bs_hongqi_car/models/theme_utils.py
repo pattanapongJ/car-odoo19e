@@ -33,7 +33,7 @@ class ThemeUtils(models.AbstractModel):
             self._theme_bs_hongqi_car_cleanup_website(website)
 
     def _theme_bs_hongqi_car_sync_theme_templates(self):
-        """Keep noupdate theme menu templates aligned across upgrades."""
+        """Keep noupdate theme templates aligned across upgrades."""
         home_view = self.env.ref(
             'theme_bs_hongqi_car.hongqi_home_view',
             raise_if_not_found=False,
@@ -42,58 +42,8 @@ class ThemeUtils(models.AbstractModel):
             home_view.sudo().write({
                 'arch': self._theme_bs_hongqi_car_home_arch(),
             })
-
-        menu_updates = {
-            'theme_bs_hongqi_car.menu_website_home': (
-                'Home', '/showroom', 5,
-            ),
-            'theme_bs_hongqi_car.menu_website_cars': (
-                'Models', '/cars', 10,
-            ),
-            # TEMPORARILY HIDDEN (2026-06-12, business request) — restore by
-            # uncommenting here AND in expected_menus below, then re-run
-            # the theme cleanup (cleanup recreates missing expected menus).
-            # 'theme_bs_hongqi_car.menu_website_track': (
-            #     'My Booking', '/track', 40,
-            # ),
-            'theme_bs_hongqi_car.menu_website_about_us': (
-                'About Us', '/#', 70,
-            ),
-            # stories and contact are sub menus under About Us — see below
-        }
-        for xmlid, (name, url, sequence) in menu_updates.items():
-            menu = self.env.ref(xmlid, raise_if_not_found=False)
-            if menu:
-                menu.sudo().write({
-                    'name': name,
-                    'url': url,
-                    'sequence': sequence,
-                })
-
-        # Ensure stories/contact theme templates are children of About Us
-        about_template = self.env.ref(
-            'theme_bs_hongqi_car.menu_website_about_us',
-            raise_if_not_found=False,
-        )
-        if about_template:
-            sub_updates = {
-                'theme_bs_hongqi_car.menu_website_stories': (
-                    'News', '/stories', 10,
-                ),
-                'theme_bs_hongqi_car.menu_website_contact': (
-                    'Contact Us', '/contactus', 20,
-                ),
-            }
-            for xmlid, (name, url, seq) in sub_updates.items():
-                sub = self.env.ref(xmlid, raise_if_not_found=False)
-                if sub:
-                    sub.sudo().write({
-                        'name': name,
-                        'url': url,
-                        'sequence': seq,
-                        'parent_id': about_template.id,
-                        'use_main_menu_as_parent': False,
-                    })
+        # website.menu records are owned entirely by _cleanup_website() which
+        # runs on every _theme_load; no xmlid-based sync needed here.
 
     def _theme_bs_hongqi_car_reset_theme_templates(self):
         for xmlid in (
@@ -183,10 +133,33 @@ class ThemeUtils(models.AbstractModel):
         expected_menus = {
             '/showroom': ('Home', 5),
             '/cars': ('Models', 10),
-            # TEMPORARILY HIDDEN (2026-06-12) — see note in menu_updates.
+            '/test-drive': ('Test Drive', 55),
+            # TEMPORARILY HIDDEN (2026-06-12, business request):
             # '/track': ('My Booking', 40),
             '/#': ('About Us', 70),
         }
+
+        # Remove orphan menus for this website (parent_id=False).
+        # These are created by website_menus.xml records that include
+        # website_id but omit parent_id — Odoo skips the auto-parent logic
+        # when website_id is already in vals, leaving them unreachable from
+        # the navbar and invisible to the parent_id=top_menu search below.
+        # IMPORTANT: exclude top_menu itself — it also has parent_id=False
+        # and deleting it would cascade-remove every menu on the site.
+        Menu.search([
+            ('website_id', '=', website.id),
+            ('parent_id', '=', False),
+            ('id', '!=', top_menu.id),
+        ]).unlink()
+
+        # Remove any top-level menus whose URL is not in the expected set
+        # (stale entries from old module versions: /compare, /track, /, …).
+        Menu.search([
+            ('website_id', '=', website.id),
+            ('parent_id', '=', top_menu.id),
+            ('url', 'not in', list(expected_menus.keys())),
+        ]).unlink()
+
         for url, (name, sequence) in expected_menus.items():
             menus = Menu.search([
                 ('website_id', '=', website.id),
@@ -210,14 +183,7 @@ class ThemeUtils(models.AbstractModel):
                     'website_id': website.id,
                 })
 
-        # Remove old top-level News/Contact Us (now sub menus of About Us)
-        Menu.search([
-            ('website_id', '=', website.id),
-            ('parent_id', '=', top_menu.id),
-            ('url', 'in', ['/stories', '/contactus']),
-        ]).unlink()
-
-        # Ensure About Us sub menus exist
+        # Ensure About Us sub-menus exist
         about_menu = Menu.search([
             ('website_id', '=', website.id),
             ('parent_id', '=', top_menu.id),
@@ -253,20 +219,6 @@ class ThemeUtils(models.AbstractModel):
                         'parent_id': about_menu.id,
                         'website_id': website.id,
                     })
-
-        Menu.search([
-            ('website_id', '=', website.id),
-            ('parent_id', '=', top_menu.id),
-            ('url', '=', '/'),
-            ('theme_template_id', '=', False),
-        ]).unlink()
-
-        # Remove legacy root/home duplicates from earlier theme iterations.
-        Menu.search([
-            ('website_id', '=', website.id),
-            ('parent_id', '=', top_menu.id),
-            ('url', '=', '/'),
-        ]).unlink()
 
         contact_pages = self.env['website.page'].sudo().search([
             ('website_id', '=', website.id),

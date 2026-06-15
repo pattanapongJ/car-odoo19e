@@ -1,8 +1,13 @@
 /** @odoo-module **/
 import publicWidget from "@web/legacy/js/public/public_widget";
 import { rpc } from "@web/core/network/rpc";
+import { _t } from "@web/core/l10n/translation";
 
-const LABELS = ['', 'ต้องปรับปรุง', 'พอใช้', 'ปานกลาง', 'ดี', 'ดีมาก'];
+// Literal _t() calls so the terms are extracted; evaluated lazily so the
+// active language's translation is applied at call time.
+function ratingLabels() {
+    return ['', _t('Needs improvement'), _t('Fair'), _t('Average'), _t('Good'), _t('Excellent')];
+}
 
 publicWidget.registry.BookingRating = publicWidget.Widget.extend({
     selector: '.conf_rating_block',
@@ -39,7 +44,7 @@ publicWidget.registry.BookingRating = publicWidget.Widget.extend({
         this._selected = parseInt(ev.currentTarget.dataset.value, 10);
         this._renderStars(this._selected);
         this.el.querySelector('#conf_rating_desc').textContent =
-            '★'.repeat(this._selected) + '  ' + LABELS[this._selected];
+            '★'.repeat(this._selected) + '  ' + ratingLabels()[this._selected];
         this.el.querySelector('#conf_rating_submit').disabled = false;
     },
 
@@ -70,11 +75,11 @@ publicWidget.registry.BookingRating = publicWidget.Widget.extend({
             this.el.outerHTML = `
                 <div class="conf_rating_done text-center py-3">
                     <div class="conf_rating_stars">${filled}${empty}</div>
-                    <p class="conf_rating_thanks mt-2">ขอบคุณสำหรับคะแนน!</p>
-                    <p class="text-muted small">${this._selected}/5 — ${LABELS[this._selected]}</p>
+                    <p class="conf_rating_thanks mt-2">${_t('Thank you for your rating!')}</p>
+                    <p class="text-muted small">${this._selected}/5 — ${ratingLabels()[this._selected]}</p>
                 </div>`;
         } catch {
-            errorEl.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง';
+            errorEl.textContent = _t('Something went wrong. Please try again.');
             errorEl.classList.remove('d-none');
             submitBtn.disabled = false;
         }
