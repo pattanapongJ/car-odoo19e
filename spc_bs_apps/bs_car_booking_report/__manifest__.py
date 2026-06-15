@@ -7,8 +7,8 @@
     'author': 'Basic Solution Co., Ltd.',
     'license': 'LGPL-3',
     'depends': ['bs_car_booking'],
-    # No new models — report module only.
     'data': [
+        'data/mail_template_data.xml',
         'report/report_individual_setup.xml',
         'report/report_template.xml',
         'report/report_individual_header.xml',
