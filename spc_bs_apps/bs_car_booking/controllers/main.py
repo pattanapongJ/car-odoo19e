@@ -36,8 +36,22 @@ class BsCarBookingWebsite(CustomerPortal):
             url_encode({'access_token': booking._portal_ensure_token()}),
         )
 
+    def _booking_share_url(self, booking, step):
+        """Shareable funnel URL carrying a self-expiring signed token (?token=)
+        instead of the long-lived access_token. Use for links sent out by
+        SMS/email so a leaked link cannot outlive the booking's expiry window."""
+        return '/booking/%s/%s?%s' % (
+            booking.id,
+            step,
+            url_encode({'token': booking._get_share_token()}),
+        )
+
     def _can_access_booking(self, booking, access_token=None):
-        """Allow public funnel access only through the portal token."""
+        """Allow public funnel access through the portal token, or a valid and
+        non-expired signed share token passed as ``?token=``."""
+        token = request.params.get('token')
+        if token and booking._verify_share_token(token):
+            return True
         if access_token and consteq(booking.access_token or '', access_token):
             return True
         user = request.env.user
