@@ -141,7 +141,7 @@
                                              nudges customers to include it. -->
                                         <input type="text" name="company_name" class="form-control form-control-lg thai-text-only"
                                                t-att-value="booking.company_name or ''"
-                                               placeholder="เช่น บริษัท ทดสอบ จำกัด (สำนักงานใหญ่)"/>
+                                               placeholder="e.g. Test Company Co., Ltd. (Head Office)"/>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Tax ID *</label>
@@ -501,7 +501,7 @@
                                         <i t-attf-class="fa fa-star{{ ' conf_star_lit' if i &lt;= booking.rating else '-o' }}"/>
                                     </t>
                                 </div>
-                                <p class="conf_rating_thanks mt-2">ขอบคุณสำหรับคะแนน!</p>
+                                <p class="conf_rating_thanks mt-2">Thank you for your rating!</p>
                                 <p class="text-muted small"><t t-esc="booking.rating"/>/5
                                     <t t-if="booking.rating_comment"> — <t t-esc="booking.rating_comment"/></t>
                                 </p>
@@ -511,7 +511,7 @@
                                  class="conf_rating_block"
                                  t-att-data-booking-id="booking.id"
                                  t-att-data-access-token="access_token">
-                                <p class="conf_rating_title">ประเมินประสบการณ์การจอง</p>
+                                <p class="conf_rating_title">Rate your booking experience</p>
                                 <p class="text-muted small mb-2">Customer Rating (1–5 Stars)</p>
                                 <div class="conf_stars" id="conf_stars">
                                     <span class="conf_star" data-value="1">&#9733;</span>
@@ -520,14 +520,14 @@
                                     <span class="conf_star" data-value="4">&#9733;</span>
                                     <span class="conf_star" data-value="5">&#9733;</span>
                                 </div>
-                                <div class="conf_rating_desc" id="conf_rating_desc">กรุณาให้คะแนน</div>
+                                <div class="conf_rating_desc" id="conf_rating_desc">Please give a rating</div>
                                 <textarea id="conf_rating_comment" class="form-control form-control-sm conf_rating_comment mt-2"
-                                          rows="2" placeholder="ความคิดเห็นเพิ่มเติม (ไม่บังคับ)"/>
+                                          rows="2" placeholder="Additional comments (optional)"/>
                                 <button id="conf_rating_submit" class="conf_rating_submit_btn btn btn-warning mt-2" disabled="disabled">
-                                    <i class="fa fa-paper-plane"/> ส่งคะแนน
+                                    <i class="fa fa-paper-plane"/> Submit Rating
                                 </button>
                                 <button id="conf_rating_skip" class="conf_rating_skip_btn btn btn-link btn-sm mt-1 d-block mx-auto">
-                                    ข้ามไปก่อน
+                                    Skip for now
                                 </button>
                                 <div id="conf_rating_error" class="alert alert-danger mt-2 d-none"/>
                             </div>

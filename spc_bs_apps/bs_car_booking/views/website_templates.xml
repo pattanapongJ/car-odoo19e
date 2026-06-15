@@ -233,7 +233,7 @@
                         </div>
                         <div class="car_detail_actions">
                             <a t-att-href="'/car/%s/book' % car.id" class="btn btn-primary car_cta_btn">
-                                Reserve Now <i class="fa fa-arrow-right"/>
+                                Book Now
                             </a>
                             <a href="#model_specs" class="btn btn-outline-light car_ghost_btn">
                                 Explore <i class="fa fa-arrow-down"/>
