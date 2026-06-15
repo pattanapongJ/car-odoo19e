@@ -3,7 +3,7 @@
     'name': 'BS Car Booking Report – Individual Contract',
     'summary': 'QWeb PDF report: Standard car booking contract (individual/personal)',
     'category': 'Website/Booking',
-    'version': '19.0.1.1.0',
+    'version': '19.0.1.1.1',
     'author': 'Basic Solution Co., Ltd.',
     'license': 'LGPL-3',
     'depends': ['bs_car_booking'],
