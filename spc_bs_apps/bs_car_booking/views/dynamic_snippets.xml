@@ -20,7 +20,9 @@
 
     <!-- Panel variant (what appears in the Add-block panel). -->
     <template id="s_bs_cars_card" name="Cars (Card)">
-        <t t-set="snippet_extra_classes" t-value="'s_bs_cars_card'"/>
+        <!-- s_bs_car_model_card = the "template class" the dynamic-snippet option
+             reads to auto-select dynamic_filter_template_bs_car_model_card on drop. -->
+        <t t-set="snippet_extra_classes" t-value="'s_bs_cars_card s_bs_car_model_card'"/>
         <t t-call="bs_car_booking.s_bs_cars"/>
     </template>
 

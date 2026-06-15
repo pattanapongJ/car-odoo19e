@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Register "Cars" (bs.car.model) as a selectable model in the base
+         dynamic-snippet option's model dropdown. -->
+    <t t-inherit="website.DynamicSnippetOption" t-inherit-mode="extension">
+        <xpath expr="//BuilderSelect[@id=&quot;'model_opt'&quot;]" position="inside">
+            <BuilderSelectItem actionParam="'bs.car.model'">Cars</BuilderSelectItem>
+        </xpath>
+    </t>
+
+</templates>
