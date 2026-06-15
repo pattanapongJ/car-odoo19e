@@ -7,6 +7,7 @@
 import { Interaction } from "@web/public/interaction";
 import { registry } from "@web/core/registry";
 import { isValidPhone } from "@bs_car_booking/js/phone_utils";
+import { ReCaptcha } from "@google_recaptcha/js/recaptcha";
 
 async function jsonrpc(route, params) {
     const resp = await fetch(route, {
@@ -27,9 +28,11 @@ export class CarConfigurator extends Interaction {
         this.priceEl = document.getElementById("cfg_price");
         this.errorEl = document.getElementById("cfg_error");
         this.selectedListEl = document.getElementById("cfg_selected_list");
+        this.recaptcha = new ReCaptcha();
     }
 
-    start() {
+    async start() {
+        await this.recaptcha.loadLibs();
         // Visual selection + live price on any input change.
         for (const input of this.el.querySelectorAll(".cfg_input")) {
             input.addEventListener("change", () => this._onChange(input));
@@ -261,6 +264,12 @@ export class CarConfigurator extends Interaction {
             return;
         }
 
+        const tokenObj = await this.recaptcha.getToken("car_booking");
+        if (tokenObj.error) {
+            this._showError("reCAPTCHA verification failed. Please try again.");
+            return;
+        }
+
         const btn = this.el.querySelector(".cfg_submit_btn");
         const orig = btn.innerHTML;
         btn.disabled = true;
@@ -275,6 +284,7 @@ export class CarConfigurator extends Interaction {
                 email: email || null,
                 otp_channel: otpChannel,
                 pdpa_consent: !!(pdpaEl && pdpaEl.checked),
+                recaptcha_token_response: tokenObj.token || "",
             });
             if (res.success) {
                 window.location.href = res.redirect_url;
