@@ -1622,6 +1622,9 @@ html {
     gap: 8px;
     align-items: center;
     flex-shrink: 0;
+    // Always hug the right edge — even when the price is hidden (price = 0)
+    // and the actions are the footer's only child.
+    margin-left: auto;
 }
 
 .bs_card_book_btn {

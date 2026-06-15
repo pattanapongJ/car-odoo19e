@@ -117,6 +117,12 @@ class ThemeUtils(models.AbstractModel):
             })
             (pages - keeper).unlink()
 
+    def _bs_set_menu_translation(self, menu, name_th, th_active):
+        """Seed the Thai (th_TH) label on a freshly created menu. Only used on
+        creation so any later website-editor change to the label is preserved."""
+        if th_active and name_th:
+            menu.with_context(lang='th_TH').write({'name': name_th})
+
     def _theme_bs_hongqi_car_cleanup_website(self, website):
         website = website.sudo().exists()
         if not website:
@@ -130,13 +136,22 @@ class ThemeUtils(models.AbstractModel):
         if not top_menu:
             return
 
+        # Thai labels are applied in code (en_US + th_TH) so every nav item is
+        # translated consistently and survives this cleanup, which rewrites the
+        # name on each run. Value tuple = (English, Thai, sequence).
+        th_active = bool(self.env['res.lang'].sudo().search_count(
+            [('code', '=', 'th_TH'), ('active', '=', True)]))
+
         expected_menus = {
-            '/showroom': ('Home', 5),
-            '/cars': ('Models', 10),
-            '/test-drive': ('Test Drive', 55),
+            # Home points at "/" (clean URL); homepage_url reroutes "/" to the
+            # /showroom page internally, so content shows with the address bar
+            # staying "/". The /showroom page itself is kept (homepage source).
+            '/': ('Home', 'หน้าแรก', 5),
+            '/cars': ('Models', 'รุ่น', 10),
+            '/test-drive': ('Test Drive', 'ทดลองขับ', 55),
             # TEMPORARILY HIDDEN (2026-06-12, business request):
-            # '/track': ('My Booking', 40),
-            '/#': ('About Us', 70),
+            # '/track': ('My Booking', 'การจองของฉัน', 40),
+            '/#': ('About Us', 'เกี่ยวกับเรา', 70),
         }
 
         # Remove orphan menus for this website (parent_id=False).
@@ -160,7 +175,7 @@ class ThemeUtils(models.AbstractModel):
             ('url', 'not in', list(expected_menus.keys())),
         ]).unlink()
 
-        for url, (name, sequence) in expected_menus.items():
+        for url, (name, name_th, sequence) in expected_menus.items():
             menus = Menu.search([
                 ('website_id', '=', website.id),
                 ('parent_id', '=', top_menu.id),
@@ -168,20 +183,18 @@ class ThemeUtils(models.AbstractModel):
             ], order='theme_template_id desc, sequence, id')
             keeper = menus.filtered('theme_template_id')[:1] or menus[:1]
             if keeper:
-                keeper.write({
-                    'name': name,
-                    'url': url,
-                    'sequence': sequence,
-                })
-                (menus - keeper).unlink()
+                # Enforce structure only — preserve any UI-edited label.
+                keeper.write({'url': url, 'sequence': sequence})
             else:
-                Menu.create({
+                keeper = Menu.create({
                     'name': name,
                     'url': url,
                     'sequence': sequence,
                     'parent_id': top_menu.id,
                     'website_id': website.id,
                 })
+                self._bs_set_menu_translation(keeper, name_th, th_active)
+            (menus - keeper).unlink()
 
         # Ensure About Us sub-menus exist
         about_menu = Menu.search([
@@ -191,10 +204,10 @@ class ThemeUtils(models.AbstractModel):
         ], limit=1)
         if about_menu:
             expected_sub = {
-                '/stories': ('News', 10),
-                '/contactus': ('Contact Us', 20),
+                '/stories': ('News', 'ข่าวสาร', 10),
+                '/contactus': ('Contact Us', 'ติดต่อเรา', 20),
             }
-            for url, (name, sequence) in expected_sub.items():
+            for url, (name, name_th, sequence) in expected_sub.items():
                 sub_menus = Menu.search([
                     ('website_id', '=', website.id),
                     ('parent_id', '=', about_menu.id),
@@ -205,20 +218,18 @@ class ThemeUtils(models.AbstractModel):
                     or sub_menus[:1]
                 )
                 if keeper:
-                    keeper.write({
-                        'name': name,
-                        'url': url,
-                        'sequence': sequence,
-                    })
-                    (sub_menus - keeper).unlink()
+                    # Enforce structure only — preserve any UI-edited label.
+                    keeper.write({'url': url, 'sequence': sequence})
                 else:
-                    Menu.create({
+                    keeper = Menu.create({
                         'name': name,
                         'url': url,
                         'sequence': sequence,
                         'parent_id': about_menu.id,
                         'website_id': website.id,
                     })
+                    self._bs_set_menu_translation(keeper, name_th, th_active)
+                (sub_menus - keeper).unlink()
 
         contact_pages = self.env['website.page'].sudo().search([
             ('website_id', '=', website.id),

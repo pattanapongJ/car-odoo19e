@@ -541,7 +541,7 @@
             <div class="container bs_dealers">
                 <div class="section_header_center">
                     <span class="car_kicker car_kicker_dark" t-esc="locator_kicker or 'Our showrooms'"/>
-                    <h2 class="section_title" t-esc="locator_title or 'Find a dealer near you'"/>
+                    <h2 class="section_title" t-esc="locator_title or 'Find your preferred location'"/>
                 </div>
                 <div class="bs_dealers_locator">
                     <div class="bs_dealers_mapwrap">
@@ -713,13 +713,13 @@
                             </div>
                             <h3 class="bs_card_title" t-esc="car.name"/>
                             <div class="bs_catalog_card_footer">
-                                <div class="bs_card_price">
+                                <div class="bs_card_price" t-if="car.base_price">
                                     <span class="bs_card_price_label">From</span>
                                     <strong t-esc="car.base_price"
                                             t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
                                 </div>
                                 <div class="bs_card_actions">
-                                    <a t-att-href="'/car/%s/book' % car.id" class="bs_card_book_btn">
+                                    <a t-if="car.is_available" t-att-href="'/car/%s/book' % car.id" class="bs_card_book_btn">
                                         Book Now
                                     </a>
                                     <a t-att-href="'/car/%s' % car.id" class="bs_card_cta">

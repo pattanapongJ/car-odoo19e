@@ -65,6 +65,21 @@
             </field>
         </record>
 
+        <!-- Drop the editable "header text element" from the MOBILE menu.
+             Its default content is the placeholder phone (+1 555-555-5556),
+             which we don't want shown in the mobile off-canvas. Desktop is
+             unaffected (the Hongqi header doesn't render this placeholder). -->
+        <record id="mobile_header_no_text_element" model="theme.ir.ui.view">
+            <field name="name">Hongqi Mobile Header — hide text element</field>
+            <field name="key">theme_bs_hongqi_car.mobile_header_no_text_element</field>
+            <field name="type">qweb</field>
+            <field name="priority">999</field>
+            <field name="inherit_id" eval="'ir.ui.view,%d' % ref('website.template_header_mobile')"/>
+            <field name="arch" type="xml">
+                <xpath expr="//t[@t-call='website.placeholder_header_text_element']" position="replace"/>
+            </field>
+        </record>
+
         <record id="template_footer_hongqi" model="theme.ir.ui.view">
             <field name="name">Hongqi Brand Footer</field>
             <field name="key">theme_bs_hongqi_car.template_footer_hongqi</field>

@@ -58,6 +58,7 @@
                                     <field name="seats"/>
                                     <field name="website_published"/>
                                     <field name="website_featured"/>
+                                    <field name="is_available"/>
                                     <field name="active"/>
                                 </group>
                                 <group>
