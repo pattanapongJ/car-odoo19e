@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Paper format: A4 Portrait with margins suitable for a Thai legal contract -->
+    <record id="paperformat_booking_contract_a4" model="report.paperformat">
+        <field name="name">สัญญาจองรถ A4 (Portrait)</field>
+        <field name="default">False</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">12.7</field>
+        <field name="margin_bottom">12.7</field>
+        <field name="margin_left">12.7</field>
+        <field name="margin_right">10.9</field>
+        <field name="header_line">False</field>
+        <field name="header_spacing">3</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Report action — bound to bs.car.booking; appears in the Print menu -->
+    <record id="report_booking_individual" model="ir.actions.report">
+        <field name="name">สัญญาจองรถยนต์ (บุคคลธรรมดา)</field>
+        <field name="model">bs.car.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bs_car_booking_report.report_booking_individual_document</field>
+        <field name="report_file">bs_car_booking_report.report_booking_individual_document</field>
+        <field name="print_report_name">(object.name or 'booking') + '_contract'</field>
+        <field name="paperformat_id" ref="bs_car_booking_report.paperformat_booking_contract_a4"/>
+        <field name="binding_model_id" ref="bs_car_booking.model_bs_car_booking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

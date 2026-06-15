@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        The report action in report_individual_setup.xml already binds to
+        bs.car.booking via binding_model_id + binding_type="report", so the
+        "สัญญาจองรถยนต์ (บุคคลธรรมดา)" option appears automatically in the
+        ☰ Print menu of every booking form without any extra view changes.
+
+        Add any additional button/action customisations here if needed.
+    -->
+
+</odoo>

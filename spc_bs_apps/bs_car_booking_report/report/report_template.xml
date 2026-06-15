@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Layout wrapper for each booking contract document.
+        Mirrors bs_from_tax_invoice_th.request_layout pattern:
+        wraps content in the article div with o_company_N_layout class,
+        which picks up the company font (TH-SarabunPSK) from the bundle CSS.
+    -->
+    <template id="bc_booking_layout">
+        <t t-if="not company">
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"
+             t-att-data-oe-model="o and o._name"
+             t-att-data-oe-id="o and o.id"
+             t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-out="0"/>
+        </div>
+    </template>
+
+</odoo>

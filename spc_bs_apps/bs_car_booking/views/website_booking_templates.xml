@@ -291,7 +291,7 @@
                                     <label class="cfg_pdpa">
                                         <input type="checkbox" id="cfg_pdpa" class="cfg_pdpa_check"/>
                                         <span>I agree to the
-                                            <a href="/privacy" target="_blank" rel="noopener">Privacy Policy (PDPA)</a>
+                                            <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>
                                             and consent to being contacted about this booking.</span>
                                     </label>
                                     <button type="submit" class="btn btn-primary btn-lg cfg_submit_btn"

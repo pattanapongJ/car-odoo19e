@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Shared CSS / font styles for the booking contract report.
+        Injected once at the top of each document via t-call from content.
+    -->
+    <template id="report_booking_individual_styles">
+        <style>
+            .bc-page {
+                font-family: 'TH-SarabunPSK';
+                font-size: 18px;
+                line-height: 1.5;
+                color: #000;
+            }
+            .bc-page table  { border-collapse: collapse; width: 100%; border: none;}
+            .bc-page p      { margin: 0 0 2pt 0; }
+            .bc-page strong { font-weight: bold; }
+            .bc-page .indent-1 { padding-left: 18pt; }
+            .bc-page .indent-2 { padding-left: 36pt; }
+            .bc-page .article-header {
+                font-size: 20px;
+                font-weight: bold;
+                margin: 6pt 0 3pt 0;
+            }
+            .bc-page .field-value { font-size: 18px; font-weight: bold; }
+            .bc-page .sig-table td { vertical-align: top; }
+            .bc-page h2, .bc-page .doc-title {
+                font-size: 20px;
+                font-weight: bold;
+                text-align: center;
+            }
+            .bc-page table, .bc-page table td, .bc-page table th { border: none !important; }
+            .bc-page * { text-decoration: none !important; }
+            .bc-page a { color: #000 !important; }
+        </style>
+    </template>
+
+</odoo>
