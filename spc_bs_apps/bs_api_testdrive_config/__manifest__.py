@@ -1,7 +1,7 @@
 {
     'name': 'BS Test Drive API Config',
     'summary': 'ReadyPlanet R-CRM API configuration and submission logging for Test Drive requests',
-    'version': '19.0.1.0.1',
+    'version': '19.0.1.0.2',
     'category': 'Website',
     'author': 'Basic Solution Co., Ltd.',
     'maintainer': 'Basic Solution Co., Ltd.',

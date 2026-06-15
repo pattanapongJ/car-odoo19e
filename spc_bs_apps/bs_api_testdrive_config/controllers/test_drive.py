@@ -13,7 +13,19 @@ class BsTestDriveController(http.Controller):
 
     @http.route('/test-drive/submit', type='jsonrpc', auth='public', website=True, csrf=False)
     def submit_test_drive(self, full_name=None, phone=None, line_id=None, email=None,
-                          test_drive_date=None, test_drive_time=None, location=None, **kwargs):
+                          test_drive_date=None, test_drive_time=None, location=None,
+                          recaptcha_token_response=None, **kwargs):
+        ip_addr = request.httprequest.remote_addr
+        recaptcha_result = request.env['ir.http']._verify_recaptcha_token(
+            ip_addr, recaptcha_token_response or '', 'test_drive'
+        )
+        if recaptcha_result not in ('is_human', 'no_secret'):
+            _logger.warning(
+                'TestDrive: reCAPTCHA failed (%s) for ip %s',
+                recaptcha_result, ip_addr,
+            )
+            return {'success': False, 'error': 'recaptcha_failed'}
+
         if not full_name or not phone:
             return {'success': False, 'error': 'required_fields_missing'}
 
