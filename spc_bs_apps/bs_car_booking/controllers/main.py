@@ -169,6 +169,10 @@ class BsCarBookingWebsite(CustomerPortal):
         if (not car.exists() or not car.website_published
                 or (car.company_id and car.company_id != request.website.company_id)):
             return request.not_found()
+        # "Coming Soon" models cannot be booked — even via a direct/bookmarked
+        # URL. Send the visitor to the (still viewable) detail page instead.
+        if not car.is_available:
+            return request.redirect('/car/%s' % car.id)
         dealers = self._scoped_env('bs.car.dealer').search([
             ('active', '=', True), ('website_published', '=', True),
             ('brand_ids', 'in', [car.brand_id.id]),
