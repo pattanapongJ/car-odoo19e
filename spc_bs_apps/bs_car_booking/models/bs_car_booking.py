@@ -3,6 +3,7 @@
 
 import logging
 import re
+import uuid
 from datetime import timedelta
 
 from odoo import _, api, fields, models
@@ -197,8 +198,19 @@ class BsCarBooking(models.Model):
                     'target': labels.get(target_state, target_state),
                 })
         self.with_context(bs_booking_bypass_state_guard=True).write({'state': target_state})
+        # Terminal "dead" states: rotate the portal token so any previously
+        # shared/leaked funnel link to this booking stops working. Safe here —
+        # no customer is mid-flow on a cancelled/expired booking (My Account
+        # still resolves the live token via get_portal_url).
+        if target_state in ('expired', 'cancelled'):
+            self._rotate_access_token()
         self._sync_lead_outcome(target_state)
         return True
+
+    def _rotate_access_token(self):
+        """Issue a fresh portal access_token, invalidating any link shared earlier."""
+        for rec in self:
+            rec.sudo().access_token = str(uuid.uuid4())
 
     def _has_successful_payment(self):
         self.ensure_one()

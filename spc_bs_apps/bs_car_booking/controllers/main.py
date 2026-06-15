@@ -73,6 +73,14 @@ class BsCarBookingWebsite(CustomerPortal):
             return False
         return booking
 
+    def _render_funnel(self, template, values):
+        """Render a token-bearing funnel page with ``Referrer-Policy: no-referrer``
+        so the access/share token in the URL is never leaked to third parties
+        (analytics, fonts, payment iframe) via the Referer header."""
+        response = request.render(template, values)
+        response.headers['Referrer-Policy'] = 'no-referrer'
+        return response
+
     # ── Catalog ─────────────────────────────────────────────────────────
     @http.route('/cars', type='http', auth='public', website=True, sitemap=True)
     def car_listing(self, brand_id=None, body_type=None, price_min=None, price_max=None, **kw):
@@ -228,7 +236,7 @@ class BsCarBookingWebsite(CustomerPortal):
                 switch_channel = 'sms'
             elif booking.customer_email:
                 switch_channel = 'email'
-        return request.render('bs_car_booking.otp_verification_page', {
+        return self._render_funnel('bs_car_booking.otp_verification_page', {
             'booking': booking,
             'access_token': booking._portal_ensure_token(),
             'otp_channel': otp_channel,
@@ -270,7 +278,7 @@ class BsCarBookingWebsite(CustomerPortal):
             max_doc_mb = max(int(ICP.get_param('bs_car_booking.max_doc_mb', '10')), 1)
         except (TypeError, ValueError):
             max_doc_mb = 10
-        return request.render('bs_car_booking.booking_info_page', {
+        return self._render_funnel('bs_car_booking.booking_info_page', {
             'booking': booking,
             'access_token': booking._portal_ensure_token(),
             'account_partner': account_partner,
@@ -317,7 +325,7 @@ class BsCarBookingWebsite(CustomerPortal):
             'deposit_amount': deposit,
             'booking_access_token': booking._portal_ensure_token(),
         })
-        return request.render('bs_car_booking.deposit_payment_page', values)
+        return self._render_funnel('bs_car_booking.deposit_payment_page', values)
 
     # ── Customer Rating ─────────────────────────────────────────────────
     @http.route('/booking/<int:booking_id>/submit_rating', type='jsonrpc', auth='public', website=True, methods=['POST'])
@@ -337,7 +345,7 @@ class BsCarBookingWebsite(CustomerPortal):
         booking = self._get_booking_or_404(booking_id, access_token)
         if not booking:
             return request.not_found()
-        return request.render('bs_car_booking.booking_confirmation_page', {
+        return self._render_funnel('bs_car_booking.booking_confirmation_page', {
             'booking': booking,
             'access_token': booking._portal_ensure_token(),
         })
