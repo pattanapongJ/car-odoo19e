@@ -76,7 +76,6 @@
                 <field name="customer_type"/>
                 <field name="company_name" invisible="customer_type != 'company'"/>
                 <field name="tax_id" invisible="customer_type != 'company'"/>
-                <field name="contact_person" invisible="customer_type != 'company'"/>
             </field>
             <!-- add Documents + Agreements pages to the notebook -->
             <xpath expr="//notebook" position="inside">
