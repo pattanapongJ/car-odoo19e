@@ -139,14 +139,17 @@ class ThemeUtils(models.AbstractModel):
             '/#': ('About Us', 70),
         }
 
-        # Remove orphan top-level menus for this website (parent_id=False).
+        # Remove orphan menus for this website (parent_id=False).
         # These are created by website_menus.xml records that include
         # website_id but omit parent_id — Odoo skips the auto-parent logic
         # when website_id is already in vals, leaving them unreachable from
         # the navbar and invisible to the parent_id=top_menu search below.
+        # IMPORTANT: exclude top_menu itself — it also has parent_id=False
+        # and deleting it would cascade-remove every menu on the site.
         Menu.search([
             ('website_id', '=', website.id),
             ('parent_id', '=', False),
+            ('id', '!=', top_menu.id),
         ]).unlink()
 
         # Remove any top-level menus whose URL is not in the expected set
