@@ -1130,19 +1130,26 @@
 
     <!-- Register the snippets in the website builder blocks panel. -->
     <template id="bs_car_booking_snippets" inherit_id="website.snippets" name="BS Car Booking Snippets">
+        <!-- Dedicated "Hongqi" category in the Add-block panel so these brand
+             blocks are grouped together instead of being mixed into Odoo's
+             built-in "Intro" category. -->
+        <xpath expr="//t[@id='installed_snippets_hook']" position="after">
+            <t snippet-group="bs_automotive" t-snippet="website.s_snippet_group" string="Hongqi"
+               t-thumbnail="/website/static/src/img/snippets_thumbs/s_cover.svg"/>
+        </xpath>
         <xpath expr="//t[@t-snippet='website.s_cover']" position="after">
-            <t t-snippet="bs_car_booking.s_bs_brand_cover" string="Brand Cover" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_featured_model" string="Featured Car" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_model_stage" string="Model Stage" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_color_studio" string="Colour Studio" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_heritage" string="Brand Heritage" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_model_specs" string="Model Specs" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_highlights" string="Highlights" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_cabin_story" string="Cabin Story" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_arrivals" string="Latest Arrivals" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_offers" string="Offers &amp; Promotions" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_stories" string="Latest News" group="intro"/>
-            <t t-snippet="bs_car_booking.s_bs_dealers" string="Dealer Locator" group="intro"/>
+            <t t-snippet="bs_car_booking.s_bs_brand_cover" string="Brand Cover" group="bs_automotive"/>
+            <t t-snippet="bs_car_booking.s_bs_featured_model" string="Featured Car" group="bs_automotive"/>
+            <t t-snippet="bs_car_booking.s_bs_model_stage" string="Model Stage" group="bs_automotive"/>
+            <t t-snippet="bs_car_booking.s_bs_color_studio" string="Colour Studio" group="bs_automotive"/>
+            <t t-snippet="bs_car_booking.s_bs_heritage" string="Brand Heritage" group="bs_automotive"/>
+            <t t-snippet="bs_car_booking.s_bs_model_specs" string="Model Specs" group="bs_automotive"/>
+            <t t-snippet="bs_car_booking.s_bs_highlights" string="Highlights" group="bs_automotive"/>
+            <t t-snippet="bs_car_booking.s_bs_cabin_story" string="Cabin Story" group="bs_automotive"/>
+            <t t-snippet="bs_car_booking.s_bs_arrivals" string="Latest Arrivals" group="bs_automotive"/>
+            <t t-snippet="bs_car_booking.s_bs_offers" string="Offers &amp; Promotions" group="bs_automotive"/>
+            <t t-snippet="bs_car_booking.s_bs_stories" string="Latest News" group="bs_automotive"/>
+            <t t-snippet="bs_car_booking.s_bs_dealers" string="Dealer Locator" group="bs_automotive"/>
         </xpath>
     </template>
 </odoo>
