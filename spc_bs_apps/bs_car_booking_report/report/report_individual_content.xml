@@ -73,7 +73,7 @@
                         </p>
                         <p style="margin:0 0 1pt 0;">
                             <span>หากเป็นในนามบริษัทได้มอบอำนาจกระทำการแทนให้ ชื่อ-สกุล :</span>
-                            <!-- <span style="font-weight:bold;" t-esc="o.contact_person or ''"/> -->
+                            <span style="font-weight:bold;" t-esc="o.customer_name or ''"/>
                         </p>
                         <p style="margin:0 0 1pt 0;">
                             <span>ที่อยู่ :</span>
