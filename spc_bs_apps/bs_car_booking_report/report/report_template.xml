@@ -25,6 +25,11 @@
              t-att-data-oe-lang="o and o.env.context.get('lang')">
             <t t-out="0"/>
         </div>
+        <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
+            <div class="text-end" style="font-family:'TH-SarabunPSK';font-size:18pt;">
+               <span>หน้าที่</span> <span class="page"/> / <span class="topage"/>
+            </div>
+        </div>
     </template>
 
 </odoo>

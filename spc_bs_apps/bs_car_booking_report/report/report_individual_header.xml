@@ -9,7 +9,7 @@
         <style>
             .bc-page {
                 font-family: 'TH-SarabunPSK';
-                font-size: 18px;
+                font-size: 18pt;
                 line-height: 1.5;
                 color: #000;
             }
@@ -19,14 +19,14 @@
             .bc-page .indent-1 { padding-left: 18pt; }
             .bc-page .indent-2 { padding-left: 36pt; }
             .bc-page .article-header {
-                font-size: 20px;
+                font-size: 20pt;
                 font-weight: bold;
                 margin: 6pt 0 3pt 0;
             }
-            .bc-page .field-value { font-size: 18px; font-weight: bold; }
+            .bc-page .field-value { font-size: 18pt; font-weight: bold; }
             .bc-page .sig-table td { vertical-align: top; }
             .bc-page h2, .bc-page .doc-title {
-                font-size: 20px;
+                font-size: 20pt;
                 font-weight: bold;
                 text-align: center;
             }
