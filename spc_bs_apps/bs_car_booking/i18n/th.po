@@ -1832,6 +1832,7 @@ msgid ""
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_configurator_page
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
 msgid "Est. delivery:"
 msgstr "ส่งมอบรถภายใน "
@@ -4623,9 +4624,10 @@ msgid "booking_id"
 msgstr ""
 
 #. module: bs_car_booking
+#: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_configurator_page
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
 msgid "days"
-msgstr ""
+msgstr "วัน"
 
 #. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_model_spec__value
