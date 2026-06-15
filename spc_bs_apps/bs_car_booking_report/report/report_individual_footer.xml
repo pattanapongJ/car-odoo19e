@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Closing declaration + signature block.
+        Called once at the end of the content template.
+        Expects `o` (bs.car.booking) in scope.
+    -->
+    <template id="report_booking_individual_footer">
+
+        <!-- Closing declaration -->
+        <p style="margin:0 0 20pt 0;">
+            <span>สัญญาจองรถยนต์มีข้อความถูกต้องตรงกัน คู่สัญญาได้อ่านและเข้าใจข้อความโดยละเอียดแล้ว
+            จึงได้ลงลายมือชื่อพร้อมทั้งประทับตรา (ถ้ามี) ไว้เป็นสำคัญต่อหน้าพยานและคู่สัญญา
+            และเก็บไว้ฝ่ายละหนึ่งฉบับ</span>
+        </p>
+
+        <!-- Signature table -->
+        <table class="sig-table table-borderless" style="font-size:18px;font-family:'TH-SarabunPSK',sans-serif;">
+            <tr>
+                <td style="width:50%;text-align:center;padding-bottom:4pt;">
+                    <span>(ลงชื่อ)</span>&#160;&#160;
+                    <span>.........................................</span>&#160;&#160;
+                    <span>ผู้บริโภค</span>
+                </td>
+                <td style="width:50%;text-align:center;padding-bottom:4pt;">
+                    <span>(ลงชื่อ)</span>&#160;&#160;
+                    <span>.........................................</span>&#160;&#160;
+                    <span>ผู้ประกอบธุรกิจ</span>
+                </td>
+            </tr>
+            <tr style="font-weight:bold;">
+                <td style="text-align:center;padding-bottom:18pt;">
+                    <span>(</span>&#160;<span t-esc="o.customer_name or ''"/>&#160;<span>)</span>
+                </td>
+                <td style="text-align:center;padding-bottom:18pt;">
+                    <span>( นายเอ็ดเวิร์ด ชัชวาลย์ เอเบ็ล&#160;&#160;นางสาวสุธี สมดังเจตน์ )</span>
+                </td>
+            </tr>
+            <!-- !! sales_manager + salesperson: fields TBD — blanks for now !! -->
+            <tr>
+                <td style="text-align:center;padding-bottom:4pt;">
+                    <span>(ลงชื่อ)</span>&#160;&#160;
+                    <span>.........................................</span>&#160;&#160;
+                    <span>ผู้จัดการแผนก</span>
+                </td>
+                <td style="text-align:center;padding-bottom:4pt;">
+                    <span>(ลงชื่อ)</span>&#160;&#160;
+                    <span>.........................................</span>&#160;&#160;
+                    <span>พนักงานขาย</span>
+                </td>
+            </tr>
+            <tr style="font-weight:bold;">
+                <td style="text-align:center;">
+                    <span>( นายเดชากร ทัศนกูล )</span>
+                </td>
+                <td style="text-align:center;">
+                    <span>( นางสาวดิถา กาญจนาภา )</span>
+                </td>
+            </tr>
+        </table>
+
+    </template>
+
+</odoo>
