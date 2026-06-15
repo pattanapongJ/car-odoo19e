@@ -218,7 +218,7 @@ class BsCarBookingAPI(http.Controller):
                 auth='public', website=True, methods=['POST'])
     def booking_info(self, booking_id, access_token=None, customer_type=None,
                      name=None, email=None, nrc=None, address=None,
-                     company_name=None, tax_id=None, contact_person=None,
+                     company_name=None, tax_id=None,
                      documents=None, agreements=None, **kw):
         """Save customer info (individual/company), uploaded documents and
         accepted agreements; validate server-side; then create the partner +
@@ -245,7 +245,6 @@ class BsCarBookingAPI(http.Controller):
                 'customer_address': (address or '').strip(),
                 'company_name': (company_name or '').strip(),
                 'tax_id': (tax_id or '').strip(),
-                'contact_person': (contact_person or '').strip(),
             })
 
             # --- Persist uploaded documents (base64), one per document type ---

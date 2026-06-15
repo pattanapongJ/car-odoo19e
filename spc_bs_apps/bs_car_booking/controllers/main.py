@@ -280,8 +280,8 @@ class BsCarBookingWebsite(CustomerPortal):
             return request.redirect(self._booking_step_url(booking, 'confirmation'))
         if not booking.phone_verified:
             return request.redirect(self._booking_step_url(booking, 'verify'))
-        # A company booking has no customer_name (it uses company_name +
-        # contact_person), so check the right field per type — otherwise the
+        # Company bookings are identified by company_name (the org); individuals
+        # by customer_name. Check the right field per type — otherwise the
         # payment page bounced company bookings straight back to the info step.
         _named = booking.company_name if booking.customer_type == 'company' else booking.customer_name
         if not _named:

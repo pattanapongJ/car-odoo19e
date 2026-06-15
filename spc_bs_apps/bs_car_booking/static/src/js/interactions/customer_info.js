@@ -136,7 +136,7 @@ export class CustomerInfoForm extends Interaction {
         const type = this._currentType();
         const val = (sel) => (this.el.querySelector(sel)?.value || "").trim();
         if (type === "company") {
-            if (!val('[name="company_name"]') || !val('[name="tax_id"]') || !val('[name="contact_person"]')) {
+            if (!val('[name="company_name"]') || !val('[name="tax_id"]') || !val('[name="customer_name"]')) {
                 return false;
             }
         } else if (!val('[name="customer_name"]') || !val('[name="customer_nrc"]')) {
@@ -272,7 +272,7 @@ export class CustomerInfoForm extends Interaction {
 
         // Light client checks; the server re-validates everything authoritatively.
         if (type === "company") {
-            if (!g('[name="company_name"]') || !g('[name="tax_id"]') || !g('[name="contact_person"]')) {
+            if (!g('[name="company_name"]') || !g('[name="tax_id"]') || !g('[name="customer_name"]')) {
                 this._showError("Company name, Tax ID and contact person are required.");
                 return;
             }
@@ -322,7 +322,6 @@ export class CustomerInfoForm extends Interaction {
                         address: g("customer_address"),
                         company_name: g("company_name"),
                         tax_id: g("tax_id"),
-                        contact_person: g("contact_person"),
                         documents: documents,
                         agreements: agreements,
                     },
@@ -380,7 +379,7 @@ export class CustomerInfoForm extends Interaction {
         if (type === "company") {
             rows.push(["Company name", v('[name="company_name"]')]);
             rows.push(["Tax ID", v('[name="tax_id"]')]);
-            rows.push(["Contact person", v('[name="contact_person"]')]);
+            rows.push(["Contact person", v('[name="customer_name"]')]);
         } else {
             rows.push(["Full name", v('[name="customer_name"]')]);
             rows.push(["NRC / ID", v('[name="customer_nrc"]')]);
