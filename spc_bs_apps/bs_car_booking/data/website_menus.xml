@@ -8,7 +8,10 @@
         <!-- Top-level items -->
         <record id="menu_website_home" model="website.menu">
             <field name="name">Home</field>
-            <field name="url">/showroom</field>
+            <!-- Point Home at "/" (clean URL). The homepage_url setting reroutes
+                 "/" internally to the /showroom page, so the content still shows
+                 while the address bar stays "/". -->
+            <field name="url">/</field>
             <field name="sequence">5</field>
             <field name="website_id" ref="website.default_website"/>
         </record>
