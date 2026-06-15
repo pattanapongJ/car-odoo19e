@@ -519,7 +519,7 @@
                         </p>
 
                         <!-- Signature table -->
-                        <table class="sig-table table-borderless" style="font-size:18px;font-family:'TH-SarabunPSK',sans-serif;">
+                        <table class="sig-table table-borderless" style="font-size:18pt;font-family:'TH-SarabunPSK',sans-serif;">
                             <tr>
                                 <td style="width:50%;text-align:center;padding-bottom:8pt;padding-top:24pt;">
                                     <span>(ลงชื่อ)</span>&#160;&#160;
@@ -534,8 +534,7 @@
                             </tr>
                             <tr style="font-weight:bold;">
                                 <td style="text-align:center;padding-bottom:36pt;">
-                                    <span>(</span>&#160;<span t-esc="o.customer_name or ''"/>
-&#160;<span>)</span>
+                                    <span>(</span>&#160;<span t-esc="o.customer_name or ''"/>&#160;<span>)</span>
                             </td>
                             <td style="text-align:center;padding-bottom:36pt;">
                                 <span>( นายเอ็ดเวิร์ด ชัชวาลย์ เอเบ็ล&#160;&#160;นางสาวสุธี สมดังเจตน์ )</span>
