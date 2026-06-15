@@ -1538,7 +1538,7 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model:ir.model.fields,help:bs_car_booking.field_bs_car_booking__pdpa_consent
-msgid "Customer agreed to the privacy policy (PDPA)."
+msgid "Customer agreed to the privacy policy."
 msgstr ""
 
 #. module: bs_car_booking
@@ -1655,7 +1655,7 @@ msgstr ""
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_configurator_page
 msgid "Deposit to reserve:"
-msgstr "เงินมัดจำเพื่อจอง:"
+msgstr "เงินมันจำ:"
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__description
@@ -1834,7 +1834,7 @@ msgstr ""
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
 msgid "Est. delivery:"
-msgstr ""
+msgstr "ส่งมอบรถภายใน "
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_variant__estimated_delivery_days
@@ -3434,13 +3434,13 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_configurator_page
-msgid "Privacy Policy (PDPA)"
-msgstr "นโยบายความเป็นส่วนตัว (PDPA)"
+msgid "Privacy Policy"
+msgstr "นโยบายความเป็นส่วนตัว"
 
 #. module: bs_car_booking
 #. odoo-python
 #: code:addons/bs_car_booking/models/bs_car_booking.py:0
-msgid "Privacy consent (PDPA) is required."
+msgid "Privacy consent is required."
 msgstr ""
 
 #. module: bs_car_booking
