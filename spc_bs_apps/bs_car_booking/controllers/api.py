@@ -244,15 +244,21 @@ class BsCarBookingAPI(http.Controller):
                 return {'success': False, 'error': 'Please verify your phone first.'}
 
             ctype = customer_type if customer_type in ('individual', 'company') else 'individual'
-            booking.write({
+            vals = {
                 'customer_type': ctype,
                 'customer_name': (name or '').strip(),
-                'customer_email': (email or '').strip(),
                 'customer_nrc': (nrc or '').strip(),
                 'customer_address': (address or '').strip(),
                 'company_name': (company_name or '').strip(),
                 'tax_id': (tax_id or '').strip(),
-            })
+            }
+            # Email is captured up-front at booking creation and shown read-only on
+            # this form. A disabled input is NOT submitted, so `email` arrives empty
+            # here — only update when a real value is provided, never wiping the
+            # captured email (which feeds the partner + invoice).
+            if (email or '').strip():
+                vals['customer_email'] = email.strip()
+            booking.write(vals)
 
             # --- Persist uploaded documents (base64), one per document type ---
             Doc = request.env['bs.car.booking.document'].sudo()
