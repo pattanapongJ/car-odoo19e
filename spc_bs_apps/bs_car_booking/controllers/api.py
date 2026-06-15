@@ -98,11 +98,18 @@ class BsCarBookingAPI(http.Controller):
     @http.route(['/car_booking/car/book', '/shop/car/book'], type='jsonrpc',
                 auth='public', website=True, methods=['POST'])
     def car_book(self, model_id, ptav_ids=None, dealer_id=None, phone=None,
-                 email=None, otp_channel=None, pdpa_consent=False, **kw):
-        """Create a draft booking from the configurator and send the OTP.
-
-        PDPA consent is captured here (before the OTP is sent), so we never
-        contact a customer who has not consented."""
+                 email=None, otp_channel=None, pdpa_consent=False,
+                 recaptcha_token_response=None, **kw):
+        ip_addr = request.httprequest.remote_addr
+        recaptcha_result = request.env['ir.http']._verify_recaptcha_token(
+            ip_addr, recaptcha_token_response or '', 'car_booking'
+        )
+        if recaptcha_result not in ('is_human', 'no_secret'):
+            _logger.warning(
+                'CarBook: reCAPTCHA failed (%s) for ip %s',
+                recaptcha_result, ip_addr,
+            )
+            return {'success': False, 'error': 'reCAPTCHA verification failed. Please try again.'}
         try:
             model = self._scoped_env('bs.car.model').browse(int(model_id))
             if (not model.exists() or not model.website_published or not model.active

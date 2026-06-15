@@ -228,6 +228,29 @@ class BsCarBooking(models.Model):
             parts += rec.option_value_ids.mapped('name')
             rec.config_summary = ', '.join(p for p in parts if p)
 
+    def _get_review_color(self, attribute_ref):
+        """Selected option value name(s) for one attribute (by xmlid) — used by
+        the review modal to show the exterior/interior colour separately."""
+        self.ensure_one()
+        attr = self.env.ref(attribute_ref, raise_if_not_found=False)
+        if not attr:
+            return ''
+        return ', '.join(
+            self.option_value_ids.filtered(lambda v: v.attribute_id == attr).mapped('name'))
+
+    # Thai month abbreviations, indexed by (month - 1).
+    _THAI_MONTHS_ABBR = (
+        'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+        'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.',
+    )
+
+    def _review_payment_due_thai(self, days=3):
+        """Payment-due date shown in the review modal: today + ``days``,
+        formatted as a Thai short date with Buddhist-era year, e.g.
+        '16 มิ.ย. 2568'."""
+        due = fields.Date.context_today(self) + timedelta(days=days)
+        return f'{due.day} {self._THAI_MONTHS_ABBR[due.month - 1]} {due.year + 543}'
+
     # === Phone helpers (shared by funnel, tracking and throttle) ===
     @api.model
     def _normalize_phone(self, phone):

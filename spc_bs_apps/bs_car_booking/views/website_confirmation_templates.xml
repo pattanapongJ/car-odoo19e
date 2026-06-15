@@ -253,6 +253,8 @@
                                  Booking details are server-rendered; customer info and the
                                  attached documents are populated live by customer_info.js.
                                  ============================================================ -->
+                            <t t-set="ext_color" t-value="booking._get_review_color('bs_car_booking.attr_color')"/>
+                            <t t-set="int_color" t-value="booking._get_review_color('bs_car_booking.attr_interior')"/>
                             <div class="bs_review_overlay d-none" data-review-modal="" role="dialog"
                                  aria-modal="true" aria-labelledby="bs_review_title">
                                 <div class="bs_review_modal">
@@ -260,87 +262,142 @@
                                         <div class="bs_review_header_titles">
                                             <i class="fa fa-clipboard"/>
                                             <div>
-                                                <p class="bs_review_title" id="bs_review_title">Review your booking</p>
-                                                <p class="bs_review_subtitle">Please check everything is correct before continuing to payment.</p>
+                                                <p class="bs_review_title" id="bs_review_title">ตรวจสอบข้อมูลก่อนชำระเงิน</p>
+                                                <p class="bs_review_subtitle">กรุณาตรวจสอบให้ครบถ้วนก่อนกดยืนยัน</p>
                                             </div>
                                         </div>
-                                        <span class="bs_review_badge bs_review_badge_warn">Awaiting confirmation</span>
+                                        <span class="bs_review_badge bs_review_badge_warn">รอยืนยัน</span>
                                     </div>
 
                                     <div class="bs_review_body">
-                                        <!-- 1. Booking details (server-rendered) -->
+                                        <!-- 1. ข้อมูลการจอง (server-rendered) -->
                                         <div class="bs_review_section">
                                             <div class="bs_review_section_head" data-review-toggle="">
-                                                <span><i class="fa fa-file-text-o"/>Booking details</span>
+                                                <span><i class="fa fa-file-text-o"/>ข้อมูลการจอง</span>
                                                 <i class="fa fa-chevron-down bs_review_chevron"/>
                                             </div>
                                             <div class="bs_review_section_body is-open">
                                                 <div class="bs_review_row">
-                                                    <span class="bs_review_k">Booking No.</span>
+                                                    <span class="bs_review_k">เลขที่จอง</span>
                                                     <span class="bs_review_v" t-esc="booking.name"/>
                                                 </div>
                                                 <div class="bs_review_row">
-                                                    <span class="bs_review_k">Model</span>
-                                                    <span class="bs_review_v"><t t-esc="booking.model_id.brand_id.name"/> <t t-esc="booking.model_id.name"/></span>
+                                                    <span class="bs_review_k">รุ่นรถ</span>
+                                                    <span class="bs_review_v"><t t-esc="booking.model_id.brand_id.name"/> <t t-esc="booking.model_id.name"/><t t-if="ext_color"> — <t t-esc="ext_color"/></t></span>
                                                 </div>
-                                                <div t-if="booking.config_summary" class="bs_review_row">
-                                                    <span class="bs_review_k">Configuration</span>
-                                                    <span class="bs_review_v" t-esc="booking.config_summary"/>
+                                                <div t-if="int_color" class="bs_review_row">
+                                                    <span class="bs_review_k">สีภายใน</span>
+                                                    <span class="bs_review_v" t-esc="int_color"/>
+                                                </div>
+                                                <div t-if="booking.model_id.model_year" class="bs_review_row">
+                                                    <span class="bs_review_k">ปีที่ผลิต</span>
+                                                    <span class="bs_review_v" t-esc="booking.model_id.model_year"/>
                                                 </div>
                                                 <div t-if="booking.dealer_id" class="bs_review_row">
-                                                    <span class="bs_review_k">Dealer</span>
+                                                    <span class="bs_review_k">ผู้แทนจำหน่าย</span>
                                                     <span class="bs_review_v" t-esc="booking.dealer_id.name"/>
                                                 </div>
                                                 <div class="bs_review_row">
-                                                    <span class="bs_review_k">Booking date</span>
+                                                    <span class="bs_review_k">วันที่จอง</span>
                                                     <span class="bs_review_v"><span t-field="booking.create_date" t-options="{'widget': 'date'}"/></span>
                                                 </div>
                                                 <div class="bs_review_row">
-                                                    <span class="bs_review_k">Deposit</span>
+                                                    <span class="bs_review_k">เงินจอง</span>
                                                     <span class="bs_review_v bs_review_v_accent"
                                                           t-esc="booking.deposit_amount"
                                                           t-options="{'widget': 'monetary', 'display_currency': booking.currency_id}"/>
                                                 </div>
+                                                <div class="bs_review_row">
+                                                    <span class="bs_review_k">วันครบกำหนดชำระ</span>
+                                                    <span class="bs_review_v bs_review_v_due" t-esc="booking._review_payment_due_thai()"/>
+                                                </div>
+                                                <div class="bs_review_row">
+                                                    <span class="bs_review_k">กำหนดส่งมอบรถ</span>
+                                                    <span class="bs_review_v">
+                                                        ประมาณ 60 วัน นับจากวันที่ชำระเงิน
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <!-- 2. Customer information (filled live from the form) -->
+                                        <!-- 2. ข้อมูลลูกค้า (filled live from the form) -->
                                         <div class="bs_review_section">
                                             <div class="bs_review_section_head" data-review-toggle="">
-                                                <span><i class="fa fa-user-o"/>Customer information</span>
+                                                <span><i class="fa fa-user-o"/>ข้อมูลลูกค้า</span>
                                                 <i class="fa fa-chevron-down bs_review_chevron"/>
                                             </div>
                                             <div class="bs_review_section_body is-open" data-review-customer=""/>
                                         </div>
 
-                                        <!-- 3. Attached documents (built from the selected files) -->
+                                        <!-- 3. ของแถมที่ได้รับ (static promotional list) -->
                                         <div class="bs_review_section">
                                             <div class="bs_review_section_head" data-review-toggle="">
-                                                <span><i class="fa fa-files-o"/>Attached documents</span>
+                                                <span><i class="fa fa-gift bs_review_gifticon"/>ของแถมที่ได้รับ
+                                                    <span class="bs_review_badge bs_review_badge_gift"><i class="fa fa-cube"/> 9 รายการ</span></span>
+                                                <i class="fa fa-chevron-down bs_review_chevron"/>
+                                            </div>
+                                            <div class="bs_review_section_body is-open">
+                                                <ul class="bs_review_gifts">
+                                                    <li><i class="fa fa-plug"/><span>เครื่องชาร์จติดบ้าน (Home Wallbox)</span></li>
+                                                    <li><i class="fa fa-bolt"/><span>สายชาร์จฉุกเฉิน <span class="bs_review_muted">(Type 2 / CCS2)</span></span></li>
+                                                    <li><i class="fa fa-money"/><span>เครดิตชาร์จไฟฟรี <span class="bs_review_muted">(สถานีชาร์จสาธารณะ)</span></span></li>
+                                                    <li><i class="fa fa-shield"/><span>ประกันภัยชั้น 1 + พ.ร.บ.</span></li>
+                                                    <li><i class="fa fa-battery-half"/><span>รับประกันแบตเตอรี่ <span class="bs_review_muted">(8 ปี หรือ 160,000 กม.)</span></span></li>
+                                                    <li><i class="fa fa-wrench"/><span>รับประกันตัวรถ + ฟรีค่าบำรุงรักษาตามระยะ <span class="bs_review_muted">(5 ปี หรือ 120,000 กม.)</span></span></li>
+                                                    <li><i class="fa fa-ambulance"/><span>บริการช่วยเหลือฉุกเฉิน 24 ชั่วโมง</span></li>
+                                                    <li><i class="fa fa-picture-o"/><span>ฟิล์มกรองแสง</span></li>
+                                                    <li><i class="fa fa-star"/><span>พรม/ผ้ายางปูพื้น · กรอบป้ายทะเบียน · ของที่ระลึกแบรนด์</span></li>
+                                                </ul>
+                                                <p class="bs_review_gift_note">* ของแถมอาจเปลี่ยนแปลงตามเงื่อนไขโปรโมชันของบริษัท กรุณาตรวจสอบรายละเอียดในใบจองอีกครั้ง</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- 4. เอกสารแนบ (built from the selected files) -->
+                                        <div class="bs_review_section">
+                                            <div class="bs_review_section_head" data-review-toggle="">
+                                                <span><i class="fa fa-files-o"/>เอกสารแนบ</span>
                                                 <i class="fa fa-chevron-down bs_review_chevron"/>
                                             </div>
                                             <div class="bs_review_section_body is-open">
                                                 <div data-review-docs=""/>
-                                                <p class="text-muted small mb-0 d-none" data-review-nodocs="">No documents attached.</p>
+                                                <p class="text-muted small mb-0 d-none" data-review-nodocs="">ไม่มีเอกสารแนบ</p>
                                             </div>
                                         </div>
 
-                                        <!-- Confirmation -->
+                                        <!-- ยืนยัน -->
                                         <label class="bs_review_check">
                                             <input type="checkbox" data-review-confirm=""/>
-                                            <span>I have reviewed the booking details, my information and all attached
-                                                  documents, and confirm they are correct.</span>
+                                            <span>ข้าพเจ้าได้ตรวจสอบข้อมูลการจอง ข้อมูลส่วนบุคคล และเอกสารแนบทั้งหมดแล้ว และยืนยันว่าถูกต้องครบถ้วน</span>
                                         </label>
                                         <div class="alert alert-danger mx-3 mb-3 d-none" data-review-error=""/>
                                     </div>
 
+                                    <!-- แถบสถานะ -->
+                                    <div class="bs_review_status d-none" data-review-status="">
+                                        <i class="fa fa-check-circle"/>
+                                        <span>ยืนยันข้อมูลเรียบร้อย — กด <strong>ยืนยันและชำระเงินจอง</strong> เพื่อดำเนินการต่อ</span>
+                                    </div>
+
                                     <div class="bs_review_footer">
                                         <button type="button" class="btn btn-outline-secondary" data-review-edit="">
-                                            <i class="fa fa-arrow-left me-1"/> Edit information
+                                            <i class="fa fa-arrow-left me-1"/> แก้ไขข้อมูล
                                         </button>
                                         <button type="button" class="btn btn-primary" data-review-proceed="" disabled="disabled">
-                                            <i class="fa fa-credit-card me-1"/> Confirm &amp; proceed to deposit
+                                            <i class="fa fa-credit-card me-1"/> ยืนยันและชำระเงินจอง
                                         </button>
+                                    </div>
+                                </div>
+
+                                <!-- Document preview overlay (image / PDF via in-browser file) -->
+                                <div class="bs_review_preview d-none" data-review-preview="">
+                                    <div class="bs_review_preview_modal">
+                                        <div class="bs_review_preview_head">
+                                            <span class="bs_review_preview_title" data-review-preview-title=""/>
+                                            <button type="button" class="btn btn-sm btn-light" data-review-preview-close="">
+                                                <i class="fa fa-times"/> ปิด
+                                            </button>
+                                        </div>
+                                        <div class="bs_review_preview_body" data-review-preview-body=""/>
                                     </div>
                                 </div>
                             </div>
