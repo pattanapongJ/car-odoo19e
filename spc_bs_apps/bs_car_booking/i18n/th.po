@@ -308,7 +308,7 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.deposit_payment_page
-msgid "<span class=\"payment_label\">Deposit to reserve</span>"
+msgid "<span class=\"payment_label\">Deposit to book</span>"
 msgstr "<span class=\"payment_label\">เงินมัดจำเพื่อจอง</span>"
 
 #. module: bs_car_booking
@@ -1654,8 +1654,8 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.booking_configurator_page
-msgid "Deposit to reserve:"
-msgstr "เงินมันจำ:"
+msgid "Deposit to book:"
+msgstr "เงินมัดจำเพื่อจอง:"
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_model__description
@@ -1990,8 +1990,8 @@ msgstr "กรองรถตามแบรนด์"
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.dealer_locator_content
-msgid "Find a dealer near you"
-msgstr "ค้นหาผู้จำหน่ายใกล้คุณ"
+msgid "Find your preferred location"
+msgstr "ค้นหาสถานที่ที่คุณต้องการ"
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking__message_follower_ids
@@ -3603,8 +3603,8 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
-msgid "Reserve"
-msgstr "จอง"
+msgid "Book Now"
+msgstr "จองเลย"
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_listing_page
@@ -3613,7 +3613,7 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
-msgid "Reserve your"
+msgid "Book your"
 msgstr "จอง"
 
 #. module: bs_car_booking

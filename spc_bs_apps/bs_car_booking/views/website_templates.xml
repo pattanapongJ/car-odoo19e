@@ -168,13 +168,13 @@
                                         </span>
                                     </div>
                                     <div class="bs_catalog_card_footer">
-                                        <div class="bs_card_price">
+                                        <div class="bs_card_price" t-if="car.base_price">
                                             <span class="bs_card_price_label">From</span>
                                             <strong t-esc="car.base_price"
                                                     t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
                                         </div>
                                         <div class="bs_card_actions">
-                                            <a t-att-href="'/car/%s/book' % car.id" class="bs_card_book_btn">
+                                            <a t-if="car.is_available" t-att-href="'/car/%s/book' % car.id" class="bs_card_book_btn">
                                                 Book Now
                                             </a>
                                             <a t-att-href="'/car/%s' % car.id" class="bs_card_cta">
@@ -232,7 +232,7 @@
                                     t-options="{'widget': 'monetary', 'display_currency': car.currency_id}"/>
                         </div>
                         <div class="car_detail_actions">
-                            <a t-att-href="'/car/%s/book' % car.id" class="btn btn-primary car_cta_btn">
+                            <a t-if="car.is_available" t-att-href="'/car/%s/book' % car.id" class="btn btn-primary car_cta_btn">
                                 Book Now
                             </a>
                             <a href="#model_specs" class="btn btn-outline-light car_ghost_btn">
@@ -285,13 +285,13 @@
                     </div>
                     <nav class="car_detail_nav_links" aria-label="Page sections">
                         <a href="#overview" t-if="car.description or car.highlight_features">Overview</a>
-                        <a href="#variants" t-if="variants">Package</a>
+                        <a href="#variants" t-if="len(variants) &gt; 1">Package</a>
                         <a href="#gallery" t-if="car.gallery_image_ids">Gallery</a>
                         <a href="#full_specs" t-if="car.spec_ids">Specs</a>
                         <a href="#dealers" t-if="dealers">Dealers</a>
                     </nav>
-                    <a t-att-href="'/car/%s/book' % car.id" class="btn btn-primary btn-sm car_detail_nav_btn">
-                        Reserve
+                    <a t-if="car.is_available" t-att-href="'/car/%s/book' % car.id" class="btn btn-primary btn-sm car_detail_nav_btn">
+                        Book Now
                     </a>
                 </div>
             </section>
@@ -315,7 +315,7 @@
                 </div>
             </section>
 
-            <section id="variants" t-if="variants" class="container car_variants py-5">
+            <section id="variants" t-if="len(variants) &gt; 1" class="container car_variants py-5">
                 <div class="section_header_center" data-bs-reveal="">
                     <span class="car_kicker car_kicker_dark">Standard Package</span>
                     <h2 class="section_title">Included booking package</h2>
@@ -401,11 +401,11 @@
                 </t>
             </section>
 
-            <section class="car_cta_section">
+            <section class="car_cta_section" t-if="car.is_available">
                 <div class="container car_cta_inner" data-bs-reveal="">
                     <div>
                         <span class="car_kicker">Booking deposit</span>
-                        <h2>Reserve your <t t-esc="car.name"/>.</h2>
+                        <h2>Book your <t t-esc="car.name"/>.</h2>
                         <p t-if="car.deposit_amount">
                             Secure the booking with a deposit of
                             <strong t-esc="car.deposit_amount"

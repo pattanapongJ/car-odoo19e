@@ -429,7 +429,7 @@
                             </p>
                         </div>
                         <div class="payment_amount">
-                            <span class="payment_label">Deposit to reserve</span>
+                            <span class="payment_label">Deposit to book</span>
                             <span class="payment_value" t-esc="deposit_amount"
                                   t-options="{'widget': 'monetary', 'display_currency': booking.currency_id}"/>
                             <div class="text-muted mt-1">
