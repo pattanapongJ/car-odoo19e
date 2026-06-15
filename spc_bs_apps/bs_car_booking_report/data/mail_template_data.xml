@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Branded bilingual (EN/TH) "payment received" mail for car-booking
+         orders. Sent by SaleOrder._send_payment_succeeded_for_order_mail()
+         (overridden in this module) with the Sale Order PDF and the booking
+         contract PDF attached. Model = sale.order.
+         noupdate=0: edit the text HERE — backend edits are overwritten on
+         module update. -->
+    <data noupdate="0">
+        <record id="mail_template_sale_payment_executed_booking" model="mail.template">
+            <field name="name">Car Booking - Payment Received (Email)</field>
+            <field name="model_id" ref="sale.model_sale_order" />
+            <field name="subject">Thank you for your payment / ขอบพระคุณสำหรับยอดชำระเงิน – Order #{{ object.name }}</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or object.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="partner_to" eval="False" />
+            <field name="use_default_to" eval="True" />
+            <field name="description">Sent to car-booking customers when a (partial) payment is received. Carries the Sale Order and booking-contract PDFs.</field>
+            <field name="body_html" type="html">
+                <div style="margin:0 auto;max-width:600px;padding:24px;font-family:Arial,Helvetica,sans-serif;color:#161616;font-size:14px;line-height:1.7;">
+                    <t t-set="transaction_sudo" t-value="object.get_portal_last_transaction()" />
+                    <t t-set="amount_received" t-value="transaction_sudo.amount or object.amount_paid" />
+                    <t t-set="remaining_balance" t-value="object.amount_total - object.amount_paid" />
+                    <!-- ===================== English ===================== -->
+                    <p style="margin:0 0 12px;">Dear <t t-out="object.partner_id.name or ''">Customer Name</t>,</p>
+                    <p style="margin:0 0 12px;">Thank you for choosing HONGQI.</p>
+                    <p style="margin:0 0 12px;">
+                        We are pleased to confirm that we have received your partial payment of
+                        <strong t-out="format_amount(amount_received, object.currency_id) or ''">40,000.00 ฿</strong>
+                        for your order
+                        <strong t-out="'#%s' % (object.name or '')">#S00097</strong>.
+                        We sincerely appreciate your trust in our brand.
+                    </p>
+                    <p style="margin:0 0 8px;">For your reference, the details of your account balance are as follows:</p>
+                    <div style="margin:12px 0;padding:16px;background:#f5f4f1;border-radius:4px;">
+                        <p style="margin:0 0 8px;">
+                            <strong>Amount Received:</strong>
+                            <t t-out="format_amount(amount_received, object.currency_id) or ''">40,000.00 ฿</t>
+                        </p>
+                        <p style="margin:0;">
+                            <strong>Remaining Balance:</strong>
+                            <t t-out="format_amount(remaining_balance, object.currency_id) or ''">6,385,885.00 ฿</t>
+                        </p>
+                    </div>
+                    <p style="margin:0 0 12px;">
+                        Our team is already preparing everything to ensure your experience with us is nothing
+                        short of exceptional. If you have any questions regarding your upcoming balance or wish
+                        to discuss the next steps of your order, please feel free to reach out to us directly.
+                    </p>
+                    <p style="margin:0 0 4px;">Warm regards,</p>
+                    <p style="margin:0;">
+                        HONGQI Support Team
+                        <br />Tel: 02-119-1000
+                    </p>
+                    <hr style="border:0;border-top:1px solid #ded8cf;margin:24px 0;" />
+                    <!-- ===================== ไทย ===================== -->
+                    <p style="margin:0 0 12px;">เรียน คุณ <t t-out="object.partner_id.name or ''">ชื่อลูกค้า</t>,</p>
+                    <p style="margin:0 0 12px;">ในนามของ หงษ์ฉี ขอขอบพระคุณเป็นอย่างยิ่งที่ท่านไว้วางใจเลือกสรรผลิตภัณฑ์ของเรา</p>
+                    <p style="margin:0 0 12px;">
+                        ทางเราขอเรียนแจ้งให้ทราบว่า ระบบได้ยืนยันยอดชำระเงินจำนวน
+                        <strong t-out="format_amount(amount_received, object.currency_id) or ''">40,000.00 บาท</strong>
+                        สำหรับคำสั่งซื้อหมายเลข
+                        <strong t-out="'#%s' % (object.name or '')">#S00097</strong>
+                        ของท่านเรียบร้อยแล้ว
+                    </p>
+                    <p style="margin:0 0 8px;">เพื่อความสะดวกของท่าน รายละเอียดการชำระเงินและยอดคงเหลือมีดังต่อไปนี้:</p>
+                    <div style="margin:12px 0;padding:16px;background:#f5f4f1;border-radius:4px;">
+                        <p style="margin:0 0 8px;">
+                            <strong>ยอดเงินที่ได้รับชำระ:</strong>
+                            <t t-out="format_amount(amount_received, object.currency_id) or ''">40,000.00 บาท</t>
+                        </p>
+                        <p style="margin:0;">
+                            <strong>ยอดเงินคงเหลือที่ต้องชำระ:</strong>
+                            <t t-out="format_amount(remaining_balance, object.currency_id) or ''">6,385,885.00 บาท</t>
+                        </p>
+                    </div>
+                    <p style="margin:0 0 12px;">
+                        ขณะนี้ ทีมงานของเรากำลังเตรียมความพร้อมในทุกๆ ส่วน เพื่อมอบประสบการณ์อันยอดเยี่ยมและสมบูรณ์แบบที่สุดให้แก่ท่าน
+                        หากท่านมีข้อสงสัยประการใดเกี่ยวกับยอดชำระคงเหลือ หรือต้องการคำแนะนำเพิ่มเติมสำหรับขั้นตอนต่อไป กรุณาติดต่อเราได้โดยตรงทุกเมื่อ
+                    </p>
+                    <p style="margin:0 0 4px;">ขอแสดงความนับถืออย่างสูง</p>
+                    <p style="margin:0;">
+                        ทีมบริการลูกค้า หงษ์ฉี
+                        <br />โทร: 02-119-1000
+                    </p>
+                </div>
+            </field>
+            <!-- PDFs are attached in code (Sale Order + booking contract), so no
+                 report_template_ids here — that would duplicate the SO PDF. -->
+            <field name="auto_delete" eval="False" />
+        </record>
+    </data>
+</odoo>
