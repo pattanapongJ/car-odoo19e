@@ -59,6 +59,7 @@ export class CustomerInfoForm extends Interaction {
             if (t && t.classList && t.classList.contains("info_doc_input")) {
                 this._toggleClear(t);
             }
+            this._saveDraft();
             this._refresh();
         };
         this.el.addEventListener("input", onChange);
@@ -99,6 +100,10 @@ export class CustomerInfoForm extends Interaction {
         this.reviewDocsEl = this.el.querySelector("[data-review-docs]");
         this.reviewNoDocsEl = this.el.querySelector("[data-review-nodocs]");
         this.reviewErrorEl = this.el.querySelector("[data-review-error]");
+        this.reviewStatusEl = this.el.querySelector("[data-review-status]");
+        this.reviewPreview = this.el.querySelector("[data-review-preview]");
+        this.reviewPreviewTitle = this.el.querySelector("[data-review-preview-title]");
+        this.reviewPreviewBody = this.el.querySelector("[data-review-preview-body]");
         this._reviewUrls = [];
         if (this.reviewModal) {
             // Collapsible sections.
@@ -108,17 +113,22 @@ export class CustomerInfoForm extends Interaction {
                     sec?.classList.toggle("is-collapsed");
                     sec?.querySelector(".bs_review_section_body")?.classList.toggle("is-open");
                 }));
-            // Confirm checkbox gates the proceed button.
+            // Confirm checkbox gates the proceed button + shows the status bar.
             this.reviewConfirmCheck?.addEventListener("change", () => {
-                if (this.reviewProceedBtn) {
-                    this.reviewProceedBtn.disabled = !this.reviewConfirmCheck.checked;
-                }
+                const ok = this.reviewConfirmCheck.checked;
+                if (this.reviewProceedBtn) this.reviewProceedBtn.disabled = !ok;
+                this.reviewStatusEl?.classList.toggle("d-none", !ok);
             });
             this.el.querySelector("[data-review-edit]")?.addEventListener("click", () => this._closeReview());
             this.reviewProceedBtn?.addEventListener("click", () => this._submitToServer());
             // Backdrop click = edit (return to the form).
             this.reviewModal.addEventListener("click", (e) => {
                 if (e.target === this.reviewModal) this._closeReview();
+            });
+            // Document preview overlay.
+            this.el.querySelector("[data-review-preview-close]")?.addEventListener("click", () => this._closePreview());
+            this.reviewPreview?.addEventListener("click", (e) => {
+                if (e.target === this.reviewPreview) this._closePreview();
             });
         }
 
@@ -127,8 +137,69 @@ export class CustomerInfoForm extends Interaction {
             document.body.style.overflow = "";
         });
 
+        // Restore an in-progress draft (saved on every change) so a page refresh
+        // keeps what the customer already typed. Cleared after a successful confirm.
+        this._loadDraft();
+
         this._applyType(this._currentType());
         this._refresh();   // start disabled until the form is complete
+    }
+
+    // ── Draft persistence (survives refresh; per booking) ───────────────
+    _draftKey() {
+        return `bs_info_draft_${this.bookingId}`;
+    }
+
+    _saveDraft() {
+        if (!this.bookingId) return;
+        const data = {};
+        this.el.querySelectorAll("input[name], textarea[name], select[name]").forEach((el) => {
+            if (el.type === "file" || el.disabled) return;
+            if (el.type === "radio") {
+                if (el.checked) data[el.name] = el.value;
+            } else if (el.type === "checkbox") {
+                // handled via __agreements below
+            } else {
+                data[el.name] = el.value;
+            }
+        });
+        data.__agreements = Array.from(this.el.querySelectorAll(".info_agree_check"))
+            .filter((cb) => cb.checked)
+            .map((cb) => cb.dataset.agreementId);
+        try {
+            localStorage.setItem(this._draftKey(), JSON.stringify(data));
+        } catch { /* storage unavailable (private mode) — skip */ }
+    }
+
+    _loadDraft() {
+        if (!this.bookingId) return;
+        let data;
+        try {
+            data = JSON.parse(localStorage.getItem(this._draftKey()) || "null");
+        } catch { data = null; }
+        if (!data) return;
+        for (const [k, v] of Object.entries(data)) {
+            if (k === "__agreements") continue;
+            if (k === "customer_type") {
+                const r = this.el.querySelector(`input[name="customer_type"][value="${v}"]`);
+                if (r) r.checked = true;
+                continue;
+            }
+            const el = this.el.querySelector(`[name="${k}"]`);
+            if (el && el.type !== "file" && !el.disabled) {
+                el.value = v;
+            }
+        }
+        for (const id of data.__agreements || []) {
+            const cb = this.el.querySelector(`.info_agree_check[data-agreement-id="${id}"]`);
+            if (cb) cb.checked = true;
+        }
+    }
+
+    _clearDraft() {
+        try {
+            localStorage.removeItem(this._draftKey());
+        } catch { /* ignore */ }
     }
 
     /** True only when every requirement for the selected type is satisfied. */
@@ -331,6 +402,7 @@ export class CustomerInfoForm extends Interaction {
             const data = await resp.json();
             const res = data.result || data;
             if (res.success) {
+                this._clearDraft();   // confirmed → drop the saved draft
                 window.location.href = res.redirect_url;
                 return;
             }
@@ -351,14 +423,55 @@ export class CustomerInfoForm extends Interaction {
         this._fillReviewDocs();
         if (this.reviewConfirmCheck) this.reviewConfirmCheck.checked = false;
         if (this.reviewProceedBtn) this.reviewProceedBtn.disabled = true;
+        this.reviewStatusEl?.classList.add("d-none");
         this.reviewModal.classList.remove("d-none");
         document.body.style.overflow = "hidden";
     }
 
     _closeReview() {
+        this._closePreview();
         this.reviewModal?.classList.add("d-none");
         document.body.style.overflow = "";
         this._revokeReviewUrls();
+    }
+
+    _openPreview(file, title) {
+        if (!this.reviewPreview || !this.reviewPreviewBody) {
+            // No preview overlay available — fall back to a new tab.
+            const url = URL.createObjectURL(file);
+            this._reviewUrls.push(url);
+            window.open(url, "_blank", "noopener");
+            return;
+        }
+        if (this.reviewPreviewTitle) this.reviewPreviewTitle.textContent = title || file.name;
+        const url = URL.createObjectURL(file);
+        this._reviewUrls.push(url);
+        this.reviewPreviewBody.replaceChildren();
+        let viewer;
+        if (file.type === "application/pdf") {
+            viewer = document.createElement("iframe");
+            viewer.className = "bs_review_preview_frame";
+            viewer.src = url;
+        } else if (file.type.startsWith("image/")) {
+            viewer = document.createElement("img");
+            viewer.className = "bs_review_preview_img";
+            viewer.src = url;
+            viewer.alt = title || file.name;
+        } else {
+            viewer = document.createElement("div");
+            viewer.className = "bs_review_preview_fallback";
+            viewer.innerHTML = '<i class="fa fa-file-o"/>';
+            const fn = document.createElement("p");
+            fn.textContent = file.name;
+            viewer.appendChild(fn);
+        }
+        this.reviewPreviewBody.appendChild(viewer);
+        this.reviewPreview.classList.remove("d-none");
+    }
+
+    _closePreview() {
+        this.reviewPreview?.classList.add("d-none");
+        this.reviewPreviewBody?.replaceChildren();
     }
 
     _reviewError(msg) {
@@ -376,20 +489,20 @@ export class CustomerInfoForm extends Interaction {
         const type = this._currentType();
         const v = (sel) => (this.el.querySelector(sel)?.value || "").trim();
         const phone = (this.el.querySelector('input[type="tel"]')?.value || "").trim();
-        const rows = [["Type", type === "company" ? "Company" : "Individual"]];
+        const rows = [["ประเภท", type === "company" ? "นิติบุคคล" : "บุคคลธรรมดา"]];
         if (type === "company") {
-            rows.push(["Company name", v('[name="company_name"]')]);
-            rows.push(["Tax ID", v('[name="tax_id"]')]);
-            rows.push(["Contact person", v('[name="contact_person"]')]);
+            rows.push(["ชื่อบริษัท", v('[name="company_name"]')]);
+            rows.push(["เลขประจำตัวผู้เสียภาษี", v('[name="tax_id"]')]);
+            rows.push(["ผู้ติดต่อ", v('[name="contact_person"]')]);
         } else {
-            rows.push(["Full name", v('[name="customer_name"]')]);
-            rows.push(["NRC / ID", v('[name="customer_nrc"]')]);
+            rows.push(["ชื่อ-นามสกุล", v('[name="customer_name"]')]);
+            rows.push(["เลขบัตรประชาชน", v('[name="customer_nrc"]')]);
         }
-        if (phone) rows.push(["Phone", phone]);
+        if (phone) rows.push(["โทรศัพท์", phone]);
         const email = v('[name="customer_email"]');
-        if (email) rows.push(["Email", email]);
+        if (email) rows.push(["อีเมล", email]);
         const addr = v('[name="customer_address"]');
-        if (addr) rows.push([type === "company" ? "Address" : "Address on National ID Card", addr]);
+        if (addr) rows.push(["ที่อยู่", addr]);
 
         el.replaceChildren();
         for (const [k, val] of rows) {
@@ -422,7 +535,7 @@ export class CustomerInfoForm extends Interaction {
                 wrap.appendChild(this._docCard(label, file.name, this._fmtSize(file.size), file));
                 count++;
             } else if (f.dataset.uploaded === "1") {
-                wrap.appendChild(this._docCard(label, "Previously uploaded", "", null));
+                wrap.appendChild(this._docCard(label, "อัปโหลดไว้ก่อนหน้า", "", null));
                 count++;
             }
         }
@@ -448,18 +561,14 @@ export class CustomerInfoForm extends Interaction {
         actions.className = "bs_review_doc_actions";
         const badge = document.createElement("span");
         badge.className = "bs_review_badge bs_review_badge_ok";
-        badge.textContent = "Uploaded";
+        badge.textContent = "อัปโหลดแล้ว";
         actions.appendChild(badge);
         if (file) {
             const btn = document.createElement("button");
             btn.type = "button";
             btn.className = "btn btn-sm btn-outline-secondary bs_review_doc_view";
-            btn.innerHTML = '<i class="fa fa-eye"/> View';
-            btn.addEventListener("click", () => {
-                const url = URL.createObjectURL(file);
-                this._reviewUrls.push(url);
-                window.open(url, "_blank", "noopener");
-            });
+            btn.innerHTML = '<i class="fa fa-eye"/> ดู';
+            btn.addEventListener("click", () => this._openPreview(file, label));
             actions.appendChild(btn);
         }
         card.append(icon, meta, actions);
