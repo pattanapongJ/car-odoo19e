@@ -6,7 +6,8 @@ from urllib.parse import quote
 
 from markupsafe import Markup
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 from odoo.http import request
 
 
@@ -22,9 +23,9 @@ class BsCarDealer(models.Model):
     ]
     _bs_clear_website_cache_on_write = True
 
-    name = fields.Char(required=True, translate=True)
+    name = fields.Char(required=True, translate=True, tracking=True)
     sequence = fields.Integer(default=10)
-    active = fields.Boolean(default=True)
+    active = fields.Boolean(default=True, tracking=True)
     company_id = fields.Many2one(
         'res.company', string='Company', default=lambda self: self.env.company,
         index=True, help='Leave empty to share this dealer across companies.')
@@ -32,8 +33,8 @@ class BsCarDealer(models.Model):
     # Contact
     partner_id = fields.Many2one('res.partner', string='Contact Partner',
                                  help='Linked partner record for this dealer')
-    phone = fields.Char('Phone')
-    email = fields.Char('Email')
+    phone = fields.Char('Phone', tracking=True)
+    email = fields.Char('Email', tracking=True)
     
     # Address
     street = fields.Char('Street')
@@ -65,6 +66,16 @@ class BsCarDealer(models.Model):
 
     def _default_is_published(self):
         return True
+
+    @api.ondelete(at_uninstall=False)
+    def _unlink_except_referenced(self):
+        # booking.dealer_id is ondelete='set null', so without this guard a
+        # delete would silently wipe the dealer from existing bookings.
+        used = self.env['bs.car.booking'].sudo().search_count([('dealer_id', 'in', self.ids)])
+        if used:
+            raise ValidationError(_(
+                'You cannot delete a dealer referenced by bookings. '
+                'Archive it instead.'))
 
     @api.depends('latitude', 'longitude', 'street', 'city', 'country_id')
     def _compute_maps_query(self):

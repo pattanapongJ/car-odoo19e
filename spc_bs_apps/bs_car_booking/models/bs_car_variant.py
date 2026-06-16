@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Basic Solution Co., Ltd.
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class BsCarVariant(models.Model):
@@ -41,6 +42,16 @@ class BsCarVariant(models.Model):
     
     # Website
     website_published = fields.Boolean('Published on Website', default=True)
+
+    @api.constrains('price', 'available_qty', 'estimated_delivery_days')
+    def _check_non_negative(self):
+        # estimated_delivery_days feeds bs.car.booking._set_estimated_delivery;
+        # a negative value would push a delivery date into the past.
+        for rec in self:
+            for fname in ('price', 'available_qty', 'estimated_delivery_days'):
+                if (rec[fname] or 0) < 0:
+                    raise ValidationError(
+                        _('%s cannot be negative.') % rec._fields[fname].string)
 
     @api.depends('price', 'model_id.base_price')
     def _compute_price_over_base(self):

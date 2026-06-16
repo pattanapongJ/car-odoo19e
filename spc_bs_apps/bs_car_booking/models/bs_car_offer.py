@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Basic Solution Co., Ltd.
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class BsCarOffer(models.Model):
@@ -10,11 +11,11 @@ class BsCarOffer(models.Model):
     on its own — the back office curates the whole thing (no builder editing)."""
     _name = 'bs.car.offer'
     _description = 'Promotional Offer'
-    _inherit = ['website.published.multi.mixin', 'bs.car.website.scope.mixin']
+    _inherit = ['mail.thread', 'website.published.multi.mixin', 'bs.car.website.scope.mixin']
     _order = 'sequence, id'
     _bs_clear_website_cache_on_write = True
 
-    name = fields.Char('Headline', required=True, translate=True,
+    name = fields.Char('Headline', required=True, translate=True, tracking=True,
                        help='Main promo line, e.g. "0% APR for 36 months".')
     subtitle = fields.Char('Subtitle', translate=True)
     description = fields.Html('Description', translate=True, sanitize_attributes=True)
@@ -22,7 +23,7 @@ class BsCarOffer(models.Model):
                         help='Short tag shown on the card, e.g. "Limited time".')
     image = fields.Image('Image', max_width=1920, max_height=1080)
     sequence = fields.Integer(default=10)
-    active = fields.Boolean(default=True)
+    active = fields.Boolean(default=True, tracking=True)
     company_id = fields.Many2one(
         'res.company', string='Company', default=lambda self: self.env.company,
         index=True, help='Leave empty to share this offer across companies.')
@@ -30,9 +31,9 @@ class BsCarOffer(models.Model):
     def _default_is_published(self):
         return True
 
-    date_start = fields.Date('Starts On',
+    date_start = fields.Date('Starts On', tracking=True,
                              help='Leave empty to start immediately.')
-    date_end = fields.Date('Ends On',
+    date_end = fields.Date('Ends On', tracking=True,
                            help='Leave empty for an open-ended offer.')
     is_live = fields.Boolean('Live Now', compute='_compute_is_live',
                              help='Currently within its validity window and published.')
@@ -43,6 +44,14 @@ class BsCarOffer(models.Model):
     cta_label = fields.Char('Button Label', translate=True, default='Learn more')
     cta_url = fields.Char('Button Link',
                           help='Optional. Defaults to the linked model\'s page when set.')
+
+    @api.constrains('date_start', 'date_end')
+    def _check_date_range(self):
+        # An inverted range otherwise makes the offer silently never-live
+        # (_compute_is_live / _get_active_offers just hide it) — a data trap.
+        for rec in self:
+            if rec.date_start and rec.date_end and rec.date_start > rec.date_end:
+                raise ValidationError(_('The start date must be on or before the end date.'))
 
     @api.depends('date_start', 'date_end', 'active', 'website_published')
     def _compute_is_live(self):

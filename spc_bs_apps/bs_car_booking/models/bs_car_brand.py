@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Basic Solution Co., Ltd.
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class BsCarBrand(models.Model):
@@ -38,6 +39,23 @@ class BsCarBrand(models.Model):
 
     def _default_is_published(self):
         return True
+
+    @api.ondelete(at_uninstall=False)
+    def _unlink_except_referenced(self):
+        # Bookings reference the brand (DB RESTRICT) — give a friendly message.
+        if self.env['bs.car.booking'].sudo().search_count([('brand_id', 'in', self.ids)]):
+            raise ValidationError(_(
+                'You cannot delete a brand that is used by bookings. '
+                'Archive it instead.'))
+        # model.brand_id is ondelete='cascade'; block here so deleting a brand
+        # never silently wipes its whole catalog (models, variants, options...).
+        # active_test=False also catches archived models.
+        models_used = self.env['bs.car.model'].with_context(active_test=False).sudo().search_count(
+            [('brand_id', 'in', self.ids)])
+        if models_used:
+            raise ValidationError(_(
+                'You cannot delete a brand that still has car models. '
+                'Delete or reassign its models first, or archive the brand instead.'))
 
     def _compute_model_count(self):
         for brand in self:
