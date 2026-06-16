@@ -42,10 +42,10 @@
                         <span style="font-weight:bold;" t-esc="o.dealer_id.email or ''"/>
                         <br/>
                         <span>ผู้จัดการฝ่ายขาย ชื่อ-สกุล :</span>
-                        <span style="font-weight: bold;">นาย เดชากร ทัศนกูล</span>
+                        <span style="font-weight: bold;">ร.ต. โตณณาการ ศรีบัวเดช</span>
                         <br/>
                         <span>พนักงานขาย/พนักงานผู้รับจอง ชื่อ-สกุล :</span>
-                        <span style="font-weight: bold;">นางสาว ดิถา กาญจนาภาดี</span>
+                        <span style="font-weight: bold;">ร.ต. โตณณาการ ศรีบัวเดช</span>
 
                         <p style="margin:0 0 1pt 0;">
                             <span>สัญญาฉบับนี้ทำขึ้น ณ :</span>
@@ -525,7 +525,7 @@
                         <p class="indent-1">
                             <span>สัญญาจองรถยนต์มีข้อความถูกต้องตรงกัน คู่สัญญาได้อ่านและเข้าใจข้อความโดยละเอียดแล้ว</span>
                         </p>
-                        <p style="margin: 0pt 0 40pt 0;">ชื่อพร้อมทั้งประทับตรา (ถ้ามี) ไว้เป็นสำคัญต่อหน้าพยานและคู่สัญญาและเก็บไว้ฝ่ายละหนึ่งฉบับ</p>
+                        <p style="margin: 0pt 0 20pt 0;">ชื่อพร้อมทั้งประทับตรา (ถ้ามี) ไว้เป็นสำคัญต่อหน้าพยานและคู่สัญญาและเก็บไว้ฝ่ายละหนึ่งฉบับ</p>
                         <!-- Signature table -->
                         <table class="sig-table table-borderless" style="font-size:20pt;font-family:'TH-SarabunPSK',sans-serif;">
                             <tr>
@@ -560,24 +560,23 @@
                         </tr>
                         <!-- !! sales_manager + salesperson: fields TBD — blanks for now !! -->
                         <tr>
-                            <td style="text-align:center;padding-bottom:8pt;">
-                                <span>(ลงชื่อ)</span>&#160;&#160;
+                            <td colspan="2" style="text-align:left; padding-bottom:8pt;">
+                                <span style="margin-left: 38px;">(ลงชื่อ)</span>&#160;&#160;
                                 <span>.........................................</span>&#160;&#160;
-                                <span>ผู้จัดการแผนก</span>
+                                <span>ผู้จัดการแผนก/พนักงานขาย</span>
                             </td>
-                            <td style="text-align:center;padding-bottom:8pt;">
+                            <!-- <td style="text-align:center;padding-bottom:8pt;">
                                 <span>(ลงชื่อ)</span>&#160;&#160;
                                 <span>.........................................</span>&#160;&#160;
                                 <span>พนักงานขาย</span>
-                            </td>
+                            </td> -->
+                            <td/>
                         </tr>
                         <tr style="font-weight:bold;">
                             <td style="text-align:center; font-size: 18pt;">
-                                <span>( นายเดชากร ทัศนกูล )</span>
+                                <span>( ร.ต. โตณณาการ ศรีบัวเดช )</span>
                             </td>
-                            <td style="text-align:center; font-size: 18pt;">
-                                <span>( นางสาวดิถา กาญจนาภา )</span>
-                            </td>
+                            <td/>
                         </tr>
                     </table>
 
