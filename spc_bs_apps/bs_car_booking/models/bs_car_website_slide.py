@@ -26,6 +26,12 @@ class BsCarWebsiteSlide(models.Model):
     subtitle = fields.Text(translate=True)
     body_html = fields.Html(translate=True, sanitize_attributes=True)
 
+    model_id = fields.Many2one(
+        'bs.car.model', string='Car Model', ondelete='set null', index=True,
+        help='Link to car model — used to display base price on slide.')
+    show_price = fields.Boolean('Show Base Price', default=False)
+    price_display = fields.Char(compute='_compute_price_display')
+
     image = fields.Image('Slide Image', max_width=2400, max_height=1400)
     image_alt = fields.Char(translate=True)
     title_image = fields.Image(
@@ -76,6 +82,18 @@ class BsCarWebsiteSlide(models.Model):
     # ── CTA Buttons (One2many — unlimited) ───────────────────────────
     cta_ids = fields.One2many(
         'bs.car.website.slide.cta', 'slide_id', string='Buttons')
+
+    @api.depends('show_price', 'model_id.base_price', 'model_id.currency_id')
+    def _compute_price_display(self):
+        _UNIT = {'th_TH': 'บาท', 'th': 'บาท'}
+        for slide in self:
+            if slide.show_price and slide.model_id and slide.model_id.base_price:
+                amount_str = '{:,.0f}'.format(slide.model_id.base_price)
+                lang = (slide.env.lang or 'en_US')
+                unit = _UNIT.get(lang) or _UNIT.get(lang.split('_')[0]) or 'Baht'
+                slide.price_display = '%s %s' % (amount_str, unit)
+            else:
+                slide.price_display = False
 
     @api.depends('video_file', 'mobile_video_file')
     def _compute_has_video_file(self):

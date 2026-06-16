@@ -270,13 +270,12 @@
                                         aria-hidden="true"
                                         style="pointer-events:none;"/>
                             </t>
-                            <!-- Expanded srcset: 480w mobile / 768w tablet / 1920w desktop / 2560w 4K -->
+                            <!-- Expanded srcset: 768w mobile / 1920w desktop / 2560w 4K -->
                             <img t-if="slide.image and not slide.video_src"
                                  class="bs_slide_img"
                                  t-att-src="'/web/image/bs.car.website.slide/%s/image/1920x1080' % slide.id"
                                  t-att-srcset="
-                                    '/web/image/bs.car.website.slide/%s/image/480x854' % slide.id  + ' 480w, ' +
-                                    '/web/image/bs.car.website.slide/%s/image/1200x1600' % slide.id + ' 768w, ' +
+                                    '/web/image/bs.car.website.slide/%s/image/768x432' % slide.id   + ' 768w, ' +
                                     '/web/image/bs.car.website.slide/%s/image/1920x1080' % slide.id + ' 1920w, ' +
                                     '/web/image/bs.car.website.slide/%s/image/2560x1440' % slide.id + ' 2560w'
                                  "
@@ -304,7 +303,12 @@
                                          t-att-alt="slide.title_image_alt or slide.title"
                                          loading="lazy"/>
                                 </t>
-                                <h2 t-elif="slide.title" class="bs_slide_title" t-esc="slide.title"/>
+                                <div t-elif="slide.title" class="bs_slide_title_row">
+                                    <h2 class="bs_slide_title" t-esc="slide.title"/>
+                                    <span t-if="slide.show_price and slide.price_display"
+                                          class="bs_slide_price"
+                                          t-esc="slide.price_display"/>
+                                </div>
                                 <p t-if="slide.subtitle" class="bs_slide_subtitle"
                                    t-att-style="'color:%s;' % slide.custom_subtitle_color if slide.text_color_scheme == 'custom' and slide.custom_subtitle_color else ''"
                                    t-esc="slide.subtitle"/>
@@ -334,12 +338,18 @@
                                     <t t-elif="cta.url_type == 'test_drive'">
                                         <t t-set="_href" t-value="'/test-drive'"/>
                                     </t>
+                                    <t t-elif="cta.url_type == 'URL_Download' and cta.download_file">
+                                        <t t-set="_href" t-value="'/web/content/bs.car.website.slide.cta/%s/download_file/%s?download=true' % (cta.id, cta.download_filename or 'file')"/>
+                                    </t>
                                     <t t-else="">
                                         <t t-set="_href" t-value="cta.url or '#'"/>
                                     </t>
                                     <a t-att-href="_href"
                                        t-attf-class="btn bs_cta_btn bs_cta_style_{{_cs}}"
-                                       t-att-style="_ci or None">
+                                       t-att-style="_ci or None"
+                                       t-att-target="'_blank' if cta.target_blank or cta.url_type == 'URL_Download' else None"
+                                       t-att-rel="'noopener noreferrer' if cta.target_blank or cta.url_type == 'URL_Download' else None"
+                                       t-att-download="cta.download_filename or '' if cta.url_type == 'URL_Download' else None">
                                         <i t-if="cta.icon and cta.icon_position == 'left'"
                                            t-att-class="'fa %s me-2' % cta.icon" aria-hidden="true"/>
                                         <t t-esc="cta.label"/>
@@ -720,7 +730,7 @@
                                 </div>
                                 <div class="bs_card_actions">
                                     <a t-if="car.is_available" t-att-href="'/car/%s/book' % car.id" class="bs_card_book_btn">
-                                        Book Now
+                                        Order Now
                                     </a>
                                     <a t-att-href="'/car/%s' % car.id" class="bs_card_cta">
                                         Discover <i class="fa fa-arrow-right"/>

@@ -61,10 +61,10 @@
                             <a href="#car_catalog" class="btn btn-primary car_cta_btn">
                                 Explore models <i class="fa fa-arrow-down"/>
                             </a>
-                            <a t-if="hero_car" t-att-href="'/car/%s' % hero_car.id"
+                            <!-- <a t-if="hero_car" t-att-href="'/car/%s' % hero_car.id"
                                class="btn btn-outline-light car_ghost_btn">
                                 View flagship <i class="fa fa-arrow-right"/>
-                            </a>
+                            </a> -->
                         </div>
                     </div>
                     <div class="bs_catalog_hero_metrics" data-bs-reveal="">
@@ -175,7 +175,7 @@
                                         </div>
                                         <div class="bs_card_actions">
                                             <a t-if="car.is_available" t-att-href="'/car/%s/book' % car.id" class="bs_card_book_btn">
-                                                Book Now
+                                                Order Now
                                             </a>
                                             <a t-att-href="'/car/%s' % car.id" class="bs_card_cta">
                                                 Discover <i class="fa fa-arrow-right"/>
@@ -233,7 +233,7 @@
                         </div>
                         <div class="car_detail_actions">
                             <a t-if="car.is_available" t-att-href="'/car/%s/book' % car.id" class="btn btn-primary car_cta_btn">
-                                Book Now
+                                Order Now
                             </a>
                             <a href="#model_specs" class="btn btn-outline-light car_ghost_btn">
                                 Explore <i class="fa fa-arrow-down"/>
@@ -291,7 +291,7 @@
                         <a href="#dealers" t-if="dealers">Dealers</a>
                     </nav>
                     <a t-if="car.is_available" t-att-href="'/car/%s/book' % car.id" class="btn btn-primary btn-sm car_detail_nav_btn">
-                        Book Now
+                        Order Now
                     </a>
                 </div>
             </section>
@@ -416,7 +416,7 @@
                         </p>
                     </div>
                     <a t-att-href="'/car/%s/book' % car.id" class="btn btn-primary btn-lg car_cta_btn">
-                        Book Now <i class="fa fa-arrow-right"/>
+                        Order Now <i class="fa fa-arrow-right"/>
                     </a>
                 </div>
             </section>
