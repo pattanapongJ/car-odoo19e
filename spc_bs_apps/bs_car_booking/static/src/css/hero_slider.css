@@ -6,37 +6,39 @@
 .car_hero_slider {
     position: relative;
     width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
     overflow: hidden;
+    background: #000;
 }
 
-/* ── Slides: hidden by default, JS adds .active ── */
+/* ── Slides: stack absolutely, crossfade with opacity ── */
 .bs_slide {
-    display: none;
-    position: relative;
+    position: absolute;
+    inset: 0;
     width: 100%;
-    /* Desktop: full viewport height */
     min-height: 100vh;
-    min-height: 100dvh; /* dynamic viewport height — fixes iOS toolbar */
+    min-height: 100dvh;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease-in-out;
 }
 
 .bs_slide.active {
-    display: block;
+    opacity: 1;
+    pointer-events: auto;
 }
 
 @media (max-width: 767px) {
-    .bs_slide.active {
-        display: flex;
+    .car_hero_slider {
+        min-height: 100svh;
     }
-}
 
-/* Fade animation on slide enter */
-.bs_slide.fade-in {
-    animation: bsSliderFadeIn 0.8s ease-in-out;
-}
-
-@keyframes bsSliderFadeIn {
-    from { opacity: 0.3; }
-    to   { opacity: 1; }
+    .bs_slide {
+        display: flex;
+        flex-direction: column;
+        min-height: 100svh;
+    }
 }
 
 /* ── Ken Burns: active only when data-ken-burns="1" ── */

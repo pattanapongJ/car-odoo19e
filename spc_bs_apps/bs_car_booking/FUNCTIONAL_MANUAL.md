@@ -142,7 +142,7 @@ The home page is assembled from **sections** you can switch on/off and reorder. 
 | Stats Strip | The big numbers |
 | Latest Arrivals | Recently arrived cars |
 | Offers & Promotions | Live promotional cards |
-| Latest News | Recent news/editorial |
+| Hongqi Story | Recent news/editorial |
 | Finance Calculator | Monthly‑payment estimator |
 | Dealer Locator | Showroom list |
 

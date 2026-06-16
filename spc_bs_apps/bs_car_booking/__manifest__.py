@@ -78,6 +78,7 @@ Website Journey:
         # Views - Backend
         'views/bs_car_brand_views.xml',
         'views/bs_car_model_views.xml',
+        'views/bs_car_ecatalog_views.xml',
         'views/bs_car_variant_views.xml',
         'views/bs_car_dealer_views.xml',
         'views/bs_car_location_views.xml',

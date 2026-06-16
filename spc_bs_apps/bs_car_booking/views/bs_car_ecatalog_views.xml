@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bs_car_ecatalog_list" model="ir.ui.view">
+        <field name="name">bs.car.ecatalog.list</field>
+        <field name="model">bs.car.ecatalog</field>
+        <field name="arch" type="xml">
+            <list string="e-Catalogs" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="model_id"/>
+                <field name="button_label"/>
+                <field name="catalog_filename"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bs_car_ecatalog_form" model="ir.ui.view">
+        <field name="name">bs.car.ecatalog.form</field>
+        <field name="model">bs.car.ecatalog</field>
+        <field name="arch" type="xml">
+            <form string="e-Catalog">
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <group>
+                        <group string="General">
+                            <field name="name" placeholder="e.g. H9 Plus e-Catalog 2025"/>
+                            <field name="model_id"/>
+                            <field name="button_label"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="File">
+                            <field name="catalog_file" filename="catalog_filename" widget="binary"/>
+                            <field name="catalog_filename"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bs_car_ecatalog" model="ir.actions.act_window">
+        <field name="name">e-Catalogs</field>
+        <field name="res_model">bs.car.ecatalog</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+</odoo>

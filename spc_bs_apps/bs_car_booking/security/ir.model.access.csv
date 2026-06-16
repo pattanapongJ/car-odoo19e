@@ -30,6 +30,9 @@ access_bs_car_model_option_public,bs.car.model.option.public,model_bs_car_model_
 access_bs_car_model_spec_user,bs.car.model.spec.user,model_bs_car_model_spec,base.group_user,1,0,0,0
 access_bs_car_model_spec_manager,bs.car.model.spec.manager,model_bs_car_model_spec,base.group_system,1,1,1,1
 access_bs_car_model_spec_public,bs.car.model.spec.public,model_bs_car_model_spec,,1,0,0,0
+access_bs_car_freebie_user,bs.car.freebie.user,model_bs_car_freebie,base.group_user,1,0,0,0
+access_bs_car_freebie_manager,bs.car.freebie.manager,model_bs_car_freebie,base.group_system,1,1,1,1
+access_bs_car_freebie_public,bs.car.freebie.public,model_bs_car_freebie,,1,0,0,0
 access_bs_car_showcase_item_user,bs.car.showcase.item.user,model_bs_car_showcase_item,base.group_user,1,0,0,0
 access_bs_car_showcase_item_manager,bs.car.showcase.item.manager,model_bs_car_showcase_item,bs_car_booking.group_bs_car_booking_manager,1,1,1,1
 access_bs_car_showcase_item_public,bs.car.showcase.item.public,model_bs_car_showcase_item,base.group_public,1,0,0,0
@@ -63,3 +66,6 @@ access_bs_car_website_slide_public,bs.car.website.slide.public,model_bs_car_webs
 access_bs_car_website_slide_cta_user,bs.car.website.slide.cta.user,model_bs_car_website_slide_cta,base.group_user,1,0,0,0
 access_bs_car_website_slide_cta_manager,bs.car.website.slide.cta.manager,model_bs_car_website_slide_cta,bs_car_booking.group_bs_car_booking_manager,1,1,1,1
 access_bs_car_website_slide_cta_public,bs.car.website.slide.cta.public,model_bs_car_website_slide_cta,base.group_public,1,0,0,0
+access_bs_car_ecatalog_user,bs.car.ecatalog.user,model_bs_car_ecatalog,base.group_user,1,0,0,0
+access_bs_car_ecatalog_manager,bs.car.ecatalog.manager,model_bs_car_ecatalog,base.group_system,1,1,1,1
+access_bs_car_ecatalog_public,bs.car.ecatalog.public,model_bs_car_ecatalog,,1,0,0,0

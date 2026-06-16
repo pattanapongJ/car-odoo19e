@@ -8,6 +8,7 @@ from . import bs_car_brand
 from . import bs_car_model
 from . import bs_car_model_option
 from . import bs_car_model_spec
+from . import bs_car_freebie
 from . import bs_car_showcase
 from . import bs_car_website_section
 from . import bs_car_website_slide
@@ -18,6 +19,7 @@ from . import bs_car_variant
 from . import bs_car_dealer
 from . import bs_car_location
 from . import bs_car_document
+from . import bs_car_ecatalog
 from . import bs_car_agreement
 from . import product_template
 from . import bs_car_booking
