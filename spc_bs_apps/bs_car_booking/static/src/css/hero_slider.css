@@ -23,6 +23,12 @@
     display: block;
 }
 
+@media (max-width: 767px) {
+    .bs_slide.active {
+        display: flex;
+    }
+}
+
 /* Fade animation on slide enter */
 .bs_slide.fade-in {
     animation: bsSliderFadeIn 0.8s ease-in-out;
@@ -189,10 +195,105 @@
 .bs_align_x_center .bs_slide_cta { justify-content: center; }
 .bs_align_x_right  .bs_slide_cta { justify-content: flex-end; }
 
-/* Mobile: tighten padding */
+/* ── Mobile: stacked layout — image on top, black content block below ── */
 @media (max-width: 767px) {
-    .bs_slide_content { padding: 0 1.5rem 4rem; }
-    .bs_slide_content.bs_align_y_top { padding-top: 5rem; }
+
+    /* Slide: flex column layout (display override is in .bs_slide.active block above) */
+    .bs_slide {
+        flex-direction: column;
+        height: auto;
+        min-height: 100dvh;
+        background: #000;
+        overflow: visible;
+    }
+
+    /* Image block: leave absolute flow, use aspect-ratio to size */
+    .bs_slide_bg {
+        position: relative;
+        inset: unset;
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        flex-shrink: 0;
+        z-index: 0;
+    }
+
+    /* Hide scrim overlay — text is now below the image, not on top */
+    .bs_slide_overlay {
+        display: none;
+    }
+
+    /* Content: normal flow below image, black background */
+    .bs_slide_content {
+        position: relative;
+        height: auto;
+        min-height: unset;
+        overflow: visible;
+        background: #000;
+        padding: 1.25rem 1.5rem 2rem;
+        justify-content: flex-start;
+        align-items: center;
+        z-index: 2;
+    }
+
+    /* Reset top-align padding override on mobile */
+    .bs_slide_content.bs_align_y_top { padding-top: 1.25rem; }
+
+    /* Title + price row: no-wrap, smaller font so both fit one line */
+    .bs_slide_title_row {
+        flex-wrap: nowrap;
+        gap: 0.3em;
+    }
+    .bs_slide_title_row .bs_slide_title,
+    .bs_slide_title_row .bs_slide_price {
+        font-size: clamp(1.4rem, 5.5vw, 2rem);
+        white-space: nowrap;
+    }
+
+    /* Text: centered on mobile regardless of desktop alignment */
+    .bs_slide_text {
+        align-items: center;
+        max-width: 100%;
+        padding-bottom: 1rem;
+    }
+    .bs_align_x_left .bs_slide_text,
+    .bs_align_x_right .bs_slide_text {
+        align-items: center;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .bs_align_x_left   .bs_slide_eyebrow,
+    .bs_align_x_left   .bs_slide_title,
+    .bs_align_x_left   .bs_slide_subtitle,
+    .bs_align_x_left   .bs_slide_body,
+    .bs_align_x_right  .bs_slide_eyebrow,
+    .bs_align_x_right  .bs_slide_title,
+    .bs_align_x_right  .bs_slide_subtitle,
+    .bs_align_x_right  .bs_slide_body { text-align: center !important; }
+
+    /* CTA: full width column, dark outlined buttons */
+    .bs_slide_cta {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0;
+        justify-content: center;
+    }
+    .bs_slide_cta .btn {
+        width: 100%;
+        max-width: none;
+        padding: 0.7rem 1.25rem;
+        font-size: 0.86rem;
+        background: rgba(255, 255, 255, 0.07) !important;
+        color: #fff !important;
+        border: 1px solid rgba(255, 255, 255, 0.22) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    .bs_slide_cta .btn:hover {
+        background: rgba(255, 255, 255, 0.14) !important;
+        border-color: rgba(255, 255, 255, 0.45) !important;
+    }
 }
 
 /* ── Text color schemes ── */
@@ -234,6 +335,27 @@
     text-transform: uppercase;
     opacity: 0.7;
     margin-bottom: 0.5rem;
+}
+
+.bs_slide_title_row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4em;
+    margin-bottom: 0.15rem;
+}
+
+.bs_slide_title_row .bs_slide_title {
+    margin-bottom: 0;
+}
+
+.bs_slide_price {
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: #fff;
+    white-space: nowrap;
 }
 
 .bs_slide_title {
@@ -286,16 +408,6 @@
     /* bottom padding lives on .bs_slide_content — no extra padding here */
 }
 
-@media (max-width: 480px) {
-    .bs_slide_cta {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .bs_slide_cta .btn {
-        width: 80vw;
-        max-width: 320px;
-    }
-}
 
 .bs_slide_cta .btn {
     min-width: 180px;
@@ -411,13 +523,16 @@
 .bs_slider_prev { left: 1.25rem; }
 .bs_slider_next { right: 1.25rem; }
 
-/* On mobile always show arrows (no hover) */
+/* On mobile: always show arrows, center vertically within image area */
 @media (max-width: 767px) {
     .bs_slider_prev,
     .bs_slider_next {
         opacity: 0.6;
         width: 36px;
         height: 36px;
+        /* anchor to middle of 16:10 image: height ≈ 62.5vw, center = 31.25vw */
+        top: calc(100vw * 0.3125);
+        transform: translateY(-50%);
     }
     .bs_slider_prev { left: 0.5rem; }
     .bs_slider_next { right: 0.5rem; }
@@ -465,13 +580,14 @@
     background-clip: content-box;
 }
 
-/* On mobile: dots move to bottom-center, horizontal (space is tight) */
+/* On mobile: dots at bottom of image area (16:10 aspect-ratio block) */
 @media (max-width: 767px) {
     .bs_slider_dots {
         flex-direction: row;
         right: unset;
-        top: unset;
-        bottom: 1.25rem;
+        bottom: unset;
+        /* position at bottom of 16:10 image: height ≈ 62.5vw */
+        top: calc(100vw * 0.625 - 1.75rem);
         left: 50%;
         transform: translateX(-50%);
         gap: 0.4rem;

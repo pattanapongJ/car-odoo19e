@@ -727,8 +727,8 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
-msgid "Book Now <i class=\"fa fa-arrow-right\"/>"
-msgstr "จองเลย <i class=\"fa fa-arrow-right\"/>"
+msgid "Order Now <i class=\"fa fa-arrow-right\"/>"
+msgstr "สั่งซื้อตอนนี้ <i class=\"fa fa-arrow-right\"/>"
 
 #. module: bs_car_booking
 #: model:ir.model.fields,field_description:bs_car_booking.field_bs_car_booking_agreement__booking_id
@@ -3603,8 +3603,8 @@ msgstr ""
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_detail_page
-msgid "Book Now"
-msgstr "จองเลย"
+msgid "Order Now"
+msgstr "สั่งซื้อตอนนี้"
 
 #. module: bs_car_booking
 #: model_terms:ir.ui.view,arch_db:bs_car_booking.car_listing_page

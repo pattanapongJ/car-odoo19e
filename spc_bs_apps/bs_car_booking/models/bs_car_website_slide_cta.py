@@ -17,14 +17,18 @@ class BsCarWebslideCta(models.Model):
     url_type = fields.Selection([
         ('custom',      'Custom URL'),
         ('menu',        'Website Menu'),
-        ('book',        'Book Now (auto → /car/ID/book)'),
+        ('book',        'Order Now (auto → /car/ID/book)'),
         ('view',        'View Car (auto → /car/ID)'),
         ('test_drive',  'Test Drive (auto → /test-drive)'),
+        ('URL_Download',    'Download URL'),
     ], string='Link Type', default='custom', required=True)
     url = fields.Char('Link URL', help='ใช้เมื่อ Link Type = Custom URL')
     menu_id = fields.Many2one(
         'website.menu', string='Website Menu',
         help='ดึง URL จาก menu ที่เลือก')
+    download_file = fields.Binary('Download File', attachment=True)
+    download_filename = fields.Char('Download Filename')
+    target_blank = fields.Boolean('Open in New Tab', default=False)
     style = fields.Selection([
         ('solid', 'Solid'),
         ('outline', 'Outline'),
