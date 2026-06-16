@@ -39,7 +39,7 @@
                         <group>
                             <field name="date_start"/>
                             <field name="date_end"/>
-                            <field name="is_live"/>
+                            <field name="is_live" widget="boolean_toggle" readonly="1"/>
                         </group>
                     </group>
                     <group>
@@ -61,6 +61,7 @@
                         </page>
                     </notebook>
                 </sheet>
+                <chatter/>
             </form>
         </field>
     </record>

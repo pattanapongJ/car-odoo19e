@@ -13,5 +13,65 @@
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>
+
+        <!-- Defense-in-depth multi-company scoping for INTERNAL users. The funnel
+             writes via sudo() (rules don't apply there); these only constrain
+             backend/manager access so a manager in company A cannot read/edit
+             company B's bookings. Scoped to base.group_user (managers are members);
+             portal keeps its own ownership rule above and is unaffected. -->
+        <record id="rule_booking_company" model="ir.rule">
+            <field name="name">Car Booking: multi-company (internal)</field>
+            <field name="model_id" ref="model_bs_car_booking"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <!-- Child records have no own company_id; scope through booking_id.company_id.
+             booking_id may be empty on standalone OTPs, so allow that branch. -->
+        <record id="rule_booking_otp_company" model="ir.rule">
+            <field name="name">Car Booking OTP: multi-company (internal)</field>
+            <field name="model_id" ref="model_bs_car_booking_otp"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">['|', ('booking_id', '=', False), '|', ('booking_id.company_id', '=', False), ('booking_id.company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="rule_booking_document_company" model="ir.rule">
+            <field name="name">Car Booking Document: multi-company (internal)</field>
+            <field name="model_id" ref="model_bs_car_booking_document"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">['|', ('booking_id.company_id', '=', False), ('booking_id.company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="rule_booking_agreement_company" model="ir.rule">
+            <field name="name">Car Booking Agreement: multi-company (internal)</field>
+            <field name="model_id" ref="model_bs_car_booking_agreement"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">['|', ('booking_id.company_id', '=', False), ('booking_id.company_id', 'in', company_ids)]</field>
+        </record>
+
+        <!-- Portal customers may read their OWN uploaded documents / accepted
+             agreements (read-only; the funnel still writes via sudo). Requires the
+             portal read ACL added in ir.model.access.csv. -->
+        <record id="rule_booking_document_portal_own" model="ir.rule">
+            <field name="name">Portal: own booking documents</field>
+            <field name="model_id" ref="model_bs_car_booking_document"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('booking_id.partner_id', 'child_of', user.partner_id.commercial_partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_booking_agreement_portal_own" model="ir.rule">
+            <field name="name">Portal: own booking agreements</field>
+            <field name="model_id" ref="model_bs_car_booking_agreement"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('booking_id.partner_id', 'child_of', user.partner_id.commercial_partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
     </data>
 </odoo>

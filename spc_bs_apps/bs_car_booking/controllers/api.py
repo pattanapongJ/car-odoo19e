@@ -193,7 +193,7 @@ class BsCarBookingAPI(http.Controller):
             }
         except Exception as e:  # noqa: BLE001
             _logger.exception('Failed to create booking')
-            return {'success': False, 'error': str(e)}
+            return {'success': False, 'error': 'Something went wrong. Please try again.'}
 
     # ── Customer info step ──────────────────────────────────────────────
     def _max_doc_mb(self):
@@ -249,31 +249,37 @@ class BsCarBookingAPI(http.Controller):
                 return {'success': False, 'error': 'Please verify your phone first.'}
 
             ctype = customer_type if customer_type in ('individual', 'company') else 'individual'
+            # Cap free-text lengths: this is a public route writing under sudo(),
+            # so unbounded client strings would otherwise hit the DB verbatim.
             vals = {
                 'customer_type': ctype,
-                'customer_name': (name or '').strip(),
-                'customer_nrc': (nrc or '').strip(),
-                'customer_address': (address or '').strip(),
-                'company_name': (company_name or '').strip(),
-                'tax_id': (tax_id or '').strip(),
+                'customer_name': (name or '').strip()[:100],
+                'customer_nrc': (nrc or '').strip()[:50],
+                'customer_address': (address or '').strip()[:500],
+                'company_name': (company_name or '').strip()[:100],
+                'tax_id': (tax_id or '').strip()[:50],
             }
             # Email is captured up-front at booking creation and shown read-only on
             # this form. A disabled input is NOT submitted, so `email` arrives empty
             # here — only update when a real value is provided, never wiping the
             # captured email (which feeds the partner + invoice).
             if (email or '').strip():
-                vals['customer_email'] = email.strip()
+                vals['customer_email'] = email.strip()[:254]
             booking.write(vals)
 
             # --- Persist uploaded documents (base64), one per document type ---
             Doc = request.env['bs.car.booking.document'].sudo()
             max_mb = self._max_doc_mb()
+            # Whitelist the client-supplied document_type_id against the types that
+            # actually apply to this booking/customer_type (mirrors the agreements
+            # handling below) — never persist a foreign/bogus type under sudo().
+            allowed_dtype_ids = set(booking._applicable_document_types(ctype).ids)
             for d in (documents or []):
                 try:
                     dtype_id, data, filename = self._clean_document_upload(d, max_mb)
                 except ValidationError as e:
                     return {'success': False, 'error': str(e)}
-                if not data:
+                if not data or dtype_id not in allowed_dtype_ids:
                     continue
                 # Replace any previous upload for the same type on this booking.
                 Doc.search([('booking_id', '=', booking.id),
@@ -321,7 +327,7 @@ class BsCarBookingAPI(http.Controller):
             return {'success': True, 'redirect_url': self._booking_step_url(booking, 'payment')}
         except Exception as e:  # noqa: BLE001
             _logger.exception('Failed to save booking info')
-            return {'success': False, 'error': str(e)}
+            return {'success': False, 'error': 'Something went wrong. Please try again.'}
 
     # ── OTP: send / verify / resend ─────────────────────────────────────
     @http.route(['/car_booking/booking/otp/send', '/shop/booking/otp/send'], type='jsonrpc',
@@ -357,7 +363,7 @@ class BsCarBookingAPI(http.Controller):
             return {'success': False, 'error': str(e)}
         except Exception as e:  # noqa: BLE001
             _logger.exception('Failed to send OTP')
-            return {'success': False, 'error': str(e)}
+            return {'success': False, 'error': 'Something went wrong. Please try again.'}
 
     @http.route(['/car_booking/booking/otp/verify', '/shop/booking/otp/verify'], type='jsonrpc',
                 auth='public', website=True, methods=['POST'])
@@ -378,7 +384,7 @@ class BsCarBookingAPI(http.Controller):
             return result
         except Exception as e:  # noqa: BLE001
             _logger.exception('OTP verification failed')
-            return {'success': False, 'error': str(e)}
+            return {'success': False, 'error': 'Something went wrong. Please try again.'}
 
     @http.route(['/car_booking/booking/otp/resend', '/shop/booking/otp/resend'], type='jsonrpc',
                 auth='public', website=True, methods=['POST'])

@@ -73,9 +73,9 @@
         <field name="arch" type="xml">
             <!-- show customer type + company fields next to the name -->
             <field name="customer_name" position="before">
-                <field name="customer_type"/>
-                <field name="company_name" invisible="customer_type != 'company'"/>
-                <field name="tax_id" invisible="customer_type != 'company'"/>
+                <field name="customer_type" readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending')"/>
+                <field name="company_name" invisible="customer_type != 'company'" readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending')"/>
+                <field name="tax_id" invisible="customer_type != 'company'" readonly="state not in ('draft', 'otp_pending', 'otp_verified', 'payment_pending')"/>
             </field>
             <!-- add Documents + Agreements pages to the notebook -->
             <xpath expr="//notebook" position="inside">

@@ -3,7 +3,7 @@
 
 from urllib.parse import parse_qs, urlencode, urlparse
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 DIRECT_VIDEO_EXTENSIONS = ('.mp4', '.mov', '.m4v')
@@ -155,5 +155,5 @@ class BsCarWebsiteSlide(models.Model):
         for slide in self:
             for fname in [slide.video_filename or '', slide.mobile_video_filename or '']:
                 if fname and not fname.lower().endswith(DIRECT_VIDEO_EXTENSIONS):
-                    raise ValidationError(
-                        'Video Upload only supports MP4/MOV/M4V files.')
+                    raise ValidationError(_(
+                        'Video Upload only supports MP4/MOV/M4V files.'))
