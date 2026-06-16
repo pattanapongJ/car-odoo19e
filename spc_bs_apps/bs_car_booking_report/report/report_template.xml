@@ -19,15 +19,24 @@
                 <t t-set="company" t-value="res_company"/>
             </t>
         </t>
-        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"
-             t-att-data-oe-model="o and o._name"
-             t-att-data-oe-id="o and o.id"
-             t-att-data-oe-lang="o and o.env.context.get('lang')">
+        <div t-attf-class="header o_standard_header o_company_#{company.id}_layout">
+            <div class="text-end" style="font-family:'TH-SarabunPSK';font-size:18pt;">
+                <span style="text-align:right;font-size:20pt;margin:0 0 4pt 0;">(ต้นฉบับ)</span>
+                <br/>
+                <span style="text-align:right;margin:0 0 4pt 0; font-size:20pt;">
+                    <span>เลขที่</span>
+                    <span t-esc="o.name" style="font-weight:bold;"/>
+                </span>
+            </div>
+        </div>
+        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
             <t t-out="0"/>
         </div>
         <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
             <div class="text-end" style="font-family:'TH-SarabunPSK';font-size:18pt;">
-               <span>หน้าที่</span> <span class="page"/> / <span class="topage"/>
+                <span>หน้าที่</span>
+                <span class="page"/>
+ /                <span class="topage"/>
             </div>
         </div>
     </template>
