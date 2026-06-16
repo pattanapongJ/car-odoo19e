@@ -31,28 +31,32 @@
                             <span t-esc="o.name" style="font-weight:bold;"/>
                         </p> -->
 
-                        <span class="indent-2">ชื่อผู้ประกอบธุรกิจ :</span>
+                        <span class="indent-2">ชื่อผู้ประกอบธุรกิจ</span>
                         <span style="font-weight:bold;" t-esc="o.dealer_id.with_context(lang='th_TH').name or ''"/>
-                        <span style="padding-left: 20px;">เลขที่ผู้เสียภาษี :</span>
-                        <span style="font-weight:bold;" t-esc="o.company_id.vat or ''"/>
+                        <!-- <span style="padding-left: 20px;">เลขที่ผู้เสียภาษี</span> -->
+                        <!-- <span style="font-weight:bold;">0105522022191</span> -->
                         <br/>
-                        <span>หมายเลขโทรศัพท์ :</span>
+                        <span>หมายเลขโทรศัพท์</span>
                         <span style="font-weight:bold;" t-esc="o.dealer_id.phone or ''"/>
-                        <span>อีเมล :</span>
+                        <span>อีเมล</span>
                         <span style="font-weight:bold;" t-esc="o.dealer_id.email or ''"/>
                         <br/>
-                        <span>ผู้จัดการฝ่ายขาย ชื่อ-สกุล :</span>
+                        <span>ผู้จัดการฝ่ายขาย ชื่อ-สกุล</span>
                         <span style="font-weight: bold;">ร.ต. โตณณาการ ศรีบัวเดช</span>
+                        <span>หมายเลขโทรศัพท์มือถือ</span>
+                        <span style="font-weight: bold;"> 0842926987</span>
                         <br/>
-                        <span>พนักงานขาย/พนักงานผู้รับจอง ชื่อ-สกุล :</span>
+                        <span>พนักงานขาย/พนักงานผู้รับจอง ชื่อ-สกุล</span>
                         <span style="font-weight: bold;">ร.ต. โตณณาการ ศรีบัวเดช</span>
+                        <span>หมายเลขโทรศัพท์มือถือ</span>
+                        <span style="font-weight: bold;"> 0842926987</span>
 
                         <p style="margin:0 0 1pt 0;">
-                            <span>สัญญาฉบับนี้ทำขึ้น ณ :</span>
-                            <span style="font-weight:bold;" t-esc="o.dealer_id.with_context(lang='th_TH').name or ''"/>
+                            <span>สัญญาฉบับนี้ทำขึ้น ณ</span>
+                            <span style="font-weight:bold;">ช่องทางอิเล็กทรอนิกส์ เว็บไซต์ www.Hongqithailand.com</span>
                         </p>
                         <p style="margin:0 0 1pt 0;">
-                            <span>เมื่อวันที่ :</span>
+                            <span>เมื่อวันที่</span>
                             <span style="font-weight:bold;">
                                 <span t-esc="_cd.day"/>
                                 <span t-esc="_TH_M[_cd.month]"/>
@@ -60,36 +64,59 @@
                             </span>
                         </p>
 
-                        <p style="margin:0 0 1pt 0;">
-                            <span>ระหว่าง :</span>
+                        <p class="indent-1" style="margin:0 0 1pt 0;">
+                            <span>ระหว่าง</span>
                             <span style="font-weight:bold;" t-esc="o.dealer_id.with_context(lang='th_TH').name or ''"/>
-                            <span>ซึ่งต่อไปนี้ในสัญญาเรียกว่า</span><span style="font-weight: bold">"ผู้ประกอบธุรกิจ"</span>
                         </p>
-                        <p style="margin:0 0 1pt 0;">
-                            <span>กับ ชื่อ-สกุล/ชื่อบริษัท :</span>
+                        <p>
+                            <span>ผู้จำหน่าย/ผู้แทนจำหน่ายรถยนต์ของผู้ประกอบธุรกิจ</span>
+                        </p>
+                        <p>
+                            <span>ตั้งอยู่เลขที่ </span>
+                            <span style="font-weight:bold;" t-esc="o.dealer_id.street or ''"/>
+                            <br/>
+                            <span style="font-weight:bold; " t-esc="o.dealer_id.city or ''"/>
+                            <span>หมายเลขโทรศัพท์</span>
+                            <span style="font-weight:bold;" t-esc="o.dealer_id.phone or ''"/>
+                            <span>อีเมล</span>
+                            <span style="font-weight:bold;" t-esc="o.dealer_id.email or ''"/>
+                            <span>โดยกรรมการผู้มีอำนาจหรือ</span><span style="font-weight: bold"> นายเอ็ดเวิร์ด ชัชวาลย์ เอเบ็ล  นางสาวสุธี สมดังเจตน์</span><span> ผู้มีอำนาจกระทำการแทนผู้ประกอบธุรกิจปรากฏตามหนังสือมอบอำนาจลงวันที่</span>
+                            <span style="font-weight:bold;">
+                                <span t-esc="_cd.day"/>
+                                <span t-esc="_TH_M[_cd.month]"/>
+                                <span t-esc="_cd.year + 543"/>
+                            </span>
+                            <span>ซึ่งต่อไปในสัญญานี้เรียกว่า “ผู้ประกอบธุรกิจ” ฝ่ายหนึ่ง</span>
+                        </p>
+                        <p class="indent-1" style="margin:0 0 1pt 0;">
+                            <span>กับ ชื่อ-สกุล/ชื่อบริษัท</span>
                             <t t-if="o.customer_type == 'individual'">
                                 <span style="font-weight:bold;" t-esc="o.customer_name or ''"/>
                             </t>
                             <t t-elif="o.customer_type == 'company'">
                                 <span style="font-weight:bold;" t-esc="o.company_name or ''"/>
                             </t>
-                            <span>เลขที่ผู้เสียภาษี :</span>
-                            <span style="font-weight:bold;" t-esc="o.customer_nrc or o.tax_id or ''"/>
                         </p>
                         <p style="margin:0 0 1pt 0;">
-                            <span>หากเป็นในนามบริษัทได้มอบอำนาจกระทำการแทนให้ ชื่อ-สกุล :</span>
+                            <span>หากเป็นในนามบริษัทได้มอบอำนาจกระทำการแทนให้ ชื่อ-สกุล</span>
                             <t t-if="o.customer_type == 'company'">
                                 <span style="font-weight:bold;" t-esc="o.customer_name or ''"/>
                             </t>
                             <span style="font-weight:bold;"/>
                         </p>
                         <p style="margin:0 0 1pt 0;">
-                            <span>ที่อยู่ :</span>
+                            <span>บ้านเลขที่/อาคาร </span>
                             <span style="font-weight:bold;" t-esc="o.customer_address or ''"/>
                         </p>
                         <p style="margin:0 0 4pt 0;">
-                            <span>หมายเลขโทรศัพท์ :</span>
-                            <span style="font-weight:bold;" t-esc="o.customer_phone or ''"/>
+                            <span>หมายเลขโทรศัพท์ที่ทำงาน</span>
+                            <!-- <span style="font-weight:bold;"/> -->
+                            <span style="margin-left: 200px;">หมายเลขโทรศัพท์ที่บ้าน</span>
+                            <br/>
+                            <span>หมายเลขโทรศัพท์มือถือ <span style="font-weight:bold;" t-esc="o.customer_phone or ''"/></span>
+                            <span style="margin-left: 110px;">อีเมล</span>
+                            <span style="font-weight:bold;" t-esc="o.customer_email or ''"/>
+                            <br/>
                             <span>ซึ่งต่อไปในสัญญานี้เรียกว่า<span style="font-weight: bold">"ผู้บริโภค"</span> อีกฝ่ายหนึ่ง
                             </span>
                         </p>
@@ -119,34 +146,36 @@
                             <span style="font-weight:bold;margin-left:12pt;">2569</span>
                         </p>
                         <p style="margin:0 0 6pt 0;">
-                            <span>รูปแบบ</span>
+                            <span>สี</span>
                             <span style="font-weight:bold;" t-esc="', '.join(o.option_value_ids.with_context(lang='th_TH').mapped('name'))"/>
-                            <span>และขนาดหรือกำลังของเครื่องกำเนิดพลังงาน กรณีรถยนต์ไฟฟ้ามีรายละเอียดเกี่ยวกับรถยนต์เพิ่มเติมอย่างน้อย เช่น                                <span style="font-weight:bold;">กำลังมอเตอร์ไฟฟ้า ประเภทของแบตเตอรี่ ขนาดของความจุของแบตเตอรี่กำลังมอเตอร์ไฟฟ้ารวม 362 กิโลวัตต์ ประเภทแบตเตอรี่ ลิเธียมเอ็นเอ็มซี ขนาด 120 กิโลวัตต์ชั่วโมง (แอมแปร์-ชั่วโมง)</span>
+                            <span>และขนาดหรือกำลังของเครื่องกำเนิดพลังงาน กรณีรถยนต์ไฟฟ้ามีรายละเอียดเกี่ยวกับรถยนต์เพิ่มเติมอย่างน้อย เช่น กำลังมอเตอร์ไฟฟ้า ประเภทของแบตเตอรี่ ขนาดของความจุของแบตเตอรี่<span style="font-weight:bold;">กำลังมอเตอร์ไฟฟ้ารวม 362 กิโลวัตต์ ประเภทแบตเตอรี่ ลิเธียมเอ็นเอ็มซี ขนาด 120 กิโลวัตต์ชั่วโมง (แอมแปร์-ชั่วโมง)</span>
                             </span>
                         </p>
 
                         <p class="indent-1">
                             <span>๑.๒</span>
-                            <span>รายการอุปกรณ์ติดตั้งเพิ่มเติมและของแถม หรือสิทธิประโยชน์ต่าง ๆ หรือส่วนที่เพิ่มจากตัวรถยนต์ โดย</span>
+                            <span>รายการอุปกรณ์ติดตั้งเพิ่มเติมและของแถม หรือสิทธิประโยชน์ต่าง ๆ หรือส่วนที่เพิ่มโดยแนบรายละเอียด</span>
                         </p>
-                        <p>แนบรายละเอียดที่ตกลง คือ</p>
-                        <p class="indent-1" style="margin:0;">
+                        <p>
+                            <span>รายการทั้งหมดที่ตกลงกัน ตัวรถยนต์ ที่ผู้ประกอบธุรกิจจะให้หรือจัดหาให้เพื่อตอบแทนในกรณีที่ผู้บริโภคตกลงทำสัญญา (ถ้า) โดยแนบรายละเอียดรายการทั้งหมดที่ตกลงกัน</span>
+                        </p>
+                        <p style="margin:0;">
                             <span>-</span>
                             <span style="font-weight:bold;">เครื่องชาร์จ Home Wall box 11kW พร้อมติดตั้งในระยะ 15 เมตร</span>
                         </p>
-                        <p class="indent-1" style="margin:0;">
+                        <p style="margin:0;">
                             <span>-</span>
                             <span style="font-weight:bold;">ประกันภัยชั้น 1 และ พ.ร.บ.</span>
                         </p>
-                        <p class="indent-1" style="margin:0;">
+                        <p style="margin:0;">
                             <span>-</span>
                             <span style="font-weight:bold;">รับประกันแบตเตอรี่ (8 ปี หรือ 160,000 กม.)</span>
                         </p>
-                        <p class="indent-1" style="margin:0;">
+                        <p style="margin:0;">
                             <span>-</span>
                             <span style="font-weight:bold;">รับประกันตัวรถ จะเป็น 5 ปีหรือ 150,000 กม. (แล้วแต่ระยะใดถึงก่อน)</span>
                         </p>
-                        <p class="indent-1" style="margin:0;">
+                        <p style="margin:0;">
                             <span>-</span>
                             <span style="font-weight:bold;">บริการช่วยเหลือฉุกเฉิน 24 ชั่วโมง 5 ปี</span>
                         </p>
@@ -215,7 +244,7 @@
                                                     <span>โอนเข้าบัญชีชื่อผู้ประกอบธุรกิจ</span>
                                                 </td>
                                                 <td>
-                                                    <span style="font-weight:bold;">บริษัทเมโทร ออโต้เฮ้าส์ จำกัด</span>
+                                                    <span style="font-weight:bold;">บริษัท เมโทร ออโต้เฮ้าส์ จำกัด</span>
                                                 </td>
                                                 <td>
                                                     <span>เลขที่บัญชี</span>
@@ -229,7 +258,7 @@
                                                     <span>ธนาคาร</span>
                                                 </td>
                                                 <td>
-                                                    <span style="font-weight:bold;">ธนาชาติ</span>
+                                                    <span style="font-weight:bold;">ทหารไทยธนชาต จำกัด (มหาชน)</span>
                                                 </td>
                                                 <td>
                                                     <span>สาขา</span>
@@ -243,7 +272,7 @@
                                                     <span>เป็นเงิน</span>
                                                 </td>
                                                 <td>
-                                                    <span style="font-weight:bold;" t-esc="'{:,.0f}'.format(o.deposit_amount or 0)"/>
+                                                    <span style="font-weight:bold;" t-esc="'{:,.2f}'.format(o.deposit_amount or 0)"/>
                                                 </td>
                                                 <td>
                                                     <span>บาท</span>
@@ -251,7 +280,7 @@
                                                 <td style="text-align:center;">
                                                     <!-- <t t-set="amount_test" t-value="500000"/> -->
                                                     <span>(</span>
-                                                    <span style="display:inline-block;min-width:5.3cm;" t-esc="amount_to_text_th(o.deposit_amount or 0)"/>
+                                                    <span style="display:inline-block;min-width:5.3cm; font-weight: bold;" t-esc="amount_to_text_th(o.deposit_amount or 0)"/>
                                                     <span>)</span>
                                                 </td>
                                             </tr>
@@ -365,7 +394,6 @@
                                     </table>
                                 </td>
                             </tr>
-
                             <!-- บัตรเครดิต/เดบิต -->
                             <tr>
                                 <td style="vertical-align:top;">&#x2610;</td>
@@ -435,23 +463,29 @@
                             <span>&#x2610;</span>
                             <span>ไม่รวมภาษีมูลค่าเพิ่ม เป็นเงิน</span>
                             <span style="font-weight:bold; color: white;" t-esc="'{:,.0f}'.format(o.car_price or 0)"/>
-                            <span>บาท</span><span style="margin-left: 103px;">(</span><span style="color: white; font-weight:bold; display:inline-block;min-width:5.3cm;text-align:center;" t-esc="amount_to_text_th(o.car_price or 0)"/><span>)</span>
+                            <span>บาท</span>
+                            <span style="margin-left: 103px;">(</span>
+                            <span style="color: white; font-weight:bold; display:inline-block;min-width:5.3cm;text-align:center;" t-esc="amount_to_text_th(o.car_price or 0)"/>
+                            <span>)</span>
                             <!-- <span style="margin-left: 120px;">(</span><span style="font-weight:bold;"/><span>)</span> -->
                         </p>
-                         <p class="indent-1" style="margin-top:8pt;">
+                        <p class="indent-1" style="margin-top:8pt;">
                         </p>
                         <p style="margin:0 0 10pt 0;">
                             <span>&#x2611;</span>
                             <span>รวมภาษีมูลค่าเพิ่ม เป็นเงิน</span>
-                            <span style="font-weight:bold;" t-esc="'{:,.0f}'.format(o.car_price or 0)"/>
-                            <span>บาท</span><span style="margin-left: 120px;">(</span><span style="font-weight:bold; display:inline-block;min-width:5.3cm;text-align:center;" t-esc="amount_to_text_th(o.car_price or 0)"/><span>)</span>
+                            <span style="font-weight:bold;" t-esc="'{:,.2f}'.format(o.car_price or 0)"/>
+                            <span>บาท</span>
+                            <span style="margin-left: 120px;">(</span>
+                            <span style="font-weight:bold; display:inline-block;min-width:5.3cm;text-align:center;" t-esc="amount_to_text_th(o.car_price or 0)"/>
+                            <span>)</span>
                         </p>
                         <p class="article-header indent-1">
                             <span style="font-weight:bold;">ข้อ ๒</span>
                             <span style="font-weight:bold;">กำหนดวัน เดือน ปี และสถานที่ที่ส่งมอบรถยนต์</span>
                         </p>
                         <p style="margin:0 0 1pt 0;">
-                            <span>วันกำหนดส่งมอบ :</span>
+                            <span>วันกำหนดส่งมอบ</span>
                             <t t-if="_dd">
                                 <span style="font-weight:bold;">
                                     <span t-esc="_dd.day"/>
@@ -464,7 +498,7 @@
                             </t>
                         </p>
                         <p style="margin:0 0 8pt 0;">
-                            <span>สถานที่ส่งมอบ :</span>
+                            <span>สถานที่ส่งมอบ</span>
                             <span style="font-weight:bold;" t-esc="o.dealer_id.with_context(lang='th_TH').name or ''"/>
                         </p>
 
@@ -472,15 +506,15 @@
                             <span style="font-weight:bold;">ข้อ ๓</span>
                             <span style="font-weight:bold;">ผู้บริโภคมีสิทธิบอกเลิกสัญญาเมื่อผู้ประกอบธุรกิจกระทำการอย่างใดอย่างหนึ่ง ดังต่อไปนี้</span>
                         </p>
-                        <p class="indent-1" style="margin:0;">๓.๑<span> ปรับเปลี่ยนราคารถยนต์สูงขึ้น</span>
+                        <p class="indent-1" style="margin:0;">๓.๑                            <span> ปรับเปลี่ยนราคารถยนต์สูงขึ้น</span>
                         </p>
-                        <p class="indent-1" style="margin:0;">๓.๒<span> ไม่ส่งมอบรถยนต์ให้ผู้บริโภคภายในเวลาที่กำหนด</span>
+                        <p class="indent-1" style="margin:0;">๓.๒                            <span> ไม่ส่งมอบรถยนต์ให้ผู้บริโภคภายในเวลาที่กำหนด</span>
                         </p>
-                        <p class="indent-1" style="margin:0;">๓.๓<span> ไม่ส่งมอบรถยนต์ตามยี่ห้อ รุ่น ปีที่ผลิต สี และขนาดหรือกำลังของเครื่องกำเนิดพลังงาน ที่กำหนดในสัญญา</span>
+                        <p class="indent-1" style="margin:0;">๓.๓                            <span> ไม่ส่งมอบรถยนต์ตามยี่ห้อ รุ่น ปีที่ผลิต สี และขนาดหรือกำลังของเครื่องกำเนิดพลังงาน ที่กำหนดในสัญญา</span>
                         </p>
-                        <p class="indent-1" style="margin:0;">๓.๔<span> ไม่ส่งมอบรถยนต์ที่มีรายการอุปกรณ์ติดตั้งเพิ่มเติมและของแถม หรือสิทธิประโยชน์ต่าง ๆ หรือส่วนเพิ่มตัวรถยนต์ตามที่กำหนดในสัญญา</span>
+                        <p class="indent-1" style="margin:0;">๓.๔                            <span> ไม่ส่งมอบรถยนต์ที่มีรายการอุปกรณ์ติดตั้งเพิ่มเติมและของแถม หรือสิทธิประโยชน์ต่าง ๆ หรือส่วนเพิ่มตัวรถยนต์ตามที่กำหนดในสัญญา</span>
                         </p>
-                        <p class="indent-1" style="margin:0 0 6pt 0;">๓.๕<span> ไม่ส่งมอบรถยนต์ที่มีราคาส่วนลด (ถ้ามี) ตามที่กำหนดในสัญญา</span>
+                        <p class="indent-1" style="margin:0 0 6pt 0;">๓.๕                            <span> ไม่ส่งมอบรถยนต์ที่มีราคาส่วนลด (ถ้ามี) ตามที่กำหนดในสัญญา</span>
                         </p>
                         <p class="article-header indent-1">
                             <span style="font-weight:bold;">ข้อ ๔</span>
@@ -490,7 +524,7 @@
                             <span>เมื่อผู้บริโภคไม่เข้าไปรับรถยนต์ภายในกำหนดระยะเวลาที่กำหนดไว้ในสัญญาและไม่แจ้งเหตุขัดข้องให้ทราบ</span>
                         </p>
                         <p>
-                            <span>ให้ผู้ประกอบธุรกิจมีสิทธิบอกเลิกสัญญา</span>
+                            <span>ให้ผู้ประกอบธุรกิจมีสิทธิริบเงินจองได้</span>
                         </p>
                         <p class="article-header indent-1">
                             <span style="font-weight:bold;">ข้อ ๕</span>
@@ -510,22 +544,21 @@
                             <span>เมื่อมีการบอกเลิกสัญญาตามข้อ ๓ หรือข้อ ๕ แล้ว ผู้ประกอบการธุรกิจต้องคืนเงินจองหรือผลประโยชน์อื่นใด</span>
                         </p>
                         <p>ในลักษณะทำนองเดียวกับเงินจองที่ไม่ใช่เงินมัดจำทั้งหมดให้แก่ผู้บริโภค</p>
-                        <p class="indent-1" style="margin:0;">๖.๑<span> กรณีชำระเงินคืนเป็นเงินสดหรือเงินโอน หรือเช็คให้แก่ผู้บริโภคภายในสิบห้าวันนับแต่วันที่มีการบอกเลิกสัญญา</span>
+                        <p class="indent-1" style="margin:0;">๖.๑                            <span> กรณีชำระเงินคืนเป็นเงินสดหรือเงินโอน หรือเช็คให้แก่ผู้บริโภคภายในสิบห้าวันนับแต่วันที่มีการบอกเลิกสัญญา</span>
                         </p>
-                        <p class="indent-1" style="margin:0 0 6pt 0;">๖.๒<span> กรณีชำระคืนผ่านบัตรเครดิตให้แก่ผู้บริโภคภายในสี่สิบห้าวันนับแต่วันที่มีการบอกเลิกสัญญา และให้ผู้ประกอบธุรกิจมีสิทธิหักค่าธรรมเนียมการใช้บัตรเครดิต (ถ้ามี) ได้</span>
+                        <p class="indent-1" style="margin:0 0 6pt 0;">๖.๒                            <span> กรณีชำระคืนผ่านบัตรเครดิตให้แก่ผู้บริโภคภายในสี่สิบห้าวันนับแต่วันที่มีการบอกเลิกสัญญา และให้ผู้ประกอบธุรกิจมีสิทธิหักค่าธรรมเนียมการใช้บัตรเครดิต (ถ้ามี) ได้</span>
                         </p>
 
-                        <p class="indent-1" style="margin:0 0 10pt 0;">
+                        <p class="indent-1">
                             <span style="font-weight:bold;">ข้อ ๗</span>
                             <span>การบอกเลิกสัญญาของผู้ประกอบธุรกิจตามข้อ ๔ หรือ ข้อ ๕ ให้ทำเป็นหนังสือบอกกล่าวให้ผู้บริโภค</span>
                         </p>
                         <p>ปฏิบัติตามสัญญาภายในระยะเวลาไม่น้อยกว่าเจ็ดวันนับแต่วันที่ผู้บริโภคได้รับหนังสือ และผู้บริโภคละเลยเสีย ไม่ปฏิบัติตามหนังสือบอกกล่าวนั้น ผู้ประกอบธุรกิจมีสิทธิบอกเลิกสัญญา</p>
-
                         <!-- Closing declaration -->
-                        <p class="indent-1">
+                        <p class="indent-1" style="margin: 100pt 0 0 0;">
                             <span>สัญญาจองรถยนต์มีข้อความถูกต้องตรงกัน คู่สัญญาได้อ่านและเข้าใจข้อความโดยละเอียดแล้ว</span>
                         </p>
-                        <p style="margin: 0pt 0 20pt 0;">ชื่อพร้อมทั้งประทับตรา (ถ้ามี) ไว้เป็นสำคัญต่อหน้าพยานและคู่สัญญาและเก็บไว้ฝ่ายละหนึ่งฉบับ</p>
+                        <p>ชื่อพร้อมทั้งประทับตรา (ถ้ามี) ไว้เป็นสำคัญต่อหน้าพยานและคู่สัญญาและเก็บไว้ฝ่ายละหนึ่งฉบับ</p>
                         <!-- Signature table -->
                         <table class="sig-table table-borderless" style="font-size:20pt;font-family:'TH-SarabunPSK',sans-serif;">
                             <tr>
@@ -537,7 +570,7 @@
                             <tr class="m-0 p-0">
                                 <td style="width:50%;text-align:center;padding-bottom:4pt; ">
                                     <span>(ลงชื่อ)</span>&#160;&#160;
-                                    <!-- <div style="position: absolute; top: 3015px; left: 120px; font-size: 14pt;">
+                                                                        <!-- <div style="position: absolute; top: 3015px; left: 120px; font-size: 14pt;">
                                             <span t-esc="o.customer_name or ''"/>
                                              <span>( นางสาวดิถา กาญจนาภา )</span>
                                     </div> -->
@@ -552,7 +585,8 @@
                             </tr>
                             <tr style="font-weight:bold;">
                                 <td style="text-align:center;padding-bottom:60pt; font-size: 18pt;">
-                                    <span>(</span>&#160;<span t-esc="o.customer_name or ''"/>&#160;<span>)</span>
+                                    <span>(</span>&#160;<span t-esc="o.customer_name or ''"/>
+&#160;<span>)</span>
                             </td>
                             <td style="text-align:center;padding-bottom:60pt; font-size: 18pt;">
                                 <span>( นายเอ็ดเวิร์ด ชัชวาลย์ เอเบ็ล&#160;&#160;นางสาวสุธี สมดังเจตน์ )</span>
