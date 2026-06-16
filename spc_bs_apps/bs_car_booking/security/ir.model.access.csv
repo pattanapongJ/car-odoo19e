@@ -21,6 +21,9 @@ access_bs_car_model_public,bs.car.model.public,model_bs_car_model,,1,0,0,0
 access_bs_car_model_image_public,bs.car.model.image.public,model_bs_car_model_image,,1,0,0,0
 access_bs_car_variant_public,bs.car.variant.public,model_bs_car_variant,,1,0,0,0
 access_bs_car_dealer_public,bs.car.dealer.public,model_bs_car_dealer,,1,0,0,0
+access_bs_car_location_user,bs.car.location.user,model_bs_car_location,base.group_user,1,0,0,0
+access_bs_car_location_manager,bs.car.location.manager,model_bs_car_location,base.group_system,1,1,1,1
+access_bs_car_location_public,bs.car.location.public,model_bs_car_location,,1,0,0,0
 access_bs_car_model_option_user,bs.car.model.option.user,model_bs_car_model_option,base.group_user,1,0,0,0
 access_bs_car_model_option_manager,bs.car.model.option.manager,model_bs_car_model_option,base.group_system,1,1,1,1
 access_bs_car_model_option_public,bs.car.model.option.public,model_bs_car_model_option,,1,0,0,0

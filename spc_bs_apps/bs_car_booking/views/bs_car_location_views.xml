@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Car Dealer Location / Touchpoint -->
+    <record id="view_bs_car_location_tree" model="ir.ui.view">
+        <field name="name">bs.car.location.list</field>
+        <field name="model">bs.car.location</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="location_type"/>
+                <field name="dealer_id"/>
+                <field name="city"/>
+                <field name="date_start" optional="show"/>
+                <field name="date_end" optional="show"/>
+                <field name="is_live" optional="show"/>
+                <field name="website_published" optional="hide"/>
+                <field name="company_id" optional="hide"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bs_car_location_form" model="ir.ui.view">
+        <field name="name">bs.car.location.form</field>
+        <field name="model">bs.car.location</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Location Name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="location_type"/>
+                            <field name="is_temporary" invisible="1"/>
+                            <field name="dealer_id"/>
+                            <field name="sequence"/>
+                            <field name="phone"/>
+                            <field name="email"/>
+                        </group>
+                        <group>
+                            <field name="date_start" invisible="not is_temporary"
+                                   required="is_temporary"/>
+                            <field name="date_end" invisible="not is_temporary"/>
+                            <field name="is_live"/>
+                            <field name="website_id"/>
+                            <field name="company_id"/>
+                            <field name="website_published"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Address">
+                            <group>
+                                <group>
+                                    <field name="street" placeholder="Street..."/>
+                                    <field name="street2"/>
+                                    <field name="city" placeholder="City"/>
+                                    <field name="state_id" class="o_address_state" placeholder="State"
+                                           options="{'no_open': True, 'no_quick_create': True}"
+                                           context="{'default_country_id': country_id}"/>
+                                    <field name="zip" placeholder="ZIP"/>
+                                    <field name="country_id" class="o_address_country" placeholder="Country"
+                                           options="{'no_open': True, 'no_create': True}"/>
+                                </group>
+                                <group>
+                                    <field name="latitude"/>
+                                    <field name="longitude"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Details">
+                            <group>
+                                <field name="image" widget="image"/>
+                            </group>
+                            <group string="Opening Hours">
+                                <field name="opening_hours" widget="text"/>
+                            </group>
+                            <group string="Website Description">
+                                <field name="website_description" widget="html"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bs_car_location_search" model="ir.ui.view">
+        <field name="name">bs.car.location.search</field>
+        <field name="model">bs.car.location</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="dealer_id"/>
+                <field name="city"/>
+                <filter name="filter_live" string="Live" domain="[('is_live', '=', True)]"/>
+                <filter name="filter_temporary" string="Temporary"
+                        domain="[('location_type', 'in', ['event', 'roadshow', 'popup', 'test_drive'])]"/>
+                <filter name="filter_archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group name="group_by">
+                    <filter name="group_dealer" string="Dealer" context="{'group_by': 'dealer_id'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by': 'location_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bs_car_location" model="ir.actions.act_window">
+        <field name="name">Locations</field>
+        <field name="res_model">bs.car.location</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_bs_car_location_tree"/>
+        <field name="search_view_id" ref="view_bs_car_location_search"/>
+    </record>
+
+    <!-- Locations tab + smart button on the dealer form -->
+    <record id="view_bs_car_dealer_form_locations" model="ir.ui.view">
+        <field name="name">bs.car.dealer.form.locations</field>
+        <field name="model">bs.car.dealer</field>
+        <field name="inherit_id" ref="view_bs_car_dealer_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_title']" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="%(action_bs_car_location)d" type="action"
+                            class="oe_stat_button" icon="fa-map-marker"
+                            context="{'search_default_dealer_id': id, 'default_dealer_id': id}">
+                        <field name="location_count" widget="statinfo" string="Locations"/>
+                    </button>
+                </div>
+            </xpath>
+            <notebook position="inside">
+                <page string="Locations">
+                    <field name="location_ids" context="{'default_dealer_id': id}">
+                        <list>
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="location_type"/>
+                            <field name="city"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="is_live"/>
+                            <field name="website_published"/>
+                            <field name="active" column_invisible="1"/>
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>
