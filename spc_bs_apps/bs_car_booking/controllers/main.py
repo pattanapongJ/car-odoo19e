@@ -156,8 +156,26 @@ class BsCarBookingWebsite(CustomerPortal):
             ('brand_ids', 'in', [car.brand_id.id]),
         ] + self._company_domain('bs.car.dealer'))
         variants = car.variant_ids.filtered(lambda v: v.website_published and v.active)
+        Section = request.env['bs.car.website.section'].sudo()
+        _section_domain = lambda stype: [
+            ('section_type', '=', stype),
+            ('model_id', '=', car.id),
+            ('active', '=', True),
+            ('website_published', '=', True),
+        ]
+        hero_slider_section = Section.search(_section_domain('hero_slider'), limit=1)
+        colour_studio_section = Section.search(_section_domain('color_studio'), limit=1)
+        model_specs_section = Section.search(_section_domain('model_specs'), limit=1)
+        ecatalogs = request.env['bs.car.ecatalog'].sudo().search([
+            ('model_id', '=', car.id),
+            ('active', '=', True),
+        ], order='sequence, id')
         return request.render('bs_car_booking.car_detail_page', {
             'car': car, 'variants': variants, 'dealers': dealers, 'page_title': car.name,
+            'hero_slider_section': hero_slider_section or False,
+            'colour_studio_section': colour_studio_section or False,
+            'model_specs_section': model_specs_section or False,
+            'ecatalogs': ecatalogs,
             # Enables per-car SEO/OpenGraph meta + the editor SEO/publish panel.
             'main_object': car,
         })

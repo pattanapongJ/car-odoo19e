@@ -28,7 +28,7 @@ Website Journey:
 6. Receive booking confirmation via SMS
 """,
     'category': 'Website/Booking',
-    'version': '19.0.10.0.2',
+    'version': '19.0.10.0.3',
     'author': 'Basic Solution Co., Ltd.',
     'maintainer': 'Basic Solution Co., Ltd.',
     'website': 'https://basicsolution.com/',
@@ -78,6 +78,7 @@ Website Journey:
         # Views - Backend
         'views/bs_car_brand_views.xml',
         'views/bs_car_model_views.xml',
+        'views/bs_car_ecatalog_views.xml',
         'views/bs_car_variant_views.xml',
         'views/bs_car_dealer_views.xml',
         'views/bs_car_booking_views.xml',
