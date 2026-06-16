@@ -544,49 +544,65 @@
          brand's dealers) and override the heading via locator_kicker/
          locator_title; the home section self-fetches every published dealer. -->
     <template id="dealer_locator_content" name="Dealer Locator (content)">
-        <t t-set="current_website" t-value="env['website'].get_current_website()"/>
-        <t t-set="dealers" t-value="dealers or env['bs.car.dealer'].sudo().with_context(website_id=current_website.id).search(
-            [('active', '=', True), ('website_published', '=', True), ('company_id', 'in', [False, current_website.company_id.id])], order='sequence, id')"/>
-        <t t-if="dealers">
+        <t t-set="locations" t-value="env['bs.car.location'].sudo()._get_website_locations()"/>
+        <t t-set="location_type_labels" t-value="{
+            'showroom': 'Showroom', 'service_center': 'Service Center',
+            'event': 'Event', 'roadshow': 'Roadshow',
+            'popup': 'Pop-up Store', 'test_drive': 'Test Drive Site'}"/>
+        <t t-if="locations">
             <div class="container bs_dealers">
                 <div class="section_header_center">
-                    <span class="car_kicker car_kicker_dark" t-esc="locator_kicker or 'Our showrooms'"/>
+                    <span class="car_kicker car_kicker_dark" t-esc="locator_kicker or 'Our locations'"/>
                     <h2 class="section_title" t-esc="locator_title or 'Find your preferred location'"/>
                 </div>
                 <div class="bs_dealers_locator">
                     <div class="bs_dealers_mapwrap">
-                        <iframe t-if="dealers[0].map_embed_url" class="bs_dealers_map"
-                                t-att-src="dealers[0].map_embed_url"
-                                title="Showroom location" loading="lazy"
+                        <!-- Keyless Google embed showing the selected location
+                             as a single pin. The list on the right swaps its
+                             src on click; see dealer_locator.js. -->
+                        <iframe t-if="locations[0].map_embed_url" class="bs_dealers_map_google"
+                                t-att-src="locations[0].map_embed_url"
+                                title="Selected location" loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade"
                                 allowfullscreen="allowfullscreen"/>
-                        <div class="bs_dealers_map_filter" aria-hidden="true"/>
                     </div>
                     <div class="bs_dealers_list" role="list">
-                        <div t-foreach="dealers" t-as="d" role="listitem"
-                             t-attf-class="bs_dealer_card#{d_first and ' is_active' or ''}"
-                             t-att-data-map-src="d.map_embed_url"
-                             tabindex="0" t-att-aria-label="d.name">
+                        <div t-foreach="locations" t-as="loc" role="listitem"
+                             t-attf-class="bs_dealer_card#{loc_first and ' is_active' or ''}"
+                             t-att-data-embed="loc.map_embed_url"
+                             tabindex="0" t-att-aria-label="loc.name">
                             <div class="bs_dealer_card_head">
-                                <h4 class="bs_dealer_name" t-esc="d.name"/>
-                                <span t-if="d.city" class="bs_dealer_city" t-esc="d.city"/>
+                                <h4 class="bs_dealer_name" t-esc="loc.name"/>
+                                <span t-if="loc.city" class="bs_dealer_city" t-esc="loc.city"/>
                             </div>
                             <div class="bs_dealer_meta">
-                                <div t-if="d.street or d.city" class="bs_dealer_line">
+                                <div class="bs_dealer_line">
+                                    <i class="fa fa-tag"/>
+                                    <span t-esc="location_type_labels.get(loc.location_type, loc.location_type)"/>
+                                </div>
+                                <div t-if="loc.street or loc.city" class="bs_dealer_line">
                                     <i class="fa fa-map-marker"/>
-                                    <span><t t-esc="d.street"/><t t-if="d.street and d.city">, </t><t t-esc="d.city"/></span>
+                                    <span><t t-esc="loc.street"/><t t-if="loc.street and loc.city">, </t><t t-esc="loc.city"/></span>
                                 </div>
-                                <div t-if="d.phone" class="bs_dealer_line">
+                                <div t-if="loc.phone" class="bs_dealer_line">
                                     <i class="fa fa-phone"/>
-                                    <a t-attf-href="tel:{{ d.phone }}" t-esc="d.phone"/>
+                                    <a t-attf-href="tel:{{ loc.phone }}" t-esc="loc.phone"/>
                                 </div>
-                                <div t-if="d.opening_hours" class="bs_dealer_line bs_dealer_hours">
+                                <div t-if="loc.email" class="bs_dealer_line">
+                                    <i class="fa fa-envelope-o"/>
+                                    <a t-attf-href="mailto:{{ loc.email }}" t-esc="loc.email"/>
+                                </div>
+                                <div t-if="loc.opening_hours" class="bs_dealer_line bs_dealer_hours">
                                     <i class="fa fa-clock-o"/>
-                                    <span t-esc="d.opening_hours"/>
+                                    <span t-esc="loc.opening_hours"/>
+                                </div>
+                                <div t-if="loc.is_temporary and (loc.date_start or loc.date_end)" class="bs_dealer_line">
+                                    <i class="fa fa-calendar"/>
+                                    <span><t t-esc="loc.date_start"/><t t-if="loc.date_start and loc.date_end"> – </t><t t-esc="loc.date_end"/></span>
                                 </div>
                             </div>
-                            <a t-if="d.directions_url" class="bs_dealer_directions"
-                               target="_blank" rel="noopener" t-att-href="d.directions_url">
+                            <a t-if="loc.directions_url" class="bs_dealer_directions"
+                               target="_blank" rel="noopener" t-att-href="loc.directions_url">
                                 <i class="fa fa-location-arrow"/> Directions
                             </a>
                         </div>
@@ -597,7 +613,7 @@
                     t-out="env['bs.car.dealer'].sudo()._website_autodealer_jsonld()"/>
         </t>
         <div t-else="" class="bs_featured_empty alert alert-info text-center">
-            Publish a dealer/showroom to populate this section.
+            Publish a location to populate this section.
         </div>
     </template>
     <template id="s_bs_dealers" name="Dealer Locator">

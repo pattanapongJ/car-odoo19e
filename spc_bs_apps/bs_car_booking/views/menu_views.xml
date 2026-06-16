@@ -40,6 +40,12 @@
               action="action_bs_car_dealer"
               sequence="40"/>
 
+    <menuitem id="menu_bs_car_location"
+              name="Locations"
+              parent="menu_bs_car_booking_master"
+              action="action_bs_car_location"
+              sequence="45"/>
+
     <menuitem id="menu_bs_car_booking"
               name="Bookings"
               parent="menu_bs_car_booking_root"

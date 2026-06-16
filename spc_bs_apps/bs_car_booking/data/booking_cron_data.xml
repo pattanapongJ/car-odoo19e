@@ -10,5 +10,15 @@
             <field name="interval_type">hours</field>
             <field name="active" eval="True"/>
         </record>
+
+        <record id="ir_cron_archive_expired_car_locations" model="ir.cron">
+            <field name="name">Car Location: Archive expired temporary locations</field>
+            <field name="model_id" ref="model_bs_car_location"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_archive_expired_locations()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
     </data>
 </odoo>

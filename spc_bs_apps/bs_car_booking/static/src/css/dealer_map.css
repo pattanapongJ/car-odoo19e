@@ -1,0 +1,14 @@
+/* Location locator map — a keyless Google Maps embed (single selected pin)
+   filling the themed .bs_dealers_mapwrap. The list on the right swaps its src
+   (see dealer_locator.js). No Google/API key.
+
+   The cards themselves reuse the theme's existing .bs_dealer_card styling, so
+   there is nothing to add here for them. */
+
+.bs_dealers_map_google {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}

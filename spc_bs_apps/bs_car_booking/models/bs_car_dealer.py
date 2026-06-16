@@ -55,7 +55,12 @@ class BsCarDealer(models.Model):
     
     # Brands handled
     brand_ids = fields.Many2many('bs.car.brand', string='Brands Available')
-    
+
+    # Locations / touchpoints operated by this dealer (showrooms, service
+    # centres, plus time-boxed events / roadshows / pop-ups / test-drive sites)
+    location_ids = fields.One2many('bs.car.location', 'dealer_id', string='Locations')
+    location_count = fields.Integer(compute='_compute_location_count')
+
     # Website
     maps_query = fields.Char(compute='_compute_maps_query',
                              help='Query for the "Get directions" link (lat,long or address).')
@@ -66,6 +71,11 @@ class BsCarDealer(models.Model):
 
     def _default_is_published(self):
         return True
+
+    @api.depends('location_ids')
+    def _compute_location_count(self):
+        for dealer in self:
+            dealer.location_count = len(dealer.location_ids)
 
     @api.ondelete(at_uninstall=False)
     def _unlink_except_referenced(self):
