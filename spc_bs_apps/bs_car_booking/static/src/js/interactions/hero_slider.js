@@ -61,25 +61,22 @@ export class HeroSlider extends Interaction {
         this._current = index;
 
         this._slides.forEach((slide, i) => {
-            slide.classList.remove("active", "fade-in");
-            slide.setAttribute("aria-hidden", i !== this._current ? "true" : "false");
+            const isActive = i === this._current;
+            slide.setAttribute("aria-hidden", isActive ? "false" : "true");
 
-            if (i === this._current) {
-                // Reset Ken Burns: remove + re-add animation by forcing reflow
+            if (isActive) {
+                // Reset Ken Burns before making slide visible
                 if (!this._reducedMotion) {
                     const media = slide.querySelectorAll(".bs_slide_img, .bs_slide_video");
                     media.forEach((el) => {
                         el.style.animation = "none";
-                        // Force reflow so the browser registers the reset
                         void el.offsetWidth;
                         el.style.animation = "";
                     });
                 }
-
                 slide.classList.add("active");
-                if (!this._reducedMotion) {
-                    slide.classList.add("fade-in");
-                }
+            } else {
+                slide.classList.remove("active");
             }
         });
 
