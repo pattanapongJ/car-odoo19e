@@ -329,24 +329,20 @@
                                             <div class="bs_review_section_body is-open" data-review-customer=""/>
                                         </div>
 
-                                        <!-- 3. ของแถมที่ได้รับ (static promotional list) -->
-                                        <div class="bs_review_section">
+                                        <!-- 3. ของแถมที่ได้รับ (data-driven from bs.car.freebie) -->
+                                        <t t-set="freebies" t-value="booking.model_id.freebie_ids.filtered('website_published')"/>
+                                        <div t-if="freebies" class="bs_review_section">
                                             <div class="bs_review_section_head" data-review-toggle="">
                                                 <span><i class="fa fa-gift bs_review_gifticon"/>ของแถมที่ได้รับ
-                                                    <span class="bs_review_badge bs_review_badge_gift"><i class="fa fa-cube"/> 9 รายการ</span></span>
+                                                    <span class="bs_review_badge bs_review_badge_gift"><i class="fa fa-cube"/> <t t-esc="len(freebies)"/> รายการ</span></span>
                                                 <i class="fa fa-chevron-down bs_review_chevron"/>
                                             </div>
                                             <div class="bs_review_section_body is-open">
                                                 <ul class="bs_review_gifts">
-                                                    <li><i class="fa fa-plug"/><span>เครื่องชาร์จติดบ้าน (Home Wallbox)</span></li>
-                                                    <li><i class="fa fa-bolt"/><span>สายชาร์จฉุกเฉิน <span class="bs_review_muted">(Type 2 / CCS2)</span></span></li>
-                                                    <li><i class="fa fa-money"/><span>เครดิตชาร์จไฟฟรี <span class="bs_review_muted">(สถานีชาร์จสาธารณะ)</span></span></li>
-                                                    <li><i class="fa fa-shield"/><span>ประกันภัยชั้น 1 + พ.ร.บ.</span></li>
-                                                    <li><i class="fa fa-battery-half"/><span>รับประกันแบตเตอรี่ <span class="bs_review_muted">(8 ปี หรือ 160,000 กม.)</span></span></li>
-                                                    <li><i class="fa fa-wrench"/><span>รับประกันตัวรถ + ฟรีค่าบำรุงรักษาตามระยะ <span class="bs_review_muted">(5 ปี หรือ 120,000 กม.)</span></span></li>
-                                                    <li><i class="fa fa-ambulance"/><span>บริการช่วยเหลือฉุกเฉิน 24 ชั่วโมง</span></li>
-                                                    <li><i class="fa fa-picture-o"/><span>ฟิล์มกรองแสง</span></li>
-                                                    <li><i class="fa fa-star"/><span>พรม/ผ้ายางปูพื้น · กรอบป้ายทะเบียน · ของที่ระลึกแบรนด์</span></li>
+                                                    <li t-foreach="freebies" t-as="gift">
+                                                        <i t-attf-class="fa #{gift.icon or 'fa-gift'}"/>
+                                                        <span><t t-esc="gift.name"/><t t-if="gift.note"> <span class="bs_review_muted" t-esc="gift.note"/></t></span>
+                                                    </li>
                                                 </ul>
                                                 <p class="bs_review_gift_note">* ของแถมอาจเปลี่ยนแปลงตามเงื่อนไขโปรโมชันของบริษัท กรุณาตรวจสอบรายละเอียดในใบจองอีกครั้ง</p>
                                             </div>
