@@ -235,6 +235,10 @@ class BsCarModel(models.Model):
     variant_count = fields.Integer(compute='_compute_variant_count')
     
     # Website
+    is_available = fields.Boolean('Available for Booking', default=True,
+                                  help='Untick for "Coming Soon" models: hides the starting '
+                                       'price and the Book Now / Discover buttons on the website '
+                                       'and blocks the /car/<id>/book route.')
     website_featured = fields.Boolean('Featured on Home',
                                       help='Show this model in the home "Featured Model" section.')
     arrival_date = fields.Date('Arrival Date',

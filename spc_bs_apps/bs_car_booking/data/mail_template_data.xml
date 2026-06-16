@@ -256,5 +256,42 @@
             </field>
             <field name="auto_delete" eval="False" />
         </record>
+
+        <!-- Booking Pending — details confirmed (review modal) but deposit not
+             yet paid. Sent with a self-expiring resume/payment link so the
+             customer can come back; the link dies when the booking expires. -->
+        <record id="mail_template_payment_pending" model="mail.template">
+            <field name="name">Car Booking - Payment Pending (Email)</field>
+            <field name="model_id" ref="bs_car_booking.model_bs_car_booking" />
+            <field name="subject">รายการจองรถยนต์ของท่านยังรอการดำเนินการ / Your Vehicle Booking is Pending — {{ object.name }}</field>
+            <field name="body_html" type="html">
+                <div style="margin:0 auto;max-width:560px;padding:24px;font-family:Arial,Helvetica,sans-serif;color:#161616;font-size:14px;line-height:1.7;">
+                    <!-- Thai -->
+                    <p style="margin:0 0 12px;">เรียน คุณ <t t-out="object.customer_name or ''" /></p>
+                    <p style="margin:0 0 12px;">ขอบคุณที่ให้ความสนใจรถยนต์ของเรา</p>
+                    <p style="margin:0 0 12px;">ระบบได้บันทึกรายการจองของท่านเรียบร้อยแล้ว อย่างไรก็ตาม การชำระเงินสำหรับรายการจองนี้ยังไม่เสร็จสมบูรณ์</p>
+                    <p style="margin:0 0 12px;">ท่านสามารถกลับมาดำเนินการจองหรือชำระเงินต่อได้ผ่านลิงก์ด้านล่าง</p>
+                    <p style="margin:16px 0;text-align:center;">
+                        <a t-att-href="object._get_share_link()" style="display:inline-block;padding:12px 28px;background:#161616;color:#ffffff;text-decoration:none;border-radius:4px;">ดำเนินการต่อ / Continue</a>
+                    </p>
+                    <p style="margin:0 0 12px;"><strong>เลขที่การจอง:</strong> <t t-out="object.name" /></p>
+                    <p style="margin:0 0 16px;">หากท่านมีข้อสงสัยหรือต้องการความช่วยเหลือเพิ่มเติม กรุณาติดต่อผู้แทนจำหน่ายหรือเจ้าหน้าที่ของเรา</p>
+                    <p style="margin:0 0 24px;">ขอแสดงความนับถือ<br /><t t-out="object.website_id.name or object.website_id.company_id.name or object.company_id.name" /></p>
+                    <hr style="border:0;border-top:1px solid #ded8cf;margin:0 0 24px;" />
+                    <!-- English -->
+                    <p style="margin:0 0 12px;">Dear <t t-out="object.customer_name or ''" />,</p>
+                    <p style="margin:0 0 12px;">Thank you for your interest in our vehicles.</p>
+                    <p style="margin:0 0 12px;">Your booking has been successfully created. However, the payment for this booking has not yet been completed.</p>
+                    <p style="margin:0 0 12px;">You may continue your booking or payment process using the link below:</p>
+                    <p style="margin:16px 0;text-align:center;">
+                        <a t-att-href="object._get_share_link()" style="display:inline-block;padding:12px 28px;background:#161616;color:#ffffff;text-decoration:none;border-radius:4px;">Continue</a>
+                    </p>
+                    <p style="margin:0 0 12px;"><strong>Booking Reference:</strong> <t t-out="object.name" /></p>
+                    <p style="margin:0 0 16px;">If you require any assistance, please feel free to contact our dealer or customer support team.</p>
+                    <p style="margin:0;">Best regards,<br /><t t-out="object.website_id.name or object.website_id.company_id.name or object.company_id.name" /></p>
+                </div>
+            </field>
+            <field name="auto_delete" eval="True" />
+        </record>
     </data>
 </odoo>

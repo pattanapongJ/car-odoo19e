@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add a "Documents" card to the booking portal page: a download link for
+         the booking-form contract PDF (always) plus one link per customer
+         uploaded document (individual = ID photo; company = all attached docs).
+         Links carry the booking access_token and hit the routes defined in
+         controllers/portal.py. -->
+    <template id="portal_my_booking_documents"
+              inherit_id="bs_car_booking.portal_my_booking"
+              name="Car Booking Portal - Documents">
+        <xpath expr="//div[hasclass('o_portal_my_booking')]//div[hasclass('col-lg-7')]" position="inside">
+            <div class="card mb-4">
+                <div class="card-header"><strong>Documents</strong></div>
+                <div class="card-body p-0">
+                    <table class="table mb-0 align-middle">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <i class="fa fa-file-text-o me-2"/>Booking Form
+                                </td>
+                                <td class="text-end">
+                                    <a t-attf-href="/my/booking/#{booking.id}/booking_form?access_token=#{access_token}"
+                                       class="btn btn-sm btn-outline-primary" target="_blank">
+                                        <i class="fa fa-download me-1"/>Download
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr t-foreach="booking.document_ids" t-as="doc">
+                                <td>
+                                    <i class="fa fa-paperclip me-2"/><span t-field="doc.name"/>
+                                </td>
+                                <td class="text-end">
+                                    <a t-attf-href="/my/booking/#{booking.id}/document/#{doc.id}?access_token=#{access_token}"
+                                       class="btn btn-sm btn-outline-secondary" target="_blank">
+                                        <i class="fa fa-download me-1"/>Download
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>
