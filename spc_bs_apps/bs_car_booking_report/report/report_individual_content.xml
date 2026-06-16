@@ -33,8 +33,6 @@
 
                         <span class="indent-2">ชื่อผู้ประกอบธุรกิจ</span>
                         <span style="font-weight:bold;" t-esc="o.dealer_id.with_context(lang='th_TH').name or ''"/>
-                        <!-- <span style="padding-left: 20px;">เลขที่ผู้เสียภาษี</span> -->
-                        <!-- <span style="font-weight:bold;">0105522022191</span> -->
                         <br/>
                         <span>หมายเลขโทรศัพท์</span>
                         <span style="font-weight:bold;" t-esc="o.dealer_id.phone or ''"/>
@@ -145,6 +143,7 @@
                             </span>
                         </p>
                         <br/>
+                        <br/>
                         <p class="indent-1">
                             <span>๑.๒</span>
                             <span>รายการอุปกรณ์ติดตั้งเพิ่มเติมและของแถม หรือสิทธิประโยชน์ต่าง ๆ หรือส่วนที่เพิ่มโดยแนบรายละเอียด</span>
@@ -185,15 +184,15 @@
 
                             <!-- เงินสด -->
                             <tr>
-                                <td style="width:20pt;vertical-align:top;">&#x2610;</td>
+                                <td style="width:20pt;vertical-align:top;">☐</td>
                                 <td>
                                     <table style="width:100%;border-collapse:collapse;">
                                         <thead style="line-height:0;height:0;visibility:collapse;">
                                             <tr>
-                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:32%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:10%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:32%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:10%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"/>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -209,7 +208,7 @@
                                                 </td>
                                                 <td style="text-align:center;">
                                                     <span>(</span>
-                                                    <span style="display:inline-block;min-width:5.3cm;"></span>
+                                                    <span style="display:inline-block;min-width:5.3cm;"/>
                                                     <span>)</span>
                                                 </td>
                                             </tr>
@@ -220,15 +219,15 @@
 
                             <!-- โอนเข้าบัญชี -->
                             <tr>
-                                <td style="vertical-align:top;">&#x2611;</td>
+                                <td style="vertical-align:top;">☑</td>
                                 <td>
                                     <table style="width:100%;border-collapse:collapse;">
                                         <thead style="line-height:0;height:0;visibility:collapse;">
                                             <tr>
-                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:32%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:10%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:32%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:10%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"/>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -284,15 +283,15 @@
 
                             <!-- เช็คธนาคาร -->
                             <tr>
-                                <td style="width:20pt;vertical-align:top;">&#x2610;</td>
+                                <td style="width:20pt;vertical-align:top;">☐</td>
                                 <td>
                                     <table style="width:100%;border-collapse:collapse;">
                                         <thead style="line-height:0;height:0;visibility:collapse;">
                                             <tr>
-                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:32%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:10%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:32%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:10%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"/>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -300,33 +299,33 @@
                                                 <td>
                                                     <span>เช็คธนาคารเลขที่</span>
                                                 </td>
-                                                <td></td>
+                                                <td/>
                                                 <td>
                                                     <span>เล่มที่</span>
                                                 </td>
-                                                <td></td>
+                                                <td/>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <span>ธนาคาร</span>
                                                 </td>
-                                                <td></td>
+                                                <td/>
                                                 <td>
                                                     <span>สาขา</span>
                                                 </td>
-                                                <td></td>
+                                                <td/>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <span>เป็นเงิน</span>
                                                 </td>
-                                                <td></td>
+                                                <td/>
                                                 <td>
                                                     <span>บาท</span>
                                                 </td>
                                                 <td style="text-align:center;">
                                                     <span>(</span>
-                                                    <span style="display:inline-block;min-width:5.3cm;"></span>
+                                                    <span style="display:inline-block;min-width:5.3cm;"/>
                                                     <span>)</span>
                                                 </td>
                                             </tr>
@@ -337,15 +336,15 @@
 
                             <!-- แคชเชียร์เช็ค -->
                             <tr>
-                                <td style="width:20pt;vertical-align:top;">&#x2610;</td>
+                                <td style="width:20pt;vertical-align:top;">☐</td>
                                 <td>
                                     <table style="width:100%;border-collapse:collapse;">
                                         <thead style="line-height:0;height:0;visibility:collapse;">
                                             <tr>
-                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:32%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:10%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:32%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:10%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"/>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -353,33 +352,33 @@
                                                 <td>
                                                     <span>แคชเชียร์เช็คเลขที่</span>
                                                 </td>
-                                                <td></td>
+                                                <td/>
                                                 <td>
                                                     <span>เล่มที่</span>
                                                 </td>
-                                                <td></td>
+                                                <td/>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <span>ธนาคาร</span>
                                                 </td>
-                                                <td></td>
+                                                <td/>
                                                 <td>
                                                     <span>สาขา</span>
                                                 </td>
-                                                <td></td>
+                                                <td/>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <span>เป็นเงิน</span>
                                                 </td>
-                                                <td></td>
+                                                <td/>
                                                 <td>
                                                     <span>บาท</span>
                                                 </td>
                                                 <td style="text-align:center;">
                                                     <span>(</span>
-                                                    <span style="display:inline-block;min-width:5.3cm;"></span>
+                                                    <span style="display:inline-block;min-width:5.3cm;"/>
                                                     <span>)</span>
                                                 </td>
                                             </tr>
@@ -389,15 +388,15 @@
                             </tr>
                             <!-- บัตรเครดิต/เดบิต -->
                             <tr>
-                                <td style="vertical-align:top;">&#x2610;</td>
+                                <td style="vertical-align:top;">☐</td>
                                 <td>
                                     <table style="width:100%;border-collapse:collapse;">
                                         <thead style="line-height:0;height:0;visibility:collapse;">
                                             <tr>
-                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:32%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:10%;"></th>
-                                                <th style="padding:0;margin:0;border:none;width:29%;"></th>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:32%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:10%;"/>
+                                                <th style="padding:0;margin:0;border:none;width:29%;"/>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -405,31 +404,31 @@
                                                 <td>
                                                     <span>บัตรเครดิต/เดบิต</span>
                                                 </td>
-                                                <td></td>
+                                                <td/>
                                                 <td>
                                                     <span>ธนาคาร</span>
                                                 </td>
-                                                <td></td>
+                                                <td/>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <span>ประเภทบัตรเครดิต/เดบิต</span>
                                                 </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td/>
+                                                <td/>
+                                                <td/>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <span>เป็นเงิน</span>
                                                 </td>
-                                                <td></td>
+                                                <td/>
                                                 <td>
                                                     <span>บาท</span>
                                                 </td>
                                                 <td style="text-align:center;">
                                                     <span>(</span>
-                                                    <span style="display:inline-block;min-width:5.3cm;"></span>
+                                                    <span style="display:inline-block;min-width:5.3cm;"/>
                                                     <span>)</span>
                                                 </td>
                                             </tr>
@@ -437,9 +436,9 @@
                                                 <td>
                                                     <span>หมายเลขบัตร</span>
                                                 </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td/>
+                                                <td/>
+                                                <td/>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -453,7 +452,7 @@
                             <br/>
                         </p>
                         <p style="margin:0 0 10pt 0;">
-                            <span>&#x2610;</span>
+                            <span>☐</span>
                             <span>ไม่รวมภาษีมูลค่าเพิ่ม เป็นเงิน</span>
                             <span style="font-weight:bold; color: white;" t-esc="'{:,.0f}'.format(o.car_price or 0)"/>
                             <span>บาท</span>
@@ -465,7 +464,7 @@
                         <p class="indent-1" style="margin-top:8pt;">
                         </p>
                         <p style="margin:0 0 10pt 0;">
-                            <span>&#x2611;</span>
+                            <span>☑</span>
                             <span>รวมภาษีมูลค่าเพิ่ม เป็นเงิน</span>
                             <span style="font-weight:bold;" t-esc="'{:,.2f}'.format(o.car_price or 0)"/>
                             <span>บาท</span>
@@ -473,6 +472,8 @@
                             <span style="font-weight:bold; display:inline-block;min-width:5.3cm;text-align:center;" t-esc="amount_to_text_th(o.car_price or 0)"/>
                             <span>)</span>
                         </p>
+                        <br/>
+                        <br/>
                         <p class="article-header indent-1">
                             <span style="font-weight:bold;">ข้อ ๒</span>
                             <span style="font-weight:bold;">กำหนดวัน เดือน ปี และสถานที่ที่ส่งมอบรถยนต์</span>
@@ -562,34 +563,34 @@
                             </tr>
                             <tr class="m-0 p-0">
                                 <td style="width:50%;text-align:center;padding-bottom:4pt; ">
-                                    <span>(ลงชื่อ)</span>&#160;&#160;
+                                    <span>(ลงชื่อ)</span>  
                                                                         <!-- <div style="position: absolute; top: 3015px; left: 120px; font-size: 14pt;">
                                             <span t-esc="o.customer_name or ''"/>
                                              <span>( นางสาวดิถา กาญจนาภา )</span>
                                     </div> -->
-                                    <span>.........................................</span>&#160;&#160;
+                                    <span>.........................................</span>  
                                     <span>ผู้บริโภค</span>
                                 </td>
                                 <td style="width:50%;text-align:center;padding-bottom:4pt;">
-                                    <span>(ลงชื่อ)</span>&#160;&#160;
-                                    <span>.........................................</span>&#160;&#160;
+                                    <span>(ลงชื่อ)</span>  
+                                    <span>.........................................</span>  
                                     <span>ผู้ประกอบธุรกิจ</span>
                                 </td>
                             </tr>
                             <tr style="font-weight:bold;">
                                 <td style="text-align:center;padding-bottom:60pt; font-size: 18pt;">
-                                    <span>(</span>&#160;<span t-esc="o.customer_name or ''"/>
-&#160;<span>)</span>
+                                    <span>(</span> <span t-esc="o.customer_name or ''"/>
+ <span>)</span>
                             </td>
                             <td style="text-align:center;padding-bottom:60pt; font-size: 18pt;">
-                                <span>( นายเอ็ดเวิร์ด ชัชวาลย์ เอเบ็ล&#160;&#160;นางสาวสุธี สมดังเจตน์ )</span>
+                                <span>( นายเอ็ดเวิร์ด ชัชวาลย์ เอเบ็ล  นางสาวสุธี สมดังเจตน์ )</span>
                             </td>
                         </tr>
                         <!-- !! sales_manager + salesperson: fields TBD — blanks for now !! -->
                         <tr>
                             <td colspan="2" style="text-align:left; padding-bottom:8pt;">
-                                <span style="margin-left: 38px;">(ลงชื่อ)</span>&#160;&#160;
-                                <span>.........................................</span>&#160;&#160;
+                                <span style="margin-left: 38px;">(ลงชื่อ)</span>  
+                                <span>.........................................</span>  
                                 <span>ผู้จัดการแผนก/พนักงานขาย</span>
                             </td>
                             <!-- <td style="text-align:center;padding-bottom:8pt;">
