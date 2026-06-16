@@ -102,6 +102,7 @@ Website Journey:
         'views/portal_templates.xml',
         'views/story_templates.xml',
         'views/snippets.xml',
+        'views/cookie_consent_templates.xml',
     ],
     'assets': {
         'web.assets_frontend': [
