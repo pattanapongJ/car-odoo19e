@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================
+         READYPLANET COOKIE CONSENT WIDGET
+         Replaces Odoo's native cookie bar with ReadyPlanet's consent
+         platform (Thai PDPA). IMPORTANT: turn OFF
+         Settings > Website > Privacy > "Cookies Bar" so only ONE banner
+         is shown — running both produces two banners and conflicting
+         consent logic.
+
+         The widget is language-aware: ReadyPlanet serves a different
+         banner per `lang` query param (TH=1, EN=2). request.env.lang is
+         the active frontend language code, so we load the matching one.
+         ================================================================ -->
+    <template id="readyplanet_cookie_widget" inherit_id="website.layout"
+              name="ReadyPlanet Cookie Widget">
+        <xpath expr="//head" position="inside">
+            <!-- Thai -->
+            <script t-if="request.env.lang == 'th_TH'"
+                    id="r-widget-script"
+                    src="https://rwidget.readyplanet.com/widget/widget.min.js?business_id=dac15b7252d1caa67e167b7e18bcbb0a&amp;lang=1"
+                    type="text/javascript" charset="UTF-8"/>
+            <!-- English (default for every other language) -->
+            <script t-else=""
+                    id="r-widget-script"
+                    src="https://rwidget.readyplanet.com/widget/widget.min.js?business_id=dac15b7252d1caa67e167b7e18bcbb0a&amp;lang=2"
+                    type="text/javascript" charset="UTF-8"/>
+        </xpath>
+    </template>
+</odoo>
