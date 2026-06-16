@@ -338,9 +338,14 @@ class BsCarBookingWebsite(CustomerPortal):
         if not booking:
             return {'error': 'Not found'}
         try:
-            booking.action_submit_rating(rating, comment)
-        except Exception as exc:
-            return {'error': str(exc)}
+            rating = int(rating)
+        except (TypeError, ValueError):
+            return {'error': 'Invalid rating.'}
+        try:
+            booking.action_submit_rating(rating, (comment or '')[:2000])
+        except Exception:  # noqa: BLE001
+            _logger.exception('Failed to submit rating for %s', booking_id)
+            return {'error': 'Unable to submit rating.'}
         return {'success': True}
 
     # ── Confirmation ────────────────────────────────────────────────────

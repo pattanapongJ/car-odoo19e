@@ -10,7 +10,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import float_compare
 from odoo.tools.mail import formataddr
-from odoo.tools.misc import hash_sign, verify_hash_signed
+from odoo.tools.misc import formatLang, hash_sign, verify_hash_signed
 
 _logger = logging.getLogger(__name__)
 
@@ -18,6 +18,8 @@ _logger = logging.getLogger(__name__)
 # (E.164 max). The SAME rule is enforced client-side (phone_utils.js) and on
 # the form inputs' pattern attribute — keep the three in sync.
 PHONE_RE = re.compile(r'^\+?\d{7,15}$')
+# Pragmatic email check (not full RFC 5322): one @, a dotted domain, no spaces.
+EMAIL_RE = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
 
 
 class BsCarBooking(models.Model):
@@ -55,9 +57,9 @@ class BsCarBooking(models.Model):
     # === Customer Information ===
     # name is captured at the dedicated "customer info" funnel step (after OTP),
     # so it is not required at creation time.
-    customer_name = fields.Char('Contact Name')
-    customer_phone = fields.Char('Phone Number', required=True)
-    customer_email = fields.Char('Email')
+    customer_name = fields.Char('Contact Name', tracking=True)
+    customer_phone = fields.Char('Phone Number', required=True, tracking=True)
+    customer_email = fields.Char('Email', tracking=True)
     customer_nrc = fields.Char('NRC/ID Number', help='National Registration Card or ID')
     customer_address = fields.Text('Address')
 
@@ -74,11 +76,15 @@ class BsCarBooking(models.Model):
     # ``company_name`` holds the organisation name for company bookings.
 
     # Uploaded documents + accepted agreements (configurable per customer type).
-    document_ids = fields.One2many('bs.car.booking.document', 'booking_id', string='Documents')
-    agreement_ids = fields.One2many('bs.car.booking.agreement', 'booking_id', string='Agreements')
+    # copy=False: a duplicate must NOT inherit another customer's uploaded ID
+    # documents / accepted agreements (privacy + legal-audit integrity).
+    document_ids = fields.One2many('bs.car.booking.document', 'booking_id', string='Documents',
+                                   copy=False)
+    agreement_ids = fields.One2many('bs.car.booking.agreement', 'booking_id', string='Agreements',
+                                    copy=False)
     
     # OTP Verification
-    phone_verified = fields.Boolean('Phone Verified', default=False, copy=False)
+    phone_verified = fields.Boolean('Phone Verified', default=False, copy=False, tracking=True)
     otp_verified_channel = fields.Selection([
         ('sms', 'SMS'),
         ('email', 'Email'),
@@ -86,7 +92,9 @@ class BsCarBooking(models.Model):
         help='Channel that delivered the verified OTP. "SMS" proves the phone '
              'number itself; "Email" means the phone was NOT independently '
              'verified (email fallback, e.g. while the SMS gateway is pending).')
-    otp_ids = fields.One2many('bs.car.booking.otp', 'booking_id', string='OTP Records')
+    # copy=False: OTP history belongs to the original verification session only.
+    otp_ids = fields.One2many('bs.car.booking.otp', 'booking_id', string='OTP Records',
+                              copy=False)
     otp_count = fields.Integer(compute='_compute_otp_count')
 
     @api.depends('otp_ids')
@@ -104,20 +112,21 @@ class BsCarBooking(models.Model):
                               help='Lead auto-created after OTP + PDPA consent.')
 
     # === Car Selection ===
-    brand_id = fields.Many2one('bs.car.brand', string='Brand', required=True)
+    brand_id = fields.Many2one('bs.car.brand', string='Brand', required=True, tracking=True)
     model_id = fields.Many2one('bs.car.model', string='Car Model', required=True,
-                               domain="[('brand_id', '=', brand_id)]")
+                               domain="[('brand_id', '=', brand_id)]", tracking=True)
 
     # === Dealer Selection ===
     dealer_id = fields.Many2one('bs.car.dealer', string='Preferred Dealer',
-                                domain="[('brand_ids', 'in', [brand_id])]")
+                                domain="[('brand_ids', 'in', [brand_id])]", tracking=True)
 
     # === Pricing & Deposit ===
     currency_id = fields.Many2one('res.currency', default=_get_default_currency, required=True)
     car_price = fields.Monetary('Car Price', currency_field='currency_id', readonly=True)
     deposit_amount = fields.Monetary('Deposit Amount', currency_field='currency_id',
-                                     help='Required deposit to confirm booking')
-    deposit_paid = fields.Monetary('Deposit Paid', currency_field='currency_id', readonly=True)
+                                     help='Required deposit to confirm booking', tracking=True)
+    deposit_paid = fields.Monetary('Deposit Paid', currency_field='currency_id', readonly=True,
+                                    copy=False, tracking=True)
     deposit_remaining = fields.Monetary('Deposit Remaining', currency_field='currency_id',
                                         compute='_compute_deposit_remaining', store=True)
     
@@ -145,7 +154,7 @@ class BsCarBooking(models.Model):
                                        related='sale_order_id.transaction_ids')
 
     # === Delivery Info ===
-    estimated_delivery_date = fields.Date('Estimated Delivery Date')
+    estimated_delivery_date = fields.Date('Estimated Delivery Date', tracking=True)
     actual_delivery_date = fields.Date('Actual Delivery Date', readonly=True)
 
     # === Customer Rating ===
@@ -284,6 +293,33 @@ class BsCarBooking(models.Model):
                     'Please enter a valid phone number (7–15 digits, optional +, '
                     'spaces and dashes allowed).'))
 
+    @api.constrains('customer_email')
+    def _check_customer_email(self):
+        # Validated server-side because the funnel only checks the address when
+        # the OTP channel is 'email'; this also guards backend/RPC writes that
+        # feed the partner + invoice email.
+        for rec in self:
+            if rec.customer_email and not EMAIL_RE.match(rec.customer_email.strip()):
+                raise ValidationError(_('Please enter a valid email address.'))
+
+    @api.constrains('deposit_amount', 'deposit_paid', 'car_price')
+    def _check_amounts_non_negative(self):
+        # A negative deposit would make _compute_deposit_remaining and the
+        # float_compare confirmation gate treat the booking as (over)paid.
+        for rec in self:
+            for fname in ('deposit_amount', 'deposit_paid', 'car_price'):
+                if (rec[fname] or 0.0) < 0:
+                    raise ValidationError(
+                        _('%s cannot be negative.') % rec._fields[fname].string)
+
+    @api.constrains('rating')
+    def _check_rating_range(self):
+        # action_submit_rating clamps to 1–5, but a direct write must not store
+        # an out-of-range score (the portal/CRM read it back verbatim).
+        for rec in self:
+            if rec.rating and not 0 <= rec.rating <= 5:
+                raise ValidationError(_('Rating must be between 0 and 5.'))
+
     # === CRUD ===
     @api.model_create_multi
     def create(self, vals_list):
@@ -299,6 +335,18 @@ class BsCarBooking(models.Model):
         """Enforce the booking lifecycle at the ORM level: a direct state change
         (RPC, scripts, imports) must follow an allowed transition. Internal
         transitions go through ``_transition_to`` which sets the bypass flag."""
+        # Company/website are bound at creation (from the website). Once set they
+        # must not move: readonly is only a UI guard, but sudo()/RPC writes would
+        # otherwise repoint a booking to another company/website, breaking
+        # multi-company scoping and the OTP-throttle website lookup.
+        for fname in ('company_id', 'website_id'):
+            if fname in vals:
+                for rec in self:
+                    current = rec[fname].id
+                    if current and vals[fname] != current:
+                        raise ValidationError(_(
+                            'The %s of a booking cannot be changed once set.'
+                        ) % self._fields[fname].string)
         if 'state' in vals and not self.env.context.get('bs_booking_bypass_state_guard'):
             target = vals['state']
             allowed = self._allowed_state_targets()
@@ -317,6 +365,44 @@ class BsCarBooking(models.Model):
         if 'estimated_delivery_date' in vals:
             self._sync_delivery_commitment()
         return res
+
+    # Committed bookings carry a sale order / paid deposit / contractual state —
+    # they must be *cancelled*, never deleted, so the financial + legal trail
+    # (transactions, agreements, invoices) is preserved. @api.ondelete runs on
+    # record unlink but is skipped on module uninstall.
+    _DELETE_BLOCKED_STATES = (
+        'payment_pending', 'confirmed', 'in_production', 'ready_delivery', 'delivered',
+    )
+
+    @api.ondelete(at_uninstall=False)
+    def _unlink_except_committed(self):
+        labels = dict(self._fields['state'].selection)
+        for rec in self:
+            if rec.state in self._DELETE_BLOCKED_STATES:
+                raise ValidationError(_(
+                    'Booking %(booking)s is %(state)s and cannot be deleted. '
+                    'Cancel it instead.'
+                ) % {'booking': rec.name or rec.id,
+                     'state': labels.get(rec.state, rec.state)})
+            # A booking that progressed then ended (cancelled/expired) keeps its
+            # record when real money or an order is attached, for the audit trail.
+            # Pre-commitment bookings (draft/otp_*), including duplicates, never
+            # carry a committed order/payment and are free to delete.
+            if rec.state in ('cancelled', 'expired') and (
+                    rec.sale_order_id or rec._has_successful_payment()):
+                raise ValidationError(_(
+                    'Booking %s has a linked sale order or payment and cannot be '
+                    'deleted. Cancel it instead.'
+                ) % (rec.name or rec.id))
+
+    def copy(self, default=None):
+        # A duplicate starts as a clean draft: copy=False already drops the
+        # paid deposit, OTP/verification, uploaded documents and accepted
+        # agreements. Record the provenance on the new booking's chatter.
+        new = super().copy(default=default)
+        for origin, dup in zip(self, new):
+            dup.message_post(body=_('Duplicated from booking %s.', origin.name or origin.id))
+        return new
 
     @api.onchange('model_id')
     def _onchange_model_id(self):
@@ -470,6 +556,9 @@ class BsCarBooking(models.Model):
             self.otp_verified_channel = otp[0].channel
             self._transition_to('otp_verified')
             self._create_crm_lead()
+            channel_label = dict(self._fields['otp_verified_channel'].selection).get(
+                otp[0].channel, otp[0].channel)
+            self.message_post(body=_('Phone verified via %s.', channel_label))
         return result
 
     # === Partner / configuration / sale-order backbone ===
@@ -819,6 +908,10 @@ class BsCarBooking(models.Model):
                 'bs_booking_rating': int(rating),
                 'bs_booking_rating_comment': (comment or '').strip() or False,
             })
+        body = _('Customer rating: %s/5.', int(rating))
+        if (comment or '').strip():
+            body += ' ' + (comment or '').strip()
+        self.message_post(body=body)
 
     def action_view_lead(self):
         self.ensure_one()
@@ -836,6 +929,10 @@ class BsCarBooking(models.Model):
         so = self.sale_order_id
         paid_amount = (so.amount_paid if so else 0.0) or transaction.amount
         self.write({'deposit_paid': paid_amount})
+        self.message_post(body=_(
+            'Deposit payment received: %(amount)s (ref %(ref)s).'
+        ) % {'amount': formatLang(self.env, paid_amount, currency_obj=self.currency_id),
+             'ref': transaction.reference or transaction.id})
         if self.deposit_amount and float_compare(
             self.deposit_paid,
             self.deposit_amount,

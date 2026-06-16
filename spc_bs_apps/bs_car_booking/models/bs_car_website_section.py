@@ -3,7 +3,7 @@
 
 from urllib.parse import parse_qs, urlencode, urlparse
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 DIRECT_VIDEO_EXTENSIONS = ('.mp4', '.mov', '.m4v')
@@ -227,12 +227,12 @@ class BsCarWebsiteSection(models.Model):
                 (section.mobile_video_filename or '').lower(),
             ]
             if any(filename and not filename.endswith(DIRECT_VIDEO_EXTENSIONS) for filename in filenames):
-                raise ValidationError(
-                    'Video Upload only supports MP4/MOV/M4V files. WebM is not supported on iOS Safari.')
+                raise ValidationError(_(
+                    'Video Upload only supports MP4/MOV/M4V files. WebM is not supported on iOS Safari.'))
 
             video_url = (section.video_url or '').strip().lower()
             if video_url and not section._normalize_video_embed_url(video_url):
                 parsed = urlparse(video_url)
                 if not (parsed.scheme in ('http', 'https') and parsed.path.lower().endswith(DIRECT_VIDEO_EXTENSIONS)):
-                    raise ValidationError(
-                        'External Video URL must be YouTube, Vimeo, or a direct MP4/MOV/M4V URL.')
+                    raise ValidationError(_(
+                        'External Video URL must be YouTube, Vimeo, or a direct MP4/MOV/M4V URL.'))

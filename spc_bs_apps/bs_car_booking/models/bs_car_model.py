@@ -29,7 +29,8 @@ OPTION_ATTRIBUTE_REFS = (
 class BsCarModel(models.Model):
     _name = 'bs.car.model'
     _description = 'Car Model'
-    _inherit = ['website.seo.metadata', 'website.published.multi.mixin', 'bs.car.website.scope.mixin']
+    _inherit = ['mail.thread', 'website.seo.metadata', 'website.published.multi.mixin',
+                'bs.car.website.scope.mixin']
     _order = 'brand_id, sequence, name'
     _bs_clear_website_cache_on_write = True
 
@@ -99,9 +100,9 @@ class BsCarModel(models.Model):
         data = {k: v for k, v in data.items() if v not in (None, '', {})}
         return Markup(json.dumps(data))
 
-    name = fields.Char(required=True, translate=True)
+    name = fields.Char(required=True, translate=True, tracking=True)
     sequence = fields.Integer(default=10)
-    active = fields.Boolean(default=True)
+    active = fields.Boolean(default=True, tracking=True)
     brand_id = fields.Many2one('bs.car.brand', string='Brand', required=True, ondelete='cascade')
     company_id = fields.Many2one(
         'res.company', string='Company', default=lambda self: self.env.company,
@@ -116,7 +117,7 @@ class BsCarModel(models.Model):
         ('convertible', 'Convertible'),
         ('pickup', 'Pickup'),
         ('van', 'Van'),
-    ], string='Body Type')
+    ], string='Body Type',tracking=True)
     # Document-only (FC requirement): Thai sales paperwork — invoices,
     # registration, insurance/finance quotes — carries the รุ่นปี (model year).
     # It flows into the generated product's name, hence every SO/invoice line.
@@ -124,7 +125,7 @@ class BsCarModel(models.Model):
     # A dynamic Selection (not free text, not a master-data model): the
     # dropdown makes typos impossible and new years appear by themselves.
     model_year = fields.Selection(
-        selection='_model_year_selection', string='Model Year',
+        selection='_model_year_selection', string='Model Year', tracking=True,
         help='Manufacturer model year. Appended to the generated product '
              'name so sales documents carry it.')
 
@@ -151,6 +152,26 @@ class BsCarModel(models.Model):
         for rec in self:
             if rec.model_year and rec.model_year not in valid:
                 raise ValidationError(_('"%s" is not a valid model year.') % rec.model_year)
+
+    @api.constrains('base_price', 'deposit_amount')
+    def _check_prices_non_negative(self):
+        # base_price flows into the product list_price + CRM expected_revenue;
+        # deposit_amount is copied onto new bookings as the deposit target.
+        for rec in self:
+            for fname in ('base_price', 'deposit_amount'):
+                if (rec[fname] or 0.0) < 0:
+                    raise ValidationError(
+                        _('%s cannot be negative.') % rec._fields[fname].string)
+
+    @api.ondelete(at_uninstall=False)
+    def _unlink_except_referenced(self):
+        # Bookings reference the model with a DB RESTRICT; surface a friendly
+        # message (and the archive alternative) instead of a raw DB error.
+        used = self.env['bs.car.booking'].sudo().search_count([('model_id', 'in', self.ids)])
+        if used:
+            raise ValidationError(_(
+                'You cannot delete a car model that is used by bookings. '
+                'Archive it instead.'))
 
     description = fields.Html('Description', translate=True)
     highlight_features = fields.Text('Highlight Features', translate=True,
@@ -219,10 +240,10 @@ class BsCarModel(models.Model):
     
     # Pricing
     base_price = fields.Monetary('Base Price', currency_field='currency_id',
-                                 help='Starting price displayed on website')
+                                 help='Starting price displayed on website', tracking=True)
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
     deposit_amount = fields.Monetary('Deposit Amount', currency_field='currency_id',
-                                     help='Required deposit for booking')
+                                     help='Required deposit for booking', tracking=True)
     
     # Specifications
     range_km = fields.Integer('Range (km)', help='Electric range or fuel range in km')

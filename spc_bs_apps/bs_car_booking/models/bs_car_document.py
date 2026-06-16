@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Basic Solution Co., Ltd.
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class BsCarDocumentType(models.Model):
@@ -50,3 +50,46 @@ class BsCarBookingDocument(models.Model):
     attachment = fields.Binary('File', attachment=True, required=True)
     filename = fields.Char('Filename')
     uploaded_date = fields.Datetime('Uploaded', default=fields.Datetime.now, readonly=True)
+    # Mirror of this file linked to the parent booking so it also shows in the
+    # booking's chatter attachment box. Lifecycle-managed (created/updated/removed
+    # alongside this line) so no orphaned PII is ever left behind — PDPA-safe.
+    booking_attachment_id = fields.Many2one('ir.attachment', string='Booking Attachment',
+                                            copy=False, readonly=True, ondelete='set null')
+
+    def _sync_booking_attachment(self):
+        """Keep a booking-level ir.attachment mirror in sync with this line so
+        uploaded documents are visible from the booking's attachment box."""
+        Attachment = self.env['ir.attachment'].sudo()
+        for rec in self:
+            if not rec.attachment or not rec.booking_id:
+                if rec.booking_attachment_id:
+                    rec.booking_attachment_id.sudo().unlink()
+                continue
+            vals = {
+                'name': rec.filename or rec.name or 'document',
+                'datas': rec.attachment,
+                'res_model': 'bs.car.booking',
+                'res_id': rec.booking_id.id,
+            }
+            if rec.booking_attachment_id:
+                rec.booking_attachment_id.sudo().write(vals)
+            else:
+                # Assigning the m2o triggers write() but without a mirrored key,
+                # so it does not re-enter the sync (no recursion).
+                rec.booking_attachment_id = Attachment.create(vals)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        records._sync_booking_attachment()
+        return records
+
+    def write(self, vals):
+        res = super().write(vals)
+        if {'attachment', 'filename', 'booking_id'} & vals.keys():
+            self._sync_booking_attachment()
+        return res
+
+    def unlink(self):
+        self.booking_attachment_id.sudo().unlink()
+        return super().unlink()
