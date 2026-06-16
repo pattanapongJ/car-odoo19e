@@ -304,6 +304,8 @@ class BsCarModel(models.Model):
                                  help='Selectable priced options (color, interior, wheels, add-ons).')
     spec_ids = fields.One2many('bs.car.model.spec', 'model_id', string='Specifications', copy=True,
                                help='Technical spec sheet shown on the website (data-driven).')
+    freebie_ids = fields.One2many('bs.car.freebie', 'model_id', string='Freebies', copy=True,
+                                  help='Complimentary items shown in the booking review modal.')
 
     # --- Home "showcase" content, split per type so each maps to one
     #     home section. All point to bs.car.showcase.item via model_id; the

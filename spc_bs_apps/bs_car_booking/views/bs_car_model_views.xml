@@ -165,6 +165,22 @@
                                 </list>
                             </field>
                         </page>
+                        <page string="Freebies">
+                            <p class="text-muted">
+                                Complimentary items / gifts shown in the booking <b>Review &amp; Confirm</b>
+                                pop-up. Pick an <b>Icon</b> from the list; the optional Note is shown in
+                                grey after the item.
+                            </p>
+                            <field name="freebie_ids" context="{'default_model_id': id}">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="note"/>
+                                    <field name="icon"/>
+                                    <field name="website_published" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
                         <page string="Home Showcase">
                             <p class="text-muted">
                                 Curate editorial home-page sections for this model. Do not duplicate shared
