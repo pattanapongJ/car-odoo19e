@@ -17,6 +17,7 @@ from . import legacy_cleanup
 from . import bs_car_offer
 from . import bs_car_variant
 from . import bs_car_dealer
+from . import bs_car_location
 from . import bs_car_document
 from . import bs_car_ecatalog
 from . import bs_car_agreement
