@@ -26,25 +26,26 @@
                             </tr>
                         </table>
 
-                        <p style="text-align:right;margin:0 0 4pt 0;">
+                        <p style="text-align:right;margin:0 0 4pt 0; font-size:18pt;">
                             <span>เลขที่</span>
-                            <span t-esc="o.name or ''"/>
+                            <span t-esc="o.name" style="font-weight:bold;"/>
                         </p>
 
-                        <span>ชื่อผู้ประกอบธุรกิจ :</span>
+                        <span class="indent-2">ชื่อผู้ประกอบธุรกิจ :</span>
                         <span style="font-weight:bold;" t-esc="o.dealer_id.with_context(lang='th_TH').name or ''"/>
-                        <span>เลขที่ผู้เสียภาษี :</span>
+                        <span style="padding-left: 20px;">เลขที่ผู้เสียภาษี :</span>
                         <span style="font-weight:bold;" t-esc="o.company_id.vat or ''"/>
+                        <br/>
                         <span>หมายเลขโทรศัพท์ :</span>
                         <span style="font-weight:bold;" t-esc="o.dealer_id.phone or ''"/>
                         <span>อีเมล :</span>
                         <span style="font-weight:bold;" t-esc="o.dealer_id.email or ''"/>
                         <br/>
                         <span>ผู้จัดการฝ่ายขาย ชื่อ-สกุล :</span>
-                        <span>นาย เดชากร ทัศนกูล</span>
+                        <span style="font-weight: bold;">นาย เดชากร ทัศนกูล</span>
                         <br/>
                         <span>พนักงานขาย/พนักงานผู้รับจอง ชื่อ-สกุล :</span>
-                        <span>นางสาว ดิถา กาญจนาภาดี</span>
+                        <span style="font-weight: bold;">นางสาว ดิถา กาญจนาภาดี</span>
 
                         <p style="margin:0 0 1pt 0;">
                             <span>สัญญาฉบับนี้ทำขึ้น ณ :</span>
@@ -67,13 +68,22 @@
                         </p>
                         <p style="margin:0 0 1pt 0;">
                             <span>กับ ชื่อ-สกุล/ชื่อบริษัท :</span>
+                            <t t-if="o.customer_type == 'individual'">
+                                <span style="font-weight:bold;" t-esc="o.customer_name or ''"/>
+                            </t>
+                            <t t-if="o.customer_type == 'company'">
+                                <span style="font-weight:bold;" t-esc="o.company_id.name or ''"/>
+                            </t>
                             <span style="font-weight:bold;" t-esc="o.customer_name or ''"/>
                             <span>เลขที่ผู้เสียภาษี :</span>
                             <span style="font-weight:bold;" t-esc="o.customer_nrc or o.tax_id or ''"/>
                         </p>
                         <p style="margin:0 0 1pt 0;">
                             <span>หากเป็นในนามบริษัทได้มอบอำนาจกระทำการแทนให้ ชื่อ-สกุล :</span>
-                            <span style="font-weight:bold;" t-esc="o.customer_name or ''"/>
+                            <t t-if="o.customer_type == 'company'">
+                                <span style="font-weight:bold;" t-esc="o.customer_name or ''"/>
+                            </t>
+                            <span style="font-weight:bold;"/>
                         </p>
                         <p style="margin:0 0 1pt 0;">
                             <span>ที่อยู่ :</span>
@@ -82,7 +92,7 @@
                         <p style="margin:0 0 4pt 0;">
                             <span>หมายเลขโทรศัพท์ :</span>
                             <span style="font-weight:bold;" t-esc="o.customer_phone or ''"/>
-                            <span>ซึ่งต่อไปในสัญญานี้เรียกว่า                                <span style="font-weight: bold">"ผู้บริโภค"</span> อีกฝ่ายหนึ่ง
+                            <span>ซึ่งต่อไปในสัญญานี้เรียกว่า<span style="font-weight: bold">"ผู้บริโภค"</span> อีกฝ่ายหนึ่ง
                             </span>
                         </p>
                         <p style="margin:0 0 6pt 0;">
@@ -99,14 +109,14 @@
 
                         <p style="margin:0 0 2pt 0;">
                             <span style="font-weight:bold;">1.1</span>
-                            <span style="font-weight:bold;">ประเภท/ชนิด</span>
-                            <span>รถยนต์ไฟฟ้า</span>
-                            <span style="font-weight:bold;">ยี่ห้อ</span>
-                            <span style="font-weight:bold;" t-esc="o.brand_id.with_context(lang='th_TH').name or ''"/>
-                            <span style="font-weight:bold;">รุ่น</span>
-                            <span style="font-weight:bold;" t-esc="o.model_id.with_context(lang='th_TH').name or ''"/>
-                            <span style="font-weight:bold;">ปีที่ผลิต</span>
-                            <span>2569</span>
+                            <span style="margin-left:12pt;">ประเภท/ชนิด</span>
+                            <span style="font-weight:bold;margin-left:12pt;">รถยนต์ไฟฟ้า</span>
+                            <span style="margin-left:12pt;">ยี่ห้อ</span>
+                            <span style="font-weight:bold;margin-left:12pt;" t-esc="o.brand_id.with_context(lang='th_TH').name or ''"/>
+                            <span style="margin-left:12pt;">รุ่น</span>
+                            <span style="font-weight:bold;margin-left:12pt;" t-esc="o.model_id.with_context(lang='th_TH').name or ''"/>
+                            <span style="margin-left:12pt;">ปีที่ผลิต</span>
+                            <span style="font-weight:bold;margin-left:12pt;">2569</span>
                         </p>
                         <p style="margin:0 0 6pt 0;">
                             <span>รูปแบบ</span>
@@ -190,7 +200,7 @@
                                                 <td>
                                                     <span>บาท</span>
                                                 </td>
-                                                <td>
+                                                <td style="text-align:center;">
                                                     <span>(</span>
                                                     <span style="display:inline-block;min-width:2cm;"></span>
                                                     <span>)</span>
@@ -225,7 +235,7 @@
                                                 <td>
                                                     <span>เลขที่บัญชี</span>
                                                 </td>
-                                                <td>
+                                                <td style="text-align:center;">
                                                     <span style="font-weight:bold;">8052033274</span>
                                                 </td>
                                             </tr>
@@ -239,7 +249,7 @@
                                                 <td>
                                                     <span>สาขา</span>
                                                 </td>
-                                                <td>
+                                                <td style="text-align:center;">
                                                     <span style="font-weight:bold;">พระราม 9</span>
                                                 </td>
                                             </tr>
@@ -253,7 +263,7 @@
                                                 <td>
                                                     <span>บาท</span>
                                                 </td>
-                                                <td>
+                                                <td style="text-align:center;">
                                                     <span>(</span>
                                                     <span style="font-weight:bold;" t-esc="amount_to_text_th(o.deposit_amount or 0)"/>
                                                     <span>)</span>
@@ -306,7 +316,7 @@
                                                 <td>
                                                     <span>บาท</span>
                                                 </td>
-                                                <td>
+                                                <td style="text-align:center;">
                                                     <span>(</span>
                                                     <span style="display:inline-block;min-width:2cm;"></span>
                                                     <span>)</span>
@@ -359,7 +369,7 @@
                                                 <td>
                                                     <span>บาท</span>
                                                 </td>
-                                                <td>
+                                                <td style="text-align:center;">
                                                     <span>(</span>
                                                     <span style="display:inline-block;min-width:2cm;"></span>
                                                     <span>)</span>
@@ -410,7 +420,7 @@
                                                 <td>
                                                     <span>บาท</span>
                                                 </td>
-                                                <td>
+                                                <td style="text-align:center;">
                                                     <span>(</span>
                                                     <span style="display:inline-block;min-width:2cm;"></span>
                                                     <span>)</span>
@@ -438,9 +448,7 @@
                         <p style="margin:0 0 10pt 0;">
                             <span>เป็นเงิน</span>
                             <span style="font-weight:bold;" t-esc="'{:,.0f}'.format(o.car_price or 0)"/>
-                            <span>บาท</span>(                            <span style="font-weight:bold;" t-esc="amount_to_text_th(o.car_price or 0)"/>
-)</p>
-
+                            <span>บาท</span><span style="margin-left: 220px;">(</span><span style="font-weight:bold;" t-esc="amount_to_text_th(o.car_price or 0)"/><span>)</span></p>
                         <p class="article-header indent-1">
                             <span style="font-weight:bold;">ข้อ 2</span>
                             <span style="font-weight:bold;">กำหนดวัน เดือน ปี และสถานที่ที่ส่งมอบรถยนต์</span>
@@ -467,15 +475,15 @@
                             <span style="font-weight:bold;">ข้อ 3</span>
                             <span style="font-weight:bold;">ผู้บริโภคมีสิทธิบอกเลิกสัญญาเมื่อผู้ประกอบธุรกิจกระทำการอย่างใดอย่างหนึ่ง ดังต่อไปนี้</span>
                         </p>
-                        <p class="indent-1" style="margin:0;">3.1<span>ปรับเปลี่ยนราคารถยนต์สูงขึ้น</span>
+                        <p class="indent-1" style="margin:0;">3.1<span> ปรับเปลี่ยนราคารถยนต์สูงขึ้น</span>
                         </p>
-                        <p class="indent-1" style="margin:0;">3.2<span>ไม่ส่งมอบรถยนต์ให้ผู้บริโภคภายในเวลาที่กำหนด</span>
+                        <p class="indent-1" style="margin:0;">3.2<span> ไม่ส่งมอบรถยนต์ให้ผู้บริโภคภายในเวลาที่กำหนด</span>
                         </p>
-                        <p class="indent-1" style="margin:0;">3.3<span>ไม่ส่งมอบรถยนต์ตามยี่ห้อ รุ่น ปีที่ผลิต สี และขนาดหรือกำลังของเครื่องกำเนิดพลังงาน ที่กำหนดในสัญญา</span>
+                        <p class="indent-1" style="margin:0;">3.3<span> ไม่ส่งมอบรถยนต์ตามยี่ห้อ รุ่น ปีที่ผลิต สี และขนาดหรือกำลังของเครื่องกำเนิดพลังงาน ที่กำหนดในสัญญา</span>
                         </p>
-                        <p class="indent-1" style="margin:0;">3.4<span>ไม่ส่งมอบรถยนต์ที่มีรายการอุปกรณ์ติดตั้งเพิ่มเติมและของแถม หรือสิทธิประโยชน์ต่าง ๆ หรือส่วนเพิ่มตัวรถยนต์ตามที่กำหนดในสัญญา</span>
+                        <p class="indent-1" style="margin:0;">3.4<span> ไม่ส่งมอบรถยนต์ที่มีรายการอุปกรณ์ติดตั้งเพิ่มเติมและของแถม หรือสิทธิประโยชน์ต่าง ๆ หรือส่วนเพิ่มตัวรถยนต์ตามที่กำหนดในสัญญา</span>
                         </p>
-                        <p class="indent-1" style="margin:0 0 6pt 0;">3.5<span>ไม่ส่งมอบรถยนต์ที่มีราคาส่วนลด (ถ้ามี) ตามที่กำหนดในสัญญา</span>
+                        <p class="indent-1" style="margin:0 0 6pt 0;">3.5<span> ไม่ส่งมอบรถยนต์ที่มีราคาส่วนลด (ถ้ามี) ตามที่กำหนดในสัญญา</span>
                         </p>
 
                         <p class="article-header indent-1">
@@ -501,9 +509,9 @@
                         <p style="margin:0 0 1pt 0;">
                             <span>เมื่อมีการบอกเลิกสัญญาตามข้อ 3 หรือ ข้อ 5 แล้ว ผู้ประกอบธุรกิจต้องคืนเงินจองหรือผลประโยชน์อื่นใด ในลักษณะทำนองเดียวกับเงินจองที่ไม่ใช่เงินมัดจำทั้งหมดให้แก่ผู้บริโภค</span>
                         </p>
-                        <p class="indent-1" style="margin:0;">6.1<span>กรณีชำระเงินคืนเป็นเงินสดหรือเงินโอน หรือเช็คให้แก่ผู้บริโภคภายในสิบห้าวันนับแต่วันที่มีการบอกเลิกสัญญา</span>
+                        <p class="indent-1" style="margin:0;">6.1<span> กรณีชำระเงินคืนเป็นเงินสดหรือเงินโอน หรือเช็คให้แก่ผู้บริโภคภายในสิบห้าวันนับแต่วันที่มีการบอกเลิกสัญญา</span>
                         </p>
-                        <p class="indent-1" style="margin:0 0 6pt 0;">6.2<span>กรณีชำระคืนผ่านบัตรเครดิตให้แก่ผู้บริโภคภายในสี่สิบห้าวันนับแต่วันที่มีการบอกเลิกสัญญา และให้ผู้ประกอบธุรกิจมีสิทธิหักค่าธรรมเนียมการใช้บัตรเครดิต (ถ้ามี) ได้</span>
+                        <p class="indent-1" style="margin:0 0 6pt 0;">6.2<span> กรณีชำระคืนผ่านบัตรเครดิตให้แก่ผู้บริโภคภายในสี่สิบห้าวันนับแต่วันที่มีการบอกเลิกสัญญา และให้ผู้ประกอบธุรกิจมีสิทธิหักค่าธรรมเนียมการใช้บัตรเครดิต (ถ้ามี) ได้</span>
                         </p>
 
                         <p class="indent-1" style="margin:0 0 10pt 0;">
