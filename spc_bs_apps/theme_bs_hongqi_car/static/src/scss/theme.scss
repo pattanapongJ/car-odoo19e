@@ -1330,7 +1330,13 @@ html {
 /* Catalog band — light, generous padding. */
 .bs_catalog_band {
     background: var(--car-bg-section);
-    padding: clamp(40px, 6vw, 72px) 0 clamp(56px, 8vw, 96px);
+    padding: clamp(80px, 10vw, 120px) 0 clamp(56px, 8vw, 96px);
+}
+
+@media (max-width: 767.98px) {
+    .bs_catalog_band {
+        padding-top: clamp(48px, 8vw, 64px);
+    }
 }
 
 /* Header row: title + clear-filters link. */
@@ -1340,6 +1346,14 @@ html {
     align-items: flex-end;
     justify-content: space-between;
     margin-bottom: 28px;
+}
+
+@media (max-width: 575.98px) {
+    .bs_catalog_header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
 }
 
 .bs_filter_clear {
@@ -1414,7 +1428,7 @@ html {
     font-size: 0.8rem;
 }
 
-/* Card grid — two columns on tablet+, one on phone. */
+/* Card grid — 1 col phone / 2 col tablet / 3 col desktop. */
 .bs_catalog_grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -1425,6 +1439,12 @@ html {
     .bs_catalog_grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 28px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .bs_catalog_grid {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
@@ -1588,12 +1608,32 @@ html {
 /* Card footer — price + CTA. */
 .bs_catalog_card_footer {
     display: flex;
+    flex-wrap: wrap;
     gap: 14px;
     align-items: center;
     justify-content: space-between;
     margin-top: auto;
     padding-top: 16px;
     border-top: 1px solid var(--car-border);
+}
+
+@media (max-width: 400px) {
+    .bs_catalog_card_footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .bs_card_actions {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .bs_card_book_btn,
+    .bs_card_cta {
+        flex: 1;
+        justify-content: center;
+    }
 }
 
 .bs_card_price {
@@ -2075,6 +2115,50 @@ html {
 
     .bs_specs_summary .section_title {
         font-size: 0.95rem;
+    }
+}
+
+/* ── e-Catalog Download section ────────────────────────────────── */
+.bs_ecatalog_section {
+    padding: 48px 12px 56px;
+    text-align: center;
+}
+
+.bs_ecatalog_list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+}
+
+.bs_ecatalog_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    border: 1.5px solid var(--car-text-primary);
+    border-radius: var(--car-radius);
+    color: var(--car-text-primary);
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: background var(--car-transition), color var(--car-transition);
+
+    &:hover {
+        background: #b21f2d;
+        border-color: #b21f2d;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    i { font-size: 1.1rem; }
+}
+
+@media (max-width: 575.98px) {
+    .bs_ecatalog_btn {
+        width: 100%;
+        justify-content: center;
     }
 }
 

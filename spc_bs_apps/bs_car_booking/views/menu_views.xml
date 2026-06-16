@@ -40,6 +40,12 @@
               action="action_bs_car_dealer"
               sequence="40"/>
 
+    <menuitem id="menu_bs_car_ecatalog"
+              name="e-Catalogs"
+              parent="menu_bs_car_booking_master"
+              action="action_bs_car_ecatalog"
+              sequence="50"/>
+
     <menuitem id="menu_bs_car_booking"
               name="Bookings"
               parent="menu_bs_car_booking_root"
