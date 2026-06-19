@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'BS Car Booking Report – Individual Contract',
-    'summary': 'QWeb PDF report: Standard car booking contract (individual/personal)',
+    'summary': 'QWeb PDF report: Standard car booking contract (individual/personal) - Metro version',
     'category': 'Website/Booking',
-    'version': '19.0.2.0.3',
+    'version': '19.0.2.2.3',
     'author': 'Basic Solution Co., Ltd.',
     'license': 'LGPL-3',
     'depends': ['bs_car_booking'],

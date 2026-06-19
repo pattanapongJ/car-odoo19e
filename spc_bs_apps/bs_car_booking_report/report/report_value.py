@@ -21,7 +21,15 @@ class BookingContractReport(models.AbstractModel):
 
     def _option_values_th(self, record):
         values = record.option_value_ids.with_context(lang='th_TH')
-        return ', '.join(values.mapped('name'))
+        if values:
+            return ', '.join(values.mapped('name'))
+        # fallback: dynamic-variant attributes stored on the resolved product variant
+        if record.product_id:
+            values = record.product_id.product_template_attribute_value_ids.filtered(
+                lambda v: v.attribute_id.name != 'Standard Package'
+            ).with_context(lang='th_TH')
+            return ', '.join(values.mapped('name'))
+        return ''
 
     def _amount_to_text_th(self, amount):
         try:
